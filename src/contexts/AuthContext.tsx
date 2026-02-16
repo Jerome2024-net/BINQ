@@ -160,6 +160,21 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         }).eq("id", authData.user.id);
 
         await loadProfile(authData.user.id);
+
+        // Envoyer email de bienvenue via Resend
+        try {
+          await fetch("/api/email/send", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              type: "welcome",
+              to: data.email,
+              data: { prenom: data.prenom },
+            }),
+          });
+        } catch (e) {
+          console.warn("Welcome email failed (non-blocking):", e);
+        }
       }
 
       return { success: true };
