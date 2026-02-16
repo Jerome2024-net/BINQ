@@ -196,172 +196,81 @@ export default function DashboardPage() {
       )}
 
       {/* Wallet Quick View */}
-      <Link href="/portefeuille" className="block">
-        <div className="relative overflow-hidden bg-gradient-to-r from-blue-600 to-indigo-600 rounded-2xl p-5 text-white hover:shadow-lg transition-shadow">
-          <div className="absolute top-0 right-0 w-40 h-40 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/2"></div>
+      <Link href="/portefeuille" className="block mb-8">
+        <div className="relative overflow-hidden bg-gray-900 rounded-xl p-6 text-white shadow-lg shadow-gray-200/50 transition-transform active:scale-[0.99]">
+          <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none"></div>
           <div className="relative z-10 flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 bg-white/15 rounded-xl flex items-center justify-center">
-                <Wallet className="w-6 h-6" />
+            <div className="flex items-center gap-5">
+              <div className="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center border border-white/10">
+                <Wallet className="w-6 h-6 text-white" />
               </div>
               <div>
-                <p className="text-sm text-green-200">Solde du portefeuille</p>
-                <p className="text-2xl font-bold">{formatMontant(wallet?.solde || 0)}</p>
+                <p className="text-sm font-medium text-gray-400">Solde disponible</p>
+                <div className="flex items-baseline gap-2">
+                  <p className="text-3xl font-bold tracking-tight text-white">{formatMontant(wallet?.solde || 0)}</p>
+                  <span className="text-sm font-medium text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">
+                    +0%
+                  </span>
+                </div>
               </div>
             </div>
-            <div className="flex items-center gap-2">
-              <Link href="/portefeuille" className="flex items-center gap-1 bg-white/15 hover:bg-white/25 px-4 py-2 rounded-xl text-sm font-medium transition-colors">
+            <div className="flex items-center gap-3">
+              <div className="hidden sm:flex items-center gap-2 text-sm font-medium text-gray-300 mr-4">
+                <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
+                Portefeuille actif
+              </div>
+              <div className="flex items-center gap-2 bg-white text-gray-900 hover:bg-gray-100 px-5 py-2.5 rounded-lg text-sm font-bold transition-colors">
                 <ArrowDownToLine className="w-4 h-4" />
                 Déposer
-              </Link>
-              <ArrowRight className="w-5 h-5 text-green-200" />
+              </div>
             </div>
           </div>
         </div>
       </Link>
 
-      {/* Alertes - Paiements en attente */}
-      {mesPaiementsEnAttente.length > 0 && (
-        <div className="bg-amber-50 border border-amber-200 rounded-2xl p-4">
-          <div className="flex items-center gap-2 mb-3">
-            <AlertCircle className="w-5 h-5 text-amber-600" />
-            <h3 className="font-semibold text-amber-800">
-              {mesPaiementsEnAttente.length} cotisation(s) en attente
-            </h3>
-          </div>
-          <div className="space-y-2">
-            {mesPaiementsEnAttente.map((p) => (
-              <div key={p.id} className="flex items-center justify-between bg-white rounded-xl p-3">
-                <div>
-                  <p className="text-sm font-medium text-gray-900">{p.tontine.nom}</p>
-                  <p className="text-xs text-gray-500">
-                    Tour {p.tour.numero} · Bénéficiaire: {p.tour.beneficiaire.prenom} {p.tour.beneficiaire.nom}
-                  </p>
-                </div>
-                <button
-                  onClick={() => handlePay(
-                    p.tontine.id, p.tour.id, p.tontine.nom,
-                    p.tontine.montantCotisation, p.tontine.devise,
-                    `${p.tour.beneficiaire.prenom} ${p.tour.beneficiaire.nom}`
-                  )}
-                  className="btn-primary !py-2 !px-4 text-sm"
-                >
-                  Payer {formatMontant(p.montant, p.tontine.devise)}
-                </button>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* Invitations reçues */}
-      {invitationsRecues.length > 0 && (
-        <div className="bg-blue-50 border border-blue-200 rounded-2xl p-4">
-          <div className="flex items-center gap-2 mb-3">
-            <Mail className="w-5 h-5 text-blue-600" />
-            <h3 className="font-semibold text-blue-800">
-              {invitationsRecues.length} invitation(s) en attente
-            </h3>
-          </div>
-          <div className="space-y-2">
-            {invitationsRecues.map((inv) => (
-              <div key={inv.id} className="flex flex-col sm:flex-row sm:items-center justify-between bg-white rounded-xl p-4 gap-3">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center flex-shrink-0">
-                    <UserPlus className="w-5 h-5 text-blue-600" />
-                  </div>
-                  <div>
-                    <p className="text-sm font-semibold text-gray-900">
-                      {inv.inviteur?.prenom} {inv.inviteur?.nom} vous invite
-                    </p>
-                    <p className="text-xs text-gray-500">
-                      Tontine &laquo; {inv.tontine?.nom || 'Tontine'} &raquo;
-                      {inv.tontine?.montantCotisation ? ` · ${formatMontant(inv.tontine.montantCotisation, inv.tontine.devise)} / ${inv.tontine.frequence === 'mensuel' ? 'mois' : inv.tontine.frequence === 'hebdomadaire' ? 'sem.' : '2 sem.'}` : ''}
-                      {inv.tontine?.nombreMembres !== undefined ? ` · ${inv.tontine.nombreMembres}/${inv.tontine.membresMax} membres` : ''}
-                    </p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-2 ml-auto">
-                  <button
-                    onClick={async () => {
-                      const result = await refuserInvitation(inv.id);
-                      if (result.success) {
-                        showToast('info', 'Invitation refusée');
-                      } else {
-                        showToast('error', 'Erreur', result.error);
-                      }
-                    }}
-                    className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-medium text-gray-600 hover:bg-gray-100 border border-gray-200 transition-colors"
-                  >
-                    <XCircle className="w-4 h-4" />
-                    Refuser
-                  </button>
-                  <button
-                    onClick={async () => {
-                      const result = await accepterInvitation(inv.id);
-                      if (result.success) {
-                        showToast('success', 'Invitation acceptée !', 'Vous avez rejoint la tontine');
-                      } else {
-                        showToast('error', 'Erreur', result.error);
-                      }
-                    }}
-                    className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 transition-colors"
-                  >
-                    <CheckCircle2 className="w-4 h-4" />
-                    Accepter
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
-        <div className="stat-card">
-          <div className="w-14 h-14 bg-primary-100 rounded-2xl flex items-center justify-center flex-shrink-0">
-            <Users className="w-7 h-7 text-primary-600" />
-          </div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+        <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm flex items-start justify-between">
           <div>
-            <p className="text-sm text-gray-500 font-medium">Mes Tontines</p>
-            <p className="text-2xl font-bold text-gray-900">{mesTontines.length}</p>
-            <p className="text-xs text-primary-600 font-medium">{tontinesActives.length} actives</p>
+            <p className="text-sm font-medium text-gray-500">Mes Tontines</p>
+            <p className="text-2xl font-bold text-gray-900 mt-2">{mesTontines.length}</p>
+            <p className="text-xs text-green-600 font-medium mt-1">{tontinesActives.length} actives</p>
+          </div>
+          <div className="p-2.5 bg-gray-50 rounded-lg border border-gray-100">
+            <Users className="w-5 h-5 text-gray-600" />
           </div>
         </div>
 
-        <div className="stat-card">
-          <div className="w-14 h-14 bg-green-100 rounded-2xl flex items-center justify-center flex-shrink-0">
-            <CircleDollarSign className="w-7 h-7 text-green-600" />
-          </div>
+        <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm flex items-start justify-between">
           <div>
-            <p className="text-sm text-gray-500 font-medium">Total payé</p>
-            <p className="text-2xl font-bold text-gray-900">{formatMontant(totalPaye)}</p>
-            <p className="text-xs text-green-600 font-medium flex items-center gap-1">
-              <ArrowUpRight className="w-3 h-3" /> Confirmés
-            </p>
+            <p className="text-sm font-medium text-gray-500">Total payé</p>
+            <p className="text-2xl font-bold text-gray-900 mt-2">{formatMontant(totalPaye)}</p>
+            <p className="text-xs text-gray-400 font-medium mt-1">Depuis le début</p>
+          </div>
+          <div className="p-2.5 bg-gray-50 rounded-lg border border-gray-100">
+            <CheckCircle2 className="w-5 h-5 text-gray-600" />
           </div>
         </div>
 
-        <div className="stat-card">
-          <div className="w-14 h-14 bg-amber-100 rounded-2xl flex items-center justify-center flex-shrink-0">
-            <Clock className="w-7 h-7 text-amber-600" />
-          </div>
+        <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm flex items-start justify-between">
           <div>
-            <p className="text-sm text-gray-500 font-medium">En attente</p>
-            <p className="text-2xl font-bold text-gray-900">{paiementsEnAttente.length}</p>
-            <p className="text-xs text-amber-600 font-medium">paiements</p>
+            <p className="text-sm font-medium text-gray-500">En attente</p>
+            <p className="text-2xl font-bold text-gray-900 mt-2">{paiementsEnAttente.length}</p>
+            <p className="text-xs text-amber-600 font-medium mt-1">paiements à venir</p>
+          </div>
+          <div className="p-2.5 bg-gray-50 rounded-lg border border-gray-100">
+            <Clock className="w-5 h-5 text-gray-600" />
           </div>
         </div>
 
-        <div className="stat-card">
-          <div className="w-14 h-14 bg-blue-100 rounded-2xl flex items-center justify-center flex-shrink-0">
-            <TrendingUp className="w-7 h-7 text-blue-600" />
-          </div>
+        <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm flex items-start justify-between">
           <div>
-            <p className="text-sm text-gray-500 font-medium">Montant total</p>
-            <p className="text-2xl font-bold text-gray-900">{formatMontant(totalCotisations)}</p>
-            <p className="text-xs text-blue-600 font-medium">toutes tontines</p>
+            <p className="text-sm font-medium text-gray-500">Engagement total</p>
+            <p className="text-2xl font-bold text-gray-900 mt-2">{formatMontant(totalCotisations)}</p>
+            <p className="text-xs text-blue-600 font-medium mt-1">toutes tontines</p>
+          </div>
+          <div className="p-2.5 bg-gray-50 rounded-lg border border-gray-100">
+            <TrendingUp className="w-5 h-5 text-gray-600" />
           </div>
         </div>
       </div>
