@@ -585,7 +585,10 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
         .select()
         .single();
 
-      if (error) throw new Error("Erreur activation essai gratuit");
+      if (error) {
+        console.error("Supabase essai gratuit error:", error.message, error.code, error.details);
+        throw new Error(error.message || "Erreur activation essai gratuit");
+      }
 
       if (subData) {
         setAbonnement(rowToAbonnement(subData));
@@ -593,7 +596,8 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
 
       return { success: true };
     } catch (err) {
-      return { success: false, error: err instanceof Error ? err.message : "Erreur" };
+      console.error("activerEssaiGratuit error:", err);
+      return { success: false, error: err instanceof Error ? err.message : "Erreur inconnue" };
     }
   }, [user, abonnement, isAbonnementActif, supabase]);
 

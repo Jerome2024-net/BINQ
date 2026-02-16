@@ -260,7 +260,7 @@ create table if not exists public.ledger_entries (
 -- ========================
 -- 10. ABONNEMENTS
 -- ========================
-create type abonnement_statut as enum ('actif', 'expire', 'annule');
+create type abonnement_statut as enum ('actif', 'essai', 'expire', 'annule');
 
 create table if not exists public.abonnements (
   id uuid primary key default gen_random_uuid(),
