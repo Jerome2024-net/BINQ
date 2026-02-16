@@ -107,13 +107,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       });
 
       if (error) {
+        console.error("Supabase login error:", error.message, error.status);
         if (error.message.includes("Invalid login credentials")) {
           return { success: false, error: "Email ou mot de passe incorrect" };
         }
         if (error.message.includes("Email not confirmed")) {
-          return { success: false, error: "Veuillez confirmer votre email avant de vous connecter" };
+          return { success: false, error: "Veuillez confirmer votre email avant de vous connecter. Vérifiez votre boîte de réception et vos spams." };
         }
-        return { success: false, error: error.message };
+        if (error.message.includes("Invalid API key")) {
+          return { success: false, error: "Erreur de configuration serveur" };
+        }
+        return { success: false, error: `Erreur: ${error.message}` };
       }
 
       if (data.user) {
@@ -136,6 +140,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         return { success: false, error: "Le mot de passe doit contenir au moins 6 caractères" };
       }
 
+      const appUrl = process.env.NEXT_PUBLIC_APP_URL || window.location.origin;
+      
       const { data: authData, error } = await supabase.auth.signUp({
         email: data.email,
         password: data.password,
@@ -144,6 +150,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             nom: data.nom,
             prenom: data.prenom,
           },
+          emailRedirectTo: `${appUrl}/connexion`,
         },
       });
 
