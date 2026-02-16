@@ -65,7 +65,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setSession(newSession);
 
         if (event === "SIGNED_IN" && newSession?.user) {
-          await loadProfile(newSession.user.id);
+          // Ne recharger le profil que si pas déjà chargé (évite le double appel après login)
+          if (!user || user.id !== newSession.user.id) {
+            await loadProfile(newSession.user.id);
+          }
         } else if (event === "SIGNED_OUT") {
           setUser(null);
         }

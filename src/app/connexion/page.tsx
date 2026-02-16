@@ -28,6 +28,7 @@ function ConnexionForm() {
       const result = await login(email, password);
       if (result.success) {
         showToast("success", "Bienvenue !", "Connexion réussie");
+        router.refresh();
         router.push(redirect || "/dashboard");
       } else {
         setError(result.error || "Identifiants incorrects");

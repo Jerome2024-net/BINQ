@@ -30,8 +30,9 @@ export async function updateSession(request: NextRequest) {
     }
   );
 
-  // Rafraîchir la session (important pour garder la session active)
-  const { data: { user } } = await supabase.auth.getUser();
+  // Vérifier la session via getSession (plus rapide que getUser)
+  const { data: { session } } = await supabase.auth.getSession();
+  const user = session?.user ?? null;
 
   const pathname = request.nextUrl.pathname;
 
