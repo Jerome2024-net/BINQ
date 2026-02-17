@@ -67,12 +67,12 @@ export default function CreerTontinePage() {
   ];
 
   const CATEGORIE_OPTIONS = [
-    { value: "famille", label: "Famille", emoji: "👨‍👩‍👧‍👦" },
-    { value: "amis", label: "Amis", emoji: "🤝" },
-    { value: "collegues", label: "Travail", emoji: "💼" },
-    { value: "projet", label: "Projet", emoji: "🚀" },
-    { value: "communaute", label: "Communauté", emoji: "🌍" },
-    { value: "autre", label: "Autre", emoji: "⭐" },
+    { value: "famille", label: "Famille", emoji: "👨‍👩‍👧‍👦", desc: "Épargne familiale", gradient: "from-rose-500 to-pink-600", bg: "bg-rose-50", ring: "ring-rose-500", text: "text-rose-700" },
+    { value: "amis", label: "Amis", emoji: "🤝", desc: "Entre proches", gradient: "from-violet-500 to-purple-600", bg: "bg-violet-50", ring: "ring-violet-500", text: "text-violet-700" },
+    { value: "collegues", label: "Travail", emoji: "💼", desc: "Collègues & associés", gradient: "from-blue-500 to-indigo-600", bg: "bg-blue-50", ring: "ring-blue-500", text: "text-blue-700" },
+    { value: "projet", label: "Projet", emoji: "🚀", desc: "Objectif commun", gradient: "from-amber-500 to-orange-600", bg: "bg-amber-50", ring: "ring-amber-500", text: "text-amber-700" },
+    { value: "communaute", label: "Communauté", emoji: "🌍", desc: "Association & groupe", gradient: "from-emerald-500 to-teal-600", bg: "bg-emerald-50", ring: "ring-emerald-500", text: "text-emerald-700" },
+    { value: "autre", label: "Autre", emoji: "⭐", desc: "Personnalisé", gradient: "from-gray-500 to-slate-600", bg: "bg-gray-50", ring: "ring-gray-500", text: "text-gray-700" },
   ];
 
   const handleChange = (
@@ -326,23 +326,44 @@ export default function CreerTontinePage() {
                   Catégorie
                 </label>
                 <div className="grid grid-cols-2 lg:grid-cols-3 gap-3">
-                  {CATEGORIE_OPTIONS.map((cat) => (
-                    <button
-                      key={cat.value}
-                      type="button"
-                      onClick={() => setFormData({ ...formData, categorie: cat.value })}
-                      className={`relative group flex items-center p-3 rounded-xl border transition-all duration-200 text-left ${
-                        formData.categorie === cat.value
-                          ? "bg-gray-900 border-gray-900 text-white shadow-lg"
-                          : "bg-white border-gray-200 text-gray-600 hover:border-gray-300 hover:bg-gray-50"
-                      }`}
-                    >
-                      <span className="text-2xl mr-3">{cat.emoji}</span>
-                      <span className={`text-sm font-medium ${formData.categorie === cat.value ? "text-white" : "text-gray-900"}`}>
-                        {cat.label}
-                      </span>
-                    </button>
-                  ))}
+                  {CATEGORIE_OPTIONS.map((cat) => {
+                    const selected = formData.categorie === cat.value;
+                    return (
+                      <button
+                        key={cat.value}
+                        type="button"
+                        onClick={() => setFormData({ ...formData, categorie: cat.value })}
+                        className={`relative group flex flex-col items-center p-4 rounded-2xl border-2 transition-all duration-300 text-center ${
+                          selected
+                            ? `${cat.bg} ${cat.ring} ring-1 border-transparent shadow-lg scale-[1.02]`
+                            : "bg-white border-gray-100 hover:border-gray-200 hover:shadow-md hover:scale-[1.01]"
+                        }`}
+                      >
+                        <div className={`w-12 h-12 rounded-xl flex items-center justify-center text-2xl mb-2.5 transition-all duration-300 ${
+                          selected
+                            ? `bg-gradient-to-br ${cat.gradient} shadow-md`
+                            : "bg-gray-100 group-hover:bg-gray-200"
+                        }`}>
+                          <span className={selected ? "drop-shadow-sm" : ""}>{cat.emoji}</span>
+                        </div>
+                        <span className={`text-sm font-semibold transition-colors ${
+                          selected ? cat.text : "text-gray-900"
+                        }`}>
+                          {cat.label}
+                        </span>
+                        <span className={`text-[11px] mt-0.5 transition-colors ${
+                          selected ? cat.text + " opacity-70" : "text-gray-400"
+                        }`}>
+                          {cat.desc}
+                        </span>
+                        {selected && (
+                          <div className={`absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-gradient-to-br ${cat.gradient} flex items-center justify-center shadow-md`}>
+                            <CheckCircle2 className="w-3.5 h-3.5 text-white" />
+                          </div>
+                        )}
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
 
