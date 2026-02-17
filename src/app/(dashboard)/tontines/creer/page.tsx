@@ -325,7 +325,7 @@ export default function CreerTontinePage() {
                 <label className="block text-sm font-bold text-gray-900 mb-4">
                   Catégorie
                 </label>
-                <div className="grid grid-cols-2 lg:grid-cols-3 gap-3">
+                <div className="grid grid-cols-3 sm:grid-cols-3 lg:grid-cols-3 gap-2 sm:gap-3">
                   {CATEGORIE_OPTIONS.map((cat) => {
                     const selected = formData.categorie === cat.value;
                     return (
@@ -333,32 +333,32 @@ export default function CreerTontinePage() {
                         key={cat.value}
                         type="button"
                         onClick={() => setFormData({ ...formData, categorie: cat.value })}
-                        className={`relative group flex flex-col items-center p-4 rounded-2xl border-2 transition-all duration-300 text-center ${
+                        className={`relative group flex flex-col items-center p-2.5 sm:p-4 rounded-xl sm:rounded-2xl border-2 transition-all duration-300 text-center ${
                           selected
                             ? `${cat.bg} ${cat.ring} ring-1 border-transparent shadow-lg scale-[1.02]`
                             : "bg-white border-gray-100 hover:border-gray-200 hover:shadow-md hover:scale-[1.01]"
                         }`}
                       >
-                        <div className={`w-12 h-12 rounded-xl flex items-center justify-center text-2xl mb-2.5 transition-all duration-300 ${
+                        <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-lg sm:rounded-xl flex items-center justify-center text-xl sm:text-2xl mb-1.5 sm:mb-2.5 transition-all duration-300 ${
                           selected
                             ? `bg-gradient-to-br ${cat.gradient} shadow-md`
                             : "bg-gray-100 group-hover:bg-gray-200"
                         }`}>
                           <span className={selected ? "drop-shadow-sm" : ""}>{cat.emoji}</span>
                         </div>
-                        <span className={`text-sm font-semibold transition-colors ${
+                        <span className={`text-xs sm:text-sm font-semibold transition-colors ${
                           selected ? cat.text : "text-gray-900"
                         }`}>
                           {cat.label}
                         </span>
-                        <span className={`text-[11px] mt-0.5 transition-colors ${
+                        <span className={`text-[10px] sm:text-[11px] mt-0.5 transition-colors hidden sm:block ${
                           selected ? cat.text + " opacity-70" : "text-gray-400"
                         }`}>
                           {cat.desc}
                         </span>
                         {selected && (
-                          <div className={`absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-gradient-to-br ${cat.gradient} flex items-center justify-center shadow-md`}>
-                            <CheckCircle2 className="w-3.5 h-3.5 text-white" />
+                          <div className={`absolute -top-1 -right-1 sm:-top-1.5 sm:-right-1.5 w-4 h-4 sm:w-5 sm:h-5 rounded-full bg-gradient-to-br ${cat.gradient} flex items-center justify-center shadow-md`}>
+                            <CheckCircle2 className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-white" />
                           </div>
                         )}
                       </button>
