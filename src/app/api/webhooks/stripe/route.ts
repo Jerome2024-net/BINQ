@@ -194,20 +194,45 @@ export async function POST(request: Request) {
         console.log(`📋 Abonnement créé: ${sub.id}`);
 
         if (subMeta?.userId) {
+          const periodStart = new Date((sub as unknown as Record<string, number>).current_period_start * 1000);
+          const periodEnd = new Date((sub as unknown as Record<string, number>).current_period_end * 1000);
           await supabaseAdmin.from("abonnements").upsert(
             {
               user_id: subMeta.userId,
-              type: "organisateur",
-              statut: "actif",
-              prix: 15,
+              plan: "annuel",
+              montant: 180,
               devise: "EUR",
-              stripe_subscription_id: sub.id,
-              date_debut: new Date((sub as unknown as Record<string, unknown>).current_period_start as number * 1000).toISOString(),
-              date_fin: new Date((sub as unknown as Record<string, unknown>).current_period_end as number * 1000).toISOString(),
+              statut: "actif",
+              date_debut: periodStart.toISOString(),
+              date_expiration: periodEnd.toISOString(),
               renouvellement_auto: true,
+              reference: `STR-SUB-${sub.id.slice(-8).toUpperCase()}`,
+              stripe_subscription_id: sub.id,
             },
             { onConflict: "user_id" }
           );
+        }
+        break;
+      }
+
+      case "customer.subscription.updated": {
+        const updatedSub = event.data.object as Stripe.Subscription;
+        const updMeta = updatedSub.metadata;
+        console.log(`🔄 Abonnement mis à jour: ${updatedSub.id} — statut: ${updatedSub.status}`);
+
+        if (updMeta?.userId) {
+          const periodEnd = new Date((updatedSub as unknown as Record<string, number>).current_period_end * 1000);
+          const stripeStatus = updatedSub.status;
+          const appStatus = stripeStatus === "active" ? "actif" : stripeStatus === "canceled" ? "annule" : "expire";
+
+          await supabaseAdmin
+            .from("abonnements")
+            .update({
+              statut: appStatus,
+              date_expiration: periodEnd.toISOString(),
+              renouvellement_auto: !updatedSub.cancel_at_period_end,
+            })
+            .eq("stripe_subscription_id", updatedSub.id);
         }
         break;
       }
@@ -226,24 +251,67 @@ export async function POST(request: Request) {
       case "checkout.session.completed": {
         const session = event.data.object as Stripe.Checkout.Session;
         const sessMeta = session.metadata;
-        console.log(`🛒 Checkout terminé: ${session.id}`);
+        console.log(`🛒 Checkout terminé: ${session.id} — mode: ${session.mode}`);
 
         // Activer l'abonnement si c'est un checkout d'abonnement
         if (sessMeta?.type === "abonnement_organisateur" && sessMeta?.userId) {
+          const now = new Date();
+          const expiration = new Date(now);
+          expiration.setFullYear(expiration.getFullYear() + 1);
+
           await supabaseAdmin.from("abonnements").upsert(
             {
               user_id: sessMeta.userId,
-              type: "organisateur",
-              statut: "actif",
-              prix: 180,
+              plan: "annuel",
+              montant: 180,
               devise: "EUR",
-              stripe_session_id: session.id,
-              date_debut: new Date().toISOString(),
-              date_fin: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString(),
+              statut: "actif",
+              date_debut: now.toISOString(),
+              date_expiration: expiration.toISOString(),
               renouvellement_auto: true,
+              reference: `STR-CHK-${session.id.slice(-8).toUpperCase()}`,
+              stripe_session_id: session.id,
+              stripe_subscription_id: (session as unknown as Record<string, string>).subscription || null,
             },
             { onConflict: "user_id" }
           );
+        }
+        break;
+      }
+
+      case "invoice.payment_succeeded": {
+        const invoice = event.data.object as Stripe.Invoice;
+        console.log(`💳 Facture payée: ${invoice.id}`);
+
+        // Renouvellement automatique : mettre à jour la date d'expiration
+        const invoiceAny = invoice as unknown as Record<string, unknown>;
+        const invoiceSubId = invoiceAny.subscription as string | undefined;
+        if (invoiceSubId) {
+          const periodEnd = invoice.lines?.data?.[0]?.period?.end;
+          if (periodEnd) {
+            await supabaseAdmin
+              .from("abonnements")
+              .update({
+                statut: "actif",
+                date_expiration: new Date(periodEnd * 1000).toISOString(),
+              })
+              .eq("stripe_subscription_id", invoiceSubId);
+          }
+        }
+        break;
+      }
+
+      case "invoice.payment_failed": {
+        const failedInvoice = event.data.object as Stripe.Invoice;
+        console.log(`❌ Facture impayée: ${failedInvoice.id}`);
+
+        const failedInvoiceAny = failedInvoice as unknown as Record<string, unknown>;
+        const failedSubId = failedInvoiceAny.subscription as string | undefined;
+        if (failedSubId) {
+          await supabaseAdmin
+            .from("abonnements")
+            .update({ statut: "expire" })
+            .eq("stripe_subscription_id", failedSubId);
         }
         break;
       }

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { useSearchParams, useRouter } from "next/navigation";
 import { useFinance } from "@/contexts/FinanceContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/contexts/ToastContext";
@@ -49,13 +50,35 @@ export default function PortefeuillePage() {
     isAbonnementActif,
     isEssaiGratuit,
     getJoursRestantsAbonnement,
+    rafraichirAbonnement,
   } = useFinance();
   const { showToast } = useToast();
+  const searchParams = useSearchParams();
+  const router = useRouter();
 
   const [showSolde, setShowSolde] = useState(true);
   const [modalOpen, setModalOpen] = useState(false);
   const [modalMode, setModalMode] = useState<"depot" | "retrait">("depot");
   const [subscriptionModalOpen, setSubscriptionModalOpen] = useState(false);
+
+  // Gérer le retour de Stripe Checkout
+  useEffect(() => {
+    const subscriptionStatus = searchParams.get("subscription");
+    if (subscriptionStatus === "success") {
+      showToast("success", "Paiement réussi ! 🎉", "Votre abonnement organisateur est maintenant actif");
+      // Rafraîchir l'abonnement depuis Supabase (le webhook l'a activé)
+      const timer = setTimeout(() => {
+        rafraichirAbonnement();
+      }, 2000);
+      // Nettoyer l'URL
+      router.replace("/portefeuille");
+      return () => clearTimeout(timer);
+    } else if (subscriptionStatus === "cancelled") {
+      showToast("info", "Paiement annulé", "Vous pouvez réessayer à tout moment");
+      router.replace("/portefeuille");
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams]);
 
   // S'assurer que le wallet existe
   useEffect(() => {

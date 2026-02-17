@@ -35,11 +35,11 @@ const avantages = [
 ];
 
 export default function SubscriptionModal({ isOpen, onClose }: SubscriptionModalProps) {
-  const { activerEssaiGratuit, souscrireAbonnement, getFraisConfig, wallet, abonnement, isEssaiGratuit } = useFinance();
+  const { activerEssaiGratuit, souscrireAbonnement, souscrireAbonnementStripe, getFraisConfig, wallet, abonnement, isEssaiGratuit } = useFinance();
   const { showToast } = useToast();
   const [step, setStep] = useState<"info" | "confirm" | "processing" | "done" | "error">("info");
   const [errorMsg, setErrorMsg] = useState("");
-  const [mode, setMode] = useState<"essai" | "payant">("essai");
+  const [mode, setMode] = useState<"essai" | "payant" | "stripe">("essai");
 
   if (!isOpen) return null;
 
@@ -91,6 +91,20 @@ export default function SubscriptionModal({ isOpen, onClose }: SubscriptionModal
       }, 2500);
     } else {
       setErrorMsg(result.error || "Erreur lors de la souscription");
+      setStep("error");
+    }
+  };
+
+  const handlePayerParCarte = async () => {
+    setMode("stripe");
+    setStep("processing");
+
+    const result = await souscrireAbonnementStripe();
+    if (result.success && result.url) {
+      // Redirect to Stripe Checkout
+      window.location.href = result.url;
+    } else {
+      setErrorMsg(result.error || "Erreur lors de la redirection vers Stripe");
       setStep("error");
     }
   };
@@ -166,7 +180,7 @@ export default function SubscriptionModal({ isOpen, onClose }: SubscriptionModal
               </div>
               <p className="text-gray-900 font-semibold text-lg">Activation en cours...</p>
               <p className="text-sm text-gray-500 mt-2">
-                {mode === "essai" ? "Activation de votre essai gratuit" : "Configuration de votre abonnement organisateur"}
+                {mode === "essai" ? "Activation de votre essai gratuit" : mode === "stripe" ? "Redirection vers Stripe..." : "Configuration de votre abonnement organisateur"}
               </p>
               <div className="mt-4 flex items-center justify-center gap-1.5">
                 <div className="w-2 h-2 rounded-full bg-purple-600 animate-pulse"></div>
@@ -287,23 +301,50 @@ export default function SubscriptionModal({ isOpen, onClose }: SubscriptionModal
 
                 {/* Solde info pour plan payant */}
                 {(dejaEuEssai || enEssai) && (
-                  <div className={`rounded-xl p-3 text-sm flex items-center gap-2 mt-4 ${soldeSuffisant ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700'}`}>
+                  <div className={`rounded-xl p-3 text-sm flex items-center gap-2 mt-4 ${soldeSuffisant ? 'bg-green-50 text-green-700' : 'bg-amber-50 text-amber-700'}`}>
                     <Wallet className="w-4 h-4 flex-shrink-0" />
                     <span>
                       Solde actuel : <strong>{formatMontant(solde)}</strong>
-                      {!soldeSuffisant && " — Solde insuffisant, déposez des fonds d'abord"}
+                      {!soldeSuffisant && " — Solde insuffisant pour payer via portefeuille"}
                     </span>
                   </div>
                 )}
 
-                {/* Bouton souscrire plan payant */}
-                <button
-                  onClick={handleSouscrire}
-                  className={`w-full flex items-center justify-center gap-2 bg-purple-600 text-white py-3.5 rounded-xl font-semibold hover:bg-purple-700 transition-colors mt-4 ${dejaEuEssai || enEssai ? 'text-lg' : 'text-base'}`}
-                >
-                  <CreditCard className="w-5 h-5" />
-                  {enEssai ? "Passer au plan annuel" : dejaEuEssai ? "Souscrire maintenant" : "Souscrire directement"}
-                </button>
+                {/* Boutons de paiement */}
+                <div className="space-y-3 mt-4">
+                  {/* Payer par carte Stripe — option principale */}
+                  <button
+                    onClick={handlePayerParCarte}
+                    className={`w-full flex items-center justify-center gap-2 bg-indigo-600 text-white py-3.5 rounded-xl font-semibold hover:bg-indigo-700 transition-colors ${dejaEuEssai || enEssai ? 'text-lg' : 'text-base'}`}
+                  >
+                    <CreditCard className="w-5 h-5" />
+                    Payer par carte bancaire
+                  </button>
+
+                  {/* Séparateur */}
+                  <div className="flex items-center gap-3">
+                    <div className="flex-1 border-t border-gray-200"></div>
+                    <span className="text-xs text-gray-400 font-medium">OU</span>
+                    <div className="flex-1 border-t border-gray-200"></div>
+                  </div>
+
+                  {/* Payer depuis le portefeuille */}
+                  <button
+                    onClick={handleSouscrire}
+                    disabled={!soldeSuffisant}
+                    className={`w-full flex items-center justify-center gap-2 py-3 rounded-xl font-semibold transition-colors border-2 ${
+                      soldeSuffisant
+                        ? 'border-purple-200 bg-purple-50 text-purple-700 hover:bg-purple-100'
+                        : 'border-gray-200 bg-gray-50 text-gray-400 cursor-not-allowed'
+                    }`}
+                  >
+                    <Wallet className="w-5 h-5" />
+                    {soldeSuffisant
+                      ? `Payer avec mon portefeuille (${formatMontant(solde)})`
+                      : `Solde insuffisant (${formatMontant(solde)})`
+                    }
+                  </button>
+                </div>
               </div>
 
               {/* Sécurité */}

@@ -68,12 +68,19 @@ export async function POST(request: Request) {
       payment_method_types: ["card"],
       line_items: [{ price: price.id, quantity: 1 }],
       mode: "subscription",
-      success_url: `${appUrl}/portefeuille?subscription=success`,
+      success_url: `${appUrl}/portefeuille?subscription=success&session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${appUrl}/portefeuille?subscription=cancelled`,
       metadata: {
         userId: user.id,
         type: "abonnement_organisateur",
         app: "binq",
+      },
+      subscription_data: {
+        metadata: {
+          userId: user.id,
+          type: "abonnement_organisateur",
+          app: "binq",
+        },
       },
     });
 

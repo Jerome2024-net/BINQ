@@ -40,6 +40,8 @@ interface FinanceContextType {
   abonnement: Abonnement | null;
   activerEssaiGratuit: () => Promise<{ success: boolean; error?: string }>;
   souscrireAbonnement: () => Promise<{ success: boolean; transaction?: Transaction; error?: string }>;
+  souscrireAbonnementStripe: () => Promise<{ success: boolean; url?: string; error?: string }>;
+  rafraichirAbonnement: () => Promise<void>;
   isAbonnementActif: () => boolean;
   isEssaiGratuit: () => boolean;
   getJoursRestantsAbonnement: () => number;
@@ -663,6 +665,43 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
   }, [user, getOrCreateWallet, updateWalletBalance, createTransaction, createLedgerEntries, isAbonnementActif, supabase]);
 
   // ========================
+  // Stripe Checkout abonnement
+  // ========================
+  const souscrireAbonnementStripe = useCallback(async (): Promise<{ success: boolean; url?: string; error?: string }> => {
+    if (!user) return { success: false, error: "Non connecté" };
+
+    if (isAbonnementActif()) {
+      return { success: false, error: "Vous avez déjà un abonnement actif" };
+    }
+
+    try {
+      const res = await fetch("/api/stripe/create-subscription", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+      });
+
+      const data = await res.json();
+
+      if (!res.ok || !data.url) {
+        return { success: false, error: data.error || "Erreur lors de la création de la session Stripe" };
+      }
+
+      return { success: true, url: data.url };
+    } catch (err) {
+      return { success: false, error: err instanceof Error ? err.message : "Erreur réseau" };
+    }
+  }, [user, isAbonnementActif]);
+
+  // ========================
+  // Rafraîchir l'abonnement depuis Supabase
+  // ========================
+  const rafraichirAbonnement = useCallback(async () => {
+    if (!user) return;
+    const { data } = await supabase.from("abonnements").select("*").eq("user_id", user.id).single();
+    if (data) setAbonnement(rowToAbonnement(data));
+  }, [user, supabase]);
+
+  // ========================
   // Consultation
   // ========================
   const getTransactions = useCallback(
@@ -732,6 +771,8 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
         abonnement,
         activerEssaiGratuit,
         souscrireAbonnement,
+        souscrireAbonnementStripe,
+        rafraichirAbonnement,
         isAbonnementActif,
         isEssaiGratuit,
         getJoursRestantsAbonnement,
