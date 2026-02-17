@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { stripe } from "@/lib/stripe";
+import { getStripe } from "@/lib/stripe";
 import { getAuthenticatedUser } from "@/lib/api-auth";
 
 /**
@@ -20,6 +20,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "accountId requis" }, { status: 400 });
     }
 
+    const stripe = getStripe();
     const account = await stripe.accounts.retrieve(accountId);
 
     // Récupérer le solde du compte Connect

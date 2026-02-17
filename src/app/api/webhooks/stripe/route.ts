@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { stripe } from "@/lib/stripe";
+import { getStripe } from "@/lib/stripe";
 import { createClient } from "@supabase/supabase-js";
 import Stripe from "stripe";
 
@@ -24,6 +24,8 @@ export async function POST(request: Request) {
 
     // Vérifier la signature du webhook (OBLIGATOIRE en production)
     const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
+
+    const stripe = getStripe();
 
     if (webhookSecret && signature) {
       try {

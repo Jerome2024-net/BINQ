@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { stripe } from "@/lib/stripe";
+import { getStripe } from "@/lib/stripe";
 import { getAuthenticatedUser } from "@/lib/api-auth";
 
 /**
@@ -31,6 +31,7 @@ export async function POST(request: Request) {
     const amountInCents = Math.round(amount * 100);
 
     // Vérifier que le compte destination est actif
+    const stripe = getStripe();
     const account = await stripe.accounts.retrieve(destinationAccountId);
     if (!account.charges_enabled || !account.payouts_enabled) {
       return NextResponse.json(

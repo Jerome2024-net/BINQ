@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { stripe } from "@/lib/stripe";
+import { getStripe } from "@/lib/stripe";
 import { getAuthenticatedUser } from "@/lib/api-auth";
 
 /**
@@ -31,6 +31,7 @@ export async function POST(request: Request) {
     const finalCountry = supportedCountries.includes(userCountry) ? userCountry : "FR";
 
     // Créer un compte Express (le plus simple pour les utilisateurs)
+    const stripe = getStripe();
     const account = await stripe.accounts.create({
       type: "express",
       country: finalCountry,

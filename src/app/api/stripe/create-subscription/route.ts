@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { stripe } from "@/lib/stripe";
+import { getStripe } from "@/lib/stripe";
 import { getAuthenticatedUser } from "@/lib/api-auth";
 
 /**
@@ -21,6 +21,7 @@ export async function POST(request: Request) {
     }
 
     // Chercher ou créer le client Stripe
+    const stripe = getStripe();
     const customers = await stripe.customers.list({ email, limit: 1 });
     let customer = customers.data[0];
 

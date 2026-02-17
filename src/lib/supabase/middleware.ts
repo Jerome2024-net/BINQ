@@ -30,9 +30,9 @@ export async function updateSession(request: NextRequest) {
     }
   );
 
-  // Vérifier la session via getSession (plus rapide que getUser)
-  const { data: { session } } = await supabase.auth.getSession();
-  const user = session?.user ?? null;
+  // Utiliser getUser() au lieu de getSession() — plus sécurisé côté serveur
+  // getSession() peut être altéré côté client, getUser() valide auprès du serveur Supabase
+  const { data: { user } } = await supabase.auth.getUser();
 
   const pathname = request.nextUrl.pathname;
 

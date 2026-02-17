@@ -1,6 +1,6 @@
 "use client";
 
-import React, { createContext, useContext, useState, useEffect, useCallback } from "react";
+import React, { createContext, useContext, useState, useEffect, useCallback, useRef } from "react";
 import { User, profileToUser, userToProfileUpdate } from "@/types";
 import { createClient } from "@/lib/supabase/client";
 import type { Session, AuthChangeEvent } from "@supabase/supabase-js";
@@ -31,11 +31,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const profileLoadedRef = useRef(false);
+  const mountedRef = useRef(true);
 
   const supabase = createClient();
 
   // Charger la session au démarrage + écouter les changements d'auth
   useEffect(() => {
+    mountedRef.current = true;
+
     // Récupérer la session initiale
     const initSession = async () => {
       try {
@@ -43,15 +47,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           data: { session: currentSession },
         } = await supabase.auth.getSession();
 
+        if (!mountedRef.current) return;
         setSession(currentSession);
 
         if (currentSession?.user) {
           await loadProfile(currentSession.user.id);
+          profileLoadedRef.current = true;
         }
       } catch (e) {
         console.warn("Auth init error (non-blocking):", e);
       } finally {
-        setIsLoading(false);
+        if (mountedRef.current) {
+          setIsLoading(false);
+        }
       }
     };
 
@@ -61,16 +69,22 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(async (event: AuthChangeEvent, newSession: Session | null) => {
+      if (!mountedRef.current) return;
+
       try {
         setSession(newSession);
 
         if (event === "SIGNED_IN" && newSession?.user) {
-          // Ne recharger le profil que si pas déjà chargé (évite le double appel après login)
-          if (!user || user.id !== newSession.user.id) {
+          // Ne recharger le profil que si pas déjà chargé par login() ou initSession()
+          if (!profileLoadedRef.current) {
             await loadProfile(newSession.user.id);
+            profileLoadedRef.current = true;
           }
         } else if (event === "SIGNED_OUT") {
           setUser(null);
+          profileLoadedRef.current = false;
+        } else if (event === "TOKEN_REFRESHED") {
+          // Token refresh silencieux — pas besoin de recharger le profil
         }
       } catch (e) {
         console.warn("Auth state change error:", e);
@@ -78,6 +92,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     });
 
     return () => {
+      mountedRef.current = false;
       subscription.unsubscribe();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -122,6 +137,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
       if (data.user) {
         await loadProfile(data.user.id);
+        profileLoadedRef.current = true;
       }
 
       return { success: true };
@@ -197,6 +213,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     await supabase.auth.signOut();
     setUser(null);
     setSession(null);
+    profileLoadedRef.current = false;
     window.location.href = "/connexion";
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

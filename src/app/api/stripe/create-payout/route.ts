@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { stripe } from "@/lib/stripe";
+import { getStripe } from "@/lib/stripe";
 import { getAuthenticatedUser } from "@/lib/api-auth";
 
 /**
@@ -28,6 +28,7 @@ export async function POST(request: Request) {
     const amountInCents = Math.round(amount * 100);
 
     // Vérifier le solde disponible sur le compte Connect
+    const stripe = getStripe();
     const balance = await stripe.balance.retrieve({ stripeAccount: accountId });
     const availableAmount = balance.available.reduce((sum, b) => sum + b.amount, 0);
 
