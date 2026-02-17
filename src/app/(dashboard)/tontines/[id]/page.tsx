@@ -415,7 +415,7 @@ export default function TontineDetailPage({
               <div key={membre.id} className="relative group">
                 <ParticipantProfileCard membre={membre} tontine={tontine} />
                 {isOrganisateur && membre.role !== "organisateur" && membre.statut !== "exclu" && tontine.statut === "active" && (
-                  <div className="absolute top-3 right-3 flex gap-1 opacity-0 group-hover:opacity-100 transition-all">
+                  <div className="absolute top-3 right-3 flex gap-1 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-all">
                     {tourEnCours && tourEnCours.paiements.some(p => (p.membre.id === membre.user.id || p.membre.email === membre.user.email) && p.statut === "en_attente") && (
                       <button
                         onClick={(e) => {

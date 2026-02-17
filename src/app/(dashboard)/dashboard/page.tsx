@@ -227,22 +227,22 @@ export default function DashboardPage() {
       <Link href="/portefeuille" className="block mb-8">
         <div className="relative overflow-hidden bg-gray-900 rounded-xl p-6 text-white shadow-lg shadow-gray-200/50 transition-transform active:scale-[0.99]">
           <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none"></div>
-          <div className="relative z-10 flex items-center justify-between">
-            <div className="flex items-center gap-5">
+          <div className="relative z-10 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex items-center gap-3 sm:gap-5">
               <div className="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center border border-white/10">
                 <Wallet className="w-6 h-6 text-white" />
               </div>
               <div>
                 <p className="text-sm font-medium text-gray-400">Solde disponible</p>
                 <div className="flex items-baseline gap-2">
-                  <p className="text-3xl font-bold tracking-tight text-white">{formatMontant(wallet?.solde || 0)}</p>
+                  <p className="text-2xl sm:text-3xl font-bold tracking-tight text-white">{formatMontant(wallet?.solde || 0)}</p>
                   <span className="text-sm font-medium text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">
                     +0%
                   </span>
                 </div>
               </div>
             </div>
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-3 w-full sm:w-auto">
               <div className="hidden sm:flex items-center gap-2 text-sm font-medium text-gray-300 mr-4">
                 <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
                 Portefeuille actif

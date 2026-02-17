@@ -260,7 +260,7 @@ export default function PortefeuillePage() {
               )}
             </div>
           </div>
-          <div className="text-right">
+          <div className="text-center sm:text-right w-full sm:w-auto">
             {!isAbonnementActif() ? (
               <div>
                 <p className="text-lg font-bold text-emerald-600">🎁 Essai gratuit 90j</p>
@@ -295,7 +295,7 @@ export default function PortefeuillePage() {
         </div>
         {!isAbonnementActif() && (
           <div className="mt-4 pt-4 border-t border-amber-200">
-            <div className="flex flex-wrap gap-4 text-sm text-gray-600">
+            <div className="flex flex-wrap gap-2 sm:gap-4 text-xs sm:text-sm text-gray-600">
               <span className="flex items-center gap-1.5">✅ Créer des tontines illimitées</span>
               <span className="flex items-center gap-1.5">✅ Gérer les membres</span>
               <span className="flex items-center gap-1.5">✅ Démarrer et suivre les tours</span>

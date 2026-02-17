@@ -112,17 +112,17 @@ export default function ExplorerPage() {
             </div>
           </div>
 
-          <div className="grid grid-cols-3 gap-4 mt-6">
-            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-3 text-center">
-              <p className="text-2xl font-bold">{tontinesDisponibles.length}</p>
+          <div className="grid grid-cols-3 gap-2 sm:gap-4 mt-6">
+            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-2 sm:p-3 text-center">
+              <p className="text-xl sm:text-2xl font-bold">{tontinesDisponibles.length}</p>
               <p className="text-xs text-blue-200">Disponibles</p>
             </div>
-            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-3 text-center">
-              <p className="text-2xl font-bold">{tontines.length}</p>
+            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-2 sm:p-3 text-center">
+              <p className="text-xl sm:text-2xl font-bold">{tontines.length}</p>
               <p className="text-xs text-blue-200">Total</p>
             </div>
-            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-3 text-center">
-              <p className="text-2xl font-bold">{mesTontines.length}</p>
+            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-2 sm:p-3 text-center">
+              <p className="text-xl sm:text-2xl font-bold">{mesTontines.length}</p>
               <p className="text-xs text-blue-200">Mes tontines</p>
             </div>
           </div>

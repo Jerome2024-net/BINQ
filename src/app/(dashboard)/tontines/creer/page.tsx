@@ -594,7 +594,7 @@ export default function CreerTontinePage() {
               <span className="text-2xl">{formData.emoji}</span>
               Aperçu de votre tontine
             </h3>
-            <div className="grid grid-cols-2 gap-4 text-sm">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-4 text-sm">
               <div>
                 <span className="text-primary-600">Nom:</span>{" "}
                 <span className="font-semibold text-primary-900">{formData.nom}</span>
@@ -631,7 +631,7 @@ export default function CreerTontinePage() {
                   {formData.visibilite === "publique" ? "Publique" : "Privée"}
                 </span>
               </div>
-              <div className="col-span-2">
+              <div className="sm:col-span-2">
                 <span className="text-primary-600">Cagnotte par tour:</span>{" "}
                 <span className="font-semibold text-primary-900">
                   {(

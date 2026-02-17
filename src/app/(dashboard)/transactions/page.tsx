@@ -162,17 +162,19 @@ export default function TransactionsPage() {
           </h1>
           <p className="text-gray-500 mt-1">Historique complet de vos opérations financières</p>
         </div>
-        <div className="flex gap-3">
+        <div className="flex flex-wrap gap-2 sm:gap-3">
           <button
             onClick={() => setShowLedger(!showLedger)}
-            className={`btn-secondary flex items-center gap-2 ${showLedger ? "!bg-primary-50 !text-primary-700 !border-primary-300" : ""}`}
+            className={`btn-secondary flex items-center gap-2 text-sm ${showLedger ? "!bg-primary-50 !text-primary-700 !border-primary-300" : ""}`}
           >
             <FileText className="w-4 h-4" />
-            Grand livre
+            <span className="hidden sm:inline">Grand livre</span>
+            <span className="sm:hidden">Livre</span>
           </button>
-          <button onClick={exportCSV} className="btn-secondary flex items-center gap-2">
+          <button onClick={exportCSV} className="btn-secondary flex items-center gap-2 text-sm">
             <Download className="w-4 h-4" />
-            Exporter CSV
+            <span className="hidden sm:inline">Exporter CSV</span>
+            <span className="sm:hidden">Export</span>
           </button>
         </div>
       </div>
@@ -357,9 +359,9 @@ export default function TransactionsPage() {
 
                 {/* Détails expandés */}
                 {expandedTx === tx.id && (
-                  <div className="px-4 pb-4 ml-16">
-                    <div className="bg-gray-50 rounded-xl p-4 space-y-2 text-sm">
-                      <div className="grid grid-cols-2 gap-4">
+                  <div className="px-4 pb-4 ml-0 sm:ml-16">
+                    <div className="bg-gray-50 rounded-xl p-3 sm:p-4 space-y-2 text-sm">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                         <div>
                           <p className="text-gray-500">Référence</p>
                           <p className="font-mono font-medium text-gray-900">{tx.reference}</p>
