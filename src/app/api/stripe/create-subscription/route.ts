@@ -13,8 +13,17 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Non authentifié" }, { status: 401 });
     }
 
-    const body = await request.json();
-    const { email } = body;
+    let email: string | undefined;
+    try {
+      const body = await request.json();
+      email = body.email;
+    } catch {
+      // body vide, on utilise l'email de l'utilisateur authentifié
+    }
+
+    if (!email) {
+      email = user.email;
+    }
 
     if (!email) {
       return NextResponse.json({ error: "Email requis" }, { status: 400 });

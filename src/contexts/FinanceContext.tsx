@@ -679,6 +679,7 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
       const res = await fetch("/api/stripe/create-subscription", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: user.email }),
       });
 
       const data = await res.json();
