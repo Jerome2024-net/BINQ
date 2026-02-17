@@ -28,8 +28,10 @@ function ConnexionForm() {
       const result = await login(email, password);
       if (result.success) {
         showToast("success", "Bienvenue !", "Connexion réussie");
-        router.refresh();
-        router.push(redirect || "/dashboard");
+        // Hard redirect to ensure cookies are sent with the request
+        // router.push() does client-side nav which may miss new auth cookies
+        window.location.href = redirect || "/dashboard";
+        return;
       } else {
         setError(result.error || "Identifiants incorrects");
       }
