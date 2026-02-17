@@ -670,7 +670,8 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
   const souscrireAbonnementStripe = useCallback(async (): Promise<{ success: boolean; url?: string; error?: string }> => {
     if (!user) return { success: false, error: "Non connecté" };
 
-    if (isAbonnementActif()) {
+    // Autoriser l'upgrade depuis un essai gratuit, bloquer seulement si déjà abonné payant
+    if (isAbonnementActif() && !isEssaiGratuit()) {
       return { success: false, error: "Vous avez déjà un abonnement actif" };
     }
 
@@ -690,7 +691,7 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
     } catch (err) {
       return { success: false, error: err instanceof Error ? err.message : "Erreur réseau" };
     }
-  }, [user, isAbonnementActif]);
+  }, [user, isAbonnementActif, isEssaiGratuit]);
 
   // ========================
   // Rafraîchir l'abonnement depuis Supabase
