@@ -135,6 +135,14 @@ html {
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(-6px); }
 }
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+@keyframes pulse-soft {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
 
 .animate-slide-in {
   animation: slide-in 0.3s ease-out;
@@ -144,6 +152,21 @@ html {
 }
 .animate-float {
   animation: float 3s ease-in-out infinite;
+}
+
+/* Skeleton loader */
+.skeleton {
+  position: relative;
+  overflow: hidden;
+  background: #f1f5f9;
+  border-radius: 8px;
+}
+.skeleton::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent 25%, rgba(255,255,255,0.5) 50%, transparent 75%);
+  animation: shimmer 1.5s infinite;
 }
 
 /* Stagger children animations */
