@@ -55,6 +55,12 @@ export interface Tontine {
   organisateurId: string;
   membres: Membre[];
   tours: Tour[];
+  // Profil visuel
+  emoji?: string;
+  couleur?: string;
+  categorie?: "famille" | "amis" | "collegues" | "communaute" | "autre";
+  visibilite?: "publique" | "privee";
+  image?: string;
   // Annulation
   motifAnnulation?: string;
   defaillantId?: string;

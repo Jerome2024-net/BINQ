@@ -1,9 +1,12 @@
 "use client";
 
+import { useState } from "react";
+import Image from "next/image";
 import { Tontine } from "@/types";
 import Avatar from "@/components/Avatar";
 import { AvatarGroup } from "@/components/Avatar";
 import { ConfianceBadge } from "@/components/MemberCard";
+import TontineImageUpload from "@/components/TontineImageUpload";
 import { formatMontant, formatDate, getStatutLabel, getStatutColor } from "@/lib/data";
 import {
   Users,
@@ -22,13 +25,37 @@ import {
   Globe,
   Info,
   XCircle,
+  Lock,
+  Tag,
 } from "lucide-react";
+
+// Couleur → gradient classes
+const COULEUR_GRADIENTS: Record<string, string> = {
+  emerald: "from-emerald-500 via-emerald-600 to-teal-700",
+  blue: "from-blue-500 via-blue-600 to-indigo-700",
+  purple: "from-purple-500 via-purple-600 to-violet-700",
+  orange: "from-orange-500 via-orange-600 to-red-600",
+  rose: "from-rose-500 via-rose-600 to-pink-700",
+  cyan: "from-cyan-500 via-cyan-600 to-teal-600",
+  amber: "from-amber-500 via-amber-600 to-yellow-700",
+  indigo: "from-indigo-500 via-indigo-600 to-blue-700",
+};
+
+const CATEGORIE_LABELS: Record<string, { label: string; emoji: string }> = {
+  famille: { label: "Famille", emoji: "👨‍👩‍👧‍👦" },
+  amis: { label: "Amis", emoji: "🤝" },
+  collegues: { label: "Collègues", emoji: "💼" },
+  communaute: { label: "Communauté", emoji: "🌍" },
+  autre: { label: "Autre", emoji: "⭐" },
+};
 
 interface TontineProfileCardProps {
   tontine: Tontine;
+  isOrganisateur?: boolean;
 }
 
-export default function TontineProfileCard({ tontine }: TontineProfileCardProps) {
+export default function TontineProfileCard({ tontine, isOrganisateur = false }: TontineProfileCardProps) {
+  const [tontineImage, setTontineImage] = useState(tontine.image || "");
   // Calculs financiers
   const cagnotteParTour = tontine.montantCotisation * Math.max(1, tontine.nombreMembres - 1);
   const totalPaiements = tontine.tours
@@ -69,10 +96,10 @@ export default function TontineProfileCard({ tontine }: TontineProfileCardProps)
   return (
     <div className="space-y-6">
       {/* Banner / Identity */}
-      <div className={`relative overflow-hidden rounded-2xl ${
+      <div className={`relative overflow-hidden rounded-2xl bg-gradient-to-br ${
         tontine.statut === "annulee"
-          ? "bg-gradient-to-br from-red-600 via-red-700 to-red-800"
-          : "bg-gradient-to-br from-primary-600 via-emerald-600 to-teal-700"
+          ? "from-red-600 via-red-700 to-red-800"
+          : COULEUR_GRADIENTS[tontine.couleur || "emerald"] || COULEUR_GRADIENTS.emerald
       }`}>
         {/* Pattern de fond */}
         <div className="absolute inset-0 opacity-10">
@@ -84,9 +111,31 @@ export default function TontineProfileCard({ tontine }: TontineProfileCardProps)
 
         <div className="relative p-6 md:p-8">
           <div className="flex flex-col md:flex-row md:items-start gap-6">
-            {/* Icon Tontine */}
-            <div className="w-20 h-20 bg-white/20 backdrop-blur rounded-2xl flex items-center justify-center flex-shrink-0">
-              <Users className="w-10 h-10 text-white" />
+            {/* Emoji / Avatar Tontine */}
+            <div className="w-20 h-20 rounded-2xl flex-shrink-0 relative group">
+              {tontineImage ? (
+                <div className="w-20 h-20 rounded-2xl overflow-hidden ring-2 ring-white/30">
+                  <Image
+                    src={tontineImage}
+                    alt={tontine.nom}
+                    width={80}
+                    height={80}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+              ) : (
+                <div className="w-20 h-20 bg-white/20 backdrop-blur rounded-2xl flex items-center justify-center">
+                  <span className="text-4xl">{tontine.emoji || "💰"}</span>
+                </div>
+              )}
+              {isOrganisateur && (
+                <TontineImageUpload
+                  tontineId={tontine.id}
+                  currentImage={tontineImage}
+                  currentEmoji={tontine.emoji}
+                  onUploadComplete={(url) => setTontineImage(url)}
+                />
+              )}
             </div>
 
             <div className="flex-1">
@@ -106,7 +155,24 @@ export default function TontineProfileCard({ tontine }: TontineProfileCardProps)
                 </span>
               </div>
 
-              <p className="text-white/80 text-sm md:text-base max-w-xl mb-4">{tontine.description}</p>
+              <p className="text-white/80 text-sm md:text-base max-w-xl mb-3">{tontine.description}</p>
+
+              {/* Badges catégorie + visibilité */}
+              <div className="flex flex-wrap gap-2 mb-4">
+                {tontine.categorie && CATEGORIE_LABELS[tontine.categorie] && (
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/15 backdrop-blur text-white text-xs font-medium">
+                    <span>{CATEGORIE_LABELS[tontine.categorie].emoji}</span>
+                    {CATEGORIE_LABELS[tontine.categorie].label}
+                  </span>
+                )}
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/15 backdrop-blur text-white text-xs font-medium">
+                  {tontine.visibilite === "privee" ? (
+                    <><Lock className="w-3 h-3" /> Privée</>
+                  ) : (
+                    <><Globe className="w-3 h-3" /> Publique</>
+                  )}
+                </span>
+              </div>
 
               {/* Quick Info Row */}
               <div className="flex flex-wrap gap-4 text-white/70 text-sm">

@@ -7,6 +7,7 @@ import { useTontine } from "@/contexts/TontineContext";
 import { useFinance } from "@/contexts/FinanceContext";
 import { useToast } from "@/contexts/ToastContext";
 import SubscriptionModal from "@/components/SubscriptionModal";
+import TontineImageUpload from "@/components/TontineImageUpload";
 import {
   ArrowLeft,
   CircleDollarSign,
@@ -18,6 +19,14 @@ import {
   Crown,
   ShieldAlert,
   CreditCard,
+  Palette,
+  Eye,
+  EyeOff,
+  Tag,
+  Smile,
+  Lock,
+  Globe,
+  Camera,
 } from "lucide-react";
 
 export default function CreerTontinePage() {
@@ -27,6 +36,8 @@ export default function CreerTontinePage() {
   const { showToast } = useToast();
   const [loading, setLoading] = useState(false);
   const [subscriptionModalOpen, setSubscriptionModalOpen] = useState(false);
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string>("");
   const [formData, setFormData] = useState({
     nom: "",
     description: "",
@@ -36,7 +47,32 @@ export default function CreerTontinePage() {
     membresMax: "10",
     dateDebut: "",
     regles: "",
+    emoji: "💰",
+    couleur: "emerald",
+    categorie: "autre",
+    visibilite: "publique",
   });
+
+  const EMOJI_OPTIONS = ["💰", "🏦", "🤝", "👨‍👩‍👧‍👦", "🎯", "💎", "🏠", "🚗", "✈️", "📚", "💼", "🎓", "🏥", "🌍", "⭐", "🔥"];
+  
+  const COULEUR_OPTIONS = [
+    { value: "emerald", label: "Émeraude", class: "bg-emerald-500" },
+    { value: "blue", label: "Bleu", class: "bg-blue-500" },
+    { value: "purple", label: "Violet", class: "bg-purple-500" },
+    { value: "orange", label: "Orange", class: "bg-orange-500" },
+    { value: "rose", label: "Rose", class: "bg-rose-500" },
+    { value: "cyan", label: "Cyan", class: "bg-cyan-500" },
+    { value: "amber", label: "Ambre", class: "bg-amber-500" },
+    { value: "indigo", label: "Indigo", class: "bg-indigo-500" },
+  ];
+
+  const CATEGORIE_OPTIONS = [
+    { value: "famille", label: "Famille", emoji: "👨‍👩‍👧‍👦" },
+    { value: "amis", label: "Amis", emoji: "🤝" },
+    { value: "collegues", label: "Collègues", emoji: "💼" },
+    { value: "communaute", label: "Communauté", emoji: "🌍" },
+    { value: "autre", label: "Autre", emoji: "⭐" },
+  ];
 
   const handleChange = (
     e: React.ChangeEvent<
@@ -60,7 +96,29 @@ export default function CreerTontinePage() {
         membresMax: Number(formData.membresMax),
         dateDebut: formData.dateDebut,
         regles: formData.regles,
+        emoji: formData.emoji,
+        couleur: formData.couleur,
+        categorie: formData.categorie as "famille" | "amis" | "collegues" | "communaute" | "autre",
+        visibilite: formData.visibilite as "publique" | "privee",
       });
+
+      // Upload de l'image si sélectionnée
+      if (imageFile) {
+        try {
+          const imgFormData = new FormData();
+          imgFormData.append("file", imageFile);
+          imgFormData.append("tontineId", newTontine.id);
+          const res = await fetch("/api/tontine/upload-image", {
+            method: "POST",
+            body: imgFormData,
+          });
+          if (!res.ok) {
+            console.error("Image upload failed");
+          }
+        } catch (imgErr) {
+          console.error("Image upload error:", imgErr);
+        }
+      }
 
       showToast("success", "Tontine créée !", `"${formData.nom}" a été créée avec succès`);
       router.push(`/tontines/${newTontine.id}`);
@@ -191,6 +249,143 @@ export default function CreerTontinePage() {
           </div>
         </div>
 
+        {/* Profil visuel */}
+        <div className="card">
+          <h2 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+            <Palette className="w-5 h-5 text-primary-600" />
+            Profil visuel
+          </h2>
+
+          <div className="space-y-5">
+            {/* Emoji */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                <Smile className="w-4 h-4 inline mr-1" />
+                Icône de la tontine
+              </label>
+              <div className="flex flex-wrap gap-2">
+                {EMOJI_OPTIONS.map((emoji) => (
+                  <button
+                    key={emoji}
+                    type="button"
+                    onClick={() => setFormData({ ...formData, emoji })}
+                    className={`w-12 h-12 rounded-xl text-2xl flex items-center justify-center transition-all ${
+                      formData.emoji === emoji
+                        ? "bg-primary-100 border-2 border-primary-500 scale-110 shadow-md"
+                        : "bg-gray-50 border border-gray-200 hover:bg-gray-100 hover:scale-105"
+                    }`}
+                  >
+                    {emoji}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Couleur */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                <Palette className="w-4 h-4 inline mr-1" />
+                Couleur du thème
+              </label>
+              <div className="flex flex-wrap gap-3">
+                {COULEUR_OPTIONS.map((c) => (
+                  <button
+                    key={c.value}
+                    type="button"
+                    onClick={() => setFormData({ ...formData, couleur: c.value })}
+                    className={`flex items-center gap-2 px-3 py-2 rounded-xl transition-all ${
+                      formData.couleur === c.value
+                        ? "ring-2 ring-offset-2 ring-primary-500 bg-white shadow-md"
+                        : "bg-gray-50 hover:bg-white hover:shadow-sm"
+                    }`}
+                  >
+                    <span className={`w-5 h-5 rounded-full ${c.class}`} />
+                    <span className="text-sm font-medium text-gray-700">{c.label}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Catégorie */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                <Tag className="w-4 h-4 inline mr-1" />
+                Catégorie
+              </label>
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                {CATEGORIE_OPTIONS.map((cat) => (
+                  <button
+                    key={cat.value}
+                    type="button"
+                    onClick={() => setFormData({ ...formData, categorie: cat.value })}
+                    className={`flex items-center gap-2 px-4 py-3 rounded-xl text-sm font-medium transition-all ${
+                      formData.categorie === cat.value
+                        ? "bg-primary-50 border-2 border-primary-500 text-primary-700"
+                        : "bg-gray-50 border border-gray-200 text-gray-700 hover:bg-gray-100"
+                    }`}
+                  >
+                    <span className="text-lg">{cat.emoji}</span>
+                    {cat.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Photo de profil */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                <Camera className="w-4 h-4 inline mr-1" />
+                Photo de profil (optionnel)
+              </label>
+              <TontineImageUpload
+                inline
+                currentEmoji={formData.emoji}
+                onUploadComplete={(url) => setImagePreview(url)}
+                onFileSelect={(file) => setImageFile(file)}
+              />
+            </div>
+
+            {/* Visibilité */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Visibilité
+              </label>
+              <div className="grid grid-cols-2 gap-3">
+                <button
+                  type="button"
+                  onClick={() => setFormData({ ...formData, visibilite: "publique" })}
+                  className={`flex items-center gap-3 p-4 rounded-xl transition-all ${
+                    formData.visibilite === "publique"
+                      ? "bg-emerald-50 border-2 border-emerald-500"
+                      : "bg-gray-50 border border-gray-200 hover:bg-gray-100"
+                  }`}
+                >
+                  <Globe className={`w-5 h-5 ${formData.visibilite === "publique" ? "text-emerald-600" : "text-gray-400"}`} />
+                  <div className="text-left">
+                    <p className={`text-sm font-semibold ${formData.visibilite === "publique" ? "text-emerald-700" : "text-gray-700"}`}>Publique</p>
+                    <p className="text-xs text-gray-500">Visible par tous</p>
+                  </div>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setFormData({ ...formData, visibilite: "privee" })}
+                  className={`flex items-center gap-3 p-4 rounded-xl transition-all ${
+                    formData.visibilite === "privee"
+                      ? "bg-amber-50 border-2 border-amber-500"
+                      : "bg-gray-50 border border-gray-200 hover:bg-gray-100"
+                  }`}
+                >
+                  <Lock className={`w-5 h-5 ${formData.visibilite === "privee" ? "text-amber-600" : "text-gray-400"}`} />
+                  <div className="text-left">
+                    <p className={`text-sm font-semibold ${formData.visibilite === "privee" ? "text-amber-700" : "text-gray-700"}`}>Privée</p>
+                    <p className="text-xs text-gray-500">Sur invitation</p>
+                  </div>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <div className="card">
           <h2 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
             <CircleDollarSign className="w-5 h-5 text-primary-600" />
@@ -299,7 +494,8 @@ export default function CreerTontinePage() {
         {/* Preview */}
         {formData.nom && formData.montantCotisation && (
           <div className="card bg-primary-50 border-primary-200">
-            <h3 className="font-bold text-primary-900 mb-3">
+            <h3 className="font-bold text-primary-900 mb-3 flex items-center gap-2">
+              <span className="text-2xl">{formData.emoji}</span>
               Aperçu de votre tontine
             </h3>
             <div className="grid grid-cols-2 gap-4 text-sm">
@@ -324,6 +520,19 @@ export default function CreerTontinePage() {
                 <span className="text-primary-600">Max membres:</span>{" "}
                 <span className="font-semibold text-primary-900">
                   {formData.membresMax}
+                </span>
+              </div>
+              <div>
+                <span className="text-primary-600">Catégorie:</span>{" "}
+                <span className="font-semibold text-primary-900 capitalize">
+                  {CATEGORIE_OPTIONS.find(c => c.value === formData.categorie)?.label || formData.categorie}
+                </span>
+              </div>
+              <div>
+                <span className="text-primary-600">Visibilité:</span>{" "}
+                <span className="font-semibold text-primary-900 capitalize flex items-center gap-1">
+                  {formData.visibilite === "publique" ? <Globe className="w-3.5 h-3.5 inline" /> : <Lock className="w-3.5 h-3.5 inline" />}
+                  {formData.visibilite === "publique" ? "Publique" : "Privée"}
                 </span>
               </div>
               <div className="col-span-2">

@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useState, useMemo } from "react";
 import { useTontine } from "@/contexts/TontineContext";
 import { formatMontant, getStatutLabel, getStatutColor } from "@/lib/data";
@@ -11,7 +12,28 @@ import {
   CircleDollarSign,
   Calendar,
   ArrowRight,
+  Globe,
+  Lock,
 } from "lucide-react";
+
+const COULEUR_BG: Record<string, string> = {
+  emerald: "bg-emerald-100 group-hover:bg-emerald-200",
+  blue: "bg-blue-100 group-hover:bg-blue-200",
+  purple: "bg-purple-100 group-hover:bg-purple-200",
+  orange: "bg-orange-100 group-hover:bg-orange-200",
+  rose: "bg-rose-100 group-hover:bg-rose-200",
+  cyan: "bg-cyan-100 group-hover:bg-cyan-200",
+  amber: "bg-amber-100 group-hover:bg-amber-200",
+  indigo: "bg-indigo-100 group-hover:bg-indigo-200",
+};
+
+const CATEGORIE_LABELS: Record<string, string> = {
+  famille: "👨‍👩‍👧‍👦 Famille",
+  amis: "🤝 Amis",
+  collegues: "💼 Collègues",
+  communaute: "🌍 Communauté",
+  autre: "⭐ Autre",
+};
 
 export default function TontinesPage() {
   const { getMesTontines, tontines } = useTontine();
@@ -112,8 +134,18 @@ export default function TontinesPage() {
               >
                 <div className="flex items-start justify-between mb-4">
                   <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 bg-primary-100 rounded-2xl flex items-center justify-center group-hover:bg-primary-200 transition-colors">
-                      <Users className="w-6 h-6 text-primary-600" />
+                    <div className={`w-12 h-12 rounded-2xl flex items-center justify-center transition-colors overflow-hidden ${COULEUR_BG[tontine.couleur || "emerald"] || COULEUR_BG.emerald}`}>
+                      {tontine.image ? (
+                        <Image
+                          src={tontine.image}
+                          alt={tontine.nom}
+                          width={48}
+                          height={48}
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <span className="text-2xl">{tontine.emoji || "💰"}</span>
+                      )}
                     </div>
                     <div>
                       <h3 className="font-bold text-gray-900 group-hover:text-primary-600 transition-colors">
@@ -126,6 +158,18 @@ export default function TontinesPage() {
                   </div>
                   <span className={getStatutColor(tontine.statut)}>
                     {getStatutLabel(tontine.statut)}
+                  </span>
+                </div>
+
+                {/* Badges catégorie + visibilité */}
+                <div className="flex flex-wrap gap-1.5 mb-3">
+                  {tontine.categorie && CATEGORIE_LABELS[tontine.categorie] && (
+                    <span className="text-xs px-2 py-0.5 rounded-full bg-gray-100 text-gray-600 font-medium">
+                      {CATEGORIE_LABELS[tontine.categorie]}
+                    </span>
+                  )}
+                  <span className="text-xs px-2 py-0.5 rounded-full bg-gray-100 text-gray-500 font-medium inline-flex items-center gap-1">
+                    {tontine.visibilite === "privee" ? <><Lock className="w-3 h-3" /> Privée</> : <><Globe className="w-3 h-3" /> Publique</>}
                   </span>
                 </div>
 

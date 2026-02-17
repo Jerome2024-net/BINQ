@@ -98,6 +98,12 @@ create table if not exists public.tontines (
   frequence tontine_frequence not null default 'mensuel',
   nombre_membres integer not null default 1,
   membres_max integer not null default 5,
+  -- Profil visuel
+  emoji text default '💰',
+  couleur text default 'emerald',
+  categorie text default 'autre',
+  visibilite text default 'publique',
+  image text default '',
   date_debut date not null,
   date_fin date,
   statut tontine_statut not null default 'en_attente',

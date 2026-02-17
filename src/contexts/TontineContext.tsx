@@ -50,6 +50,10 @@ interface CreerTontineData {
   membresMax: number;
   dateDebut: string;
   regles?: string;
+  emoji?: string;
+  couleur?: string;
+  categorie?: "famille" | "amis" | "collegues" | "communaute" | "autre";
+  visibilite?: "publique" | "privee";
 }
 
 const TontineContext = createContext<TontineContextType | undefined>(undefined);
@@ -203,6 +207,11 @@ export function TontineProvider({ children }: { children: React.ReactNode }) {
           organisateurId: t.organisateur_id,
           membres,
           tours,
+          emoji: t.emoji || "💰",
+          couleur: t.couleur || "emerald",
+          categorie: t.categorie || "autre",
+          visibilite: t.visibilite || "publique",
+          image: t.image || "",
           motifAnnulation: t.motif_annulation || undefined,
           defaillantId: t.defaillant_id || undefined,
           dateAnnulation: t.date_annulation || undefined,
@@ -363,6 +372,10 @@ export function TontineProvider({ children }: { children: React.ReactNode }) {
           membres_max: data.membresMax,
           date_debut: data.dateDebut,
           organisateur_id: user.id,
+          emoji: data.emoji || "💰",
+          couleur: data.couleur || "emerald",
+          categorie: data.categorie || "autre",
+          visibilite: data.visibilite || "publique",
         })
         .select()
         .single();
@@ -394,6 +407,11 @@ export function TontineProvider({ children }: { children: React.ReactNode }) {
         organisateurId: user.id,
         membres: [],
         tours: [],
+        emoji: newTontine.emoji || "💰",
+        couleur: newTontine.couleur || "emerald",
+        categorie: newTontine.categorie || "autre",
+        visibilite: newTontine.visibilite || "publique",
+        image: newTontine.image || "",
       };
     },
     [user, supabase, loadTontines]
