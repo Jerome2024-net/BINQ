@@ -5,22 +5,18 @@ import {
   X,
   Crown,
   CheckCircle2,
-  Loader2,
   ShieldCheck,
-  Lock,
   Sparkles,
   Users,
   BarChart3,
   Headphones,
   CreditCard,
   AlertTriangle,
-  Wallet,
   Gift,
   Clock,
 } from "lucide-react";
 import { useFinance } from "@/contexts/FinanceContext";
 import { useToast } from "@/contexts/ToastContext";
-import { formatMontant } from "@/lib/data";
 
 interface SubscriptionModalProps {
   isOpen: boolean;
@@ -35,18 +31,16 @@ const avantages = [
 ];
 
 export default function SubscriptionModal({ isOpen, onClose }: SubscriptionModalProps) {
-  const { activerEssaiGratuit, souscrireAbonnement, souscrireAbonnementStripe, getFraisConfig, wallet, abonnement, isEssaiGratuit } = useFinance();
+  const { activerEssaiGratuit, souscrireAbonnementStripe, getFraisConfig, abonnement, isEssaiGratuit } = useFinance();
   const { showToast } = useToast();
-  const [step, setStep] = useState<"info" | "confirm" | "processing" | "done" | "error">("info");
+  const [step, setStep] = useState<"info" | "processing" | "done" | "error">("info");
   const [errorMsg, setErrorMsg] = useState("");
-  const [mode, setMode] = useState<"essai" | "payant" | "stripe">("essai");
+  const [mode, setMode] = useState<"essai" | "carte">("essai");
 
   if (!isOpen) return null;
 
   const frais = getFraisConfig();
-  const solde = wallet?.solde || 0;
   const prixAbonnement = frais.abonnementAnnuel;
-  const soldeSuffisant = solde >= prixAbonnement;
   const dejaEuEssai = abonnement?.plan === "essai_gratuit";
   const enEssai = isEssaiGratuit();
 
@@ -68,43 +62,15 @@ export default function SubscriptionModal({ isOpen, onClose }: SubscriptionModal
     }
   };
 
-  const handleSouscrire = () => {
-    setMode("payant");
-    if (!soldeSuffisant) {
-      setErrorMsg(`Solde insuffisant. Vous avez ${formatMontant(solde)} mais l'abonnement coûte ${formatMontant(prixAbonnement)}. Déposez des fonds d'abord.`);
-      setStep("error");
-      return;
-    }
-    setStep("confirm");
-  };
-
-  const handleConfirm = async () => {
-    setStep("processing");
-
-    const result = await souscrireAbonnement();
-    if (result.success) {
-      showToast("success", "Abonnement activé ! 🎉", "Vous pouvez créer et gérer des tontines pendant 1 an");
-      setStep("done");
-      setTimeout(() => {
-        reset();
-        onClose();
-      }, 2500);
-    } else {
-      setErrorMsg(result.error || "Erreur lors de la souscription");
-      setStep("error");
-    }
-  };
-
   const handlePayerParCarte = async () => {
-    setMode("stripe");
+    setMode("carte");
     setStep("processing");
 
     const result = await souscrireAbonnementStripe();
     if (result.success && result.url) {
-      // Redirect to Stripe Checkout
       window.location.href = result.url;
     } else {
-      setErrorMsg(result.error || "Erreur lors de la redirection vers Stripe");
+      setErrorMsg(result.error || "Erreur lors de la redirection vers le paiement");
       setStep("error");
     }
   };
@@ -180,56 +146,12 @@ export default function SubscriptionModal({ isOpen, onClose }: SubscriptionModal
               </div>
               <p className="text-gray-900 font-semibold text-lg">Activation en cours...</p>
               <p className="text-sm text-gray-500 mt-2">
-                {mode === "essai" ? "Activation de votre essai gratuit" : mode === "stripe" ? "Redirection vers Stripe..." : "Configuration de votre abonnement organisateur"}
+                {mode === "essai" ? "Activation de votre essai gratuit" : "Redirection vers le paiement sécurisé..."}
               </p>
               <div className="mt-4 flex items-center justify-center gap-1.5">
                 <div className="w-2 h-2 rounded-full bg-purple-600 animate-pulse"></div>
                 <div className="w-2 h-2 rounded-full bg-purple-400 animate-pulse" style={{ animationDelay: "0.2s" }}></div>
                 <div className="w-2 h-2 rounded-full bg-purple-300 animate-pulse" style={{ animationDelay: "0.4s" }}></div>
-              </div>
-            </div>
-          ) : step === "confirm" ? (
-            <div className="space-y-5">
-              {/* Récapitulatif */}
-              <div className="bg-purple-50 rounded-xl p-4 space-y-3 border border-purple-100">
-                <div className="flex justify-between text-sm">
-                  <span className="text-gray-600">Abonnement</span>
-                  <span className="font-semibold text-gray-900">Organisateur annuel</span>
-                </div>
-                <div className="flex justify-between text-sm">
-                  <span className="text-gray-600">Durée</span>
-                  <span className="font-semibold text-gray-900">1 an</span>
-                </div>
-                <div className="flex justify-between text-sm">
-                  <span className="text-gray-600">Votre solde</span>
-                  <span className="font-semibold text-gray-900">{formatMontant(solde)}</span>
-                </div>
-                <hr className="border-purple-200" />
-                <div className="flex justify-between items-center">
-                  <span className="font-medium text-gray-700">Montant à débiter</span>
-                  <span className="text-2xl font-bold text-purple-600">{formatMontant(prixAbonnement)}</span>
-                </div>
-              </div>
-
-              <div className="bg-green-50 rounded-xl p-3 text-sm text-green-700 flex items-start gap-2">
-                <Wallet className="w-4 h-4 mt-0.5 flex-shrink-0" />
-                <p>
-                  Le montant sera prélevé directement de votre portefeuille.
-                  Solde après : <strong>{formatMontant(solde - prixAbonnement)}</strong>
-                </p>
-              </div>
-
-              <div className="flex gap-3">
-                <button onClick={() => setStep("info")} className="btn-secondary flex-1">
-                  Retour
-                </button>
-                <button
-                  onClick={handleConfirm}
-                  className="flex-1 flex items-center justify-center gap-2 bg-purple-600 text-white px-5 py-3 rounded-xl font-semibold hover:bg-purple-700 transition-colors"
-                >
-                  <Lock className="w-4 h-4" />
-                  Confirmer le paiement
-                </button>
               </div>
             </div>
           ) : (
@@ -299,52 +221,14 @@ export default function SubscriptionModal({ isOpen, onClose }: SubscriptionModal
                   ))}
                 </div>
 
-                {/* Solde info pour plan payant */}
-                {(dejaEuEssai || enEssai) && (
-                  <div className={`rounded-xl p-3 text-sm flex items-center gap-2 mt-4 ${soldeSuffisant ? 'bg-green-50 text-green-700' : 'bg-amber-50 text-amber-700'}`}>
-                    <Wallet className="w-4 h-4 flex-shrink-0" />
-                    <span>
-                      Solde actuel : <strong>{formatMontant(solde)}</strong>
-                      {!soldeSuffisant && " — Solde insuffisant pour payer via portefeuille"}
-                    </span>
-                  </div>
-                )}
-
-                {/* Boutons de paiement */}
-                <div className="space-y-3 mt-4">
-                  {/* Payer par carte Stripe — option principale */}
-                  <button
-                    onClick={handlePayerParCarte}
-                    className={`w-full flex items-center justify-center gap-2 bg-indigo-600 text-white py-3.5 rounded-xl font-semibold hover:bg-indigo-700 transition-colors ${dejaEuEssai || enEssai ? 'text-lg' : 'text-base'}`}
-                  >
-                    <CreditCard className="w-5 h-5" />
-                    Payer par carte bancaire
-                  </button>
-
-                  {/* Séparateur */}
-                  <div className="flex items-center gap-3">
-                    <div className="flex-1 border-t border-gray-200"></div>
-                    <span className="text-xs text-gray-400 font-medium">OU</span>
-                    <div className="flex-1 border-t border-gray-200"></div>
-                  </div>
-
-                  {/* Payer depuis le portefeuille */}
-                  <button
-                    onClick={handleSouscrire}
-                    disabled={!soldeSuffisant}
-                    className={`w-full flex items-center justify-center gap-2 py-3 rounded-xl font-semibold transition-colors border-2 ${
-                      soldeSuffisant
-                        ? 'border-purple-200 bg-purple-50 text-purple-700 hover:bg-purple-100'
-                        : 'border-gray-200 bg-gray-50 text-gray-400 cursor-not-allowed'
-                    }`}
-                  >
-                    <Wallet className="w-5 h-5" />
-                    {soldeSuffisant
-                      ? `Payer avec mon portefeuille (${formatMontant(solde)})`
-                      : `Solde insuffisant (${formatMontant(solde)})`
-                    }
-                  </button>
-                </div>
+                {/* Bouton payer par carte */}
+                <button
+                  onClick={handlePayerParCarte}
+                  className={`w-full flex items-center justify-center gap-2 bg-indigo-600 text-white py-3.5 rounded-xl font-semibold hover:bg-indigo-700 transition-colors mt-4 ${dejaEuEssai || enEssai ? 'text-lg' : 'text-base'}`}
+                >
+                  <CreditCard className="w-5 h-5" />
+                  {enEssai ? "Passer au plan annuel" : dejaEuEssai ? "Souscrire maintenant" : "Souscrire par carte"}
+                </button>
               </div>
 
               {/* Sécurité */}
