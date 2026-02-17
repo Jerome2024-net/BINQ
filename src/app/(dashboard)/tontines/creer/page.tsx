@@ -305,7 +305,16 @@ export default function CreerTontinePage() {
                     inline
                     currentEmoji={formData.emoji}
                     onUploadComplete={(url) => setImagePreview(url)}
-                    onFileSelect={(file) => setImageFile(file)}
+                    onFileSelect={(file) => {
+                      setImageFile(file);
+                      if (file) {
+                        const reader = new FileReader();
+                        reader.onloadend = () => setImagePreview(reader.result as string);
+                        reader.readAsDataURL(file);
+                      } else {
+                        setImagePreview("");
+                      }
+                    }}
                   />
                </div>
 
