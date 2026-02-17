@@ -34,13 +34,15 @@ export async function POST(request: Request) {
     // Calculer les frais plateforme (1% participant)
     const applicationFee = Math.round(amountInCents * 0.01);
 
-    // Créer le PaymentIntent — l'argent va d'abord sur le compte plateforme
+    // Créer le PaymentIntent avec application_fee_amount
+    // L'argent arrive sur le compte plateforme, les frais sont prélevés automatiquement
     const stripe = getStripe();
     const paymentIntent = await stripe.paymentIntents.create({
       amount: amountInCents,
       currency: cur,
       description: `Cotisation - ${tontineNom} (Tour ${tourNumero})`,
       automatic_payment_methods: { enabled: true },
+      application_fee_amount: applicationFee,
       metadata: {
         type: "cotisation",
         tontineId: tontineId || "",

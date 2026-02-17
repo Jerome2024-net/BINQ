@@ -39,7 +39,7 @@ export async function POST(request: Request) {
       );
     }
 
-    // Créer le PaymentIntent
+    // Créer le PaymentIntent avec userId pour traçabilité webhook
     const stripe = getStripe();
     const paymentIntent = await stripe.paymentIntents.create({
       amount: amountInCents,
@@ -50,6 +50,7 @@ export async function POST(request: Request) {
       },
       metadata: {
         type: "depot",
+        userId: user.id,
         app: "binq",
       },
     });

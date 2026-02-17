@@ -1,10 +1,18 @@
 import { NextResponse } from "next/server";
 import { getStripe } from "@/lib/stripe";
 import { getAuthenticatedUser } from "@/lib/api-auth";
+import { createClient } from "@supabase/supabase-js";
+
+const supabaseAdmin = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+  { auth: { persistSession: false } }
+);
 
 /**
  * POST /api/stripe/create-account
  * Crée un compte Stripe Connect (Express) pour un utilisateur
+ * et sauvegarde le stripe_account_id en base.
  */
 export async function POST(request: Request) {
   try {
@@ -51,6 +59,17 @@ export async function POST(request: Request) {
         app: "binq",
       },
     });
+
+    // Sauvegarder le stripe_account_id dans le profil Supabase
+    await supabaseAdmin
+      .from("profiles")
+      .update({
+        stripe_account_id: account.id,
+        stripe_onboarding_complete: account.details_submitted,
+        stripe_charges_enabled: account.charges_enabled,
+        stripe_payouts_enabled: account.payouts_enabled,
+      })
+      .eq("id", user.id);
 
     return NextResponse.json({
       accountId: account.id,
