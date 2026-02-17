@@ -465,10 +465,6 @@ export default function CreerTontinePage() {
           </div>
         </div>
 
-
-          </div>
-        </div>
-
         <div className="card">
           <h2 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
             <Eye className="w-5 h-5 text-primary-600" />
