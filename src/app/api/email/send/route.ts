@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { resend, FROM_EMAIL, emailTemplates } from "@/lib/resend";
+import { getResend, FROM_EMAIL, emailTemplates } from "@/lib/resend";
 import { createClient } from "@supabase/supabase-js";
 
 const supabaseAdmin = createClient(
@@ -66,7 +66,7 @@ export async function POST(request: NextRequest) {
         );
     }
 
-    const { data: result, error } = await resend.emails.send({
+    const { data: result, error } = await getResend().emails.send({
       from: FROM_EMAIL,
       to: Array.isArray(to) ? to : [to],
       subject: emailContent.subject,
