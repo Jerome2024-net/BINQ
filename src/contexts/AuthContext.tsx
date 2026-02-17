@@ -197,6 +197,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     await supabase.auth.signOut();
     setUser(null);
     setSession(null);
+    window.location.href = "/connexion";
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
