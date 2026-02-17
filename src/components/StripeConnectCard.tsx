@@ -89,10 +89,10 @@ export default function StripeConnectCard() {
           </div>
           <div>
             <h3 className="text-lg font-bold text-gray-900 flex items-center gap-2">
-              Compte Stripe Connect
+              Compte de paiement
               {isVerified && (
                 <span className="px-2 py-0.5 rounded-full text-xs font-semibold bg-green-100 text-green-700">
-                  Vérifié ✓
+                  Actif ✓
                 </span>
               )}
               {hasAccount && !isVerified && (
@@ -103,15 +103,15 @@ export default function StripeConnectCard() {
             </h3>
             {isVerified ? (
               <p className="text-sm text-gray-600 mt-1">
-                Votre identité est vérifiée. Vous pouvez recevoir des pots et effectuer des retraits.
+                Vos paiements sont activés. Vous pouvez recevoir des pots et effectuer des retraits.
               </p>
             ) : hasAccount ? (
               <p className="text-sm text-gray-600 mt-1">
-                Complétez la vérification d&apos;identité (KYC) pour pouvoir recevoir des paiements.
+                Complétez la vérification d&apos;identité pour activer les paiements.
               </p>
             ) : (
               <p className="text-sm text-gray-600 mt-1">
-                Créez votre compte pour recevoir les pots de tontine et retirer vers votre banque.
+                Configurez votre compte pour recevoir les pots de tontine et retirer vers votre banque.
               </p>
             )}
           </div>
@@ -140,7 +140,7 @@ export default function StripeConnectCard() {
               ) : (
                 <CreditCard className="w-4 h-4" />
               )}
-              Créer mon compte Stripe
+              Activer les paiements
             </button>
           ) : !isVerified ? (
             <button
@@ -153,7 +153,7 @@ export default function StripeConnectCard() {
               ) : (
                 <ExternalLink className="w-4 h-4" />
               )}
-              Compléter la vérification
+              Finaliser la vérification
             </button>
           ) : null}
         </div>
@@ -175,7 +175,7 @@ export default function StripeConnectCard() {
             </div>
             <div className="bg-white/70 rounded-xl p-3 text-center">
               <Banknote className="w-5 h-5 text-green-500 mx-auto mb-1" />
-              <p className="text-xs text-gray-500">Solde Stripe</p>
+              <p className="text-xs text-gray-500">Solde disponible</p>
               <p className="text-sm font-bold text-gray-900">
                 {connectAccount.balance.available.toLocaleString("fr-FR")} €
               </p>
@@ -205,7 +205,7 @@ export default function StripeConnectCard() {
             </span>
             <span className="flex items-center gap-1.5">
               <ArrowRight className="w-3 h-3 text-green-500" />
-              Vérification KYC sécurisée
+              Vérification d&apos;identité sécurisée
             </span>
             <span className="flex items-center gap-1.5">
               <ArrowRight className="w-3 h-3 text-green-500" />

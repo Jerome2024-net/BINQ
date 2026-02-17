@@ -45,9 +45,9 @@ const methodesRetrait = [
   },
   {
     id: "stripe_payout",
-    label: "Stripe Payout",
+    label: "Retrait instantané",
     icon: Banknote,
-    desc: "Vers votre compte Stripe Connect",
+    desc: "Vers votre compte bancaire vérifié",
   },
 ];
 
@@ -167,7 +167,7 @@ function StripePaymentForm({
       {/* Sécurité */}
       <div className="flex items-center justify-center gap-2 text-xs text-gray-400">
         <ShieldCheck className="w-3.5 h-3.5" />
-        <span>Paiement sécurisé via Stripe · Chiffrement SSL 256 bits</span>
+        <span>Paiement sécurisé · Chiffrement SSL 256 bits</span>
       </div>
     </form>
   );
@@ -210,7 +210,7 @@ export default function DepositWithdrawModal({
     if (montantNum < 1) return;
 
     if (!isConfigured) {
-      setErrorMsg("Configurez vos clés Stripe dans .env.local pour effectuer de vrais paiements");
+      setErrorMsg("Le système de paiement n'est pas encore configuré. Contactez le support.");
       setStep("error");
       return;
     }
@@ -224,7 +224,7 @@ export default function DepositWithdrawModal({
       setPaymentIntentId(result.paymentIntentId);
       setStep("payment");
     } else {
-      setErrorMsg("Impossible de créer le paiement. Vérifiez votre configuration Stripe.");
+      setErrorMsg("Impossible de créer le paiement. Réessayez ou contactez le support.");
       setStep("error");
     }
 
@@ -292,7 +292,7 @@ export default function DepositWithdrawModal({
             <h2 className="text-lg font-bold text-gray-900">{title}</h2>
             <p className="text-xs text-gray-500 flex items-center gap-1">
               <Lock className="w-3 h-3" />
-              Paiement sécurisé via Stripe
+              Paiement sécurisé
             </p>
           </div>
           <button onClick={handleClose} className="ml-auto p-2 rounded-lg hover:bg-gray-100">

@@ -282,7 +282,7 @@ export default function PortefeuillePage() {
         )}
       </div>
 
-      {/* Carte Stripe Connect */}
+      {/* Compte de paiement */}
       <StripeConnectCard />
 
       {/* Stats financières */}
