@@ -465,44 +465,52 @@ export default function CreerTontinePage() {
           </div>
         </div>
 
-            {/* Visibilité */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Visibilité
-              </label>
-              <div className="grid grid-cols-2 gap-3">
-                <button
-                  type="button"
-                  onClick={() => setFormData({ ...formData, visibilite: "publique" })}
-                  className={`flex items-center gap-3 p-4 rounded-xl transition-all ${
-                    formData.visibilite === "publique"
-                      ? "bg-emerald-50 border-2 border-emerald-500"
-                      : "bg-gray-50 border border-gray-200 hover:bg-gray-100"
-                  }`}
-                >
-                  <Globe className={`w-5 h-5 ${formData.visibilite === "publique" ? "text-emerald-600" : "text-gray-400"}`} />
-                  <div className="text-left">
-                    <p className={`text-sm font-semibold ${formData.visibilite === "publique" ? "text-emerald-700" : "text-gray-700"}`}>Publique</p>
-                    <p className="text-xs text-gray-500">Visible par tous</p>
-                  </div>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setFormData({ ...formData, visibilite: "privee" })}
-                  className={`flex items-center gap-3 p-4 rounded-xl transition-all ${
-                    formData.visibilite === "privee"
-                      ? "bg-amber-50 border-2 border-amber-500"
-                      : "bg-gray-50 border border-gray-200 hover:bg-gray-100"
-                  }`}
-                >
-                  <Lock className={`w-5 h-5 ${formData.visibilite === "privee" ? "text-amber-600" : "text-gray-400"}`} />
-                  <div className="text-left">
-                    <p className={`text-sm font-semibold ${formData.visibilite === "privee" ? "text-amber-700" : "text-gray-700"}`}>Privée</p>
-                    <p className="text-xs text-gray-500">Sur invitation</p>
-                  </div>
-                </button>
+
+          </div>
+        </div>
+
+        <div className="card">
+          <h2 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+            <Eye className="w-5 h-5 text-primary-600" />
+            Visibilité du groupe
+          </h2>
+          
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <button
+              type="button"
+              onClick={() => setFormData({ ...formData, visibilite: "publique" })}
+              className={`flex items-start gap-4 p-4 rounded-xl border-2 text-left transition-all ${
+                formData.visibilite === "publique"
+                  ? "bg-emerald-50 border-emerald-500 ring-1 ring-emerald-500"
+                  : "bg-white border-gray-100 hover:border-gray-200 hover:bg-gray-50"
+              }`}
+            >
+              <div className={`p-2 rounded-lg ${formData.visibilite === "publique" ? "bg-emerald-100 text-emerald-700" : "bg-gray-100 text-gray-500"}`}>
+                <Globe className="w-6 h-6" />
               </div>
-            </div>
+              <div>
+                <span className={`block font-bold mb-1 ${formData.visibilite === "publique" ? "text-emerald-900" : "text-gray-900"}`}>Publique</span>
+                <span className="text-xs text-gray-500 leading-relaxed">Visible par tous les utilisateurs. Idéal pour les communautés ouvertes.</span>
+              </div>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setFormData({ ...formData, visibilite: "privee" })}
+              className={`flex items-start gap-4 p-4 rounded-xl border-2 text-left transition-all ${
+                formData.visibilite === "privee"
+                  ? "bg-amber-50 border-amber-500 ring-1 ring-amber-500"
+                  : "bg-white border-gray-100 hover:border-gray-200 hover:bg-gray-50"
+              }`}
+            >
+              <div className={`p-2 rounded-lg ${formData.visibilite === "privee" ? "bg-amber-100 text-amber-700" : "bg-gray-100 text-gray-500"}`}>
+                <Lock className="w-6 h-6" />
+              </div>
+              <div>
+                <span className={`block font-bold mb-1 ${formData.visibilite === "privee" ? "text-amber-900" : "text-gray-900"}`}>Privée</span>
+                <span className="text-xs text-gray-500 leading-relaxed">Uniquement sur invitation. Idéal pour les familles et cercles proches.</span>
+              </div>
+            </button>
           </div>
         </div>
 
