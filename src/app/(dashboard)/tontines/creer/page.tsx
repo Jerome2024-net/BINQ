@@ -36,7 +36,6 @@ export default function CreerTontinePage() {
   const { isAbonnementActif, souscrireAbonnement, getFraisConfig } = useFinance();
   const { showToast } = useToast();
   const [loading, setLoading] = useState(false);
-  const [activeEmojiTab, setActiveEmojiTab] = useState<"finance" | "lifestyle" | "people" | "other">("finance");
   const [subscriptionModalOpen, setSubscriptionModalOpen] = useState(false);
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string>("");
@@ -54,16 +53,6 @@ export default function CreerTontinePage() {
     categorie: "autre",
     visibilite: "publique",
   });
-
-  const EMOJI_CATEGORIES = {
-    finance: ["💰", "🏦", "💎", "💳", "💸", "📊", "📈", "💹"],
-    lifestyle: ["🏠", "🚗", "✈️", "🎓", "🏥", "🎁", "🎉", "💍"],
-    people: ["👨‍👩‍👧‍👦", "🤝", "💼", "👶", "👵", "👥", "🦸", "👷"],
-    other: ["zz", "🎯", "⭐", "🔥", "🌍", "🚀", "💡", "🎨"]
-  };
-
-  // Flattened for compatibility if needed, but we'll use categories in UI
-  const ALL_EMOJIS = Object.values(EMOJI_CATEGORIES).flat();
 
   const COULEUR_OPTIONS = [
     { value: "emerald", label: "Émeraude", class: "bg-emerald-500", gradient: "from-emerald-400 to-emerald-600" },
@@ -308,50 +297,17 @@ export default function CreerTontinePage() {
               <div className="border-t border-gray-100"></div>
 
               {/* 2. Photo de profil */}
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <label className="block text-sm font-bold text-gray-900">
+               <div>
+                  <label className="block text-sm font-bold text-gray-900 mb-3">
                     Photo de profil
                   </label>
-                  
-                  {/* Tabs */}
-                  <div className="flex bg-gray-100 p-1 rounded-lg">
-                    {(Object.keys(EMOJI_CATEGORIES) as Array<keyof typeof EMOJI_CATEGORIES>).map((cat) => (
-                      <button
-                        key={cat}
-                        type="button"
-                        onClick={() => setActiveEmojiTab(cat)}
-                        className={`px-3 py-1.5 text-xs font-medium rounded-md transition-all capitalize ${
-                          activeEmojiTab === cat
-                            ? "bg-white text-gray-900 shadow-sm"
-                            : "text-gray-500 hover:text-gray-700"
-                        }`}
-                      >
-                        {cat === 'finance' ? 'Finance' : cat === 'people' ? 'Groupe' : cat === 'lifestyle' ? 'Vie' : 'Autre'}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="bg-gray-50 p-4 rounded-2xl border border-gray-100 min-h-[140px]">
-                  <div className="grid grid-cols-8 sm:grid-cols-10 gap-2">
-                    {EMOJI_CATEGORIES[activeEmojiTab].map((emoji) => (
-                      <button
-                        key={emoji}
-                        type="button"
-                        onClick={() => setFormData({ ...formData, emoji })}
-                        className={`aspect-square rounded-xl text-2xl flex items-center justify-center transition-all duration-200 ${
-                          formData.emoji === emoji
-                            ? "bg-white ring-2 ring-primary-600 shadow-lg transform scale-110 z-10"
-                            : "bg-white/50 hover:bg-white hover:shadow-md hover:scale-105"
-                        }`}
-                      >
-                        {emoji}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              </div>
+                  <TontineImageUpload
+                    inline
+                    currentEmoji={formData.emoji}
+                    onUploadComplete={(url) => setImagePreview(url)}
+                    onFileSelect={(file) => setImageFile(file)}
+                  />
+               </div>
 
               <div className="border-t border-gray-100"></div>
 
@@ -381,20 +337,6 @@ export default function CreerTontinePage() {
                 </div>
               </div>
 
-               {/* 4. Upload Image (Optionnel) */}
-               <div className="pt-4">
-                  <div className="flex items-center justify-between mb-3">
-                    <label className="block text-sm font-medium text-gray-700">
-                      Photo personnalisée (Optionnel)
-                    </label>
-                  </div>
-                  <TontineImageUpload
-                    inline
-                    currentEmoji={formData.emoji}
-                    onUploadComplete={(url) => setImagePreview(url)}
-                    onFileSelect={(file) => setImageFile(file)}
-                  />
-               </div>
             </div>
 
             {/* Colonne Droite : Preview Card */}
