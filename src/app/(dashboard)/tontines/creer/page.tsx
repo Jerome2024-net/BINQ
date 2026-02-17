@@ -307,11 +307,11 @@ export default function CreerTontinePage() {
 
               <div className="border-t border-gray-100"></div>
 
-              {/* 2. Emoji / Icône */}
+              {/* 2. Photo de profil */}
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
                   <label className="block text-sm font-bold text-gray-900">
-                    Icône du projet
+                    Photo de profil
                   </label>
                   
                   {/* Tabs */}
