@@ -9,7 +9,6 @@ import {
   Clock,
   CheckCircle2,
   ArrowRight,
-  Star,
   CircleDollarSign,
   Zap,
   Globe,
@@ -194,7 +193,7 @@ export default function HomePage() {
               },
               {
                 step: "03",
-                icon: Star,
+                icon: CircleDollarSign,
                 title: "Recevez votre tour",
                 description:
                   "À chaque tour, un membre reçoit la cagnotte. Calendrier transparent et accessible.",
@@ -371,86 +370,6 @@ export default function HomePage() {
                 Commencer l&apos;essai gratuit
               </Link>
             </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Social Proof - Chiffres */}
-      <section className="py-20 bg-white border-t border-gray-100">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12">
-            {[
-              { value: "2 500+", label: "Utilisateurs actifs" },
-              { value: "€1.2M+", label: "Montant géré" },
-              { value: "350+", label: "Tontines créées" },
-              { value: "99.9%", label: "Disponibilité" },
-            ].map((stat, i) => (
-              <div key={i} className="text-center">
-                <div className="text-3xl md:text-4xl font-bold text-gray-900 tracking-tight">{stat.value}</div>
-                <div className="text-sm text-gray-500 mt-1 font-medium">{stat.label}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Testimonials */}
-      <section className="py-24 bg-surface-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <span className="section-label">Témoignages</span>
-            <h2 className="text-3xl md:text-[42px] font-bold text-gray-900 mt-3 mb-4 tracking-tight">
-              Ils nous font confiance
-            </h2>
-            <p className="text-gray-500 max-w-2xl mx-auto text-lg">
-              Découvrez ce que nos utilisateurs pensent de Binq
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 stagger-children">
-            {[
-              {
-                name: "Aminata D.",
-                role: "Organisatrice de tontine",
-                avatar: "A",
-                quote: "Binq a transformé la façon dont je gère ma tontine. Plus besoin de tableur Excel ni de collecter l'argent en cash. Tout est automatisé et transparent.",
-                rating: 5,
-              },
-              {
-                name: "Moussa K.",
-                role: "Membre de 3 tontines",
-                avatar: "M",
-                quote: "La transparence est ce qui m'a convaincu. Je vois exactement où en sont les cotisations, qui a payé et quand c'est mon tour. Simple et efficace.",
-                rating: 5,
-              },
-              {
-                name: "Fatou S.",
-                role: "Organisatrice depuis 6 mois",
-                avatar: "F",
-                quote: "L'essai gratuit de 90 jours m'a permis de tester sans risque. Je suis passée à l'abonnement sans hésiter. Le support est réactif et très pro.",
-                rating: 5,
-              },
-            ].map((testimonial, i) => (
-              <div key={i} className="bg-white rounded-2xl border border-gray-100 p-6 hover:shadow-lg hover:shadow-gray-200/50 transition-all duration-300">
-                <div className="flex items-center gap-1 mb-4">
-                  {[...Array(testimonial.rating)].map((_, j) => (
-                    <Star key={j} className="w-4 h-4 text-amber-400 fill-current" />
-                  ))}
-                </div>
-                <p className="text-gray-600 text-[15px] leading-relaxed mb-6">
-                  &ldquo;{testimonial.quote}&rdquo;
-                </p>
-                <div className="flex items-center gap-3 pt-4 border-t border-gray-100">
-                  <div className="w-10 h-10 bg-primary-100 rounded-full flex items-center justify-center">
-                    <span className="text-sm font-bold text-primary-700">{testimonial.avatar}</span>
-                  </div>
-                  <div>
-                    <p className="text-sm font-semibold text-gray-900">{testimonial.name}</p>
-                    <p className="text-xs text-gray-500">{testimonial.role}</p>
-                  </div>
-                </div>
-              </div>
-            ))}
           </div>
         </div>
       </section>
