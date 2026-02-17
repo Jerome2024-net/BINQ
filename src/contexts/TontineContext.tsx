@@ -52,7 +52,7 @@ interface CreerTontineData {
   regles?: string;
   emoji?: string;
   couleur?: string;
-  categorie?: "famille" | "amis" | "collegues" | "communaute" | "autre";
+  categorie?: "famille" | "amis" | "collegues" | "communaute" | "projet" | "autre" | string;
   visibilite?: "publique" | "privee";
 }
 

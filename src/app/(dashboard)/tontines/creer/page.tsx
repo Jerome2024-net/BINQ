@@ -27,6 +27,7 @@ import {
   Lock,
   Globe,
   Camera,
+  CheckCircle2,
 } from "lucide-react";
 
 export default function CreerTontinePage() {
@@ -35,6 +36,7 @@ export default function CreerTontinePage() {
   const { isAbonnementActif, souscrireAbonnement, getFraisConfig } = useFinance();
   const { showToast } = useToast();
   const [loading, setLoading] = useState(false);
+  const [activeEmojiTab, setActiveEmojiTab] = useState<"finance" | "lifestyle" | "people" | "other">("finance");
   const [subscriptionModalOpen, setSubscriptionModalOpen] = useState(false);
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string>("");
@@ -53,23 +55,33 @@ export default function CreerTontinePage() {
     visibilite: "publique",
   });
 
-  const EMOJI_OPTIONS = ["💰", "🏦", "🤝", "👨‍👩‍👧‍👦", "🎯", "💎", "🏠", "🚗", "✈️", "📚", "💼", "🎓", "🏥", "🌍", "⭐", "🔥"];
-  
+  const EMOJI_CATEGORIES = {
+    finance: ["💰", "🏦", "💎", "💳", "💸", "📊", "📈", "💹"],
+    lifestyle: ["🏠", "🚗", "✈️", "🎓", "🏥", "🎁", "🎉", "💍"],
+    people: ["👨‍👩‍👧‍👦", "🤝", "💼", "👶", "👵", "👥", "🦸", "👷"],
+    other: ["zz", "🎯", "⭐", "🔥", "🌍", "🚀", "💡", "🎨"]
+  };
+
+  // Flattened for compatibility if needed, but we'll use categories in UI
+  const ALL_EMOJIS = Object.values(EMOJI_CATEGORIES).flat();
+
   const COULEUR_OPTIONS = [
-    { value: "emerald", label: "Émeraude", class: "bg-emerald-500" },
-    { value: "blue", label: "Bleu", class: "bg-blue-500" },
-    { value: "purple", label: "Violet", class: "bg-purple-500" },
-    { value: "orange", label: "Orange", class: "bg-orange-500" },
-    { value: "rose", label: "Rose", class: "bg-rose-500" },
-    { value: "cyan", label: "Cyan", class: "bg-cyan-500" },
-    { value: "amber", label: "Ambre", class: "bg-amber-500" },
-    { value: "indigo", label: "Indigo", class: "bg-indigo-500" },
+    { value: "emerald", label: "Émeraude", class: "bg-emerald-500", gradient: "from-emerald-400 to-emerald-600" },
+    { value: "blue", label: "Océan", class: "bg-blue-500", gradient: "from-blue-400 to-blue-600" },
+    { value: "indigo", label: "Indigo", class: "bg-indigo-500", gradient: "from-indigo-400 to-indigo-600" },
+    { value: "purple", label: "Violet", class: "bg-purple-500", gradient: "from-purple-400 to-purple-600" },
+    { value: "rose", label: "Rose", class: "bg-rose-500", gradient: "from-rose-400 to-rose-600" },
+    { value: "orange", label: "Orange", class: "bg-orange-500", gradient: "from-orange-400 to-orange-600" },
+    { value: "amber", label: "Or", class: "bg-amber-500", gradient: "from-amber-400 to-amber-600" },
+    { value: "teal", label: "Turquoise", class: "bg-teal-500", gradient: "from-teal-400 to-teal-600" },
+    { value: "slate", label: "Carbone", class: "bg-slate-700", gradient: "from-slate-600 to-slate-800" },
   ];
 
   const CATEGORIE_OPTIONS = [
     { value: "famille", label: "Famille", emoji: "👨‍👩‍👧‍👦" },
     { value: "amis", label: "Amis", emoji: "🤝" },
-    { value: "collegues", label: "Collègues", emoji: "💼" },
+    { value: "collegues", label: "Travail", emoji: "💼" },
+    { value: "projet", label: "Projet", emoji: "🚀" },
     { value: "communaute", label: "Communauté", emoji: "🌍" },
     { value: "autre", label: "Autre", emoji: "⭐" },
   ];
@@ -98,7 +110,7 @@ export default function CreerTontinePage() {
         regles: formData.regles,
         emoji: formData.emoji,
         couleur: formData.couleur,
-        categorie: formData.categorie as "famille" | "amis" | "collegues" | "communaute" | "autre",
+        categorie: formData.categorie,
         visibilite: formData.visibilite as "publique" | "privee",
       });
 
@@ -249,101 +261,209 @@ export default function CreerTontinePage() {
           </div>
         </div>
 
-        {/* Profil visuel */}
-        <div className="card">
-          <h2 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
-            <Palette className="w-5 h-5 text-primary-600" />
-            Profil visuel
-          </h2>
+        {/* Profil visuel & Identité */}
+        <div className="card overflow-visible">
+          <div className="flex flex-col md:flex-row items-start gap-8">
+            
+            {/* Colonne Gauche : Paramètres */}
+            <div className="flex-1 space-y-8 w-full">
+              <h2 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
+                <Palette className="w-6 h-6 text-primary-600" />
+                Identité visuelle
+              </h2>
 
-          <div className="space-y-5">
-            {/* Emoji */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                <Smile className="w-4 h-4 inline mr-1" />
-                Icône de la tontine
+              {/* 1. Couleur (Gradient Picker) */}
+              <div>
+                <label className="block text-sm font-bold text-gray-900 mb-4">
+                  Thème & Couleur
+                </label>
+                <div className="grid grid-cols-5 sm:grid-cols-9 gap-3">
+                  {COULEUR_OPTIONS.map((c) => (
+                    <button
+                      key={c.value}
+                      type="button"
+                      onClick={() => setFormData({ ...formData, couleur: c.value })}
+                      className={`group relative w-10 h-10 rounded-full transition-all duration-300 ${
+                        formData.couleur === c.value
+                          ? "ring-2 ring-offset-2 ring-gray-900 scale-110"
+                          : "hover:scale-105 ring-1 ring-transparent hover:ring-gray-200"
+                      }`}
+                    >
+                      <div className={`w-full h-full rounded-full bg-gradient-to-br ${c.gradient} shadow-sm border border-black/5`} />
+                      {formData.couleur === c.value && (
+                        <div className="absolute inset-0 flex items-center justify-center">
+                          <CheckCircle2 className="w-5 h-5 text-white drop-shadow-md" />
+                        </div>
+                      )}
+                      
+                      {/* Tooltip */}
+                      <span className="absolute -bottom-8 left-1/2 -translate-x-1/2 px-2 py-1 bg-gray-900 text-white text-[10px] rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-10">
+                        {c.label}
+                      </span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="border-t border-gray-100"></div>
+
+              {/* 2. Emoji / Icône */}
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <label className="block text-sm font-bold text-gray-900">
+                    Icône du projet
+                  </label>
+                  
+                  {/* Tabs */}
+                  <div className="flex bg-gray-100 p-1 rounded-lg">
+                    {(Object.keys(EMOJI_CATEGORIES) as Array<keyof typeof EMOJI_CATEGORIES>).map((cat) => (
+                      <button
+                        key={cat}
+                        type="button"
+                        onClick={() => setActiveEmojiTab(cat)}
+                        className={`px-3 py-1.5 text-xs font-medium rounded-md transition-all capitalize ${
+                          activeEmojiTab === cat
+                            ? "bg-white text-gray-900 shadow-sm"
+                            : "text-gray-500 hover:text-gray-700"
+                        }`}
+                      >
+                        {cat === 'finance' ? 'Finance' : cat === 'people' ? 'Groupe' : cat === 'lifestyle' ? 'Vie' : 'Autre'}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="bg-gray-50 p-4 rounded-2xl border border-gray-100 min-h-[140px]">
+                  <div className="grid grid-cols-8 sm:grid-cols-10 gap-2">
+                    {EMOJI_CATEGORIES[activeEmojiTab].map((emoji) => (
+                      <button
+                        key={emoji}
+                        type="button"
+                        onClick={() => setFormData({ ...formData, emoji })}
+                        className={`aspect-square rounded-xl text-2xl flex items-center justify-center transition-all duration-200 ${
+                          formData.emoji === emoji
+                            ? "bg-white ring-2 ring-primary-600 shadow-lg transform scale-110 z-10"
+                            : "bg-white/50 hover:bg-white hover:shadow-md hover:scale-105"
+                        }`}
+                      >
+                        {emoji}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              <div className="border-t border-gray-100"></div>
+
+              {/* 3. Catégorie */}
+              <div>
+                <label className="block text-sm font-bold text-gray-900 mb-4">
+                  Catégorie
+                </label>
+                <div className="grid grid-cols-2 lg:grid-cols-3 gap-3">
+                  {CATEGORIE_OPTIONS.map((cat) => (
+                    <button
+                      key={cat.value}
+                      type="button"
+                      onClick={() => setFormData({ ...formData, categorie: cat.value })}
+                      className={`relative group flex items-center p-3 rounded-xl border transition-all duration-200 text-left ${
+                        formData.categorie === cat.value
+                          ? "bg-gray-900 border-gray-900 text-white shadow-lg"
+                          : "bg-white border-gray-200 text-gray-600 hover:border-gray-300 hover:bg-gray-50"
+                      }`}
+                    >
+                      <span className="text-2xl mr-3">{cat.emoji}</span>
+                      <span className={`text-sm font-medium ${formData.categorie === cat.value ? "text-white" : "text-gray-900"}`}>
+                        {cat.label}
+                      </span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+               {/* 4. Upload Image (Optionnel) */}
+               <div className="pt-4">
+                  <div className="flex items-center justify-between mb-3">
+                    <label className="block text-sm font-medium text-gray-700">
+                      Photo personnalisée (Optionnel)
+                    </label>
+                  </div>
+                  <TontineImageUpload
+                    inline
+                    currentEmoji={formData.emoji}
+                    onUploadComplete={(url) => setImagePreview(url)}
+                    onFileSelect={(file) => setImageFile(file)}
+                  />
+               </div>
+            </div>
+
+            {/* Colonne Droite : Preview Card */}
+            <div className="w-full md:w-80 flex-shrink-0 sticky top-6">
+              <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-4">
+                Aperçu en direct
               </label>
-              <div className="flex flex-wrap gap-2">
-                {EMOJI_OPTIONS.map((emoji) => (
-                  <button
-                    key={emoji}
-                    type="button"
-                    onClick={() => setFormData({ ...formData, emoji })}
-                    className={`w-12 h-12 rounded-xl text-2xl flex items-center justify-center transition-all ${
-                      formData.emoji === emoji
-                        ? "bg-primary-100 border-2 border-primary-500 scale-110 shadow-md"
-                        : "bg-gray-50 border border-gray-200 hover:bg-gray-100 hover:scale-105"
-                    }`}
-                  >
-                    {emoji}
-                  </button>
-                ))}
+              
+              <div className="relative group perspective-1000">
+                <div className={`relative bg-white rounded-3xl overflow-hidden shadow-2xl transition-all duration-500 border border-gray-100 hover:shadow-[0_20px_50px_rgba(0,0,0,0.1)]`}>
+                  
+                  {/* Header Gradient */}
+                  <div className={`h-32 bg-gradient-to-br ${COULEUR_OPTIONS.find(c => c.value === formData.couleur)?.gradient || 'from-emerald-400 to-emerald-600'} relative p-6 flex flex-col justify-between transition-colors duration-500`}>
+                    <div className="flex justify-between items-start">
+                      <div className="bg-white/20 backdrop-blur-md px-3 py-1 rounded-full text-white text-xs font-medium border border-white/30">
+                        {CATEGORIE_OPTIONS.find(c => c.value === formData.categorie)?.label || 'Projet'}
+                      </div>
+                      <div className="w-8 h-8 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center border border-white/30">
+                        <Camera className="w-4 h-4 text-white" />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Profile Image / Icon */}
+                  <div className="absolute top-20 left-6">
+                    <div className="w-20 h-20 rounded-2xl bg-white p-1 shadow-lg ring-1 ring-black/5">
+                      <div className="w-full h-full rounded-xl bg-gray-50 flex items-center justify-center overflow-hidden text-4xl">
+                        {imagePreview ? (
+                          <img src={imagePreview} alt="Preview" className="w-full h-full object-cover" />
+                        ) : (
+                          formData.emoji
+                        )}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Content */}
+                  <div className="pt-12 px-6 pb-6">
+                    <h3 className="font-bold text-xl text-gray-900 truncate">
+                      {formData.nom || "Nom du projet"}
+                    </h3>
+                    <div className="flex items-center gap-2 mt-2 text-sm text-gray-500">
+                      <Users className="w-4 h-4" />
+                      <span>{Number(formData.membresMax) || 0} participants</span>
+                    </div>
+                    
+                    <div className="mt-6 flex items-center justify-between p-3 bg-gray-50 rounded-xl border border-gray-100">
+                        <div className="text-xs text-gray-500 uppercase font-semibold">Cotisation</div>
+                        <div className="font-bold text-gray-900">
+                          {Number(formData.montantCotisation).toLocaleString('fr-FR')} {formData.devise === 'XAF' ? 'FCFA' : '€'}
+                        </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Background Decor */}
+                <div className={`absolute -inset-2 bg-gradient-to-br ${COULEUR_OPTIONS.find(c => c.value === formData.couleur)?.gradient || 'from-gray-200 to-gray-300'} rounded-[2rem] opacity-20 blur-xl -z-10 transition-colors duration-500`} />
+              </div>
+
+              <div className="mt-6 p-4 bg-indigo-50 rounded-xl border border-indigo-100 text-xs text-indigo-800 leading-relaxed">
+                <p className="flex items-start gap-2">
+                  <Info className="w-4 h-4 flex-shrink-0 mt-0.5" />
+                  Cette carte sera visible par tous les membres invités sur leur tableau de bord.
+                </p>
               </div>
             </div>
 
-            {/* Couleur */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                <Palette className="w-4 h-4 inline mr-1" />
-                Couleur du thème
-              </label>
-              <div className="flex flex-wrap gap-3">
-                {COULEUR_OPTIONS.map((c) => (
-                  <button
-                    key={c.value}
-                    type="button"
-                    onClick={() => setFormData({ ...formData, couleur: c.value })}
-                    className={`flex items-center gap-2 px-3 py-2 rounded-xl transition-all ${
-                      formData.couleur === c.value
-                        ? "ring-2 ring-offset-2 ring-primary-500 bg-white shadow-md"
-                        : "bg-gray-50 hover:bg-white hover:shadow-sm"
-                    }`}
-                  >
-                    <span className={`w-5 h-5 rounded-full ${c.class}`} />
-                    <span className="text-sm font-medium text-gray-700">{c.label}</span>
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Catégorie */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                <Tag className="w-4 h-4 inline mr-1" />
-                Catégorie
-              </label>
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                {CATEGORIE_OPTIONS.map((cat) => (
-                  <button
-                    key={cat.value}
-                    type="button"
-                    onClick={() => setFormData({ ...formData, categorie: cat.value })}
-                    className={`flex items-center gap-2 px-4 py-3 rounded-xl text-sm font-medium transition-all ${
-                      formData.categorie === cat.value
-                        ? "bg-primary-50 border-2 border-primary-500 text-primary-700"
-                        : "bg-gray-50 border border-gray-200 text-gray-700 hover:bg-gray-100"
-                    }`}
-                  >
-                    <span className="text-lg">{cat.emoji}</span>
-                    {cat.label}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Photo de profil */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                <Camera className="w-4 h-4 inline mr-1" />
-                Photo de profil (optionnel)
-              </label>
-              <TontineImageUpload
-                inline
-                currentEmoji={formData.emoji}
-                onUploadComplete={(url) => setImagePreview(url)}
-                onFileSelect={(file) => setImageFile(file)}
-              />
-            </div>
+          </div>
+        </div>
 
             {/* Visibilité */}
             <div>
