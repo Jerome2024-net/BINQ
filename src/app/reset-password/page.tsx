@@ -83,6 +83,7 @@ function ResetPasswordForm() {
       } else {
         setSuccess(true);
         setTimeout(() => {
+          router.refresh();
           router.push("/dashboard");
         }, 3000);
       }

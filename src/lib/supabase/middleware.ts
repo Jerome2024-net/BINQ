@@ -30,9 +30,11 @@ export async function updateSession(request: NextRequest) {
     }
   );
 
-  // Utiliser getUser() au lieu de getSession() — plus sécurisé côté serveur
-  // getSession() peut être altéré côté client, getUser() valide auprès du serveur Supabase
-  const { data: { user } } = await supabase.auth.getUser();
+  // Utiliser getSession() pour des vérifications de routing rapides (lecture cookie locale)
+  // getUser() fait un appel réseau à chaque navigation (~200-500ms de latence)
+  // La validation sécurisée du token se fait côté client dans AuthContext
+  const { data: { session } } = await supabase.auth.getSession();
+  const user = session?.user ?? null;
 
   const pathname = request.nextUrl.pathname;
 

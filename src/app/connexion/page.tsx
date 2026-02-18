@@ -28,6 +28,9 @@ function ConnexionForm() {
       const result = await login(email, password);
       if (result.success) {
         showToast("success", "Bienvenue !", "Connexion réussie");
+        // router.refresh() invalide le cache serveur pour que le middleware
+        // relise les cookies d'auth mis à jour par signInWithPassword
+        router.refresh();
         router.push(redirect || "/dashboard");
         return;
       } else {
