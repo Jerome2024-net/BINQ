@@ -59,6 +59,55 @@ export async function POST(request: NextRequest) {
         );
         break;
 
+      case "tour-notification":
+        emailContent = emailTemplates.tourNotification(
+          data.prenom,
+          data.tontineName,
+          data.tourNumero,
+          data.datePrevue,
+          data.montantEstime
+        );
+        break;
+
+      case "echeance-reminder":
+        emailContent = emailTemplates.echeanceReminder(
+          data.prenom,
+          data.tontineName,
+          data.montant,
+          data.dateLimite,
+          data.joursRestants
+        );
+        break;
+
+      case "tour-started":
+        emailContent = emailTemplates.tourStarted(
+          data.prenom,
+          data.tontineName,
+          data.tourNumero,
+          data.beneficiaire,
+          data.montant,
+          data.dateLimite
+        );
+        break;
+
+      case "payment-late":
+        emailContent = emailTemplates.paymentLate(
+          data.prenom,
+          data.tontineName,
+          data.montant,
+          data.joursRetard
+        );
+        break;
+
+      case "tontine-completed":
+        emailContent = emailTemplates.tontineCompleted(
+          data.prenom,
+          data.tontineName,
+          data.totalTours,
+          data.totalMontant
+        );
+        break;
+
       default:
         return NextResponse.json(
           { error: `Type d'email inconnu: ${type}` },
