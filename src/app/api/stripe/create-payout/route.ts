@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { getStripe } from "@/lib/stripe";
 import { getAuthenticatedUser } from "@/lib/api-auth";
+import { createPayoutSchema, validateBody } from "@/lib/validations";
 
 /**
  * POST /api/stripe/create-payout
@@ -14,17 +15,14 @@ export async function POST(request: Request) {
     }
 
     const body = await request.json();
-    const { amount, currency, accountId, description } = body;
-
-    if (!amount || amount <= 0) {
-      return NextResponse.json({ error: "Montant invalide" }, { status: 400 });
+    const validation = validateBody(createPayoutSchema, body);
+    if (!validation.success) {
+      return NextResponse.json({ error: validation.error }, { status: 400 });
     }
 
-    if (!accountId) {
-      return NextResponse.json({ error: "accountId requis" }, { status: 400 });
-    }
-
-    const cur = (currency || "eur").toLowerCase();
+    const { amount, currency, stripeAccountId } = validation.data;
+    const accountId = stripeAccountId;
+    const cur = currency;
     const amountInCents = Math.round(amount * 100);
 
     // Vérifier le solde disponible sur le compte Connect
@@ -44,7 +42,7 @@ export async function POST(request: Request) {
       {
         amount: amountInCents,
         currency: cur,
-        description: description || "Retrait Binq",
+        description: "Retrait Binq",
         metadata: {
           type: "retrait",
           app: "binq",

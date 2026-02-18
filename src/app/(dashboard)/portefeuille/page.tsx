@@ -9,6 +9,7 @@ import { useToast } from "@/contexts/ToastContext";
 import DepositWithdrawModal from "@/components/DepositWithdrawModal";
 import SubscriptionModal from "@/components/SubscriptionModal";
 import StripeConnectCard from "@/components/StripeConnectCard";
+import { PortefeuilleSkeleton } from "@/components/Skeleton";
 import { formatMontant, formatDate } from "@/lib/data";
 import {
   Wallet,
@@ -98,6 +99,11 @@ export default function PortefeuillePage() {
   const recentTx = getTransactions({ limit: 8 });
   const frais = getFraisConfig();
   const solde = wallet?.solde || 0;
+  const { isLoading: financeLoading } = useFinance();
+
+  if (financeLoading) {
+    return <PortefeuilleSkeleton />;
+  }
 
   const handleDeposit = () => {
     setModalMode("depot");

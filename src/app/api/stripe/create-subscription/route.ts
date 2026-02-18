@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { getStripe } from "@/lib/stripe";
 import { getAuthenticatedUser } from "@/lib/api-auth";
+import { createSubscriptionSchema, validateBody } from "@/lib/validations";
 
 /**
  * POST /api/stripe/create-subscription
@@ -16,7 +17,10 @@ export async function POST(request: Request) {
     let email: string | undefined;
     try {
       const body = await request.json();
-      email = body.email;
+      const validation = validateBody(createSubscriptionSchema, body);
+      if (validation.success) {
+        email = validation.data.email;
+      }
     } catch {
       // body vide, on utilise l'email de l'utilisateur authentifié
     }

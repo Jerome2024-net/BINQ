@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useTontine } from "@/contexts/TontineContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/contexts/ToastContext";
+import { ExplorerSkeleton } from "@/components/Skeleton";
 import { formatMontant, getStatutLabel, getStatutColor } from "@/lib/data";
 import {
   Users,
@@ -85,11 +86,7 @@ export default function ExplorerPage() {
   };
 
   if (isLoading) {
-    return (
-      <div className="flex items-center justify-center py-20">
-        <Loader2 className="w-8 h-8 text-primary-600 animate-spin" />
-      </div>
-    );
+    return <ExplorerSkeleton />;
   }
 
   return (

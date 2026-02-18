@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { getStripe } from "@/lib/stripe";
 import { getAuthenticatedUser } from "@/lib/api-auth";
+import { onboardingLinkSchema, validateBody } from "@/lib/validations";
 
 /**
  * POST /api/stripe/onboarding-link
@@ -14,11 +15,12 @@ export async function POST(request: Request) {
     }
 
     const body = await request.json();
-    const { accountId } = body;
-
-    if (!accountId) {
-      return NextResponse.json({ error: "accountId requis" }, { status: 400 });
+    const validation = validateBody(onboardingLinkSchema, body);
+    if (!validation.success) {
+      return NextResponse.json({ error: validation.error }, { status: 400 });
     }
+
+    const { accountId } = validation.data;
 
     const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
 

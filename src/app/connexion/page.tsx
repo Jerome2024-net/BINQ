@@ -160,7 +160,7 @@ function ConnexionForm() {
                 <span className="text-sm text-gray-500">Se souvenir de moi</span>
               </label>
               <Link
-                href="#"
+                href="/mot-de-passe-oublie"
                 className="text-sm text-primary-600 hover:text-primary-700 font-medium"
               >
                 Mot de passe oublié ?

@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { getStripe } from "@/lib/stripe";
 import { getAuthenticatedUser } from "@/lib/api-auth";
+import { distributePotSchema, validateBody } from "@/lib/validations";
 
 /**
  * POST /api/stripe/distribute-pot
@@ -14,20 +15,13 @@ export async function POST(request: Request) {
     }
 
     const body = await request.json();
-    const { amount, currency, destinationAccountId, tontineNom, tourNumero } = body;
-
-    if (!amount || amount <= 0) {
-      return NextResponse.json({ error: "Montant invalide" }, { status: 400 });
+    const validation = validateBody(distributePotSchema, body);
+    if (!validation.success) {
+      return NextResponse.json({ error: validation.error }, { status: 400 });
     }
 
-    if (!destinationAccountId) {
-      return NextResponse.json(
-        { error: "Le bénéficiaire doit avoir un compte Stripe Connect vérifié" },
-        { status: 400 }
-      );
-    }
-
-    const cur = (currency || "eur").toLowerCase();
+    const { amount, currency, destinationAccountId, tontineNom, tourNumero } = validation.data;
+    const cur = currency;
     const amountInCents = Math.round(amount * 100);
 
     // Vérifier que le compte destination est actif

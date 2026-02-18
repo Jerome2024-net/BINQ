@@ -7,6 +7,7 @@ import { useTontine } from "@/contexts/TontineContext";
 import { useToast } from "@/contexts/ToastContext";
 import { useFinance } from "@/contexts/FinanceContext";
 import PaymentModal from "@/components/PaymentModal";
+import { DashboardSkeleton } from "@/components/Skeleton";
 import { formatMontant, formatDate } from "@/lib/data";
 import {
   Users,
@@ -28,9 +29,9 @@ import {
 
 export default function DashboardPage() {
   const { user } = useAuth();
-  const { getMesTontines, effectuerPaiement } = useTontine();
+  const { getMesTontines, effectuerPaiement, isLoading: tontineLoading } = useTontine();
   const { showToast } = useToast();
-  const { wallet, getOrCreateWallet, getFinancialSummary, payerCotisation, recevoirPot } = useFinance();
+  const { wallet, getOrCreateWallet, getFinancialSummary, payerCotisation, recevoirPot, isLoading: financeLoading } = useFinance();
 
   // Invitations
   const { invitationsRecues, accepterInvitation, refuserInvitation } = useTontine();
@@ -135,6 +136,10 @@ export default function DashboardPage() {
       }
     }
   };
+
+  if (tontineLoading || financeLoading) {
+    return <DashboardSkeleton />;
+  }
 
   return (
     <div className="space-y-8">

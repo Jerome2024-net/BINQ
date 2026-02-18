@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from "react";
 import { useFinance } from "@/contexts/FinanceContext";
+import { TransactionsSkeleton } from "@/components/Skeleton";
 import { formatMontant, formatDate } from "@/lib/data";
 import { TransactionType } from "@/types";
 import {
@@ -38,7 +39,7 @@ const typeFilters: { value: string; label: string }[] = [
 ];
 
 export default function TransactionsPage() {
-  const { getTransactions, getFinancialSummary, getLedger } = useFinance();
+  const { getTransactions, getFinancialSummary, getLedger, isLoading: financeLoading } = useFinance();
   const [searchQuery, setSearchQuery] = useState("");
   const [typeFilter, setTypeFilter] = useState("all");
   const [expandedTx, setExpandedTx] = useState<string | null>(null);
@@ -150,6 +151,10 @@ export default function TransactionsPage() {
     a.click();
     URL.revokeObjectURL(url);
   };
+
+  if (financeLoading) {
+    return <TransactionsSkeleton />;
+  }
 
   return (
     <div className="space-y-8">

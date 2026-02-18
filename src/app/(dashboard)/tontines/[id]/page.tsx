@@ -14,6 +14,7 @@ import ConfirmModal from "@/components/ConfirmModal";
 import TontineProfileCard from "@/components/TontineProfileCard";
 import OrganizerProfileCard from "@/components/OrganizerProfileCard";
 import ParticipantProfileCard from "@/components/ParticipantProfileCard";
+import { TontineDetailSkeleton } from "@/components/Skeleton";
 import {
   Users,
   CircleDollarSign,
@@ -73,7 +74,7 @@ export default function TontineDetailPage({
   const { id } = params;
   const router = useRouter();
   const { user } = useAuth();
-  const { getTontineById, effectuerPaiement, inviterMembre, exclureMembre, demarrerTontine, supprimerTontine, quitterGroupe, rejoindreGroupe, signalerDefaillance, getInvitationsPourTontine } = useTontine();
+  const { getTontineById, effectuerPaiement, inviterMembre, exclureMembre, demarrerTontine, supprimerTontine, quitterGroupe, rejoindreGroupe, signalerDefaillance, getInvitationsPourTontine, isLoading: tontineLoading } = useTontine();
   const { showToast } = useToast();
   const { payerCotisation, recevoirPot, getOrCreateWallet, rembourserCotisationAnnulation } = useFinance();
   const { distributePot, currency } = usePayment();
@@ -91,6 +92,10 @@ export default function TontineDetailPage({
   }>({ open: false, title: "", message: "", confirmText: "", danger: false, action: () => {} });
 
   const tontine = getTontineById(id);
+
+  if (tontineLoading) {
+    return <TontineDetailSkeleton />;
+  }
 
   if (!tontine) {
     return (
