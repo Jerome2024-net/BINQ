@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { useTontine } from "@/contexts/TontineContext";
 import { useFinance } from "@/contexts/FinanceContext";
@@ -28,6 +28,8 @@ import {
   Globe,
   Camera,
   CheckCircle2,
+  X,
+  AlertTriangle,
 } from "lucide-react";
 
 export default function CreerTontinePage() {
@@ -37,6 +39,7 @@ export default function CreerTontinePage() {
   const { showToast } = useToast();
   const [loading, setLoading] = useState(false);
   const [subscriptionModalOpen, setSubscriptionModalOpen] = useState(false);
+  const [showConfirmation, setShowConfirmation] = useState(false);
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string>("");
   const [formData, setFormData] = useState({
@@ -75,6 +78,26 @@ export default function CreerTontinePage() {
     { value: "autre", label: "Autre", emoji: "⭐", desc: "Personnalisé", gradient: "from-gray-500 to-slate-600", bg: "bg-gray-50", ring: "ring-gray-500", text: "text-gray-700" },
   ];
 
+  // Auto-calcul de la date de fin
+  const dateFinEstimee = useMemo(() => {
+    if (!formData.dateDebut || !formData.membresMax) return "";
+    const start = new Date(formData.dateDebut);
+    const membres = Number(formData.membresMax);
+    if (isNaN(start.getTime()) || membres < 2) return "";
+    
+    let totalDays = 0;
+    switch (formData.frequence) {
+      case "hebdomadaire": totalDays = membres * 7; break;
+      case "bimensuel": totalDays = membres * 14; break;
+      case "mensuel": totalDays = membres * 30; break;
+    }
+    const end = new Date(start);
+    end.setDate(end.getDate() + totalDays);
+    return end.toISOString().split("T")[0];
+  }, [formData.dateDebut, formData.membresMax, formData.frequence]);
+
+  const potEstime = Number(formData.montantCotisation) * (Number(formData.membresMax) - 1);
+
   const handleChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
@@ -85,6 +108,12 @@ export default function CreerTontinePage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    // Show confirmation modal instead of submitting directly
+    setShowConfirmation(true);
+  };
+
+  const handleConfirmCreate = async () => {
+    setShowConfirmation(false);
     setLoading(true);
 
     try {
@@ -121,8 +150,8 @@ export default function CreerTontinePage() {
         }
       }
 
-      showToast("success", "Tontine créée !", `"${formData.nom}" a été créée avec succès`);
-      router.push(`/tontines/${newTontine.id}`);
+      // Redirect to success page
+      router.push(`/tontines/${newTontine.id}/succes?nom=${encodeURIComponent(formData.nom)}&montant=${formData.montantCotisation}&frequence=${formData.frequence}&membres=${formData.membresMax}&couleur=${formData.couleur}&categorie=${formData.categorie}&visibilite=${formData.visibilite}`);
     } catch (err) {
       showToast("error", "Erreur", err instanceof Error ? err.message : "Une erreur est survenue");
       setLoading(false);
@@ -572,6 +601,22 @@ export default function CreerTontinePage() {
               </div>
             </div>
 
+            {/* Date de fin auto-calculée */}
+            {dateFinEstimee && (
+              <div className="bg-blue-50 border border-blue-100 rounded-xl p-4 flex items-start gap-3">
+                <Calendar className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
+                <div>
+                  <p className="text-sm font-semibold text-blue-900">Date de fin estimée</p>
+                  <p className="text-sm text-blue-700 mt-0.5">
+                    {new Date(dateFinEstimee).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" })}
+                  </p>
+                  <p className="text-xs text-blue-500 mt-1">
+                    Calculée automatiquement : {formData.membresMax} membres × {formData.frequence === "hebdomadaire" ? "1 semaine" : formData.frequence === "bimensuel" ? "2 semaines" : "1 mois"} par tour
+                  </p>
+                </div>
+              </div>
+            )}
+
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1.5">
                 Règles de la tontine (optionnel)
@@ -634,13 +679,18 @@ export default function CreerTontinePage() {
               <div className="sm:col-span-2">
                 <span className="text-primary-600">Cagnotte par tour:</span>{" "}
                 <span className="font-semibold text-primary-900">
-                  {(
-                    Number(formData.montantCotisation) *
-                    (Number(formData.membresMax) - 1)
-                  ).toLocaleString("fr-FR")}{" "}
+                  {potEstime.toLocaleString("fr-FR")}{" "}
                   €
                 </span>
               </div>
+              {dateFinEstimee && (
+                <div className="sm:col-span-2">
+                  <span className="text-primary-600">Date de fin estimée:</span>{" "}
+                  <span className="font-semibold text-primary-900">
+                    {new Date(dateFinEstimee).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" })}
+                  </span>
+                </div>
+              )}
             </div>
           </div>
         )}
@@ -672,6 +722,72 @@ export default function CreerTontinePage() {
           </Link>
         </div>
       </form>
+      )}
+
+      {/* Confirmation Modal */}
+      {showConfirmation && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={() => setShowConfirmation(false)}>
+          <div className="bg-white rounded-2xl max-w-md w-full shadow-2xl" onClick={(e) => e.stopPropagation()}>
+            <div className="p-6 border-b border-gray-100 flex items-center justify-between">
+              <h3 className="text-lg font-bold text-gray-900">Confirmer la création</h3>
+              <button onClick={() => setShowConfirmation(false)} className="p-1 rounded-lg hover:bg-gray-100 text-gray-400">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            <div className="p-6 space-y-4">
+              <div className="bg-primary-50 rounded-xl p-4 space-y-2">
+                <div className="flex items-center gap-3">
+                  <span className="text-2xl">{formData.emoji}</span>
+                  <div>
+                    <p className="font-bold text-gray-900">{formData.nom}</p>
+                    <p className="text-sm text-gray-500 capitalize">{formData.frequence} · {formData.membresMax} membres max</p>
+                  </div>
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-3 text-sm">
+                <div className="bg-gray-50 rounded-lg p-3">
+                  <p className="text-gray-500 text-xs">Cotisation</p>
+                  <p className="font-bold text-gray-900">{Number(formData.montantCotisation).toLocaleString("fr-FR")} €</p>
+                </div>
+                <div className="bg-gray-50 rounded-lg p-3">
+                  <p className="text-gray-500 text-xs">Pot par tour</p>
+                  <p className="font-bold text-primary-600">{potEstime.toLocaleString("fr-FR")} €</p>
+                </div>
+                <div className="bg-gray-50 rounded-lg p-3">
+                  <p className="text-gray-500 text-xs">Début</p>
+                  <p className="font-bold text-gray-900">{formData.dateDebut ? new Date(formData.dateDebut).toLocaleDateString("fr-FR", { day: "numeric", month: "short", year: "numeric" }) : "-"}</p>
+                </div>
+                <div className="bg-gray-50 rounded-lg p-3">
+                  <p className="text-gray-500 text-xs">Fin estimée</p>
+                  <p className="font-bold text-gray-900">{dateFinEstimee ? new Date(dateFinEstimee).toLocaleDateString("fr-FR", { day: "numeric", month: "short", year: "numeric" }) : "-"}</p>
+                </div>
+              </div>
+              <div className="bg-amber-50 border border-amber-200 rounded-xl p-3 flex gap-2">
+                <AlertTriangle className="w-4 h-4 text-amber-600 flex-shrink-0 mt-0.5" />
+                <p className="text-xs text-amber-700">Une fois créée, certains paramètres ne pourront plus être modifiés (montant, fréquence, membres max).</p>
+              </div>
+            </div>
+            <div className="p-6 border-t border-gray-100 flex gap-3">
+              <button
+                onClick={() => setShowConfirmation(false)}
+                className="btn-secondary flex-1"
+              >
+                Modifier
+              </button>
+              <button
+                onClick={handleConfirmCreate}
+                disabled={loading}
+                className="btn-primary flex-1 flex items-center justify-center gap-2"
+              >
+                {loading ? (
+                  <><Loader2 className="w-4 h-4 animate-spin" /> Création...</>
+                ) : (
+                  <><CheckCircle2 className="w-4 h-4" /> Confirmer</>
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );
