@@ -71,14 +71,51 @@ export function TontineProvider({ children }: { children: React.ReactNode }) {
   // Chargement des tontines avec toutes les relations
   // ========================
   const loadTontines = useCallback(async () => {
-    try {
-      // 1. Charger toutes les tontines
-      const { data: tontineRows, error: tontineError } = await supabase
-        .from("tontines")
-        .select("*")
-        .order("created_at", { ascending: false });
+    if (!user) {
+      setTontines([]);
+      return;
+    }
 
-      if (tontineError || !tontineRows || tontineRows.length === 0) {
+    try {
+      // 1. D'abord trouver les tontines dont l'utilisateur est membre ou organisateur
+      // + les tontines publiques ouvertes (pour l'explorer)
+      const [membresRes, tontineRows_] = await Promise.all([
+        supabase.from("membres").select("tontine_id").eq("user_id", user.id),
+        supabase
+          .from("tontines")
+          .select("*")
+          .or(`organisateur_id.eq.${user.id},visibilite.eq.publique,statut.in.(en_attente,active)`)
+          .order("created_at", { ascending: false }),
+      ]);
+
+      const membreTontineIds = new Set((membresRes.data || []).map((m: { tontine_id: string }) => m.tontine_id));
+      
+      // Dédupliquer : on a les tontines de l'orga + publiques ouvertes, on ajoute celles où on est membre
+      const tontineRowsMap = new Map<string, Record<string, unknown>>();
+      // eslint-disable-next-line
+      for (const t of (tontineRows_ as any)?.data || []) {
+        tontineRowsMap.set(t.id as string, t);
+      }
+
+      // Charger aussi les tontines où on est membre (peut inclure des privées)
+      if (membreTontineIds.size > 0) {
+        const missingIds = Array.from(membreTontineIds).filter((id) => !tontineRowsMap.has(id as string)) as string[];
+        if (missingIds.length > 0) {
+          const { data: extraTontines } = await supabase
+            .from("tontines")
+            .select("*")
+            .in("id", missingIds);
+          // eslint-disable-next-line
+          for (const t of (extraTontines || []) as any[]) {
+            tontineRowsMap.set(t.id, t);
+          }
+        }
+      }
+
+      // eslint-disable-next-line
+      const tontineRows = Array.from(tontineRowsMap.values()) as any[];
+
+      if (!tontineRows || tontineRows.length === 0) {
         setTontines([]);
         return;
       }
@@ -89,7 +126,7 @@ export function TontineProvider({ children }: { children: React.ReactNode }) {
       const organisateurIds = Array.from(new Set(tontineRows.map((t: any) => t.organisateur_id as string)));
 
       // 2. Batch: charger TOUT en parallèle (4 requêtes au lieu de N*4)
-      const [profilesRes, membresRes, toursRes, paiementsRes] = await Promise.all([
+      const [profilesRes, allMembresRes, toursRes, paiementsRes] = await Promise.all([
         supabase.from("profiles").select("*").in("id", organisateurIds),
         supabase.from("membres").select("*, profiles(*)").in("tontine_id", tontineIds),
         supabase.from("tours").select("*, profiles(*)").in("tontine_id", tontineIds).order("numero", { ascending: true }),
@@ -102,7 +139,7 @@ export function TontineProvider({ children }: { children: React.ReactNode }) {
       // eslint-disable-next-line
       const membresByTontine = new Map<string, any[]>();
       // eslint-disable-next-line
-      for (const m of (membresRes.data || []) as any[]) {
+      for (const m of (allMembresRes.data || []) as any[]) {
         const arr = membresByTontine.get(m.tontine_id) || [];
         arr.push(m);
         membresByTontine.set(m.tontine_id, arr);
@@ -222,7 +259,7 @@ export function TontineProvider({ children }: { children: React.ReactNode }) {
     } catch {
       setTontines([]);
     }
-  }, [supabase]);
+  }, [supabase, user]);
 
   // ========================
   // Chargement des invitations
@@ -234,66 +271,72 @@ export function TontineProvider({ children }: { children: React.ReactNode }) {
       return;
     }
 
-    // Invitations reçues (où mon email correspond)
-    const { data: recuesRows } = await supabase
-      .from("invitations")
-      .select("*")
-      .eq("email", user.email.toLowerCase())
-      .eq("statut", "en_attente")
-      .order("created_at", { ascending: false });
-
-    // Invitations envoyées
-    const { data: envoyeesRows } = await supabase
-      .from("invitations")
-      .select("*")
-      .eq("inviteur_id", user.id)
-      .order("created_at", { ascending: false });
-
-    const mapInvitation = async (row: Record<string, unknown>): Promise<Invitation> => {
-      // Charger info tontine
-      const { data: tontineRow } = await supabase
-        .from("tontines")
-        .select("nom, montant_cotisation, devise, frequence, nombre_membres, membres_max")
-        .eq("id", row.tontine_id)
-        .single();
-
-      // Charger info inviteur
-      const { data: inviteurRow } = await supabase
-        .from("profiles")
+    // Charger les deux types d'invitations en parallèle
+    const [recuesRes, envoyeesRes] = await Promise.all([
+      supabase
+        .from("invitations")
         .select("*")
-        .eq("id", row.inviteur_id)
-        .single();
+        .eq("email", user.email.toLowerCase())
+        .eq("statut", "en_attente")
+        .order("created_at", { ascending: false }),
+      supabase
+        .from("invitations")
+        .select("*")
+        .eq("inviteur_id", user.id)
+        .order("created_at", { ascending: false }),
+    ]);
+
+    const recuesRows = recuesRes.data || [];
+    const envoyeesRows = envoyeesRes.data || [];
+    const allRows = [...recuesRows, ...envoyeesRows];
+
+    if (allRows.length === 0) {
+      setInvitationsRecues([]);
+      setInvitationsEnvoyees([]);
+      return;
+    }
+
+    // Batch: collecter tous les IDs uniques pour des requêtes groupées
+    const tontineIds = Array.from(new Set(allRows.map((r: Record<string, unknown>) => r.tontine_id as string)));
+    const inviteurIds = Array.from(new Set(allRows.map((r: Record<string, unknown>) => r.inviteur_id as string)));
+
+    // 2 requêtes au lieu de N*2
+    const [tontinesRes, inviteursRes] = await Promise.all([
+      supabase.from("tontines").select("id, nom, montant_cotisation, devise, frequence, nombre_membres, membres_max").in("id", tontineIds),
+      supabase.from("profiles").select("*").in("id", inviteurIds),
+    ]);
+
+    const tontinesMap = new Map((tontinesRes.data || []).map((t: Record<string, unknown>) => [t.id, t]));
+    const inviteursMap = new Map((inviteursRes.data || []).map((p: Record<string, unknown>) => [p.id, p]));
+
+    const mapInvitation = (row: Record<string, unknown>): Invitation => {
+      const tontineRow = tontinesMap.get(row.tontine_id as string);
+      const inviteurRow = inviteursMap.get(row.inviteur_id as string);
 
       return {
         id: row.id as string,
         code: (row.code as string) || "",
         tontineId: row.tontine_id as string,
         inviteurId: row.inviteur_id as string,
-        inviteur: inviteurRow ? profileToUser(inviteurRow) : undefined,
+        inviteur: inviteurRow ? profileToUser(inviteurRow as Record<string, unknown>) : undefined,
         email: row.email as string,
         telephone: (row.telephone as string) || "",
         statut: row.statut as Invitation["statut"],
         dateCreation: ((row.created_at as string) || new Date().toISOString()).split("T")[0],
         tontine: tontineRow ? {
           id: row.tontine_id as string,
-          nom: tontineRow.nom,
-          montantCotisation: tontineRow.montant_cotisation,
-          devise: tontineRow.devise,
-          frequence: tontineRow.frequence,
-          nombreMembres: tontineRow.nombre_membres,
-          membresMax: tontineRow.membres_max,
+          nom: (tontineRow as Record<string, unknown>).nom,
+          montantCotisation: (tontineRow as Record<string, unknown>).montant_cotisation,
+          devise: (tontineRow as Record<string, unknown>).devise,
+          frequence: (tontineRow as Record<string, unknown>).frequence,
+          nombreMembres: (tontineRow as Record<string, unknown>).nombre_membres,
+          membresMax: (tontineRow as Record<string, unknown>).membres_max,
         } as unknown as Tontine : undefined,
       };
     };
 
-    if (recuesRows) {
-      const mapped = await Promise.all(recuesRows.map((r: Record<string, unknown>) => mapInvitation(r)));
-      setInvitationsRecues(mapped);
-    }
-    if (envoyeesRows) {
-      const mapped = await Promise.all(envoyeesRows.map((r: Record<string, unknown>) => mapInvitation(r)));
-      setInvitationsEnvoyees(mapped);
-    }
+    setInvitationsRecues(recuesRows.map((r: Record<string, unknown>) => mapInvitation(r)));
+    setInvitationsEnvoyees(envoyeesRows.map((r: Record<string, unknown>) => mapInvitation(r)));
   }, [user, supabase]);
 
   // Charger au démarrage quand l'utilisateur est connecté

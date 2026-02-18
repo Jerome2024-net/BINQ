@@ -36,20 +36,6 @@ export default function DashboardPage() {
   // Invitations
   const { invitationsRecues, accepterInvitation, refuserInvitation } = useTontine();
 
-  // Initialiser le wallet
-  useEffect(() => {
-    if (user) {
-      const init = async () => {
-        try {
-          await getOrCreateWallet();
-        } catch {
-          // ignore
-        }
-      };
-      init();
-    }
-  }, [user, getOrCreateWallet]);
-
   const [paymentModal, setPaymentModal] = useState<{
     open: boolean;
     tontineId: string;
