@@ -772,7 +772,7 @@ export function TontineProvider({ children }: { children: React.ReactNode }) {
       // Charger tontine
       const { data: tontineRow } = await supabase
         .from("tontines")
-        .select("nom, description, montant_cotisation, devise, frequence, nombre_membres, membres_max")
+        .select("nom, description, montant_cotisation, devise, frequence, nombre_membres, membres_max, date_debut, emoji, couleur, image, categorie")
         .eq("id", row.tontine_id)
         .single();
 
@@ -820,6 +820,11 @@ export function TontineProvider({ children }: { children: React.ReactNode }) {
               frequence: tontineRow.frequence,
               nombreMembres: tontineRow.nombre_membres,
               membresMax: tontineRow.membres_max,
+              dateDebut: tontineRow.date_debut || "",
+              emoji: tontineRow.emoji || undefined,
+              couleur: tontineRow.couleur || undefined,
+              image: tontineRow.image || undefined,
+              categorie: tontineRow.categorie || undefined,
               membres,
             } as unknown as Tontine)
           : undefined,

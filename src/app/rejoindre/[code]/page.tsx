@@ -17,6 +17,8 @@ import {
   Sparkles,
   Clock,
   Zap,
+  Wallet,
+  Eye,
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useTontine } from "@/contexts/TontineContext";
@@ -74,7 +76,6 @@ export default function RejoindreParCodePage({
       if (result.success) {
         setJoined(true);
         showToast("success", "Bienvenue dans la tontine !");
-        setTimeout(() => router.push(`/tontines/${invitation.tontineId}`), 3000);
       } else {
         showToast("error", result.error || "Erreur lors de l'adhésion");
       }
@@ -96,6 +97,21 @@ export default function RejoindreParCodePage({
   const MAX_AVATARS_SHOWN = 5;
   const membresAffiches = membres.slice(0, MAX_AVATARS_SHOWN);
   const membresRestants = Math.max(0, membres.length - MAX_AVATARS_SHOWN);
+  const nombreMembresCourant = tontine?.nombreMembres ?? tontine?.membres?.length ?? 0;
+  const positionNouveau = nombreMembresCourant + 1;
+
+  // Formater la date de début
+  const formatDate = (dateStr?: string) => {
+    if (!dateStr) return null;
+    try {
+      const d = new Date(dateStr);
+      return d.toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" });
+    } catch {
+      return null;
+    }
+  };
+  const dateDebutFormatee = formatDate(tontine?.dateDebut);
+  const tontineEmoji = tontine?.emoji;
 
   // ─── Loading ───
   if (loading) {
@@ -156,6 +172,12 @@ export default function RejoindreParCodePage({
             Vous avez rejoint <span className="font-semibold text-white">{tontine?.nom}</span>
           </p>
 
+          {/* Position */}
+          <div className="inline-flex items-center gap-2 px-4 py-2 bg-primary-500/10 border border-primary-500/20 rounded-full mb-5">
+            <Users className="w-4 h-4 text-primary-400" />
+            <span className="text-sm text-primary-300 font-medium">Votre position : <span className="text-white font-bold">#{positionNouveau}</span> sur {tontine?.membresMax ?? 0}</span>
+          </div>
+
           {/* Membres avatars dans le succès */}
           {membres.length > 0 && (
             <div className="mb-5">
@@ -201,23 +223,38 @@ export default function RejoindreParCodePage({
 
           {/* Infos clés */}
           <div className="bg-gray-800/50 rounded-xl p-4 mb-5 space-y-2">
+            {dateDebutFormatee && (
+              <div className="flex items-center justify-between text-sm">
+                <span className="text-gray-400 flex items-center gap-2"><Calendar className="w-3.5 h-3.5" /> Prochaine cotisation</span>
+                <span className="text-white font-semibold">{dateDebutFormatee}</span>
+              </div>
+            )}
             <div className="flex items-center justify-between text-sm">
-              <span className="text-gray-400">Cotisation</span>
+              <span className="text-gray-400 flex items-center gap-2"><Euro className="w-3.5 h-3.5" /> Montant</span>
               <span className="text-white font-semibold">{tontine?.montantCotisation ?? 0}€ / {tontine?.frequence === "hebdomadaire" ? "semaine" : tontine?.frequence === "bimensuel" ? "2 sem." : "mois"}</span>
             </div>
             <div className="flex items-center justify-between text-sm">
-              <span className="text-gray-400">Membres</span>
-              <span className="text-white font-semibold">{(tontine?.nombreMembres ?? 0) + 1}/{tontine?.membresMax ?? 0}</span>
-            </div>
-            <div className="flex items-center justify-between text-sm">
-              <span className="text-gray-400">Pot par tour</span>
+              <span className="text-gray-400 flex items-center gap-2"><Trophy className="w-3.5 h-3.5" /> Pot par tour</span>
               <span className="text-emerald-400 font-semibold">{potTotal}€</span>
             </div>
           </div>
 
-          <div className="flex items-center justify-center gap-2 text-sm text-gray-500">
-            <Loader2 className="w-3.5 h-3.5 animate-spin" />
-            Redirection vers la tontine...
+          {/* Action buttons */}
+          <div className="flex gap-3">
+            <button
+              onClick={() => router.push(`/tontines/${invitation?.tontineId}`)}
+              className="flex-1 py-3 bg-white text-gray-900 rounded-xl font-semibold flex items-center justify-center gap-2 hover:bg-gray-100 transition-all"
+            >
+              <Eye className="w-4 h-4" />
+              Voir la tontine
+            </button>
+            <button
+              onClick={() => router.push("/portefeuille")}
+              className="flex-1 py-3 border border-gray-700 text-gray-300 rounded-xl font-medium flex items-center justify-center gap-2 hover:bg-gray-800 transition-all"
+            >
+              <Wallet className="w-4 h-4" />
+              Déposer des fonds
+            </button>
           </div>
         </div>
       </div>
@@ -252,8 +289,20 @@ export default function RejoindreParCodePage({
             </span>
           </div>
 
-          {/* Inviteur */}
+          {/* Tontine visual + Inviteur */}
           <div className="text-center mb-6 animate-fade-up" style={{ animationDelay: "0.1s" }}>
+            {/* Tontine emoji/image */}
+            {(tontineEmoji || tontine?.image) && (
+              <div className="mb-3">
+                {tontine?.image ? (
+                  <img src={tontine.image} alt={tontine.nom} className="w-16 h-16 rounded-2xl object-cover mx-auto border border-gray-700 shadow-lg" />
+                ) : (
+                  <div className="w-16 h-16 rounded-2xl bg-gray-800 border border-gray-700 flex items-center justify-center mx-auto shadow-lg">
+                    <span className="text-3xl">{tontineEmoji}</span>
+                  </div>
+                )}
+              </div>
+            )}
             <p className="text-gray-400 text-sm">
               <span className="text-white font-medium">{inviteurNom}</span> vous invite à rejoindre
             </p>
@@ -389,6 +438,15 @@ export default function RejoindreParCodePage({
                 </span>
                 <span className="font-medium text-white capitalize">{tontine?.frequence ?? "—"}</span>
               </div>
+              {dateDebutFormatee && (
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-gray-400 flex items-center gap-2">
+                    <Calendar className="w-4 h-4 text-gray-500" />
+                    Commence le
+                  </span>
+                  <span className="font-medium text-white">{dateDebutFormatee}</span>
+                </div>
+              )}
               <div className="flex items-center justify-between text-sm">
                 <span className="text-gray-400 flex items-center gap-2">
                   <Clock className="w-4 h-4 text-gray-500" />
@@ -453,6 +511,9 @@ export default function RejoindreParCodePage({
                     <UserPlus className="w-4 h-4" />
                     Créer un compte gratuitement
                   </button>
+                  <p className="text-center text-xs text-gray-500 mt-1">
+                    Le code d&apos;invitation sera conservé automatiquement
+                  </p>
                 </div>
               )}
             </div>
