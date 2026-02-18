@@ -783,6 +783,23 @@ export function TontineProvider({ children }: { children: React.ReactNode }) {
         .eq("id", row.inviteur_id)
         .single();
 
+      // Charger les membres avec leurs profils
+      const { data: membresRows } = await supabase
+        .from("membres_tontine")
+        .select("id, tontine_id, user_id, role, date_adhesion, statut, profiles(*)")
+        .eq("tontine_id", row.tontine_id)
+        .eq("statut", "actif");
+
+      const membres: Membre[] = (membresRows || []).map((m: Record<string, unknown>) => ({
+        id: m.id as string,
+        tontineId: m.tontine_id as string,
+        userId: m.user_id as string,
+        role: m.role as Membre["role"],
+        dateAdhesion: ((m.date_adhesion as string) || "").split("T")[0],
+        statut: m.statut as Membre["statut"],
+        user: profileToUser(m.profiles as Record<string, unknown>),
+      }));
+
       return {
         id: row.id as string,
         code: (row.code as string) || "",
@@ -803,6 +820,7 @@ export function TontineProvider({ children }: { children: React.ReactNode }) {
               frequence: tontineRow.frequence,
               nombreMembres: tontineRow.nombre_membres,
               membresMax: tontineRow.membres_max,
+              membres,
             } as unknown as Tontine)
           : undefined,
       };

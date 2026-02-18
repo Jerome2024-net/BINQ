@@ -21,7 +21,7 @@ import {
 import { useAuth } from "@/contexts/AuthContext";
 import { useTontine } from "@/contexts/TontineContext";
 import { useToast } from "@/contexts/ToastContext";
-import { Invitation } from "@/types";
+import { Invitation, Membre } from "@/types";
 
 export default function RejoindreParCodePage({
   params,
@@ -74,7 +74,7 @@ export default function RejoindreParCodePage({
       if (result.success) {
         setJoined(true);
         showToast("success", "Bienvenue dans la tontine !");
-        setTimeout(() => router.push(`/tontines/${invitation.tontineId}`), 2000);
+        setTimeout(() => router.push(`/tontines/${invitation.tontineId}`), 3000);
       } else {
         showToast("error", result.error || "Erreur lors de l'adhésion");
       }
@@ -92,6 +92,10 @@ export default function RejoindreParCodePage({
   const inviteurNom = invitation?.inviteur
     ? [invitation.inviteur.prenom, invitation.inviteur.nom].filter(Boolean).join(" ")
     : "Un organisateur";
+  const membres: Membre[] = tontine?.membres || [];
+  const MAX_AVATARS_SHOWN = 5;
+  const membresAffiches = membres.slice(0, MAX_AVATARS_SHOWN);
+  const membresRestants = Math.max(0, membres.length - MAX_AVATARS_SHOWN);
 
   // ─── Loading ───
   if (loading) {
@@ -148,12 +152,72 @@ export default function RejoindreParCodePage({
             <Check className="w-10 h-10 text-emerald-400" />
           </div>
           <h1 className="text-3xl font-bold text-white mb-2">Bienvenue ! 🎉</h1>
-          <p className="text-gray-400 mb-2">
+          <p className="text-gray-400 mb-4">
             Vous avez rejoint <span className="font-semibold text-white">{tontine?.nom}</span>
           </p>
-          <div className="flex items-center justify-center gap-2 text-sm text-gray-500 mt-4">
+
+          {/* Membres avatars dans le succès */}
+          {membres.length > 0 && (
+            <div className="mb-5">
+              <p className="text-xs text-gray-500 mb-3">Vos co-membres</p>
+              <div className="flex items-center justify-center -space-x-2">
+                {membresAffiches.map((m) => {
+                  const initials = [m.user?.prenom?.[0], m.user?.nom?.[0]].filter(Boolean).join("").toUpperCase() || "?";
+                  return (
+                    <div key={m.id} className="relative group">
+                      {m.user?.avatar ? (
+                        <img
+                          src={m.user.avatar}
+                          alt={`${m.user.prenom || ""} ${m.user.nom || ""}`}
+                          className="w-10 h-10 rounded-full border-2 border-gray-900 object-cover"
+                        />
+                      ) : (
+                        <div className="w-10 h-10 rounded-full border-2 border-gray-900 bg-gradient-to-br from-primary-500 to-primary-700 flex items-center justify-center">
+                          <span className="text-white text-xs font-bold">{initials}</span>
+                        </div>
+                      )}
+                      <div className="absolute -bottom-7 left-1/2 -translate-x-1/2 bg-gray-800 text-white text-[10px] px-2 py-0.5 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10">
+                        {m.user?.prenom || "Membre"}
+                      </div>
+                    </div>
+                  );
+                })}
+                {membresRestants > 0 && (
+                  <div className="w-10 h-10 rounded-full border-2 border-gray-900 bg-gray-800 flex items-center justify-center">
+                    <span className="text-gray-400 text-xs font-bold">+{membresRestants}</span>
+                  </div>
+                )}
+                {/* Avatar du nouveau membre (vous) */}
+                {user && (
+                  <div className="w-10 h-10 rounded-full border-2 border-emerald-500 bg-gradient-to-br from-emerald-500/30 to-emerald-600/30 flex items-center justify-center ring-2 ring-emerald-500/30">
+                    <span className="text-emerald-300 text-xs font-bold">
+                      {[user.prenom?.[0], user.nom?.[0]].filter(Boolean).join("").toUpperCase() || "V"}
+                    </span>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* Infos clés */}
+          <div className="bg-gray-800/50 rounded-xl p-4 mb-5 space-y-2">
+            <div className="flex items-center justify-between text-sm">
+              <span className="text-gray-400">Cotisation</span>
+              <span className="text-white font-semibold">{tontine?.montantCotisation ?? 0}€ / {tontine?.frequence === "hebdomadaire" ? "semaine" : tontine?.frequence === "bimensuel" ? "2 sem." : "mois"}</span>
+            </div>
+            <div className="flex items-center justify-between text-sm">
+              <span className="text-gray-400">Membres</span>
+              <span className="text-white font-semibold">{(tontine?.nombreMembres ?? 0) + 1}/{tontine?.membresMax ?? 0}</span>
+            </div>
+            <div className="flex items-center justify-between text-sm">
+              <span className="text-gray-400">Pot par tour</span>
+              <span className="text-emerald-400 font-semibold">{potTotal}€</span>
+            </div>
+          </div>
+
+          <div className="flex items-center justify-center gap-2 text-sm text-gray-500">
             <Loader2 className="w-3.5 h-3.5 animate-spin" />
-            Redirection en cours...
+            Redirection vers la tontine...
           </div>
         </div>
       </div>
@@ -250,6 +314,71 @@ export default function RejoindreParCodePage({
                 </p>
               )}
             </div>
+
+            {/* Membres déjà inscrits */}
+            {membres.length > 0 && (
+              <div className="px-6 py-4 border-t border-gray-800">
+                <div className="flex items-center justify-between mb-3">
+                  <span className="text-xs text-gray-400 uppercase tracking-wider font-medium">Membres inscrits</span>
+                  <span className="text-xs text-gray-500">{membres.length} participant{membres.length > 1 ? "s" : ""}</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <div className="flex items-center -space-x-2.5">
+                    {membresAffiches.map((m) => {
+                      const initials = [m.user?.prenom?.[0], m.user?.nom?.[0]].filter(Boolean).join("").toUpperCase() || "?";
+                      const colors = [
+                        "from-primary-500 to-primary-700",
+                        "from-accent-500 to-accent-700",
+                        "from-blue-500 to-blue-700",
+                        "from-emerald-500 to-emerald-700",
+                        "from-amber-500 to-amber-700",
+                        "from-rose-500 to-rose-700",
+                      ];
+                      const colorIndex = m.id.charCodeAt(0) % colors.length;
+                      return (
+                        <div key={m.id} className="relative group">
+                          {m.user?.avatar ? (
+                            <img
+                              src={m.user.avatar}
+                              alt={`${m.user.prenom || ""} ${m.user.nom || ""}`}
+                              className="w-9 h-9 rounded-full border-2 border-gray-900 object-cover hover:scale-110 hover:z-10 transition-transform cursor-default"
+                            />
+                          ) : (
+                            <div className={`w-9 h-9 rounded-full border-2 border-gray-900 bg-gradient-to-br ${colors[colorIndex]} flex items-center justify-center hover:scale-110 hover:z-10 transition-transform cursor-default`}>
+                              <span className="text-white text-[11px] font-bold">{initials}</span>
+                            </div>
+                          )}
+                          {m.role === "organisateur" && (
+                            <div className="absolute -top-1 -right-1 w-3.5 h-3.5 bg-amber-500 rounded-full flex items-center justify-center border border-gray-900">
+                              <Star className="w-2 h-2 text-white fill-current" />
+                            </div>
+                          )}
+                          <div className="absolute -bottom-8 left-1/2 -translate-x-1/2 bg-gray-800 text-white text-[10px] px-2 py-1 rounded-md whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-20 shadow-lg">
+                            {[m.user?.prenom, m.user?.nom].filter(Boolean).join(" ") || "Membre"}
+                            {m.role === "organisateur" && " ★"}
+                          </div>
+                        </div>
+                      );
+                    })}
+                    {membresRestants > 0 && (
+                      <div className="w-9 h-9 rounded-full border-2 border-gray-900 bg-gray-800 flex items-center justify-center">
+                        <span className="text-gray-400 text-[11px] font-bold">+{membresRestants}</span>
+                      </div>
+                    )}
+                  </div>
+                  {/* Places vides */}
+                  {placesRestantes > 0 && placesRestantes <= 4 && (
+                    <div className="flex items-center -space-x-2">
+                      {Array.from({ length: Math.min(placesRestantes, 3) }).map((_, i) => (
+                        <div key={`empty-${i}`} className="w-9 h-9 rounded-full border-2 border-dashed border-gray-700 flex items-center justify-center">
+                          <UserPlus className="w-3.5 h-3.5 text-gray-600" />
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
 
             {/* Details */}
             <div className="px-6 py-4 border-t border-gray-800 space-y-3">
