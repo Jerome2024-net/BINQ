@@ -166,7 +166,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             nom: data.nom,
             prenom: data.prenom,
           },
-          emailRedirectTo: `${appUrl}/connexion`,
+          emailRedirectTo: `${appUrl}/auth/callback?next=/dashboard`,
         },
       });
 
@@ -187,7 +187,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
         await loadProfile(authData.user.id);
 
-        // Envoyer email de bienvenue via Resend
+        // Envoyer email + SMS de bienvenue
         try {
           await fetch("/api/email/send", {
             method: "POST",
@@ -198,8 +198,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
               data: { prenom: data.prenom },
             }),
           });
+          // SMS de bienvenue (non-bloquant, vérifie notificationsSms côté API)
+          fetch("/api/sms/send", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              type: "welcome",
+              to: data.telephone || "",
+              data: { prenom: data.prenom, userId: authData.user.id },
+            }),
+          }).catch(() => {});
         } catch (e) {
-          console.warn("Welcome email failed (non-blocking):", e);
+          console.warn("Welcome notification failed (non-blocking):", e);
         }
       }
 

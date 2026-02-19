@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getResend, FROM_EMAIL, emailTemplates } from "@/lib/resend";
+import { sendSMS, smsTemplates } from "@/lib/twilio";
 import { createClient } from "@supabase/supabase-js";
 
 const supabaseAdmin = createClient(
@@ -130,6 +131,14 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // === SMS parallèle (non-bloquant) ===
+    // Si un userId est fourni, envoyer le SMS en parallèle
+    if (data?.userId || data?.phone) {
+      trySendSMS(type, data).catch((e) =>
+        console.warn("SMS send failed (non-blocking):", e)
+      );
+    }
+
     return NextResponse.json({ success: true, id: result?.id });
   } catch (error) {
     console.error("Email API error:", error);
@@ -138,4 +147,43 @@ export async function POST(request: NextRequest) {
       { status: 500 }
     );
   }
+}
+
+// ========================
+// SMS Helper (envoi parallèle)
+// ========================
+async function trySendSMS(type: string, data: Record<string, unknown>) {
+  let phone = data.phone as string | undefined;
+
+  // Si pas de numéro direct, chercher via userId
+  if (!phone && data.userId) {
+    const { data: profile } = await supabaseAdmin
+      .from("profiles")
+      .select("telephone, notifications_sms")
+      .eq("id", data.userId)
+      .single();
+
+    if (!profile?.notifications_sms || !profile?.telephone) return;
+    phone = profile.telephone;
+  }
+
+  if (!phone) return;
+
+  const templateFn: Record<string, () => string> = {
+    "welcome": () => smsTemplates.welcome(data.prenom as string),
+    "invitation": () => smsTemplates.invitation(data.prenom as string, data.tontineName as string, data.inviteLink as string),
+    "payment-reminder": () => smsTemplates.paymentReminder(data.prenom as string, data.tontineName as string, data.montant as number, data.dateLimite as string),
+    "payment-confirmation": () => smsTemplates.paymentConfirmation(data.prenom as string, data.tontineName as string, data.montant as number),
+    "pot-received": () => smsTemplates.potReceived(data.prenom as string, data.tontineName as string, data.montant as number),
+    "tour-notification": () => smsTemplates.tourNotification(data.prenom as string, data.tontineName as string, data.tourNumero as number, data.montantEstime as number),
+    "echeance-reminder": () => smsTemplates.echeanceReminder(data.prenom as string, data.tontineName as string, data.montant as number, data.joursRestants as number),
+    "tour-started": () => smsTemplates.tourStarted(data.prenom as string, data.tontineName as string, data.tourNumero as number, data.beneficiaire as string, data.montant as number, data.dateLimite as string),
+    "payment-late": () => smsTemplates.paymentLate(data.prenom as string, data.tontineName as string, data.montant as number, data.joursRetard as number),
+    "tontine-completed": () => smsTemplates.tontineCompleted(data.prenom as string, data.tontineName as string),
+  };
+
+  const fn = templateFn[type];
+  if (!fn) return;
+
+  await sendSMS(phone, fn());
 }
