@@ -38,7 +38,7 @@ import {
 export default function ProfilPage() {
   const { user, updateProfile } = useAuth();
   const { getMesTontines } = useTontine();
-  const { getFinancialSummary } = useFinance();
+  const { getFinancialSummary, wallet } = useFinance();
   const { showToast } = useToast();
   const [loading, setLoading] = useState(false);
 
@@ -182,9 +182,9 @@ export default function ProfilPage() {
           </p>
         </div>
         <div className="card py-4 text-center">
-          <p className="text-2xl font-bold text-green-600">{formatMontant(summary.totalPotsRecus - summary.totalCotisationsPaye)}</p>
+          <p className="text-2xl font-bold text-green-600">{formatMontant(wallet?.solde ?? 0)}</p>
           <p className="text-xs text-gray-500 flex items-center justify-center gap-1 mt-1">
-            <CircleDollarSign className="w-3 h-3" /> Bilan net
+            <CircleDollarSign className="w-3 h-3" /> Solde
           </p>
         </div>
         <div className="card py-4 text-center">

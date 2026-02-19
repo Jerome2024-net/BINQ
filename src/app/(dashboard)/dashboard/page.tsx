@@ -31,7 +31,7 @@ export default function DashboardPage() {
   const { user } = useAuth();
   const { getMesTontines, effectuerPaiement, isLoading: tontineLoading } = useTontine();
   const { showToast } = useToast();
-  const { getFinancialSummary, isLoading: financeLoading } = useFinance();
+  const { getFinancialSummary, wallet, getOrCreateWallet, isLoading: financeLoading } = useFinance();
 
   // Invitations
   const { invitationsRecues, accepterInvitation, refuserInvitation } = useTontine();
@@ -48,6 +48,14 @@ export default function DashboardPage() {
 
   const mesTontines = getMesTontines();
   const tontinesActives = mesTontines.filter((t) => t.statut === "active");
+
+  // Initialiser le wallet
+  useEffect(() => {
+    if (user) {
+      getOrCreateWallet();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user]);
 
   // Stats
   const allPaiements = mesTontines.flatMap((t) => t.tours).flatMap((t) => t.paiements);
@@ -191,9 +199,9 @@ export default function DashboardPage() {
                 <Wallet className="w-6 h-6 text-white" />
               </div>
               <div>
-                <p className="text-sm font-medium text-gray-400">Total cotisé</p>
+                <p className="text-sm font-medium text-gray-400">Solde portefeuille</p>
                 <div className="flex items-baseline gap-2">
-                  <p className="text-2xl sm:text-3xl font-bold tracking-tight text-white">{formatMontant(getFinancialSummary().totalCotisationsPaye)}</p>
+                  <p className="text-2xl sm:text-3xl font-bold tracking-tight text-white">{formatMontant(wallet?.solde ?? 0)}</p>
                   <span className="text-sm font-medium text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">
                     +0%
                   </span>

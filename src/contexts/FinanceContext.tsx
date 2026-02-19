@@ -11,6 +11,7 @@ import {
   FinancialSummary,
   TontineFinancialSummary,
   Abonnement,
+  Wallet,
   CompteType,
 } from "@/types";
 import { useAuth } from "./AuthContext";
@@ -35,6 +36,12 @@ const DEFAULT_FRAIS: FraisConfig = {
 // Interface
 // ========================
 interface FinanceContextType {
+  // Wallet
+  wallet: Wallet | null;
+  getOrCreateWallet: () => Promise<Wallet | null>;
+  deposer: (montant: number, methode: string) => Promise<{ success: boolean; error?: string }>;
+  retirer: (montant: number, methode: string) => Promise<{ success: boolean; error?: string }>;
+
   // Abonnement
   abonnement: Abonnement | null;
   activerEssaiGratuit: () => Promise<{ success: boolean; error?: string }>;
@@ -71,6 +78,7 @@ const FinanceContext = createContext<FinanceContextType | undefined>(undefined);
 
 export function FinanceProvider({ children }: { children: React.ReactNode }) {
   const { user } = useAuth();
+  const [wallet, setWallet] = useState<Wallet | null>(null);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [ledger, setLedger] = useState<LedgerEntry[]>([]);
   const [abonnement, setAbonnement] = useState<Abonnement | null>(null);
@@ -83,6 +91,7 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
   // ========================
   useEffect(() => {
     if (!user) {
+      setWallet(null);
       setTransactions([]);
       setLedger([]);
       setAbonnement(null);
@@ -92,7 +101,7 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
 
     const loadData = async () => {
       try {
-        const [txRes, subRes] = await Promise.all([
+        const [txRes, subRes, walletRes] = await Promise.all([
           supabase
             .from("transactions")
             .select("*")
@@ -101,6 +110,11 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
             .limit(200),
           supabase
             .from("abonnements")
+            .select("*")
+            .eq("user_id", user.id)
+            .single(),
+          supabase
+            .from("wallets")
             .select("*")
             .eq("user_id", user.id)
             .single(),
@@ -118,6 +132,7 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
           }
         }
         if (subRes.data) setAbonnement(rowToAbonnement(subRes.data));
+        if (walletRes.data) setWallet(rowToWallet(walletRes.data));
       } catch {
         // ignore
       } finally {
@@ -158,6 +173,146 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
       // ignore
     }
   }, [user, supabase]);
+
+  // ========================
+  // Wallet (dépôts / retraits)
+  // ========================
+  const getOrCreateWallet = useCallback(async (): Promise<Wallet | null> => {
+    if (!user) return null;
+    if (wallet) return wallet;
+
+    // Try to fetch existing wallet
+    const { data: existing } = await supabase
+      .from("wallets")
+      .select("*")
+      .eq("user_id", user.id)
+      .single();
+
+    if (existing) {
+      const w = rowToWallet(existing);
+      setWallet(w);
+      return w;
+    }
+
+    // Create new wallet
+    const { data: created, error } = await supabase
+      .from("wallets")
+      .insert({
+        user_id: user.id,
+        solde: 0,
+        solde_bloque: 0,
+        devise: "EUR",
+      })
+      .select()
+      .single();
+
+    if (error) {
+      console.error("getOrCreateWallet error:", error.message);
+      return null;
+    }
+
+    const w = rowToWallet(created);
+    setWallet(w);
+    return w;
+  }, [user, wallet, supabase]);
+
+  const deposer = useCallback(
+    async (montant: number, methode: string): Promise<{ success: boolean; error?: string }> => {
+      if (!user) return { success: false, error: "Non connecté" };
+      if (montant <= 0) return { success: false, error: "Montant invalide" };
+
+      try {
+        const w = await getOrCreateWallet();
+        if (!w) return { success: false, error: "Impossible de créer le portefeuille" };
+
+        const nouveauSolde = w.solde + montant;
+
+        // Update wallet balance
+        const { error: walletError } = await supabase
+          .from("wallets")
+          .update({ solde: nouveauSolde })
+          .eq("id", w.id);
+
+        if (walletError) throw new Error(walletError.message);
+
+        // Record transaction
+        await supabase.from("transactions").insert({
+          user_id: user.id,
+          wallet_id: w.id,
+          type: "depot",
+          montant,
+          solde_avant: w.solde,
+          solde_apres: nouveauSolde,
+          devise: w.devise,
+          statut: "confirme",
+          reference: `DEP-${Date.now().toString(36).toUpperCase()}`,
+          description: `Dépôt de ${montant.toFixed(2)} € via ${methode}`,
+          meta_methode: methode,
+          confirmed_at: new Date().toISOString(),
+        });
+
+        setWallet({ ...w, solde: nouveauSolde });
+        await refreshTransactions();
+
+        return { success: true };
+      } catch (err) {
+        console.error("deposer error:", err);
+        return { success: false, error: err instanceof Error ? err.message : "Erreur dépôt" };
+      }
+    },
+    [user, getOrCreateWallet, supabase, refreshTransactions]
+  );
+
+  const retirer = useCallback(
+    async (montant: number, methode: string): Promise<{ success: boolean; error?: string }> => {
+      if (!user) return { success: false, error: "Non connecté" };
+      if (montant <= 0) return { success: false, error: "Montant invalide" };
+
+      try {
+        const w = await getOrCreateWallet();
+        if (!w) return { success: false, error: "Impossible de créer le portefeuille" };
+
+        if (w.solde < montant) {
+          return { success: false, error: "Solde insuffisant" };
+        }
+
+        const nouveauSolde = w.solde - montant;
+
+        // Update wallet balance
+        const { error: walletError } = await supabase
+          .from("wallets")
+          .update({ solde: nouveauSolde })
+          .eq("id", w.id);
+
+        if (walletError) throw new Error(walletError.message);
+
+        // Record transaction
+        await supabase.from("transactions").insert({
+          user_id: user.id,
+          wallet_id: w.id,
+          type: "retrait",
+          montant,
+          solde_avant: w.solde,
+          solde_apres: nouveauSolde,
+          devise: w.devise,
+          statut: "confirme",
+          reference: `RET-${Date.now().toString(36).toUpperCase()}`,
+          description: `Retrait de ${montant.toFixed(2)} € via ${methode}`,
+          meta_methode: methode,
+          confirmed_at: new Date().toISOString(),
+        });
+
+        setWallet({ ...w, solde: nouveauSolde });
+        await refreshTransactions();
+
+        return { success: true };
+      } catch (err) {
+        console.error("retirer error:", err);
+        return { success: false, error: err instanceof Error ? err.message : "Erreur retrait" };
+      }
+    },
+    [user, getOrCreateWallet, supabase, refreshTransactions]
+  );
 
   // ========================
   // Abonnement
@@ -343,6 +498,10 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
   return (
     <FinanceContext.Provider
       value={{
+        wallet,
+        getOrCreateWallet,
+        deposer,
+        retirer,
         abonnement,
         activerEssaiGratuit,
         souscrireAbonnementStripe,
@@ -374,6 +533,18 @@ export function useFinance() {
 // ========================
 // Row converters
 // ========================
+
+function rowToWallet(row: Record<string, unknown>): Wallet {
+  return {
+    id: row.id as string,
+    userId: row.user_id as string,
+    solde: parseFloat(row.solde as string) || 0,
+    soldeBloquer: parseFloat(row.solde_bloque as string) || 0,
+    devise: (row.devise as string) || "EUR",
+    dateCreation: (row.created_at as string) || new Date().toISOString(),
+    derniereMaj: (row.updated_at as string) || new Date().toISOString(),
+  };
+}
 
 function rowToTransaction(row: Record<string, unknown>): Transaction {
   return {

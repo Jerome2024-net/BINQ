@@ -7,6 +7,7 @@ import { useFinance } from "@/contexts/FinanceContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/contexts/ToastContext";
 import SubscriptionModal from "@/components/SubscriptionModal";
+import DepositWithdrawModal from "@/components/DepositWithdrawModal";
 import StripeConnectCard from "@/components/StripeConnectCard";
 import { PortefeuilleSkeleton } from "@/components/Skeleton";
 import { formatMontant, formatDate } from "@/lib/data";
@@ -35,6 +36,9 @@ import {
 export default function PortefeuillePage() {
   const { user } = useAuth();
   const {
+    wallet,
+    getOrCreateWallet,
+    retirer,
     getTransactions,
     getFinancialSummary,
     getFraisConfig,
@@ -50,6 +54,16 @@ export default function PortefeuillePage() {
 
   const [showSolde, setShowSolde] = useState(true);
   const [subscriptionModalOpen, setSubscriptionModalOpen] = useState(false);
+  const [depositModalOpen, setDepositModalOpen] = useState(false);
+  const [depositModalMode, setDepositModalMode] = useState<"depot" | "retrait">("depot");
+
+  // Initialiser le wallet
+  useEffect(() => {
+    if (user) {
+      getOrCreateWallet();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user]);
 
   // Gérer le retour de Stripe Checkout
   useEffect(() => {
@@ -73,7 +87,7 @@ export default function PortefeuillePage() {
   const summary = getFinancialSummary();
   const recentTx = getTransactions({ limit: 8 });
   const frais = getFraisConfig();
-  const solde = summary.totalPotsRecus - summary.totalCotisationsPaye;
+  const soldeWallet = wallet?.solde ?? 0;
   const { isLoading: financeLoading } = useFinance();
 
   if (financeLoading) {
@@ -82,6 +96,27 @@ export default function PortefeuillePage() {
 
   const handleSouscrire = () => {
     setSubscriptionModalOpen(true);
+  };
+
+  const handleDeposit = () => {
+    setDepositModalMode("depot");
+    setDepositModalOpen(true);
+  };
+
+  const handleWithdraw = () => {
+    setDepositModalMode("retrait");
+    setDepositModalOpen(true);
+  };
+
+  const handleRetrait = async (montant: number, methode: string): Promise<{ success: boolean; error?: string }> => {
+    const result = await retirer(montant, methode);
+    if (result.success) {
+      showToast("success", "Retrait effectué", `${montant.toFixed(2)} € retirés avec succès`);
+    } else {
+      showToast("error", "Erreur retrait", result.error || "Erreur inconnue");
+    }
+    setDepositModalOpen(false);
+    return result;
   };
 
   const getTransactionIcon = (type: string) => {
@@ -145,7 +180,7 @@ export default function PortefeuillePage() {
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-2">
               <ShieldCheck className="w-5 h-5 text-green-300" />
-              <span className="text-sm font-medium text-green-200">Géré par Stripe Connect</span>
+              <span className="text-sm font-medium text-green-200">Portefeuille sécurisé</span>
             </div>
             <button
               onClick={() => setShowSolde(!showSolde)}
@@ -155,22 +190,29 @@ export default function PortefeuillePage() {
             </button>
           </div>
 
-          <p className="text-sm text-green-200 mb-1">Bilan net</p>
+          <p className="text-sm text-green-200 mb-1">Solde disponible</p>
           <p className="text-4xl sm:text-5xl font-bold mb-2">
-            {showSolde ? `${solde.toLocaleString("fr-FR")}` : "••••••"}{" "}
+            {showSolde ? `${soldeWallet.toLocaleString("fr-FR")}` : "••••••"}{" "}
             <span className="text-xl font-normal text-green-200">€</span>
           </p>
 
-          <p className="text-sm text-blue-200 mb-6">Pots reçus - Cotisations payées</p>
+          <p className="text-sm text-blue-200 mb-6">Portefeuille interne</p>
 
           <div className="flex flex-col sm:flex-row gap-3">
-            <Link
-              href="/transactions"
+            <button
+              onClick={handleDeposit}
               className="flex items-center justify-center gap-2 bg-white text-primary-700 px-6 py-3 rounded-xl font-semibold hover:bg-green-50 transition-colors"
             >
-              <Receipt className="w-5 h-5" />
-              Voir toutes les transactions
-            </Link>
+              <ArrowDownLeft className="w-5 h-5" />
+              Déposer
+            </button>
+            <button
+              onClick={handleWithdraw}
+              className="flex items-center justify-center gap-2 bg-white/10 text-white px-6 py-3 rounded-xl font-semibold hover:bg-white/20 transition-colors border border-white/20"
+            >
+              <ArrowUpRight className="w-5 h-5" />
+              Retirer
+            </button>
           </div>
         </div>
       </div>
@@ -447,6 +489,16 @@ export default function PortefeuillePage() {
       <SubscriptionModal
         isOpen={subscriptionModalOpen}
         onClose={() => setSubscriptionModalOpen(false)}
+      />
+
+      {/* Modal Dépôt / Retrait */}
+      <DepositWithdrawModal
+        isOpen={depositModalOpen}
+        onClose={() => setDepositModalOpen(false)}
+        mode={depositModalMode}
+        onRetrait={handleRetrait}
+        soldeActuel={soldeWallet}
+        devise="EUR"
       />
     </div>
   );
