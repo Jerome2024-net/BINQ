@@ -28,10 +28,10 @@ function ConnexionForm() {
       const result = await login(email, password);
       if (result.success) {
         showToast("success", "Bienvenue !", "Connexion réussie");
-        // router.refresh() invalide le cache serveur pour que le middleware
-        // relise les cookies d'auth mis à jour par signInWithPassword
-        router.refresh();
-        router.push(redirect || "/dashboard");
+        // Utiliser window.location pour un rechargement complet
+        // router.push + router.refresh cause un race condition :
+        // le middleware voit l'ancien état de session et redirige vers /connexion
+        window.location.href = redirect || "/dashboard";
         return;
       } else {
         setError(result.error || "Identifiants incorrects");
