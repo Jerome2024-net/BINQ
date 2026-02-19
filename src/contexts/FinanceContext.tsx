@@ -22,6 +22,7 @@ import { createClient } from "@/lib/supabase/client";
 // ========================
 const DEFAULT_FRAIS: FraisConfig = {
   abonnementAnnuel: 180,
+  fraisDepot: 1, // 1% additionnel sur chaque dépôt
   fraisParticipant: 1,
   commissionRetrait: 0,
   penaliteRetard: 8,

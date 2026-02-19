@@ -74,30 +74,62 @@ export async function POST(request: Request) {
             { onConflict: "stripe_payment_intent_id", ignoreDuplicates: true }
           );
         } else if (meta?.type === "depot" && meta.userId) {
-          // Confirmer un dépôt wallet
+          // === FRAIS BINQ 1% ADDITIONNELS ===
+          // Le montant demandé et les frais sont dans les metadata
+          const montantDemandeCents = meta.montant_demande ? parseInt(meta.montant_demande) : null;
+          const fraisBinqCents = meta.frais_binq ? parseInt(meta.frais_binq) : null;
+
+          // Montant à créditer = montant demandé (sans les frais)
+          const montantCredite = montantDemandeCents ? montantDemandeCents / 100 : pi.amount / 100;
+          const fraisBinq = fraisBinqCents ? fraisBinqCents / 100 : 0;
+          const totalPaye = pi.amount / 100;
+
+          // Confirmer le dépôt (montant crédité, pas le total payé)
           await supabaseAdmin.from("transactions").upsert(
             {
               user_id: meta.userId,
               type: "depot",
-              montant: pi.amount / 100,
+              montant: montantCredite,
               devise: pi.currency.toUpperCase(),
               statut: "confirme",
               reference: `DEP-${pi.id.slice(-8).toUpperCase()}`,
               description: `Dépôt Stripe confirmé`,
               meta_methode: "stripe",
+              meta_frais: fraisBinq,
               confirmed_at: new Date().toISOString(),
               stripe_payment_intent_id: pi.id,
             },
             { onConflict: "stripe_payment_intent_id", ignoreDuplicates: true }
           );
 
-          // Créditer le wallet via RPC atomique
+          // Enregistrer les frais Binq comme transaction séparée (traçabilité)
+          if (fraisBinq > 0) {
+            try {
+              await supabaseAdmin.from("transactions").insert({
+                user_id: meta.userId,
+                type: "commission",
+                montant: fraisBinq,
+                devise: pi.currency.toUpperCase(),
+                statut: "confirme",
+                reference: `FEE-${pi.id.slice(-8).toUpperCase()}`,
+                description: `Frais plateforme Binq (1%) sur dépôt de ${montantCredite} €`,
+                meta_methode: "stripe",
+                confirmed_at: new Date().toISOString(),
+              });
+            } catch {
+              // Ne pas bloquer si doublon
+            }
+          }
+
+          // Créditer le wallet du montant DEMANDÉ (pas le total payé)
           if (meta.userId) {
             await supabaseAdmin.rpc("update_wallet_balance", {
               p_user_id: meta.userId,
-              p_delta: pi.amount / 100,
+              p_delta: montantCredite,
             });
           }
+
+          console.log(`💰 Dépôt: ${montantCredite}€ crédité, frais Binq: ${fraisBinq}€, total payé: ${totalPaye}€`);
         }
         break;
       }

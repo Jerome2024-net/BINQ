@@ -27,10 +27,15 @@ export async function POST(request: Request) {
       );
     }
 
+    // === FRAIS BINQ 1% ADDITIONNELS ===
+    const TAUX_FRAIS_DEPOT = 0.01; // 1%
+    const fraisInCents = Math.round(amountInCents * TAUX_FRAIS_DEPOT);
+    const totalInCents = amountInCents + fraisInCents;
+
     // Créer le PaymentIntent avec userId pour traçabilité webhook
     const stripe = getStripe();
     const paymentIntent = await stripe.paymentIntents.create({
-      amount: amountInCents,
+      amount: totalInCents, // Montant demandé + 1% de frais
       currency: cur,
       description: description || "Dépôt portefeuille Binq",
       automatic_payment_methods: {
@@ -40,12 +45,18 @@ export async function POST(request: Request) {
         type: "depot",
         userId: user.id,
         app: "binq",
+        montant_demande: String(amountInCents), // Ce qui sera crédité (centimes)
+        frais_binq: String(fraisInCents),        // Frais Binq (centimes)
+        taux_frais: String(TAUX_FRAIS_DEPOT),
       },
     });
 
     return NextResponse.json({
       clientSecret: paymentIntent.client_secret,
       paymentIntentId: paymentIntent.id,
+      montantDemande: amount,
+      fraisBinq: fraisInCents / 100,
+      totalFacture: totalInCents / 100,
     });
   } catch (error) {
     console.error("Erreur Stripe PaymentIntent:", error);

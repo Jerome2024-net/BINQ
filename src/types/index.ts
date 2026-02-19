@@ -232,6 +232,7 @@ export type CompteType =
 
 export interface FraisConfig {
   abonnementAnnuel: number;
+  fraisDepot: number; // 1% additionnel sur chaque dépôt
   fraisParticipant: number;
   commissionRetrait: number;
   penaliteRetard: number;

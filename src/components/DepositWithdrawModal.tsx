@@ -111,11 +111,14 @@ function StripePaymentForm({
     <form onSubmit={handleSubmit} className="space-y-5">
       {/* Récapitulatif */}
       <div className="bg-green-50 rounded-xl p-4 text-center border border-green-200">
-        <p className="text-sm text-green-600 mb-1">Montant à payer</p>
+        <p className="text-sm text-green-600 mb-1">Montant crédité sur votre wallet</p>
         <p className="text-3xl font-bold text-green-700">
           {montant.toLocaleString("fr-FR")} {deviseSymbol}
         </p>
-        <p className="text-xs text-green-500 mt-1">Dépôt sans frais</p>
+        <div className="mt-2 space-y-0.5">
+          <p className="text-xs text-green-600">Frais Binq (1%) : +{(montant * 0.01).toFixed(2)} {deviseSymbol}</p>
+          <p className="text-sm font-semibold text-green-800">Total débité : {(montant * 1.01).toFixed(2)} {deviseSymbol}</p>
+        </div>
       </div>
 
       {/* Stripe PaymentElement (vrai formulaire Stripe) */}
@@ -158,7 +161,7 @@ function StripePaymentForm({
           ) : (
             <>
               <Lock className="w-4 h-4" />
-              Payer {montant.toLocaleString("fr-FR")} {deviseSymbol}
+              Payer {(montant * 1.01).toFixed(2)} {deviseSymbol}
             </>
           )}
         </button>
@@ -449,13 +452,21 @@ export default function DepositWithdrawModal({
                 ))}
               </div>
 
-              {/* Résumé */}
+              {/* Résumé avec frais */}
               {montantNum >= 1 && (
-                <div className="bg-green-50 rounded-xl p-3 text-sm text-green-700 flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 flex-shrink-0" />
-                  <span>
-                    Dépôt <strong>sans frais</strong> · {montantNum.toLocaleString("fr-FR")} {deviseSymbol}
-                  </span>
+                <div className="bg-gray-50 rounded-xl p-4 space-y-2">
+                  <div className="flex justify-between text-sm">
+                    <span className="text-gray-500">Montant crédité sur votre wallet</span>
+                    <span className="font-semibold text-gray-900">{montantNum.toLocaleString("fr-FR")} {deviseSymbol}</span>
+                  </div>
+                  <div className="flex justify-between text-sm">
+                    <span className="text-gray-500">Frais Binq (1%)</span>
+                    <span className="font-medium text-amber-600">+{(montantNum * 0.01).toFixed(2)} {deviseSymbol}</span>
+                  </div>
+                  <div className="border-t border-gray-200 pt-2 flex justify-between">
+                    <span className="font-semibold text-gray-900 text-sm">Total débité de votre carte</span>
+                    <span className="font-bold text-primary-600">{(montantNum * 1.01).toFixed(2)} {deviseSymbol}</span>
+                  </div>
                 </div>
               )}
 

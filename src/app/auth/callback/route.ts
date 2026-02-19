@@ -19,11 +19,11 @@ export async function GET(request: Request) {
     }
   }
 
-  // Magic link / email OTP flow: verify with token_hash
+  // Magic link / email OTP / signup confirmation flow: verify with token_hash
   if (token_hash && type) {
     const { error } = await supabase.auth.verifyOtp({
       token_hash,
-      type: type as "recovery" | "signup" | "email",
+      type: type as "recovery" | "signup" | "email" | "magiclink" | "invite" | "email_change",
     });
     if (!error) {
       return NextResponse.redirect(`${appUrl}${next}`);
