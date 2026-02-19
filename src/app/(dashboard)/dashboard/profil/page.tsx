@@ -9,6 +9,7 @@ import { useToast } from "@/contexts/ToastContext";
 import Avatar from "@/components/Avatar";
 import AvatarUpload from "@/components/AvatarUpload";
 import { ConfianceBadge } from "@/components/MemberCard";
+import ScoreFiabilite from "@/components/ScoreFiabilite";
 import { formatMontant } from "@/lib/data";
 import {
   User as UserIcon,
@@ -194,9 +195,11 @@ export default function ProfilPage() {
           </p>
         </div>
         <div className="card py-4 text-center col-span-2 lg:col-span-1">
-          <ConfianceBadge score={user.scoreConfiance ?? 50} />
+          <div className="flex justify-center">
+            <ScoreFiabilite userId={user.id} size="md" />
+          </div>
           <p className="text-xs text-gray-500 flex items-center justify-center gap-1 mt-2">
-            <Star className="w-3 h-3" /> Confiance
+            <Star className="w-3 h-3" /> Fiabilité
           </p>
         </div>
       </div>
@@ -541,6 +544,9 @@ export default function ProfilPage() {
           </div>
         </div>
       )}
+
+      {/* Score de fiabilité détaillé */}
+      <ScoreFiabilite userId={user.id} showDetails />
     </div>
   );
 }

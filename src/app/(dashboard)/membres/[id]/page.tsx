@@ -6,6 +6,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useTontine } from "@/contexts/TontineContext";
 import Avatar from "@/components/Avatar";
 import { ConfianceBadge } from "@/components/MemberCard";
+import ScoreFiabilite from "@/components/ScoreFiabilite";
 import { formatMontant, formatDate } from "@/lib/data";
 import { User } from "@/types";
 import {
@@ -473,6 +474,14 @@ export default function MembreProfilPage({
             <p className="text-sm text-gray-500 mt-3">
               {getConfianceDescription(realScore)}
             </p>
+
+            {/* Score de fiabilité */}
+            <div className="mt-4 pt-4 border-t border-gray-100">
+              <p className="text-xs text-gray-500 mb-2">Score de fiabilité</p>
+              <div className="flex justify-center">
+                <ScoreFiabilite userId={id} size="md" />
+              </div>
+            </div>
 
             <div className="mt-4 pt-4 border-t border-gray-100 space-y-3">
               <div className="flex justify-between text-sm">
