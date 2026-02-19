@@ -16,6 +16,8 @@
   - Site URL = https://binq.io
   - Redirect URLs = https://binq.io/**
   
+  On utilise {{ .ConfirmationURL }} partout — Supabase gère la
+  vérification côté serveur puis redirige vers l'app.
   ============================================================
 -->
 
@@ -48,7 +50,7 @@
       <table cellpadding="0" cellspacing="0" border="0" style="margin: 0 auto;">
         <tr>
           <td align="center" bgcolor="#4f46e5" style="border-radius: 10px;">
-            <a href="{{ .SiteURL }}/auth/callback?token_hash={{ .TokenHash }}&type=signup&next=/dashboard" target="_blank" style="display: block; padding: 16px 40px; font-family: 'Segoe UI', Arial, sans-serif; font-size: 16px; font-weight: 600; color: #ffffff; text-decoration: none; border-radius: 10px; letter-spacing: 0.3px;">Confirmer mon email</a>
+            <a href="{{ .ConfirmationURL }}" target="_blank" style="display: block; padding: 16px 40px; font-family: 'Segoe UI', Arial, sans-serif; font-size: 16px; font-weight: 600; color: #ffffff; text-decoration: none; border-radius: 10px; letter-spacing: 0.3px;">Confirmer mon email</a>
           </td>
         </tr>
       </table>
@@ -92,7 +94,7 @@
       <table cellpadding="0" cellspacing="0" border="0" style="margin: 0 auto;">
         <tr>
           <td align="center" bgcolor="#4f46e5" style="border-radius: 10px;">
-            <a href="{{ .SiteURL }}/auth/callback?token_hash={{ .TokenHash }}&type=magiclink&next=/dashboard" target="_blank" style="display: block; padding: 16px 40px; font-family: 'Segoe UI', Arial, sans-serif; font-size: 16px; font-weight: 600; color: #ffffff; text-decoration: none; border-radius: 10px; letter-spacing: 0.3px;">Se connecter</a>
+            <a href="{{ .ConfirmationURL }}" target="_blank" style="display: block; padding: 16px 40px; font-family: 'Segoe UI', Arial, sans-serif; font-size: 16px; font-weight: 600; color: #ffffff; text-decoration: none; border-radius: 10px; letter-spacing: 0.3px;">Se connecter</a>
           </td>
         </tr>
       </table>
@@ -136,12 +138,11 @@
       <table cellpadding="0" cellspacing="0" border="0" style="margin: 0 auto;">
         <tr>
           <td align="center" bgcolor="#4f46e5" style="border-radius: 10px;">
-            <a href="{{ .SiteURL }}/auth/callback?token_hash={{ .TokenHash }}&type=recovery&next=/reset-password" target="_blank" style="display: block; padding: 16px 40px; font-family: 'Segoe UI', Arial, sans-serif; font-size: 16px; font-weight: 600; color: #ffffff; text-decoration: none; border-radius: 10px; letter-spacing: 0.3px;">Réinitialiser le mot de passe</a>
+            <a href="{{ .ConfirmationURL }}" target="_blank" style="display: block; padding: 16px 40px; font-family: 'Segoe UI', Arial, sans-serif; font-size: 16px; font-weight: 600; color: #ffffff; text-decoration: none; border-radius: 10px; letter-spacing: 0.3px;">Réinitialiser le mot de passe</a>
           </td>
         </tr>
       </table>
     </div>
-
     <div style="background-color: #fef3c7; border: 1px solid #fde68a; border-radius: 10px; padding: 16px 20px; margin: 24px 0;">
       <p style="color: #92400e; font-size: 13px; margin: 0; line-height: 1.6;">
         ⚠️ Ce lien expire dans <strong>1 heure</strong>. Si vous n'avez pas demandé cette réinitialisation, ignorez cet email — votre mot de passe restera inchangé.
@@ -183,7 +184,7 @@
       <table cellpadding="0" cellspacing="0" border="0" style="margin: 0 auto;">
         <tr>
           <td align="center" bgcolor="#4f46e5" style="border-radius: 10px;">
-            <a href="{{ .SiteURL }}/auth/callback?token_hash={{ .TokenHash }}&type=email_change&next=/dashboard" target="_blank" style="display: block; padding: 16px 40px; font-family: 'Segoe UI', Arial, sans-serif; font-size: 16px; font-weight: 600; color: #ffffff; text-decoration: none; border-radius: 10px; letter-spacing: 0.3px;">Confirmer le nouvel email</a>
+            <a href="{{ .ConfirmationURL }}" target="_blank" style="display: block; padding: 16px 40px; font-family: 'Segoe UI', Arial, sans-serif; font-size: 16px; font-weight: 600; color: #ffffff; text-decoration: none; border-radius: 10px; letter-spacing: 0.3px;">Confirmer le nouvel email</a>
           </td>
         </tr>
       </table>
@@ -200,7 +201,7 @@
 
 
 <!-- ========================================================
-     5. INVITE USER (Invitation — si activé dans Supabase)
+     5. INVITE USER (Invitation)
      Subject: Vous êtes invité(e) sur Binq
      ======================================================== -->
 
@@ -227,7 +228,7 @@
       <table cellpadding="0" cellspacing="0" border="0" style="margin: 0 auto;">
         <tr>
           <td align="center" bgcolor="#10b981" style="border-radius: 10px;">
-            <a href="{{ .SiteURL }}/auth/callback?token_hash={{ .TokenHash }}&type=invite&next=/dashboard" target="_blank" style="display: block; padding: 16px 40px; font-family: 'Segoe UI', Arial, sans-serif; font-size: 16px; font-weight: 600; color: #ffffff; text-decoration: none; border-radius: 10px; letter-spacing: 0.3px;">Accepter l'invitation</a>
+            <a href="{{ .ConfirmationURL }}" target="_blank" style="display: block; padding: 16px 40px; font-family: 'Segoe UI', Arial, sans-serif; font-size: 16px; font-weight: 600; color: #ffffff; text-decoration: none; border-radius: 10px; letter-spacing: 0.3px;">Accepter l'invitation</a>
           </td>
         </tr>
       </table>
