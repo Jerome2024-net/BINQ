@@ -530,8 +530,9 @@ export default function CreerTontinePage() {
                     value={formData.montantCotisation}
                     onChange={handleChange}
                     className="input-field pr-16"
-                    placeholder="50000"
-                    min="1000"
+                    placeholder="50"
+                    min="1"
+                    step="0.01"
                     required
                   />
                   <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 text-sm font-medium">
