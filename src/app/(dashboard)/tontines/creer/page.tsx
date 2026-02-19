@@ -42,6 +42,9 @@ export default function CreerTontinePage() {
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string>("");
+  // Auto-set dateDebut to today
+  const today = new Date().toISOString().split("T")[0];
+
   const [formData, setFormData] = useState({
     nom: "",
     description: "",
@@ -49,7 +52,7 @@ export default function CreerTontinePage() {
     devise: "EUR",
     frequence: "mensuel",
     membresMax: "10",
-    dateDebut: "",
+    dateDebut: today,
     regles: "",
     emoji: "💰",
     couleur: "emerald",
@@ -108,6 +111,27 @@ export default function CreerTontinePage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Manual validation (browser HTML5 validation disabled via noValidate)
+    if (!formData.nom.trim()) {
+      showToast("error", "Champ requis", "Veuillez saisir le nom de la tontine.");
+      return;
+    }
+    const montant = Number(formData.montantCotisation);
+    if (!formData.montantCotisation || isNaN(montant) || montant < 1) {
+      showToast("error", "Champ requis", "Le montant de la cotisation doit être d'au moins 1 €.");
+      return;
+    }
+    const membres = Number(formData.membresMax);
+    if (!formData.membresMax || isNaN(membres) || membres < 2 || membres > 50) {
+      showToast("error", "Champ requis", "Le nombre de membres doit être entre 2 et 50.");
+      return;
+    }
+    if (!formData.dateDebut) {
+      showToast("error", "Champ requis", "Veuillez sélectionner une date de début.");
+      return;
+    }
+
     // Show confirmation modal instead of submitting directly
     setShowConfirmation(true);
   };
@@ -241,7 +265,7 @@ export default function CreerTontinePage() {
 
       {/* Form */}
       {isAbonnementActif() && (
-      <form onSubmit={handleSubmit} className="space-y-6">
+      <form onSubmit={handleSubmit} noValidate className="space-y-6">
         <div className="card">
           <h2 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
             <CircleDollarSign className="w-5 h-5 text-primary-600" />
@@ -525,15 +549,19 @@ export default function CreerTontinePage() {
                 </label>
                 <div className="relative">
                   <input
-                    type="number"
+                    type="text"
+                    inputMode="decimal"
                     name="montantCotisation"
                     value={formData.montantCotisation}
-                    onChange={handleChange}
+                    onChange={(e) => {
+                      // Accept digits, dots and commas — normalize comma to dot
+                      const raw = e.target.value.replace(",", ".");
+                      if (raw === "" || /^\d*\.?\d{0,2}$/.test(raw)) {
+                        setFormData({ ...formData, montantCotisation: raw });
+                      }
+                    }}
                     className="input-field pr-16"
                     placeholder="50"
-                    min="1"
-                    step="0.01"
-                    required
                   />
                   <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 text-sm font-medium">
                     €
