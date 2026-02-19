@@ -472,36 +472,36 @@ export function TontineProvider({ children }: { children: React.ReactNode }) {
   );
 
   // ========================
-  // REJOINDRE UNE TONTINE
+  // REJOINDRE UNE TONTINE (via API avec caution)
   // ========================
   const rejoindreGroupe = useCallback(
     async (tontineId: string) => {
-      if (!user) return { success: false, error: "Non connecté" };
+      if (!user) return { success: false, error: "Non connecte" };
 
       const tontine = tontines.find((t) => t.id === tontineId);
       if (!tontine) return { success: false, error: "Tontine introuvable" };
       if (tontine.nombreMembres >= tontine.membresMax) return { success: false, error: "Groupe complet" };
-      if (tontine.membres.some((m) => m.userId === user.id)) return { success: false, error: "Déjà membre" };
+      if (tontine.membres.some((m) => m.userId === user.id)) return { success: false, error: "Deja membre" };
 
-      const { error } = await supabase.from("membres").insert({
-        tontine_id: tontineId,
-        user_id: user.id,
-        role: "membre",
-        date_adhesion: new Date().toISOString().split("T")[0],
-      });
+      try {
+        const res = await fetch("/api/tontine/rejoindre", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ tontineId }),
+        });
+        const data = await res.json();
 
-      if (error) return { success: false, error: error.message };
+        if (!res.ok) {
+          return { success: false, error: data.error || "Erreur lors de l'adhesion" };
+        }
 
-      // Incrémenter le nombre de membres
-      await supabase
-        .from("tontines")
-        .update({ nombre_membres: tontine.nombreMembres + 1 })
-        .eq("id", tontineId);
-
-      await loadTontines();
-      return { success: true };
+        await loadTontines();
+        return { success: true };
+      } catch {
+        return { success: false, error: "Erreur de connexion" };
+      }
     },
-    [user, tontines, supabase, loadTontines]
+    [user, tontines, loadTontines]
   );
 
   // ========================
@@ -795,49 +795,39 @@ export function TontineProvider({ children }: { children: React.ReactNode }) {
   // ========================
   const accepterInvitation = useCallback(
     async (invitationId: string) => {
-      if (!user) return { success: false, error: "Non connecté" };
+      if (!user) return { success: false, error: "Non connecte" };
 
-      // Trouver l'invitation
       const invitation = invitationsRecues.find((i) => i.id === invitationId);
       if (!invitation) return { success: false, error: "Invitation introuvable" };
 
-      // Vérifier que le groupe n'est pas complet
       const tontine = tontines.find((t) => t.id === invitation.tontineId);
       if (tontine && tontine.nombreMembres >= tontine.membresMax) {
         return { success: false, error: "Le groupe est complet" };
       }
 
-      // 1. Mettre à jour l'invitation
-      const { error: updateError } = await supabase
-        .from("invitations")
-        .update({ statut: "acceptee" })
-        .eq("id", invitationId);
+      try {
+        const res = await fetch("/api/tontine/rejoindre", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            tontineId: invitation.tontineId,
+            invitationId,
+          }),
+        });
+        const data = await res.json();
 
-      if (updateError) return { success: false, error: updateError.message };
+        if (!res.ok) {
+          return { success: false, error: data.error || "Erreur lors de l'adhesion" };
+        }
 
-      // 2. Ajouter comme membre
-      const { error: membreError } = await supabase.from("membres").insert({
-        tontine_id: invitation.tontineId,
-        user_id: user.id,
-        role: "membre",
-        date_adhesion: new Date().toISOString().split("T")[0],
-      });
-
-      if (membreError) return { success: false, error: membreError.message };
-
-      // 3. Incrémenter le nombre de membres
-      if (tontine) {
-        await supabase
-          .from("tontines")
-          .update({ nombre_membres: tontine.nombreMembres + 1 })
-          .eq("id", invitation.tontineId);
+        await loadTontines();
+        await loadInvitations();
+        return { success: true };
+      } catch {
+        return { success: false, error: "Erreur de connexion" };
       }
-
-      await loadTontines();
-      await loadInvitations();
-      return { success: true };
     },
-    [user, invitationsRecues, tontines, supabase, loadTontines, loadInvitations]
+    [user, invitationsRecues, tontines, loadTontines, loadInvitations]
   );
 
   // ========================

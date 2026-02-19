@@ -231,7 +231,7 @@ export async function GET(request: Request) {
 }
 
 // ========================
-// Prélèvement automatique
+// Prelevement automatique par carte
 // ========================
 async function tenterPrelevement(
   stripeCustomerId: string | null,
@@ -247,21 +247,15 @@ async function tenterPrelevement(
   try {
     const stripe = getStripe();
 
-    // Chercher une carte enregistrée
     const customer = await stripe.customers.retrieve(stripeCustomerId);
     if ("deleted" in customer && customer.deleted) return false;
 
+    // Trouver la carte enregistree
     let pmId: string | undefined;
-
-    // Méthode par défaut
     const defaultPm = customer.invoice_settings?.default_payment_method;
-    if (typeof defaultPm === "string") {
-      pmId = defaultPm;
-    } else if (defaultPm?.id) {
-      pmId = defaultPm.id;
-    }
+    if (typeof defaultPm === "string") pmId = defaultPm;
+    else if (defaultPm?.id) pmId = defaultPm.id;
 
-    // Sinon première carte disponible
     if (!pmId) {
       const pms = await stripe.paymentMethods.list({
         customer: stripeCustomerId,
@@ -293,7 +287,7 @@ async function tenterPrelevement(
 
     return pi.status === "succeeded";
   } catch (err) {
-    console.error(`Prélèvement auto échoué pour ${userId}:`, err);
+    console.error(`Prelevement auto echoue pour ${userId}:`, err);
     return false;
   }
 }
