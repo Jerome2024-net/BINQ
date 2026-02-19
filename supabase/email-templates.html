@@ -18,227 +18,397 @@
   
   On utilise {{ .ConfirmationURL }} partout — Supabase gère la
   vérification côté serveur puis redirige vers l'app.
+  
+  ANTI-SPAM : Ces templates sont optimisés pour la délivrabilité :
+  - DOCTYPE + structure HTML complète
+  - Pas d'emojis (pénalisés par les filtres)
+  - Adresse physique en footer (CAN-SPAM)
+  - Bon ratio texte/lien
+  - Mention du nom du destinataire via {{ .Email }}
   ============================================================
 -->
 
 
 <!-- ========================================================
      1. CONFIRM SIGNUP (Confirmer l'inscription)
-     Subject: Confirmez votre compte Binq
+     Subject: Binq - Confirmez votre adresse email
      ======================================================== -->
 
-<div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 600px; margin: 0 auto; background-color: #f8fafc;">
-  <div style="background-color: #4f46e5; padding: 40px 30px; text-align: center;">
-    <table cellpadding="0" cellspacing="0" border="0" style="margin: 0 auto;">
-      <tr>
-        <td style="width: 40px; height: 40px; border-radius: 10px; text-align: center; vertical-align: middle;" bgcolor="#3730a3">
-          <span style="color: white; font-size: 20px;">&#9733;</span>
-        </td>
-        <td style="padding-left: 10px; vertical-align: middle;">
-          <span style="font-family: 'Segoe UI', Arial, sans-serif; font-size: 24px; font-weight: 700; color: white; letter-spacing: -0.5px;">Binq</span>
-        </td>
-      </tr>
-    </table>
-    <p style="color: rgba(255,255,255,0.8); margin-top: 8px; font-size: 14px; margin-bottom: 0;">La tontine digitale, simple et sécurisée</p>
-  </div>
-  <div style="padding: 40px 30px;">
-    <h2 style="color: #1e293b; margin-top: 0; font-size: 22px; font-weight: 700;">Confirmez votre adresse email ✉️</h2>
-    <p style="color: #475569; line-height: 1.7; font-size: 15px;">
-      Bienvenue sur <strong>Binq</strong> ! Pour activer votre compte et accéder à toutes les fonctionnalités, cliquez sur le bouton ci-dessous :
-    </p>
-    <div style="text-align: center; margin: 32px 0;">
-      <table cellpadding="0" cellspacing="0" border="0" style="margin: 0 auto;">
-        <tr>
-          <td align="center" bgcolor="#4f46e5" style="border-radius: 10px;">
-            <a href="{{ .ConfirmationURL }}" target="_blank" style="display: block; padding: 16px 40px; font-family: 'Segoe UI', Arial, sans-serif; font-size: 16px; font-weight: 600; color: #ffffff; text-decoration: none; border-radius: 10px; letter-spacing: 0.3px;">Confirmer mon email</a>
-          </td>
-        </tr>
-      </table>
-    </div>
-    <p style="color: #94a3b8; font-size: 13px; line-height: 1.5; margin-top: 24px;">
-      Ce lien expire dans 24 heures. Si vous n'avez pas créé de compte sur Binq, vous pouvez ignorer cet email en toute sécurité.
-    </p>
-  </div>
-  <div style="background-color: #f1f5f9; padding: 24px 30px; text-align: center; border-top: 1px solid #e2e8f0;">
-    <p style="color: #94a3b8; font-size: 12px; margin: 0;">© 2026 Binq — Tous droits réservés</p>
-    <p style="color: #cbd5e1; font-size: 11px; margin: 8px 0 0;">binq.io</p>
-  </div>
-</div>
+<!DOCTYPE html>
+<html lang="fr" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Confirmez votre compte Binq</title>
+</head>
+<body style="margin:0;padding:0;background-color:#f4f4f7;font-family:Arial,'Helvetica Neue',Helvetica,sans-serif;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#f4f4f7;padding:40px 20px;">
+    <tr>
+      <td align="center">
+        <table role="presentation" width="560" cellpadding="0" cellspacing="0" style="background-color:#ffffff;border-radius:8px;border:1px solid #e8e8eb;">
+          <!-- Header -->
+          <tr>
+            <td style="background-color:#4f46e5;padding:32px 40px;text-align:center;border-radius:8px 8px 0 0;">
+              <span style="font-family:Arial,'Helvetica Neue',Helvetica,sans-serif;font-size:26px;font-weight:700;color:#ffffff;letter-spacing:0.5px;">BINQ</span>
+            </td>
+          </tr>
+          <!-- Body -->
+          <tr>
+            <td style="padding:40px 40px 32px;">
+              <h1 style="color:#1a1a2e;margin:0 0 20px;font-size:20px;font-weight:700;line-height:1.4;">Confirmez votre adresse email</h1>
+              <p style="color:#51545e;font-size:15px;line-height:1.7;margin:0 0 12px;">
+                Bonjour,
+              </p>
+              <p style="color:#51545e;font-size:15px;line-height:1.7;margin:0 0 12px;">
+                Merci de vous etre inscrit sur Binq, la plateforme de tontine digitale securisee. Pour activer votre compte, veuillez confirmer votre adresse email en cliquant sur le bouton ci-dessous.
+              </p>
+              <p style="color:#51545e;font-size:15px;line-height:1.7;margin:0 0 28px;">
+                Cette confirmation nous permet de verifier votre identite et de proteger votre compte.
+              </p>
+              <!-- Button -->
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+                <tr>
+                  <td align="center">
+                    <table role="presentation" cellpadding="0" cellspacing="0">
+                      <tr>
+                        <td style="border-radius:6px;background-color:#4f46e5;">
+                          <a href="{{ .ConfirmationURL }}" target="_blank" style="display:inline-block;padding:14px 36px;font-family:Arial,'Helvetica Neue',Helvetica,sans-serif;font-size:15px;font-weight:600;color:#ffffff;text-decoration:none;border-radius:6px;">Confirmer mon adresse email</a>
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+              </table>
+              <p style="color:#9a9ea6;font-size:13px;line-height:1.6;margin:28px 0 0;">
+                Ce lien est valable 24 heures. Si vous n'avez pas cree de compte sur Binq, aucune action n'est requise de votre part.
+              </p>
+            </td>
+          </tr>
+          <!-- Footer -->
+          <tr>
+            <td style="padding:24px 40px;text-align:center;border-top:1px solid #e8e8eb;">
+              <p style="color:#9a9ea6;font-size:12px;line-height:1.6;margin:0;">
+                Binq SAS - Plateforme de tontine digitale<br>
+                Paris, France<br>
+                <a href="https://binq.io" style="color:#9a9ea6;text-decoration:underline;">binq.io</a>
+              </p>
+              <p style="color:#b8b9bd;font-size:11px;margin:12px 0 0;">
+                Cet email a ete envoye a {{ .Email }}. Vous recevez cet email car vous avez cree un compte sur Binq.
+              </p>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
 
 
 <!-- ========================================================
      2. MAGIC LINK (Lien magique de connexion)
-     Subject: Votre lien de connexion Binq
+     Subject: Binq - Votre lien de connexion securise
      ======================================================== -->
 
-<div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 600px; margin: 0 auto; background-color: #f8fafc;">
-  <div style="background-color: #4f46e5; padding: 40px 30px; text-align: center;">
-    <table cellpadding="0" cellspacing="0" border="0" style="margin: 0 auto;">
-      <tr>
-        <td style="width: 40px; height: 40px; border-radius: 10px; text-align: center; vertical-align: middle;" bgcolor="#3730a3">
-          <span style="color: white; font-size: 20px;">&#9733;</span>
-        </td>
-        <td style="padding-left: 10px; vertical-align: middle;">
-          <span style="font-family: 'Segoe UI', Arial, sans-serif; font-size: 24px; font-weight: 700; color: white; letter-spacing: -0.5px;">Binq</span>
-        </td>
-      </tr>
-    </table>
-    <p style="color: rgba(255,255,255,0.8); margin-top: 8px; font-size: 14px; margin-bottom: 0;">La tontine digitale, simple et sécurisée</p>
-  </div>
-  <div style="padding: 40px 30px;">
-    <h2 style="color: #1e293b; margin-top: 0; font-size: 22px; font-weight: 700;">Votre lien de connexion 🔑</h2>
-    <p style="color: #475569; line-height: 1.7; font-size: 15px;">
-      Cliquez sur le bouton ci-dessous pour vous connecter à votre compte Binq. Ce lien est valable pendant 24 heures.
-    </p>
-    <div style="text-align: center; margin: 32px 0;">
-      <table cellpadding="0" cellspacing="0" border="0" style="margin: 0 auto;">
-        <tr>
-          <td align="center" bgcolor="#4f46e5" style="border-radius: 10px;">
-            <a href="{{ .ConfirmationURL }}" target="_blank" style="display: block; padding: 16px 40px; font-family: 'Segoe UI', Arial, sans-serif; font-size: 16px; font-weight: 600; color: #ffffff; text-decoration: none; border-radius: 10px; letter-spacing: 0.3px;">Se connecter</a>
-          </td>
-        </tr>
-      </table>
-    </div>
-    <p style="color: #94a3b8; font-size: 13px; line-height: 1.5; margin-top: 24px;">
-      Ce lien est valable 24 heures. Si vous n'avez pas demandé ce lien, ignorez cet email.
-    </p>
-  </div>
-  <div style="background-color: #f1f5f9; padding: 24px 30px; text-align: center; border-top: 1px solid #e2e8f0;">
-    <p style="color: #94a3b8; font-size: 12px; margin: 0;">© 2026 Binq — Tous droits réservés</p>
-    <p style="color: #cbd5e1; font-size: 11px; margin: 8px 0 0;">binq.io</p>
-  </div>
-</div>
+<!DOCTYPE html>
+<html lang="fr" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Votre lien de connexion Binq</title>
+</head>
+<body style="margin:0;padding:0;background-color:#f4f4f7;font-family:Arial,'Helvetica Neue',Helvetica,sans-serif;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#f4f4f7;padding:40px 20px;">
+    <tr>
+      <td align="center">
+        <table role="presentation" width="560" cellpadding="0" cellspacing="0" style="background-color:#ffffff;border-radius:8px;border:1px solid #e8e8eb;">
+          <!-- Header -->
+          <tr>
+            <td style="background-color:#4f46e5;padding:32px 40px;text-align:center;border-radius:8px 8px 0 0;">
+              <span style="font-family:Arial,'Helvetica Neue',Helvetica,sans-serif;font-size:26px;font-weight:700;color:#ffffff;letter-spacing:0.5px;">BINQ</span>
+            </td>
+          </tr>
+          <!-- Body -->
+          <tr>
+            <td style="padding:40px 40px 32px;">
+              <h1 style="color:#1a1a2e;margin:0 0 20px;font-size:20px;font-weight:700;line-height:1.4;">Votre lien de connexion</h1>
+              <p style="color:#51545e;font-size:15px;line-height:1.7;margin:0 0 12px;">
+                Bonjour,
+              </p>
+              <p style="color:#51545e;font-size:15px;line-height:1.7;margin:0 0 12px;">
+                Vous avez demande un lien de connexion pour acceder a votre compte Binq. Cliquez sur le bouton ci-dessous pour vous connecter de maniere securisee.
+              </p>
+              <p style="color:#51545e;font-size:15px;line-height:1.7;margin:0 0 28px;">
+                Ce lien est a usage unique et expire dans 24 heures pour garantir la securite de votre compte.
+              </p>
+              <!-- Button -->
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+                <tr>
+                  <td align="center">
+                    <table role="presentation" cellpadding="0" cellspacing="0">
+                      <tr>
+                        <td style="border-radius:6px;background-color:#4f46e5;">
+                          <a href="{{ .ConfirmationURL }}" target="_blank" style="display:inline-block;padding:14px 36px;font-family:Arial,'Helvetica Neue',Helvetica,sans-serif;font-size:15px;font-weight:600;color:#ffffff;text-decoration:none;border-radius:6px;">Se connecter a Binq</a>
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+              </table>
+              <p style="color:#9a9ea6;font-size:13px;line-height:1.6;margin:28px 0 0;">
+                Si vous n'avez pas demande ce lien de connexion, aucune action n'est requise. Votre compte reste securise.
+              </p>
+            </td>
+          </tr>
+          <!-- Footer -->
+          <tr>
+            <td style="padding:24px 40px;text-align:center;border-top:1px solid #e8e8eb;">
+              <p style="color:#9a9ea6;font-size:12px;line-height:1.6;margin:0;">
+                Binq SAS - Plateforme de tontine digitale<br>
+                Paris, France<br>
+                <a href="https://binq.io" style="color:#9a9ea6;text-decoration:underline;">binq.io</a>
+              </p>
+              <p style="color:#b8b9bd;font-size:11px;margin:12px 0 0;">
+                Cet email a ete envoye a {{ .Email }}. Vous recevez cet email suite a une demande de connexion sur Binq.
+              </p>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
 
 
 <!-- ========================================================
      3. RESET PASSWORD (Réinitialisation du mot de passe)
-     Subject: Réinitialisez votre mot de passe Binq
+     Subject: Binq - Reinitialisation de votre mot de passe
      ======================================================== -->
 
-<div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 600px; margin: 0 auto; background-color: #f8fafc;">
-  <div style="background-color: #4f46e5; padding: 40px 30px; text-align: center;">
-    <table cellpadding="0" cellspacing="0" border="0" style="margin: 0 auto;">
-      <tr>
-        <td style="width: 40px; height: 40px; border-radius: 10px; text-align: center; vertical-align: middle;" bgcolor="#3730a3">
-          <span style="color: white; font-size: 20px;">&#9733;</span>
-        </td>
-        <td style="padding-left: 10px; vertical-align: middle;">
-          <span style="font-family: 'Segoe UI', Arial, sans-serif; font-size: 24px; font-weight: 700; color: white; letter-spacing: -0.5px;">Binq</span>
-        </td>
-      </tr>
-    </table>
-    <p style="color: rgba(255,255,255,0.8); margin-top: 8px; font-size: 14px; margin-bottom: 0;">La tontine digitale, simple et sécurisée</p>
-  </div>
-  <div style="padding: 40px 30px;">
-    <h2 style="color: #1e293b; margin-top: 0; font-size: 22px; font-weight: 700;">Réinitialiser votre mot de passe 🔒</h2>
-    <p style="color: #475569; line-height: 1.7; font-size: 15px;">
-      Vous avez demandé la réinitialisation de votre mot de passe. Cliquez sur le bouton ci-dessous pour choisir un nouveau mot de passe :
-    </p>
-    <div style="text-align: center; margin: 32px 0;">
-      <table cellpadding="0" cellspacing="0" border="0" style="margin: 0 auto;">
-        <tr>
-          <td align="center" bgcolor="#4f46e5" style="border-radius: 10px;">
-            <a href="{{ .ConfirmationURL }}" target="_blank" style="display: block; padding: 16px 40px; font-family: 'Segoe UI', Arial, sans-serif; font-size: 16px; font-weight: 600; color: #ffffff; text-decoration: none; border-radius: 10px; letter-spacing: 0.3px;">Réinitialiser le mot de passe</a>
-          </td>
-        </tr>
-      </table>
-    </div>
-    <div style="background-color: #fef3c7; border: 1px solid #fde68a; border-radius: 10px; padding: 16px 20px; margin: 24px 0;">
-      <p style="color: #92400e; font-size: 13px; margin: 0; line-height: 1.6;">
-        ⚠️ Ce lien expire dans <strong>1 heure</strong>. Si vous n'avez pas demandé cette réinitialisation, ignorez cet email — votre mot de passe restera inchangé.
-      </p>
-    </div>
-  </div>
-  <div style="background-color: #f1f5f9; padding: 24px 30px; text-align: center; border-top: 1px solid #e2e8f0;">
-    <p style="color: #94a3b8; font-size: 12px; margin: 0;">© 2026 Binq — Tous droits réservés</p>
-    <p style="color: #cbd5e1; font-size: 11px; margin: 8px 0 0;">binq.io</p>
-  </div>
-</div>
+<!DOCTYPE html>
+<html lang="fr" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Reinitialiser votre mot de passe Binq</title>
+</head>
+<body style="margin:0;padding:0;background-color:#f4f4f7;font-family:Arial,'Helvetica Neue',Helvetica,sans-serif;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#f4f4f7;padding:40px 20px;">
+    <tr>
+      <td align="center">
+        <table role="presentation" width="560" cellpadding="0" cellspacing="0" style="background-color:#ffffff;border-radius:8px;border:1px solid #e8e8eb;">
+          <!-- Header -->
+          <tr>
+            <td style="background-color:#4f46e5;padding:32px 40px;text-align:center;border-radius:8px 8px 0 0;">
+              <span style="font-family:Arial,'Helvetica Neue',Helvetica,sans-serif;font-size:26px;font-weight:700;color:#ffffff;letter-spacing:0.5px;">BINQ</span>
+            </td>
+          </tr>
+          <!-- Body -->
+          <tr>
+            <td style="padding:40px 40px 32px;">
+              <h1 style="color:#1a1a2e;margin:0 0 20px;font-size:20px;font-weight:700;line-height:1.4;">Reinitialisation de votre mot de passe</h1>
+              <p style="color:#51545e;font-size:15px;line-height:1.7;margin:0 0 12px;">
+                Bonjour,
+              </p>
+              <p style="color:#51545e;font-size:15px;line-height:1.7;margin:0 0 12px;">
+                Nous avons recu une demande de reinitialisation du mot de passe associe a votre compte Binq. Cliquez sur le bouton ci-dessous pour definir un nouveau mot de passe.
+              </p>
+              <p style="color:#51545e;font-size:15px;line-height:1.7;margin:0 0 28px;">
+                Pour des raisons de securite, ce lien expire dans 1 heure.
+              </p>
+              <!-- Button -->
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+                <tr>
+                  <td align="center">
+                    <table role="presentation" cellpadding="0" cellspacing="0">
+                      <tr>
+                        <td style="border-radius:6px;background-color:#4f46e5;">
+                          <a href="{{ .ConfirmationURL }}" target="_blank" style="display:inline-block;padding:14px 36px;font-family:Arial,'Helvetica Neue',Helvetica,sans-serif;font-size:15px;font-weight:600;color:#ffffff;text-decoration:none;border-radius:6px;">Reinitialiser mon mot de passe</a>
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+              </table>
+              <p style="color:#9a9ea6;font-size:13px;line-height:1.6;margin:28px 0 0;">
+                Si vous n'avez pas demande cette reinitialisation, aucune action n'est necessaire. Votre mot de passe actuel reste inchange et votre compte est en securite.
+              </p>
+            </td>
+          </tr>
+          <!-- Footer -->
+          <tr>
+            <td style="padding:24px 40px;text-align:center;border-top:1px solid #e8e8eb;">
+              <p style="color:#9a9ea6;font-size:12px;line-height:1.6;margin:0;">
+                Binq SAS - Plateforme de tontine digitale<br>
+                Paris, France<br>
+                <a href="https://binq.io" style="color:#9a9ea6;text-decoration:underline;">binq.io</a>
+              </p>
+              <p style="color:#b8b9bd;font-size:11px;margin:12px 0 0;">
+                Cet email a ete envoye a {{ .Email }}. Vous recevez cet email suite a une demande de reinitialisation sur Binq.
+              </p>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
 
 
 <!-- ========================================================
      4. CHANGE EMAIL (Changement d'email)
-     Subject: Confirmez votre nouvel email Binq
+     Subject: Binq - Confirmez votre nouvelle adresse email
      ======================================================== -->
 
-<div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 600px; margin: 0 auto; background-color: #f8fafc;">
-  <div style="background-color: #4f46e5; padding: 40px 30px; text-align: center;">
-    <table cellpadding="0" cellspacing="0" border="0" style="margin: 0 auto;">
-      <tr>
-        <td style="width: 40px; height: 40px; border-radius: 10px; text-align: center; vertical-align: middle;" bgcolor="#3730a3">
-          <span style="color: white; font-size: 20px;">&#9733;</span>
-        </td>
-        <td style="padding-left: 10px; vertical-align: middle;">
-          <span style="font-family: 'Segoe UI', Arial, sans-serif; font-size: 24px; font-weight: 700; color: white; letter-spacing: -0.5px;">Binq</span>
-        </td>
-      </tr>
-    </table>
-    <p style="color: rgba(255,255,255,0.8); margin-top: 8px; font-size: 14px; margin-bottom: 0;">La tontine digitale, simple et sécurisée</p>
-  </div>
-  <div style="padding: 40px 30px;">
-    <h2 style="color: #1e293b; margin-top: 0; font-size: 22px; font-weight: 700;">Confirmez votre nouvel email 📧</h2>
-    <p style="color: #475569; line-height: 1.7; font-size: 15px;">
-      Vous avez demandé à changer votre adresse email sur Binq. Cliquez sur le bouton ci-dessous pour confirmer :
-    </p>
-    <div style="text-align: center; margin: 32px 0;">
-      <table cellpadding="0" cellspacing="0" border="0" style="margin: 0 auto;">
-        <tr>
-          <td align="center" bgcolor="#4f46e5" style="border-radius: 10px;">
-            <a href="{{ .ConfirmationURL }}" target="_blank" style="display: block; padding: 16px 40px; font-family: 'Segoe UI', Arial, sans-serif; font-size: 16px; font-weight: 600; color: #ffffff; text-decoration: none; border-radius: 10px; letter-spacing: 0.3px;">Confirmer le nouvel email</a>
-          </td>
-        </tr>
-      </table>
-    </div>
-    <p style="color: #94a3b8; font-size: 13px; line-height: 1.5; margin-top: 24px;">
-      Si vous n'avez pas demandé ce changement, ignorez cet email et votre adresse restera inchangée.
-    </p>
-  </div>
-  <div style="background-color: #f1f5f9; padding: 24px 30px; text-align: center; border-top: 1px solid #e2e8f0;">
-    <p style="color: #94a3b8; font-size: 12px; margin: 0;">© 2026 Binq — Tous droits réservés</p>
-    <p style="color: #cbd5e1; font-size: 11px; margin: 8px 0 0;">binq.io</p>
-  </div>
-</div>
+<!DOCTYPE html>
+<html lang="fr" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Confirmez votre nouvel email Binq</title>
+</head>
+<body style="margin:0;padding:0;background-color:#f4f4f7;font-family:Arial,'Helvetica Neue',Helvetica,sans-serif;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#f4f4f7;padding:40px 20px;">
+    <tr>
+      <td align="center">
+        <table role="presentation" width="560" cellpadding="0" cellspacing="0" style="background-color:#ffffff;border-radius:8px;border:1px solid #e8e8eb;">
+          <!-- Header -->
+          <tr>
+            <td style="background-color:#4f46e5;padding:32px 40px;text-align:center;border-radius:8px 8px 0 0;">
+              <span style="font-family:Arial,'Helvetica Neue',Helvetica,sans-serif;font-size:26px;font-weight:700;color:#ffffff;letter-spacing:0.5px;">BINQ</span>
+            </td>
+          </tr>
+          <!-- Body -->
+          <tr>
+            <td style="padding:40px 40px 32px;">
+              <h1 style="color:#1a1a2e;margin:0 0 20px;font-size:20px;font-weight:700;line-height:1.4;">Confirmez votre nouvelle adresse email</h1>
+              <p style="color:#51545e;font-size:15px;line-height:1.7;margin:0 0 12px;">
+                Bonjour,
+              </p>
+              <p style="color:#51545e;font-size:15px;line-height:1.7;margin:0 0 12px;">
+                Vous avez demande a modifier l'adresse email associee a votre compte Binq. Pour finaliser ce changement, veuillez confirmer votre nouvelle adresse en cliquant sur le bouton ci-dessous.
+              </p>
+              <p style="color:#51545e;font-size:15px;line-height:1.7;margin:0 0 28px;">
+                Si vous n'etes pas a l'origine de cette demande, votre adresse email actuelle restera inchangee.
+              </p>
+              <!-- Button -->
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+                <tr>
+                  <td align="center">
+                    <table role="presentation" cellpadding="0" cellspacing="0">
+                      <tr>
+                        <td style="border-radius:6px;background-color:#4f46e5;">
+                          <a href="{{ .ConfirmationURL }}" target="_blank" style="display:inline-block;padding:14px 36px;font-family:Arial,'Helvetica Neue',Helvetica,sans-serif;font-size:15px;font-weight:600;color:#ffffff;text-decoration:none;border-radius:6px;">Confirmer la nouvelle adresse</a>
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+              </table>
+              <p style="color:#9a9ea6;font-size:13px;line-height:1.6;margin:28px 0 0;">
+                Ce lien est valable 24 heures. Si vous n'avez pas demande ce changement, aucune action n'est requise de votre part.
+              </p>
+            </td>
+          </tr>
+          <!-- Footer -->
+          <tr>
+            <td style="padding:24px 40px;text-align:center;border-top:1px solid #e8e8eb;">
+              <p style="color:#9a9ea6;font-size:12px;line-height:1.6;margin:0;">
+                Binq SAS - Plateforme de tontine digitale<br>
+                Paris, France<br>
+                <a href="https://binq.io" style="color:#9a9ea6;text-decoration:underline;">binq.io</a>
+              </p>
+              <p style="color:#b8b9bd;font-size:11px;margin:12px 0 0;">
+                Cet email a ete envoye a {{ .Email }}. Vous recevez cet email suite a une demande de changement d'adresse sur Binq.
+              </p>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
 
 
 <!-- ========================================================
      5. INVITE USER (Invitation)
-     Subject: Vous êtes invité(e) sur Binq
+     Subject: Binq - Vous avez ete invite a rejoindre la plateforme
      ======================================================== -->
 
-<div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 600px; margin: 0 auto; background-color: #f8fafc;">
-  <div style="background-color: #4f46e5; padding: 40px 30px; text-align: center;">
-    <table cellpadding="0" cellspacing="0" border="0" style="margin: 0 auto;">
-      <tr>
-        <td style="width: 40px; height: 40px; border-radius: 10px; text-align: center; vertical-align: middle;" bgcolor="#3730a3">
-          <span style="color: white; font-size: 20px;">&#9733;</span>
-        </td>
-        <td style="padding-left: 10px; vertical-align: middle;">
-          <span style="font-family: 'Segoe UI', Arial, sans-serif; font-size: 24px; font-weight: 700; color: white; letter-spacing: -0.5px;">Binq</span>
-        </td>
-      </tr>
-    </table>
-    <p style="color: rgba(255,255,255,0.8); margin-top: 8px; font-size: 14px; margin-bottom: 0;">La tontine digitale, simple et sécurisée</p>
-  </div>
-  <div style="padding: 40px 30px;">
-    <h2 style="color: #1e293b; margin-top: 0; font-size: 22px; font-weight: 700;">Vous êtes invité(e) sur Binq ! 🎉</h2>
-    <p style="color: #475569; line-height: 1.7; font-size: 15px;">
-      Quelqu'un vous a invité à rejoindre Binq, la plateforme de tontine moderne et sécurisée. Cliquez ci-dessous pour créer votre compte :
-    </p>
-    <div style="text-align: center; margin: 32px 0;">
-      <table cellpadding="0" cellspacing="0" border="0" style="margin: 0 auto;">
-        <tr>
-          <td align="center" bgcolor="#10b981" style="border-radius: 10px;">
-            <a href="{{ .ConfirmationURL }}" target="_blank" style="display: block; padding: 16px 40px; font-family: 'Segoe UI', Arial, sans-serif; font-size: 16px; font-weight: 600; color: #ffffff; text-decoration: none; border-radius: 10px; letter-spacing: 0.3px;">Accepter l'invitation</a>
-          </td>
-        </tr>
-      </table>
-    </div>
-    <p style="color: #94a3b8; font-size: 13px; line-height: 1.5; margin-top: 24px;">
-      Si vous ne souhaitez pas rejoindre Binq, ignorez simplement cet email.
-    </p>
-  </div>
-  <div style="background-color: #f1f5f9; padding: 24px 30px; text-align: center; border-top: 1px solid #e2e8f0;">
-    <p style="color: #94a3b8; font-size: 12px; margin: 0;">© 2026 Binq — Tous droits réservés</p>
-    <p style="color: #cbd5e1; font-size: 11px; margin: 8px 0 0;">binq.io</p>
-  </div>
-</div>
+<!DOCTYPE html>
+<html lang="fr" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Invitation Binq</title>
+</head>
+<body style="margin:0;padding:0;background-color:#f4f4f7;font-family:Arial,'Helvetica Neue',Helvetica,sans-serif;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#f4f4f7;padding:40px 20px;">
+    <tr>
+      <td align="center">
+        <table role="presentation" width="560" cellpadding="0" cellspacing="0" style="background-color:#ffffff;border-radius:8px;border:1px solid #e8e8eb;">
+          <!-- Header -->
+          <tr>
+            <td style="background-color:#4f46e5;padding:32px 40px;text-align:center;border-radius:8px 8px 0 0;">
+              <span style="font-family:Arial,'Helvetica Neue',Helvetica,sans-serif;font-size:26px;font-weight:700;color:#ffffff;letter-spacing:0.5px;">BINQ</span>
+            </td>
+          </tr>
+          <!-- Body -->
+          <tr>
+            <td style="padding:40px 40px 32px;">
+              <h1 style="color:#1a1a2e;margin:0 0 20px;font-size:20px;font-weight:700;line-height:1.4;">Vous etes invite a rejoindre Binq</h1>
+              <p style="color:#51545e;font-size:15px;line-height:1.7;margin:0 0 12px;">
+                Bonjour,
+              </p>
+              <p style="color:#51545e;font-size:15px;line-height:1.7;margin:0 0 12px;">
+                Un membre de Binq vous a invite a rejoindre la plateforme de tontine digitale. Binq vous permet de participer a des tontines en ligne de maniere simple, transparente et securisee.
+              </p>
+              <p style="color:#51545e;font-size:15px;line-height:1.7;margin:0 0 28px;">
+                Cliquez sur le bouton ci-dessous pour creer votre compte et commencer.
+              </p>
+              <!-- Button -->
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+                <tr>
+                  <td align="center">
+                    <table role="presentation" cellpadding="0" cellspacing="0">
+                      <tr>
+                        <td style="border-radius:6px;background-color:#4f46e5;">
+                          <a href="{{ .ConfirmationURL }}" target="_blank" style="display:inline-block;padding:14px 36px;font-family:Arial,'Helvetica Neue',Helvetica,sans-serif;font-size:15px;font-weight:600;color:#ffffff;text-decoration:none;border-radius:6px;">Accepter l'invitation</a>
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+              </table>
+              <p style="color:#9a9ea6;font-size:13px;line-height:1.6;margin:28px 0 0;">
+                Si vous ne souhaitez pas rejoindre Binq, aucune action n'est requise de votre part.
+              </p>
+            </td>
+          </tr>
+          <!-- Footer -->
+          <tr>
+            <td style="padding:24px 40px;text-align:center;border-top:1px solid #e8e8eb;">
+              <p style="color:#9a9ea6;font-size:12px;line-height:1.6;margin:0;">
+                Binq SAS - Plateforme de tontine digitale<br>
+                Paris, France<br>
+                <a href="https://binq.io" style="color:#9a9ea6;text-decoration:underline;">binq.io</a>
+              </p>
+              <p style="color:#b8b9bd;font-size:11px;margin:12px 0 0;">
+                Cet email a ete envoye a {{ .Email }}. Vous recevez cet email suite a une invitation sur Binq.
+              </p>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
