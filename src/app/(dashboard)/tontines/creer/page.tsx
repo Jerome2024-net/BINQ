@@ -8,6 +8,7 @@ import { useFinance } from "@/contexts/FinanceContext";
 import { useToast } from "@/contexts/ToastContext";
 import SubscriptionModal from "@/components/SubscriptionModal";
 import TontineImageUpload from "@/components/TontineImageUpload";
+import StripeVerificationGuard from "@/components/StripeVerificationGuard";
 import {
   ArrowLeft,
   CircleDollarSign,
@@ -726,23 +727,25 @@ export default function CreerTontinePage() {
 
         {/* Submit */}
         <div className="flex flex-col sm:flex-row gap-3">
-          <button
-            type="submit"
-            disabled={loading}
-            className="btn-primary flex items-center justify-center gap-2 flex-1 disabled:opacity-50"
-          >
-            {loading ? (
-              <>
-                <Loader2 className="w-5 h-5 animate-spin" />
-                Création...
-              </>
-            ) : (
-              <>
-                Créer la tontine
-                <ArrowRight className="w-5 h-5" />
-              </>
-            )}
-          </button>
+          <StripeVerificationGuard action="créer une tontine">
+            <button
+              type="submit"
+              disabled={loading}
+              className="btn-primary flex items-center justify-center gap-2 flex-1 disabled:opacity-50 w-full"
+            >
+              {loading ? (
+                <>
+                  <Loader2 className="w-5 h-5 animate-spin" />
+                  Création...
+                </>
+              ) : (
+                <>
+                  Créer la tontine
+                  <ArrowRight className="w-5 h-5" />
+                </>
+              )}
+            </button>
+          </StripeVerificationGuard>
           <Link
             href="/tontines"
             className="btn-secondary text-center flex-1 flex items-center justify-center"

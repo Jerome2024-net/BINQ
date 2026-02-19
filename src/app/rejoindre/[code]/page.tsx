@@ -24,6 +24,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useTontine } from "@/contexts/TontineContext";
 import { useToast } from "@/contexts/ToastContext";
 import { Invitation, Membre } from "@/types";
+import StripeVerificationGuard from "@/components/StripeVerificationGuard";
 
 export default function RejoindreParCodePage({
   params,
@@ -474,23 +475,25 @@ export default function RejoindreParCodePage({
                   <span>Cette tontine est complète. Aucune place disponible.</span>
                 </div>
               ) : user ? (
-                <button
-                  onClick={handleJoin}
-                  disabled={joining}
-                  className="group w-full py-4 bg-gradient-to-r from-primary-600 to-primary-500 text-white rounded-xl font-semibold flex items-center justify-center gap-2.5 hover:shadow-xl hover:shadow-primary-500/25 hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200 disabled:opacity-50 disabled:hover:translate-y-0 disabled:hover:shadow-none text-[15px]"
-                >
-                  {joining ? (
-                    <>
-                      <Loader2 className="w-5 h-5 animate-spin" />
-                      Adhésion en cours...
-                    </>
-                  ) : (
-                    <>
-                      Rejoindre la tontine
-                      <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
-                    </>
-                  )}
-                </button>
+                <StripeVerificationGuard action="rejoindre cette tontine">
+                  <button
+                    onClick={handleJoin}
+                    disabled={joining}
+                    className="group w-full py-4 bg-gradient-to-r from-primary-600 to-primary-500 text-white rounded-xl font-semibold flex items-center justify-center gap-2.5 hover:shadow-xl hover:shadow-primary-500/25 hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200 disabled:opacity-50 disabled:hover:translate-y-0 disabled:hover:shadow-none text-[15px]"
+                  >
+                    {joining ? (
+                      <>
+                        <Loader2 className="w-5 h-5 animate-spin" />
+                        Adhésion en cours...
+                      </>
+                    ) : (
+                      <>
+                        Rejoindre la tontine
+                        <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+                      </>
+                    )}
+                  </button>
+                </StripeVerificationGuard>
               ) : (
                 <div className="space-y-3">
                   <p className="text-center text-sm text-gray-400 mb-1">
