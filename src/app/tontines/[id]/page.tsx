@@ -14,7 +14,6 @@ import ConfirmModal from "@/components/ConfirmModal";
 import TontineProfileCard from "@/components/TontineProfileCard";
 import OrganizerProfileCard from "@/components/OrganizerProfileCard";
 import ParticipantProfileCard from "@/components/ParticipantProfileCard";
-import { TontineDetailSkeleton } from "@/components/Skeleton";
 import {
   Users,
   CircleDollarSign,
@@ -74,7 +73,7 @@ export default function TontineDetailPage({
   const { id } = params;
   const router = useRouter();
   const { user } = useAuth();
-  const { getTontineById, effectuerPaiement, inviterMembre, exclureMembre, demarrerTontine, supprimerTontine, quitterGroupe, rejoindreGroupe, signalerDefaillance, getInvitationsPourTontine, isLoading: tontineLoading } = useTontine();
+  const { getTontineById, effectuerPaiement, inviterMembre, exclureMembre, demarrerTontine, supprimerTontine, quitterGroupe, rejoindreGroupe, signalerDefaillance, getInvitationsPourTontine } = useTontine();
   const { showToast } = useToast();
   const { refreshTransactions } = useFinance();
   const { distributePot, createCotisationPayment, currency } = usePayment();
@@ -92,10 +91,6 @@ export default function TontineDetailPage({
   }>({ open: false, title: "", message: "", confirmText: "", danger: false, action: () => {} });
 
   const tontine = getTontineById(id);
-
-  if (tontineLoading) {
-    return <TontineDetailSkeleton />;
-  }
 
   if (!tontine) {
     return (
@@ -132,7 +127,7 @@ export default function TontineDetailPage({
     if (result.success) {
       showToast("success", "Cotisation payée via Stripe ! ✅", "Référence: " + result.reference);
 
-      // Rafraîchir les transactions depuis Supabase (alimenté par webhook)
+      // Rafraîchir les transactions depuis Supabase
       await refreshTransactions();
 
       // Vérifier si le tour est complet → distribuer le pot via Stripe Connect

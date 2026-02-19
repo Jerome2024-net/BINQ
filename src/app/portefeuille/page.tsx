@@ -1,14 +1,12 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Link from "next/link";
-import { useSearchParams, useRouter } from "next/navigation";
 import { useFinance } from "@/contexts/FinanceContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/contexts/ToastContext";
 import SubscriptionModal from "@/components/SubscriptionModal";
 import StripeConnectCard from "@/components/StripeConnectCard";
-import { PortefeuilleSkeleton } from "@/components/Skeleton";
 import { formatMontant, formatDate } from "@/lib/data";
 import {
   Wallet,
@@ -42,43 +40,16 @@ export default function PortefeuillePage() {
     isAbonnementActif,
     isEssaiGratuit,
     getJoursRestantsAbonnement,
-    rafraichirAbonnement,
   } = useFinance();
   const { showToast } = useToast();
-  const searchParams = useSearchParams();
-  const router = useRouter();
 
   const [showSolde, setShowSolde] = useState(true);
   const [subscriptionModalOpen, setSubscriptionModalOpen] = useState(false);
-
-  // Gérer le retour de Stripe Checkout
-  useEffect(() => {
-    const subscriptionStatus = searchParams.get("subscription");
-    if (subscriptionStatus === "success") {
-      showToast("success", "Paiement réussi ! 🎉", "Votre abonnement organisateur est maintenant actif");
-      // Rafraîchir l'abonnement depuis Supabase (le webhook l'a activé)
-      const timer = setTimeout(() => {
-        rafraichirAbonnement();
-      }, 2000);
-      // Nettoyer l'URL
-      router.replace("/portefeuille");
-      return () => clearTimeout(timer);
-    } else if (subscriptionStatus === "cancelled") {
-      showToast("info", "Paiement annulé", "Vous pouvez réessayer à tout moment");
-      router.replace("/portefeuille");
-    }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchParams]);
 
   const summary = getFinancialSummary();
   const recentTx = getTransactions({ limit: 8 });
   const frais = getFraisConfig();
   const solde = summary.totalPotsRecus - summary.totalCotisationsPaye;
-  const { isLoading: financeLoading } = useFinance();
-
-  if (financeLoading) {
-    return <PortefeuilleSkeleton />;
-  }
 
   const handleSouscrire = () => {
     setSubscriptionModalOpen(true);
@@ -161,14 +132,14 @@ export default function PortefeuillePage() {
             <span className="text-xl font-normal text-green-200">€</span>
           </p>
 
-          <p className="text-sm text-blue-200 mb-6">Pots reçus - Cotisations payées</p>
+          <div className="mb-6"></div>
 
           <div className="flex flex-col sm:flex-row gap-3">
             <Link
               href="/transactions"
               className="flex items-center justify-center gap-2 bg-white text-primary-700 px-6 py-3 rounded-xl font-semibold hover:bg-green-50 transition-colors"
             >
-              <Receipt className="w-5 h-5" />
+              <BarChart3 className="w-5 h-5" />
               Voir toutes les transactions
             </Link>
           </div>
@@ -208,7 +179,7 @@ export default function PortefeuillePage() {
               )}
             </div>
           </div>
-          <div className="text-center sm:text-right w-full sm:w-auto">
+          <div className="text-right">
             {!isAbonnementActif() ? (
               <div>
                 <p className="text-lg font-bold text-emerald-600">🎁 Essai gratuit 90j</p>
@@ -243,7 +214,7 @@ export default function PortefeuillePage() {
         </div>
         {!isAbonnementActif() && (
           <div className="mt-4 pt-4 border-t border-amber-200">
-            <div className="flex flex-wrap gap-2 sm:gap-4 text-xs sm:text-sm text-gray-600">
+            <div className="flex flex-wrap gap-4 text-sm text-gray-600">
               <span className="flex items-center gap-1.5">✅ Créer des tontines illimitées</span>
               <span className="flex items-center gap-1.5">✅ Gérer les membres</span>
               <span className="flex items-center gap-1.5">✅ Démarrer et suivre les tours</span>
@@ -253,7 +224,7 @@ export default function PortefeuillePage() {
         )}
       </div>
 
-      {/* Compte de paiement */}
+      {/* Carte Stripe Connect */}
       <StripeConnectCard />
 
       {/* Stats financières */}

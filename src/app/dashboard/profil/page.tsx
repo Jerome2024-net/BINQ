@@ -7,7 +7,6 @@ import { useTontine } from "@/contexts/TontineContext";
 import { useFinance } from "@/contexts/FinanceContext";
 import { useToast } from "@/contexts/ToastContext";
 import Avatar from "@/components/Avatar";
-import AvatarUpload from "@/components/AvatarUpload";
 import { ConfianceBadge } from "@/components/MemberCard";
 import { formatMontant } from "@/lib/data";
 import {
@@ -41,12 +40,6 @@ export default function ProfilPage() {
   const { getFinancialSummary } = useFinance();
   const { showToast } = useToast();
   const [loading, setLoading] = useState(false);
-
-  const handleAvatarUploaded = async (url: string) => {
-    // L'API a déjà mis à jour la DB, on met juste à jour l'état local
-    await updateProfile({ avatar: url });
-    showToast("success", "Photo de profil mise à jour !");
-  };
   const [activeTab, setActiveTab] = useState<"infos" | "securite" | "preferences">("infos");
 
   const [formData, setFormData] = useState({
@@ -110,12 +103,9 @@ export default function ProfilPage() {
               <div className="ring-4 ring-white rounded-2xl shadow-lg">
                 <Avatar user={user} size="xl" />
               </div>
-              <AvatarUpload
-                userId={user.id}
-                currentAvatar={user.avatar}
-                userName={`${user.prenom} ${user.nom}`}
-                onUploadComplete={handleAvatarUploaded}
-              />
+              <button className="absolute inset-0 flex items-center justify-center bg-black/40 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity">
+                <Camera className="w-6 h-6 text-white" />
+              </button>
             </div>
 
             <div className="flex-1 pb-2">

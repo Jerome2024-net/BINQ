@@ -36,7 +36,7 @@ import {
 export default function CreerTontinePage() {
   const router = useRouter();
   const { creerTontine } = useTontine();
-  const { isAbonnementActif, souscrireAbonnement, getFraisConfig } = useFinance();
+  const { isAbonnementActif, getFraisConfig } = useFinance();
   const { showToast } = useToast();
   const [loading, setLoading] = useState(false);
   const [subscriptionModalOpen, setSubscriptionModalOpen] = useState(false);

@@ -7,7 +7,6 @@ import { useTontine } from "@/contexts/TontineContext";
 import { useToast } from "@/contexts/ToastContext";
 import { useFinance } from "@/contexts/FinanceContext";
 import PaymentModal from "@/components/PaymentModal";
-import { DashboardSkeleton } from "@/components/Skeleton";
 import { formatMontant, formatDate } from "@/lib/data";
 import {
   Users,
@@ -29,9 +28,9 @@ import {
 
 export default function DashboardPage() {
   const { user } = useAuth();
-  const { getMesTontines, effectuerPaiement, isLoading: tontineLoading } = useTontine();
+  const { getMesTontines, effectuerPaiement } = useTontine();
   const { showToast } = useToast();
-  const { getFinancialSummary, isLoading: financeLoading } = useFinance();
+  const { getFinancialSummary } = useFinance();
 
   // Invitations
   const { invitationsRecues, accepterInvitation, refuserInvitation } = useTontine();
@@ -83,16 +82,12 @@ export default function DashboardPage() {
   };
 
   const handlePaymentConfirm = async (methode: string) => {
-    // Paiement via Stripe Connect — rediriger vers la page de la tontine
+    // Paiement via Stripe Connect
     const result = await effectuerPaiement(paymentModal.tontineId, paymentModal.tourId, methode);
     if (result.success) {
       showToast("success", "Paiement effectué !", `Référence: ${result.reference}`);
     }
   };
-
-  if (tontineLoading || financeLoading) {
-    return <DashboardSkeleton />;
-  }
 
   return (
     <div className="space-y-8">
@@ -100,43 +95,15 @@ export default function DashboardPage() {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="text-2xl md:text-3xl font-bold text-gray-900">
-            {new Date().getHours() < 12 ? "Bonjour" : new Date().getHours() < 18 ? "Bon après-midi" : "Bonsoir"}, {user?.prenom || "là"} 👋
+            Bonjour, {user?.prenom || "là"} 👋
           </h1>
           <p className="text-gray-500 mt-1">
-            {mesTontines.length === 0 
-              ? "Bienvenue sur Binq ! Commencez par créer votre première tontine."
-              : mesPaiementsEnAttente.length > 0 
-                ? `Vous avez ${mesPaiementsEnAttente.length} paiement${mesPaiementsEnAttente.length > 1 ? "s" : ""} en attente`
-                : "Tout est à jour. Voici un aperçu de vos tontines."}
+            Voici un aperçu de vos tontines aujourd&apos;hui
           </p>
         </div>
-      </div>
-
-      {/* Quick Actions */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-        <Link href="/tontines/creer" className="flex flex-col items-center gap-2 p-4 bg-white rounded-xl border border-gray-200 hover:border-primary-300 hover:bg-primary-50/50 transition-all group">
-          <div className="w-10 h-10 bg-primary-100 rounded-xl flex items-center justify-center group-hover:bg-primary-200 transition-colors">
-            <CircleDollarSign className="w-5 h-5 text-primary-600" />
-          </div>
-          <span className="text-sm font-medium text-gray-700">Nouvelle Tontine</span>
-        </Link>
-        <Link href="/portefeuille" className="flex flex-col items-center gap-2 p-4 bg-white rounded-xl border border-gray-200 hover:border-emerald-300 hover:bg-emerald-50/50 transition-all group">
-          <div className="w-10 h-10 bg-emerald-100 rounded-xl flex items-center justify-center group-hover:bg-emerald-200 transition-colors">
-            <ArrowDownToLine className="w-5 h-5 text-emerald-600" />
-          </div>
-          <span className="text-sm font-medium text-gray-700">Déposer</span>
-        </Link>
-        <Link href="/explorer" className="flex flex-col items-center gap-2 p-4 bg-white rounded-xl border border-gray-200 hover:border-violet-300 hover:bg-violet-50/50 transition-all group">
-          <div className="w-10 h-10 bg-violet-100 rounded-xl flex items-center justify-center group-hover:bg-violet-200 transition-colors">
-            <Users className="w-5 h-5 text-violet-600" />
-          </div>
-          <span className="text-sm font-medium text-gray-700">Explorer</span>
-        </Link>
-        <Link href="/transactions" className="flex flex-col items-center gap-2 p-4 bg-white rounded-xl border border-gray-200 hover:border-amber-300 hover:bg-amber-50/50 transition-all group">
-          <div className="w-10 h-10 bg-amber-100 rounded-xl flex items-center justify-center group-hover:bg-amber-200 transition-colors">
-            <Clock className="w-5 h-5 text-amber-600" />
-          </div>
-          <span className="text-sm font-medium text-gray-700">Historique</span>
+        <Link href="/tontines/creer" className="btn-primary flex items-center gap-2 w-fit">
+          <CircleDollarSign className="w-5 h-5" />
+          Nouvelle Tontine
         </Link>
       </div>
 
@@ -182,81 +149,172 @@ export default function DashboardPage() {
       )}
 
       {/* Wallet Quick View */}
-      <Link href="/portefeuille" className="block mb-8">
-        <div className="relative overflow-hidden bg-gray-900 rounded-xl p-6 text-white shadow-lg shadow-gray-200/50 transition-transform active:scale-[0.99]">
-          <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none"></div>
-          <div className="relative z-10 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-            <div className="flex items-center gap-3 sm:gap-5">
-              <div className="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center border border-white/10">
-                <Wallet className="w-6 h-6 text-white" />
+      <Link href="/portefeuille" className="block">
+        <div className="relative overflow-hidden bg-gradient-to-r from-blue-600 to-indigo-600 rounded-2xl p-5 text-white hover:shadow-lg transition-shadow">
+          <div className="absolute top-0 right-0 w-40 h-40 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/2"></div>
+          <div className="relative z-10 flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 bg-white/15 rounded-xl flex items-center justify-center">
+                <Wallet className="w-6 h-6" />
               </div>
               <div>
-                <p className="text-sm font-medium text-gray-400">Total cotisé</p>
-                <div className="flex items-baseline gap-2">
-                  <p className="text-2xl sm:text-3xl font-bold tracking-tight text-white">{formatMontant(getFinancialSummary().totalCotisationsPaye)}</p>
-                  <span className="text-sm font-medium text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">
-                    +0%
-                  </span>
-                </div>
+                <p className="text-sm text-green-200">Solde du portefeuille</p>
+                <p className="text-2xl font-bold">{formatMontant(getFinancialSummary().totalCotisationsPaye)}</p>
               </div>
             </div>
-            <div className="flex items-center gap-3 w-full sm:w-auto">
-              <div className="hidden sm:flex items-center gap-2 text-sm font-medium text-gray-300 mr-4">
-                <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
-                Portefeuille actif
-              </div>
-              <div className="flex items-center gap-2 bg-white text-gray-900 hover:bg-gray-100 px-5 py-2.5 rounded-lg text-sm font-bold transition-colors">
+            <div className="flex items-center gap-2">
+              <Link href="/portefeuille" className="flex items-center gap-1 bg-white/15 hover:bg-white/25 px-4 py-2 rounded-xl text-sm font-medium transition-colors">
                 <ArrowDownToLine className="w-4 h-4" />
                 Déposer
-              </div>
+              </Link>
+              <ArrowRight className="w-5 h-5 text-green-200" />
             </div>
           </div>
         </div>
       </Link>
 
+      {/* Alertes - Paiements en attente */}
+      {mesPaiementsEnAttente.length > 0 && (
+        <div className="bg-amber-50 border border-amber-200 rounded-2xl p-4">
+          <div className="flex items-center gap-2 mb-3">
+            <AlertCircle className="w-5 h-5 text-amber-600" />
+            <h3 className="font-semibold text-amber-800">
+              {mesPaiementsEnAttente.length} cotisation(s) en attente
+            </h3>
+          </div>
+          <div className="space-y-2">
+            {mesPaiementsEnAttente.map((p) => (
+              <div key={p.id} className="flex items-center justify-between bg-white rounded-xl p-3">
+                <div>
+                  <p className="text-sm font-medium text-gray-900">{p.tontine.nom}</p>
+                  <p className="text-xs text-gray-500">
+                    Tour {p.tour.numero} · Bénéficiaire: {p.tour.beneficiaire.prenom} {p.tour.beneficiaire.nom}
+                  </p>
+                </div>
+                <button
+                  onClick={() => handlePay(
+                    p.tontine.id, p.tour.id, p.tontine.nom,
+                    p.tontine.montantCotisation, p.tontine.devise,
+                    `${p.tour.beneficiaire.prenom} ${p.tour.beneficiaire.nom}`
+                  )}
+                  className="btn-primary !py-2 !px-4 text-sm"
+                >
+                  Payer {formatMontant(p.montant, p.tontine.devise)}
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Invitations reçues */}
+      {invitationsRecues.length > 0 && (
+        <div className="bg-blue-50 border border-blue-200 rounded-2xl p-4">
+          <div className="flex items-center gap-2 mb-3">
+            <Mail className="w-5 h-5 text-blue-600" />
+            <h3 className="font-semibold text-blue-800">
+              {invitationsRecues.length} invitation(s) en attente
+            </h3>
+          </div>
+          <div className="space-y-2">
+            {invitationsRecues.map((inv) => (
+              <div key={inv.id} className="flex flex-col sm:flex-row sm:items-center justify-between bg-white rounded-xl p-4 gap-3">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                    <UserPlus className="w-5 h-5 text-blue-600" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-semibold text-gray-900">
+                      {inv.inviteur?.prenom} {inv.inviteur?.nom} vous invite
+                    </p>
+                    <p className="text-xs text-gray-500">
+                      Tontine &laquo; {inv.tontine?.nom || 'Tontine'} &raquo;
+                      {inv.tontine?.montantCotisation ? ` · ${formatMontant(inv.tontine.montantCotisation, inv.tontine.devise)} / ${inv.tontine.frequence === 'mensuel' ? 'mois' : inv.tontine.frequence === 'hebdomadaire' ? 'sem.' : '2 sem.'}` : ''}
+                      {inv.tontine?.nombreMembres !== undefined ? ` · ${inv.tontine.nombreMembres}/${inv.tontine.membresMax} membres` : ''}
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2 ml-auto">
+                  <button
+                    onClick={async () => {
+                      const result = await refuserInvitation(inv.id);
+                      if (result.success) {
+                        showToast('info', 'Invitation refusée');
+                      } else {
+                        showToast('error', 'Erreur', result.error);
+                      }
+                    }}
+                    className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-medium text-gray-600 hover:bg-gray-100 border border-gray-200 transition-colors"
+                  >
+                    <XCircle className="w-4 h-4" />
+                    Refuser
+                  </button>
+                  <button
+                    onClick={async () => {
+                      const result = await accepterInvitation(inv.id);
+                      if (result.success) {
+                        showToast('success', 'Invitation acceptée !', 'Vous avez rejoint la tontine');
+                      } else {
+                        showToast('error', 'Erreur', result.error);
+                      }
+                    }}
+                    className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 transition-colors"
+                  >
+                    <CheckCircle2 className="w-4 h-4" />
+                    Accepter
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-        <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm flex items-start justify-between">
-          <div>
-            <p className="text-sm font-medium text-gray-500">Mes Tontines</p>
-            <p className="text-2xl font-bold text-gray-900 mt-2">{mesTontines.length}</p>
-            <p className="text-xs text-green-600 font-medium mt-1">{tontinesActives.length} actives</p>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+        <div className="stat-card">
+          <div className="w-14 h-14 bg-primary-100 rounded-2xl flex items-center justify-center flex-shrink-0">
+            <Users className="w-7 h-7 text-primary-600" />
           </div>
-          <div className="p-2.5 bg-gray-50 rounded-lg border border-gray-100">
-            <Users className="w-5 h-5 text-gray-600" />
+          <div>
+            <p className="text-sm text-gray-500 font-medium">Mes Tontines</p>
+            <p className="text-2xl font-bold text-gray-900">{mesTontines.length}</p>
+            <p className="text-xs text-primary-600 font-medium">{tontinesActives.length} actives</p>
           </div>
         </div>
 
-        <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm flex items-start justify-between">
-          <div>
-            <p className="text-sm font-medium text-gray-500">Total payé</p>
-            <p className="text-2xl font-bold text-gray-900 mt-2">{formatMontant(totalPaye)}</p>
-            <p className="text-xs text-gray-400 font-medium mt-1">Depuis le début</p>
+        <div className="stat-card">
+          <div className="w-14 h-14 bg-green-100 rounded-2xl flex items-center justify-center flex-shrink-0">
+            <CircleDollarSign className="w-7 h-7 text-green-600" />
           </div>
-          <div className="p-2.5 bg-gray-50 rounded-lg border border-gray-100">
-            <CheckCircle2 className="w-5 h-5 text-gray-600" />
+          <div>
+            <p className="text-sm text-gray-500 font-medium">Total payé</p>
+            <p className="text-2xl font-bold text-gray-900">{formatMontant(totalPaye)}</p>
+            <p className="text-xs text-green-600 font-medium flex items-center gap-1">
+              <ArrowUpRight className="w-3 h-3" /> Confirmés
+            </p>
           </div>
         </div>
 
-        <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm flex items-start justify-between">
-          <div>
-            <p className="text-sm font-medium text-gray-500">En attente</p>
-            <p className="text-2xl font-bold text-gray-900 mt-2">{paiementsEnAttente.length}</p>
-            <p className="text-xs text-amber-600 font-medium mt-1">paiements à venir</p>
+        <div className="stat-card">
+          <div className="w-14 h-14 bg-amber-100 rounded-2xl flex items-center justify-center flex-shrink-0">
+            <Clock className="w-7 h-7 text-amber-600" />
           </div>
-          <div className="p-2.5 bg-gray-50 rounded-lg border border-gray-100">
-            <Clock className="w-5 h-5 text-gray-600" />
+          <div>
+            <p className="text-sm text-gray-500 font-medium">En attente</p>
+            <p className="text-2xl font-bold text-gray-900">{paiementsEnAttente.length}</p>
+            <p className="text-xs text-amber-600 font-medium">paiements</p>
           </div>
         </div>
 
-        <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm flex items-start justify-between">
-          <div>
-            <p className="text-sm font-medium text-gray-500">Engagement total</p>
-            <p className="text-2xl font-bold text-gray-900 mt-2">{formatMontant(totalCotisations)}</p>
-            <p className="text-xs text-blue-600 font-medium mt-1">toutes tontines</p>
+        <div className="stat-card">
+          <div className="w-14 h-14 bg-blue-100 rounded-2xl flex items-center justify-center flex-shrink-0">
+            <TrendingUp className="w-7 h-7 text-blue-600" />
           </div>
-          <div className="p-2.5 bg-gray-50 rounded-lg border border-gray-100">
-            <TrendingUp className="w-5 h-5 text-gray-600" />
+          <div>
+            <p className="text-sm text-gray-500 font-medium">Montant total</p>
+            <p className="text-2xl font-bold text-gray-900">{formatMontant(totalCotisations)}</p>
+            <p className="text-xs text-blue-600 font-medium">toutes tontines</p>
           </div>
         </div>
       </div>
@@ -273,24 +331,13 @@ export default function DashboardPage() {
             </div>
 
             {mesTontines.length === 0 ? (
-              <div className="text-center py-16">
-                <div className="w-20 h-20 bg-gray-100 rounded-2xl flex items-center justify-center mx-auto mb-5">
-                  <Users className="w-10 h-10 text-gray-300" />
-                </div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">Aucune tontine</h3>
-                <p className="text-gray-500 text-sm mb-6 max-w-sm mx-auto">
-                  Créez votre première tontine ou rejoignez un groupe existant pour commencer à épargner ensemble.
-                </p>
-                <div className="flex flex-col sm:flex-row gap-3 justify-center">
-                  <Link href="/tontines/creer" className="btn-primary inline-flex items-center gap-2">
-                    <CircleDollarSign className="w-5 h-5" />
-                    Créer une tontine
-                  </Link>
-                  <Link href="/explorer" className="btn-secondary inline-flex items-center gap-2">
-                    <Users className="w-5 h-5" />
-                    Explorer
-                  </Link>
-                </div>
+              <div className="text-center py-12">
+                <Users className="w-12 h-12 text-gray-300 mx-auto mb-4" />
+                <p className="text-gray-500 font-medium">Aucune tontine pour le moment</p>
+                <Link href="/tontines/creer" className="btn-primary mt-4 inline-flex items-center gap-2">
+                  <CircleDollarSign className="w-5 h-5" />
+                  Créer ma première tontine
+                </Link>
               </div>
             ) : (
               <div className="space-y-4">
@@ -356,13 +403,7 @@ export default function DashboardPage() {
               Prochains tours
             </h2>
             {prochainsTours.length === 0 ? (
-              <div className="text-center py-8">
-                <div className="w-12 h-12 bg-gray-100 rounded-xl flex items-center justify-center mx-auto mb-3">
-                  <Calendar className="w-6 h-6 text-gray-300" />
-                </div>
-                <p className="text-sm text-gray-400">Aucun tour planifié</p>
-                <p className="text-xs text-gray-300 mt-1">Les prochains tours apparaîtront ici</p>
-              </div>
+              <p className="text-sm text-gray-400 text-center py-4">Aucun tour planifié</p>
             ) : (
               <div className="space-y-3">
                 {prochainsTours.map((tour) => (
@@ -402,13 +443,7 @@ export default function DashboardPage() {
               Derniers paiements
             </h2>
             {paiementsConfirmes.length === 0 ? (
-              <div className="text-center py-8">
-                <div className="w-12 h-12 bg-gray-100 rounded-xl flex items-center justify-center mx-auto mb-3">
-                  <CreditCard className="w-6 h-6 text-gray-300" />
-                </div>
-                <p className="text-sm text-gray-400">Aucun paiement</p>
-                <p className="text-xs text-gray-300 mt-1">Vos cotisations confirmées apparaîtront ici</p>
-              </div>
+              <p className="text-sm text-gray-400 text-center py-4">Aucun paiement pour le moment</p>
             ) : (
               <div className="space-y-3">
                 {paiementsConfirmes.slice(-4).reverse().map((p) => (

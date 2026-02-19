@@ -2,7 +2,6 @@
 
 import React, { createContext, useContext, useCallback, useState } from "react";
 import { useAuth } from "./AuthContext";
-import { useFinance } from "./FinanceContext";
 import { useToast } from "./ToastContext";
 
 // ========================
@@ -19,7 +18,7 @@ interface StripeAccountStatus {
 }
 
 interface PaymentContextType {
-  // Dépôt simple via Stripe
+  // Dépôt simple via Stripe (pour wallet legacy ou top-up)
   createPaymentIntent: (montant: number, currency: SupportedCurrency, description?: string) => Promise<{ clientSecret: string; paymentIntentId: string } | null>;
   confirmDeposit: (montant: number, paymentIntentId: string) => void;
 
@@ -53,7 +52,7 @@ interface PaymentContextType {
   // Abonnement Stripe
   createSubscription: () => Promise<{ url: string } | null>;
 
-  // Retrait depuis wallet local
+  // Retrait via Stripe Payout
   initierRetrait: (montant: number, methode: string, destination: string) => void;
 
   // État
@@ -71,7 +70,6 @@ const PaymentContext = createContext<PaymentContextType | undefined>(undefined);
 // ========================
 export function PaymentProvider({ children }: { children: React.ReactNode }) {
   const { user, updateProfile } = useAuth();
-  const { deposer, retirer } = useFinance();
   const { showToast } = useToast();
   const [isProcessing, setIsProcessing] = useState(false);
   const [currency, setCurrency] = useState<SupportedCurrency>("eur");
@@ -126,12 +124,10 @@ export function PaymentProvider({ children }: { children: React.ReactNode }) {
     async (montant: number, _paymentIntentId: string) => {
       if (!user) return;
       const deviseLabel = currency === "eur" ? "€" : "$";
-      const result = await deposer(montant, "stripe");
-      if (result.success) {
-        showToast("success", "Dépôt confirmé ! ✅", `${montant.toLocaleString("fr-FR")} ${deviseLabel} ajoutés à votre portefeuille`);
-      }
+      // Le webhook Stripe enregistre automatiquement la transaction dans Supabase
+      showToast("success", "Dépôt confirmé ! ✅", `${montant.toLocaleString("fr-FR")} ${deviseLabel} traité par Stripe`);
     },
-    [user, currency, deposer, showToast]
+    [user, currency, showToast]
   );
 
   // ========================
@@ -364,8 +360,7 @@ export function PaymentProvider({ children }: { children: React.ReactNode }) {
         const data = await response.json();
         if (!response.ok) throw new Error(data.error || "Erreur payout");
 
-        await retirer(montant, "stripe_payout");
-
+        // Le webhook Stripe enregistre automatiquement la transaction
         showToast("success", "Retrait initié ! 💸", `${montant.toLocaleString("fr-FR")} ${cur === "eur" ? "€" : "$"} vers votre compte bancaire`);
         return { payoutId: data.payoutId as string, status: data.status as string };
       } catch (err) {
@@ -375,7 +370,7 @@ export function PaymentProvider({ children }: { children: React.ReactNode }) {
         setIsProcessing(false);
       }
     },
-    [user, retirer, showToast]
+    [user, showToast]
   );
 
   // ========================
@@ -414,21 +409,20 @@ export function PaymentProvider({ children }: { children: React.ReactNode }) {
   // Retrait local
   // ========================
   const initierRetrait = useCallback(
-    async (montant: number, methode: string, destination: string) => {
+    async (montant: number, _methode: string, destination: string) => {
       if (!user) {
         showToast("error", "Erreur", "Vous devez être connecté");
         return;
       }
 
-      const deviseLabel = currency === "eur" ? "€" : "$";
-      const result = await retirer(montant, methode);
-      if (result.success) {
+      // Utiliser Stripe Payout via le compte Connect
+      const result = await createPayout(montant, currency);
+      if (result) {
+        const deviseLabel = currency === "eur" ? "€" : "$";
         showToast("success", "Retrait initié ! 📤", `${montant.toLocaleString("fr-FR")} ${deviseLabel} vers ${destination}. Traitement sous 24-48h.`);
-      } else {
-        showToast("error", "Erreur retrait", result.error || "Impossible d'effectuer le retrait");
       }
     },
-    [user, currency, retirer, showToast]
+    [user, currency, createPayout, showToast]
   );
 
   return (
