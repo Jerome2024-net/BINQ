@@ -605,6 +605,10 @@ export function TontineProvider({ children }: { children: React.ReactNode }) {
         .eq("membre_id", user.id)
         .single();
 
+      const tontine = tontines.find((t) => t.id === tontineId);
+      const montantCotisation = tontine?.montantCotisation || 0;
+      const frais1pct = Math.round(montantCotisation * 0.01 * 100) / 100;
+
       if (existingPaiement) {
         // Mettre à jour le paiement existant
         await supabase
@@ -618,12 +622,11 @@ export function TontineProvider({ children }: { children: React.ReactNode }) {
           .eq("id", existingPaiement.id);
       } else {
         // Insérer un nouveau paiement
-        const tontine = tontines.find((t) => t.id === tontineId);
         await supabase.from("paiements").insert({
           tour_id: tourId,
           tontine_id: tontineId,
           membre_id: user.id,
-          montant: tontine?.montantCotisation || 0,
+          montant: montantCotisation,
           methode,
           statut: "confirme",
           reference,
@@ -631,8 +634,46 @@ export function TontineProvider({ children }: { children: React.ReactNode }) {
         });
       }
 
+      // Enregistrer la transaction dans la table transactions
+      // (wallet_id requis par la FK — on s'assure qu'un wallet existe)
+      const { data: walletRow } = await supabase
+        .from("wallets")
+        .select("id")
+        .eq("user_id", user.id)
+        .single();
+
+      const walletId = walletRow?.id || (await (async () => {
+        const { data: newWallet } = await supabase
+          .from("wallets")
+          .insert({ user_id: user.id, solde: 0, solde_bloque: 0, devise: "EUR" })
+          .select("id")
+          .single();
+        return newWallet?.id;
+      })());
+
+      if (walletId) {
+        const tour = tontine?.tours.find((t) => t.id === tourId);
+        await supabase.from("transactions").insert({
+          wallet_id: walletId,
+          user_id: user.id,
+          type: "cotisation",
+          montant: montantCotisation,
+          devise: "EUR",
+          statut: "confirme",
+          reference,
+          description: `Cotisation ${tontine?.nom || ""} — Tour ${tour?.numero || ""}`,
+          meta_tontine_id: tontineId,
+          meta_tontine_nom: tontine?.nom || "",
+          meta_tour_id: tourId,
+          meta_tour_numero: tour?.numero || 0,
+          meta_beneficiaire: tour?.beneficiaire?.nom || "",
+          meta_methode: methode,
+          meta_frais: frais1pct,
+          confirmed_at: now,
+        });
+      }
+
       // Vérifier si le tour est complété
-      const tontine = tontines.find((t) => t.id === tontineId);
       if (tontine) {
         const { data: allPaiements } = await supabase
           .from("paiements")

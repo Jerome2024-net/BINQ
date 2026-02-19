@@ -141,7 +141,10 @@ export default function TontineDetailPage({
             currency,
             beneficiaireUser.stripeAccountId,
             updatedTontine.nom,
-            updatedTour.numero
+            updatedTour.numero,
+            updatedTontine.id,
+            updatedTour.id,
+            beneficiaireUser.id
           );
         }
       }

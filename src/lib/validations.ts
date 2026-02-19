@@ -25,6 +25,9 @@ export const distributePotSchema = z.object({
   destinationAccountId: z.string().min(1, "Compte destination requis").startsWith("acct_", "ID compte Stripe invalide"),
   tontineNom: z.string().min(1, "Nom de tontine requis"),
   tourNumero: z.number().int().positive("Numéro de tour invalide"),
+  tontineId: z.string().uuid("tontineId invalide").optional(),
+  tourId: z.string().uuid("tourId invalide").optional(),
+  beneficiaryUserId: z.string().uuid("beneficiaryUserId invalide").optional(),
 });
 
 /** Schéma pour l'abonnement */

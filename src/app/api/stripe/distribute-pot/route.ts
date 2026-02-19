@@ -2,10 +2,17 @@ import { NextResponse } from "next/server";
 import { getStripe } from "@/lib/stripe";
 import { getAuthenticatedUser } from "@/lib/api-auth";
 import { distributePotSchema, validateBody } from "@/lib/validations";
+import { createClient } from "@supabase/supabase-js";
+
+const supabaseAdmin = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+);
 
 /**
  * POST /api/stripe/distribute-pot
  * Transfère les fonds du pot vers le compte Stripe Connect du bénéficiaire
+ * et enregistre la transaction reception_pot pour le bénéficiaire
  */
 export async function POST(request: Request) {
   try {
@@ -20,7 +27,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: validation.error }, { status: 400 });
     }
 
-    const { amount, currency, destinationAccountId, tontineNom, tourNumero } = validation.data;
+    const { amount, currency, destinationAccountId, tontineNom, tourNumero, tontineId, tourId, beneficiaryUserId } = validation.data;
     const cur = currency;
     const amountInCents = Math.round(amount * 100);
 
@@ -44,9 +51,58 @@ export async function POST(request: Request) {
         type: "distribution_pot",
         tontineNom: tontineNom || "",
         tourNumero: String(tourNumero || 0),
+        beneficiaryUserId: beneficiaryUserId || "",
+        tontineId: tontineId || "",
+        tourId: tourId || "",
         app: "binq",
       },
     });
+
+    // Enregistrer la transaction reception_pot pour le bénéficiaire
+    if (beneficiaryUserId) {
+      try {
+        // S'assurer qu'un wallet existe pour la FK
+        let walletId: string | null = null;
+        const { data: walletRow } = await supabaseAdmin
+          .from("wallets")
+          .select("id")
+          .eq("user_id", beneficiaryUserId)
+          .single();
+
+        if (walletRow) {
+          walletId = walletRow.id;
+        } else {
+          const { data: newWallet } = await supabaseAdmin
+            .from("wallets")
+            .insert({ user_id: beneficiaryUserId, solde: 0, solde_bloque: 0, devise: "EUR" })
+            .select("id")
+            .single();
+          walletId = newWallet?.id || null;
+        }
+
+        if (walletId) {
+          await supabaseAdmin.from("transactions").insert({
+            wallet_id: walletId,
+            user_id: beneficiaryUserId,
+            type: "reception_pot",
+            montant: amount,
+            devise: cur.toUpperCase(),
+            statut: "confirme",
+            reference: `POT-${transfer.id}`,
+            description: `Pot reçu — ${tontineNom} (Tour ${tourNumero})`,
+            meta_tontine_id: tontineId || null,
+            meta_tontine_nom: tontineNom,
+            meta_tour_id: tourId || null,
+            meta_tour_numero: tourNumero,
+            meta_methode: "stripe_connect",
+            confirmed_at: new Date().toISOString(),
+          });
+        }
+      } catch (txErr) {
+        console.error("Erreur enregistrement transaction pot:", txErr);
+        // Ne pas bloquer le transfert si l'enregistrement échoue
+      }
+    }
 
     return NextResponse.json({
       transferId: transfer.id,

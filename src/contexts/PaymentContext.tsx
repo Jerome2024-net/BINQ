@@ -43,7 +43,10 @@ interface PaymentContextType {
     currency: SupportedCurrency,
     destinationAccountId: string,
     tontineNom: string,
-    tourNumero: number
+    tourNumero: number,
+    tontineId?: string,
+    tourId?: string,
+    beneficiaryUserId?: string
   ) => Promise<{ transferId: string } | null>;
 
   // Stripe Connect — Payout (retrait vers banque)
@@ -303,7 +306,10 @@ export function PaymentProvider({ children }: { children: React.ReactNode }) {
       cur: SupportedCurrency,
       destinationAccountId: string,
       tontineNom: string,
-      tourNumero: number
+      tourNumero: number,
+      tontineId?: string,
+      tourId?: string,
+      beneficiaryUserId?: string
     ) => {
       setIsProcessing(true);
       try {
@@ -316,6 +322,9 @@ export function PaymentProvider({ children }: { children: React.ReactNode }) {
             destinationAccountId,
             tontineNom,
             tourNumero,
+            tontineId,
+            tourId,
+            beneficiaryUserId,
           }),
         });
 
