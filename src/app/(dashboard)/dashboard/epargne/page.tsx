@@ -1,6 +1,8 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import { Elements, PaymentElement, useStripe, useElements } from "@stripe/react-stripe-js";
+import { loadStripe } from "@stripe/stripe-js";
 import { useAuth } from "@/contexts/AuthContext";
 import {
   PiggyBank,
@@ -20,7 +22,19 @@ import {
   CreditCard,
   Trash2,
   Building,
+  CheckCircle2,
+  ShieldCheck,
 } from "lucide-react";
+
+const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || "");
+
+interface CarteEnregistree {
+  id: string;
+  marque: string;
+  last4: string;
+  exp_month: number;
+  exp_year: number;
+}
 
 interface Epargne {
   id: string;
@@ -663,6 +677,80 @@ function CreateEpargneModal({ onClose, onSuccess }: { onClose: () => void; onSuc
 }
 
 // ═══════════════════════════════════════════
+// COMPOSANT : Formulaire Stripe Elements pour ajouter une carte
+// ═══════════════════════════════════════════
+function AddCardForm({ onSuccess, onCancel }: { onSuccess: () => void; onCancel: () => void }) {
+  const stripe = useStripe();
+  const elements = useElements();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!stripe || !elements) return;
+
+    setIsSubmitting(true);
+    setErrorMessage("");
+
+    try {
+      const { error } = await stripe.confirmSetup({
+        elements,
+        confirmParams: {
+          return_url: `${window.location.origin}/dashboard/epargne`,
+        },
+        redirect: "if_required",
+      });
+
+      if (error) {
+        setErrorMessage(error.message || "Erreur lors de l'enregistrement");
+      } else {
+        onSuccess();
+      }
+    } catch (err) {
+      setErrorMessage(err instanceof Error ? err.message : "Erreur");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-4">
+      <div className="border border-gray-200 rounded-xl p-4 bg-white">
+        <PaymentElement options={{ layout: "tabs" }} />
+      </div>
+
+      {errorMessage && (
+        <div className="p-3 bg-red-50 border border-red-200 rounded-xl text-sm text-red-600">{errorMessage}</div>
+      )}
+
+      <div className="flex gap-3">
+        <button
+          type="button"
+          onClick={onCancel}
+          disabled={isSubmitting}
+          className="flex-1 py-3 rounded-xl border-2 border-gray-200 font-semibold text-gray-600 hover:bg-gray-50"
+        >
+          Retour
+        </button>
+        <button
+          type="submit"
+          disabled={!stripe || !elements || isSubmitting}
+          className="flex-1 py-3 rounded-xl bg-indigo-600 text-white font-semibold hover:bg-indigo-700 disabled:opacity-50 flex items-center justify-center gap-2"
+        >
+          {isSubmitting ? <Loader2 className="w-5 h-5 animate-spin" /> : <ShieldCheck className="w-5 h-5" />}
+          Enregistrer la carte
+        </button>
+      </div>
+
+      <div className="flex items-center justify-center gap-2 text-xs text-gray-400">
+        <ShieldCheck className="w-3.5 h-3.5" />
+        <span>Sécurisé par Stripe · Vos données ne sont jamais stockées sur nos serveurs</span>
+      </div>
+    </form>
+  );
+}
+
+// ═══════════════════════════════════════════
 // COMPOSANT : Modal Dépôt
 // ═══════════════════════════════════════════
 function DepositModal({
@@ -681,11 +769,68 @@ function DepositModal({
   const [montant, setMontant] = useState("");
   const [source, setSource] = useState<"depot_wallet" | "depot_carte">("depot_wallet");
   const [error, setError] = useState("");
+  const [cartes, setCartes] = useState<CarteEnregistree[]>([]);
+  const [loadingCartes, setLoadingCartes] = useState(false);
+  const [showAddCard, setShowAddCard] = useState(false);
+  const [setupClientSecret, setSetupClientSecret] = useState("");
+  const [loadingSetup, setLoadingSetup] = useState(false);
+  const [selectedCardId, setSelectedCardId] = useState<string | null>(null);
+
+  // Charger les cartes existantes
+  const chargerCartes = useCallback(async () => {
+    setLoadingCartes(true);
+    try {
+      const res = await fetch("/api/epargne/setup-card");
+      const data = await res.json();
+      if (data.cartes) {
+        setCartes(data.cartes);
+        if (data.cartes.length > 0) {
+          setSelectedCardId(data.cartes[0].id);
+        }
+      }
+    } catch (err) {
+      console.error("Erreur chargement cartes:", err);
+    } finally {
+      setLoadingCartes(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    chargerCartes();
+  }, [chargerCartes]);
+
+  // Lancer le SetupIntent pour ajouter une carte
+  const handleAddCard = async () => {
+    setLoadingSetup(true);
+    setError("");
+    try {
+      const res = await fetch("/api/epargne/setup-card", { method: "POST" });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error);
+      setSetupClientSecret(data.clientSecret);
+      setShowAddCard(true);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Erreur");
+    } finally {
+      setLoadingSetup(false);
+    }
+  };
+
+  // Après ajout réussi d'une carte
+  const handleCardAdded = () => {
+    setShowAddCard(false);
+    setSetupClientSecret("");
+    chargerCartes();
+  };
 
   const handleDeposit = async () => {
     const m = Number(montant);
     if (!m || m <= 0) {
       setError("Montant invalide");
+      return;
+    }
+    if (source === "depot_carte" && !selectedCardId) {
+      setError("Veuillez sélectionner ou ajouter une carte");
       return;
     }
     setActionLoading(true);
@@ -713,9 +858,17 @@ function DepositModal({
     }
   };
 
+  const brandIcon = (brand: string) => {
+    const b = brand.toLowerCase();
+    if (b === "visa") return "💳 Visa";
+    if (b === "mastercard") return "💳 Mastercard";
+    if (b === "amex") return "💳 Amex";
+    return `💳 ${brand}`;
+  };
+
   return (
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={onClose}>
-      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md" onClick={(e) => e.stopPropagation()}>
+      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
         <div className="flex items-center justify-between p-6 border-b border-gray-100">
           <h2 className="text-lg font-bold text-gray-900">Déposer sur {epargne.nom}</h2>
           <button onClick={onClose} className="p-2 rounded-lg hover:bg-gray-100">
@@ -726,55 +879,138 @@ function DepositModal({
         <div className="p-6 space-y-4">
           {error && <div className="p-3 bg-red-50 border border-red-200 rounded-xl text-sm text-red-600">{error}</div>}
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1.5">Montant (F CFA)</label>
-            <input
-              type="number"
-              value={montant}
-              onChange={(e) => setMontant(e.target.value)}
-              placeholder="10 000"
-              className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 outline-none text-lg font-semibold"
-            />
-          </div>
+          {/* Mode ajout de carte via Stripe Elements */}
+          {showAddCard && setupClientSecret ? (
+            <Elements
+              stripe={stripePromise}
+              options={{
+                clientSecret: setupClientSecret,
+                appearance: {
+                  theme: "stripe",
+                  variables: { colorPrimary: "#6366f1", borderRadius: "12px" },
+                },
+                locale: "fr",
+              }}
+            >
+              <div className="space-y-3">
+                <h3 className="text-sm font-semibold text-gray-900">Ajouter une carte bancaire</h3>
+                <AddCardForm
+                  onSuccess={handleCardAdded}
+                  onCancel={() => { setShowAddCard(false); setSetupClientSecret(""); }}
+                />
+              </div>
+            </Elements>
+          ) : (
+            <>
+              {/* Montant */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1.5">Montant (F CFA)</label>
+                <input
+                  type="number"
+                  value={montant}
+                  onChange={(e) => setMontant(e.target.value)}
+                  placeholder="10 000"
+                  className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 outline-none text-lg font-semibold"
+                />
+              </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1.5">Source</label>
-            <div className="grid grid-cols-2 gap-2">
-              <button
-                onClick={() => setSource("depot_wallet")}
-                className={`flex items-center gap-2 p-3 rounded-xl border-2 transition-all ${
-                  source === "depot_wallet" ? "border-indigo-500 bg-indigo-50" : "border-gray-200 hover:border-gray-300"
-                }`}
-              >
-                <Wallet className="w-5 h-5 text-gray-600" />
-                <span className="text-sm font-medium">Portefeuille</span>
-              </button>
-              <button
-                onClick={() => setSource("depot_carte")}
-                className={`flex items-center gap-2 p-3 rounded-xl border-2 transition-all ${
-                  source === "depot_carte" ? "border-indigo-500 bg-indigo-50" : "border-gray-200 hover:border-gray-300"
-                }`}
-              >
-                <CreditCard className="w-5 h-5 text-gray-600" />
-                <span className="text-sm font-medium">Carte</span>
-              </button>
-            </div>
-          </div>
+              {/* Source */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1.5">Source</label>
+                <div className="grid grid-cols-2 gap-2">
+                  <button
+                    onClick={() => setSource("depot_wallet")}
+                    className={`flex items-center gap-2 p-3 rounded-xl border-2 transition-all ${
+                      source === "depot_wallet" ? "border-indigo-500 bg-indigo-50" : "border-gray-200 hover:border-gray-300"
+                    }`}
+                  >
+                    <Wallet className="w-5 h-5 text-gray-600" />
+                    <span className="text-sm font-medium">Portefeuille</span>
+                  </button>
+                  <button
+                    onClick={() => setSource("depot_carte")}
+                    className={`flex items-center gap-2 p-3 rounded-xl border-2 transition-all ${
+                      source === "depot_carte" ? "border-indigo-500 bg-indigo-50" : "border-gray-200 hover:border-gray-300"
+                    }`}
+                  >
+                    <CreditCard className="w-5 h-5 text-gray-600" />
+                    <span className="text-sm font-medium">Carte</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* Sélection / ajout de carte */}
+              {source === "depot_carte" && (
+                <div className="space-y-3">
+                  {loadingCartes ? (
+                    <div className="flex justify-center py-4">
+                      <Loader2 className="w-5 h-5 animate-spin text-gray-400" />
+                    </div>
+                  ) : cartes.length > 0 ? (
+                    <>
+                      <label className="block text-sm font-medium text-gray-700">Carte enregistrée</label>
+                      <div className="space-y-2">
+                        {cartes.map((carte) => (
+                          <button
+                            key={carte.id}
+                            onClick={() => setSelectedCardId(carte.id)}
+                            className={`w-full flex items-center gap-3 p-3 rounded-xl border-2 transition-all text-left ${
+                              selectedCardId === carte.id ? "border-indigo-500 bg-indigo-50" : "border-gray-200 hover:border-gray-300"
+                            }`}
+                          >
+                            <div className={`w-9 h-9 rounded-lg flex items-center justify-center ${
+                              selectedCardId === carte.id ? "bg-indigo-100" : "bg-gray-100"
+                            }`}>
+                              <CreditCard className="w-5 h-5 text-gray-600" />
+                            </div>
+                            <div className="flex-1">
+                              <p className="text-sm font-medium text-gray-900">{brandIcon(carte.marque)}</p>
+                              <p className="text-xs text-gray-500">•••• {carte.last4} — Exp. {String(carte.exp_month).padStart(2, "0")}/{carte.exp_year}</p>
+                            </div>
+                            {selectedCardId === carte.id && (
+                              <CheckCircle2 className="w-5 h-5 text-indigo-600" />
+                            )}
+                          </button>
+                        ))}
+                      </div>
+                    </>
+                  ) : (
+                    <div className="p-4 bg-gray-50 rounded-xl text-center">
+                      <CreditCard className="w-8 h-8 text-gray-300 mx-auto mb-2" />
+                      <p className="text-sm text-gray-500">Aucune carte enregistrée</p>
+                    </div>
+                  )}
+
+                  <button
+                    onClick={handleAddCard}
+                    disabled={loadingSetup}
+                    className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl border-2 border-dashed border-gray-300 text-sm font-medium text-gray-600 hover:border-indigo-400 hover:text-indigo-600 hover:bg-indigo-50/50 transition-all"
+                  >
+                    {loadingSetup ? <Loader2 className="w-4 h-4 animate-spin" /> : <Plus className="w-4 h-4" />}
+                    Ajouter une carte
+                  </button>
+                </div>
+              )}
+            </>
+          )}
         </div>
 
-        <div className="p-6 border-t border-gray-100 flex gap-3">
-          <button onClick={onClose} className="flex-1 py-3 rounded-xl border-2 border-gray-200 font-semibold text-gray-600 hover:bg-gray-50">
-            Annuler
-          </button>
-          <button
-            onClick={handleDeposit}
-            disabled={actionLoading}
-            className="flex-1 py-3 rounded-xl bg-indigo-600 text-white font-semibold hover:bg-indigo-700 disabled:opacity-50 flex items-center justify-center gap-2"
-          >
-            {actionLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : <ArrowDownCircle className="w-5 h-5" />}
-            Déposer
-          </button>
-        </div>
+        {/* Footer — caché pendant l'ajout de carte */}
+        {!showAddCard && (
+          <div className="p-6 border-t border-gray-100 flex gap-3">
+            <button onClick={onClose} className="flex-1 py-3 rounded-xl border-2 border-gray-200 font-semibold text-gray-600 hover:bg-gray-50">
+              Annuler
+            </button>
+            <button
+              onClick={handleDeposit}
+              disabled={actionLoading || (source === "depot_carte" && !selectedCardId)}
+              className="flex-1 py-3 rounded-xl bg-indigo-600 text-white font-semibold hover:bg-indigo-700 disabled:opacity-50 flex items-center justify-center gap-2"
+            >
+              {actionLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : <ArrowDownCircle className="w-5 h-5" />}
+              Déposer
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );
