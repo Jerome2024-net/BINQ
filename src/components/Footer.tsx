@@ -17,8 +17,8 @@ export default function Footer() {
               </span>
             </div>
             <p className="text-gray-500 text-[14px] leading-relaxed mb-6">
-              La plateforme digitale pour gérer vos tontines en toute
-              transparence et sécurité.
+              La plateforme digitale pour épargner en toute
+              simplicité et sécurité.
             </p>
             <div className="flex items-center gap-4">
               <div className="flex items-center gap-2 text-xs text-gray-600">
