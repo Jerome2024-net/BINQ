@@ -939,6 +939,24 @@ function DepositModal({
                 </div>
               </div>
 
+              {/* Récapitulatif frais 2% */}
+              {Number(montant) > 0 && (
+                <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 space-y-1">
+                  <div className="flex justify-between text-sm text-gray-700">
+                    <span>Montant épargné</span>
+                    <span className="font-medium">{Number(montant).toLocaleString("fr-FR")} F CFA</span>
+                  </div>
+                  <div className="flex justify-between text-sm text-amber-700">
+                    <span>Frais Binq (2%)</span>
+                    <span className="font-medium">{Math.round(Number(montant) * 0.02).toLocaleString("fr-FR")} F CFA</span>
+                  </div>
+                  <div className="border-t border-amber-200 pt-1 flex justify-between text-sm font-bold text-gray-900">
+                    <span>Total débité</span>
+                    <span>{(Number(montant) + Math.round(Number(montant) * 0.02)).toLocaleString("fr-FR")} F CFA</span>
+                  </div>
+                </div>
+              )}
+
               {/* Sélection / ajout de carte */}
               {source === "depot_carte" && (
                 <div className="space-y-3">
@@ -1007,7 +1025,10 @@ function DepositModal({
               className="flex-1 py-3 rounded-xl bg-indigo-600 text-white font-semibold hover:bg-indigo-700 disabled:opacity-50 flex items-center justify-center gap-2"
             >
               {actionLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : <ArrowDownCircle className="w-5 h-5" />}
-              Déposer
+              {Number(montant) > 0
+                ? `Déposer (${(Number(montant) + Math.round(Number(montant) * 0.02)).toLocaleString("fr-FR")} F)`
+                : "Déposer"
+              }
             </button>
           </div>
         )}

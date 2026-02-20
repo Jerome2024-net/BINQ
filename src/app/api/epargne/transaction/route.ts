@@ -174,7 +174,10 @@ export async function POST(request: NextRequest) {
 
   // ── DÉPÔT PORTEFEUILLE ──
   else if (type === "depot_wallet") {
-    // Vérifier le solde wallet
+    // Vérifier le solde wallet (montant + 2% de frais)
+    const frais = Math.round(montant * 0.02);
+    const totalDebite = montant + frais;
+
     const { data: profil } = await supabase
       .from("profiles")
       .select("solde_wallet")
@@ -182,14 +185,14 @@ export async function POST(request: NextRequest) {
       .single();
 
     const soldeWallet = Number(profil?.solde_wallet) || 0;
-    if (montant > soldeWallet) {
-      return NextResponse.json({ error: "Solde portefeuille insuffisant" }, { status: 400 });
+    if (totalDebite > soldeWallet) {
+      return NextResponse.json({ error: `Solde portefeuille insuffisant. Montant + frais (2%) = ${totalDebite} F CFA` }, { status: 400 });
     }
 
-    // Débiter le wallet
+    // Débiter le wallet (montant + frais)
     await supabase
       .from("profiles")
-      .update({ solde_wallet: soldeWallet - montant })
+      .update({ solde_wallet: soldeWallet - totalDebite })
       .eq("id", user.id);
 
     nouveauSolde = soldeActuel + montant;
@@ -224,8 +227,10 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Aucune carte trouvée" }, { status: 400 });
     }
 
-    // Convertir XOF en centimes (XOF n'a pas de sous-unité mais Stripe attend des entiers)
-    const montantStripe = Math.round(montant);
+    // Montant + 2% de frais Binq
+    const frais = Math.round(montant * 0.02);
+    const totalDebite = montant + frais;
+    const montantStripe = Math.round(totalDebite);
 
     try {
       const pi = await stripe.paymentIntents.create({
@@ -235,11 +240,13 @@ export async function POST(request: NextRequest) {
         payment_method: paymentMethods.data[0].id,
         off_session: true,
         confirm: true,
-        description: `Épargne Binq - ${epargne.nom}`,
+        description: `Épargne Binq - ${epargne.nom} (dont ${frais} F CFA de frais)`,
         metadata: {
           type: "epargne_depot",
           epargne_id: epargne.id,
           user_id: user.id,
+          montant_epargne: String(montant),
+          frais_binq: String(frais),
         },
       });
 
@@ -272,7 +279,7 @@ export async function POST(request: NextRequest) {
       type,
       montant: (type === "retrait" || type === "retrait_banque") ? -montant : montant,
       solde_apres: nouveauSolde,
-      description: description || (type === "retrait" ? "Retrait vers portefeuille" : type === "retrait_banque" ? "Virement vers compte bancaire" : "Dépôt"),
+      description: description || (type === "retrait" ? "Retrait vers portefeuille" : type === "retrait_banque" ? "Virement vers compte bancaire" : `Dépôt (+ 2% frais Binq)`),
       stripe_payment_id: stripePaymentId,
     })
     .select()
