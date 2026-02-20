@@ -19,6 +19,7 @@ import {
   Wallet,
   CreditCard,
   Trash2,
+  Building,
 } from "lucide-react";
 
 interface Epargne {
@@ -796,6 +797,7 @@ function WithdrawModal({
   setActionLoading: (v: boolean) => void;
 }) {
   const [montant, setMontant] = useState("");
+  const [destination, setDestination] = useState<"retrait" | "retrait_banque">("retrait");
   const [error, setError] = useState("");
 
   const isBloque = epargne.bloque_jusqu_a && new Date(epargne.bloque_jusqu_a) > new Date();
@@ -819,9 +821,9 @@ function WithdrawModal({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           epargne_id: epargne.id,
-          type: "retrait",
+          type: destination,
           montant: m,
-          description: "Retrait vers portefeuille",
+          description: destination === "retrait_banque" ? "Virement vers compte bancaire" : "Retrait vers portefeuille",
         }),
       });
 
@@ -857,6 +859,37 @@ function WithdrawModal({
             </div>
           ) : (
             <>
+              {/* Destination */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1.5">Destination</label>
+                <div className="grid grid-cols-2 gap-2">
+                  <button
+                    onClick={() => setDestination("retrait")}
+                    className={`flex items-center gap-2 p-3 rounded-xl border-2 transition-all ${
+                      destination === "retrait" ? "border-indigo-500 bg-indigo-50" : "border-gray-200 hover:border-gray-300"
+                    }`}
+                  >
+                    <Wallet className="w-5 h-5 text-gray-600" />
+                    <div className="text-left">
+                      <span className="text-sm font-medium block">Portefeuille</span>
+                      <span className="text-xs text-gray-400">Instantané</span>
+                    </div>
+                  </button>
+                  <button
+                    onClick={() => setDestination("retrait_banque")}
+                    className={`flex items-center gap-2 p-3 rounded-xl border-2 transition-all ${
+                      destination === "retrait_banque" ? "border-indigo-500 bg-indigo-50" : "border-gray-200 hover:border-gray-300"
+                    }`}
+                  >
+                    <Building className="w-5 h-5 text-gray-600" />
+                    <div className="text-left">
+                      <span className="text-sm font-medium block">Compte bancaire</span>
+                      <span className="text-xs text-gray-400">1-3 jours</span>
+                    </div>
+                  </button>
+                </div>
+              </div>
+
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1.5">
                   Montant (F CFA) — Disponible : {formatXOF(Number(epargne.solde))}
@@ -876,6 +909,13 @@ function WithdrawModal({
               >
                 Retirer tout
               </button>
+
+              {destination === "retrait_banque" && (
+                <div className="p-3 bg-blue-50 border border-blue-200 rounded-xl text-xs text-blue-700 flex items-start gap-2">
+                  <Building className="w-4 h-4 mt-0.5 flex-shrink-0" />
+                  <span>Le virement sera envoyé vers votre compte bancaire vérifié via Stripe. Délai : 1 à 3 jours ouvrés.</span>
+                </div>
+              )}
             </>
           )}
         </div>

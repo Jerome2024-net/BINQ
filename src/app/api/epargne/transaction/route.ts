@@ -22,7 +22,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Paramètres invalides" }, { status: 400 });
   }
 
-  if (!["depot_wallet", "depot_carte", "retrait"].includes(type)) {
+  if (!["depot_wallet", "depot_carte", "retrait", "retrait_banque"].includes(type)) {
     return NextResponse.json({ error: "Type de transaction invalide" }, { status: 400 });
   }
 
@@ -48,7 +48,7 @@ export async function POST(request: NextRequest) {
   let nouveauSolde: number;
   let stripePaymentId: string | null = null;
 
-  // ── RETRAIT ──
+  // ── RETRAIT (vers portefeuille) ──
   if (type === "retrait") {
     // Vérifier le blocage
     if (epargne.bloque_jusqu_a) {
@@ -78,6 +78,98 @@ export async function POST(request: NextRequest) {
       .from("profiles")
       .update({ solde_wallet: (Number(profil?.solde_wallet) || 0) + montant })
       .eq("id", user.id);
+  }
+
+  // ── RETRAIT DIRECT VERS COMPTE BANCAIRE (Stripe Payout) ──
+  else if (type === "retrait_banque") {
+    // Vérifier le blocage
+    if (epargne.bloque_jusqu_a) {
+      const dateBloquee = new Date(epargne.bloque_jusqu_a);
+      if (new Date() < dateBloquee) {
+        return NextResponse.json(
+          { error: `Épargne bloquée jusqu'au ${dateBloquee.toLocaleDateString("fr-FR")}` },
+          { status: 400 }
+        );
+      }
+    }
+
+    if (montant > soldeActuel) {
+      return NextResponse.json({ error: "Solde insuffisant" }, { status: 400 });
+    }
+
+    // Récupérer le stripe_account_id Connect de l'utilisateur
+    const { data: profil } = await supabase
+      .from("profiles")
+      .select("stripe_account_id, stripe_payouts_enabled")
+      .eq("id", user.id)
+      .single();
+
+    if (!profil?.stripe_account_id) {
+      return NextResponse.json(
+        { error: "Aucun compte bancaire vérifié. Configurez d'abord votre compte Stripe dans le portefeuille." },
+        { status: 400 }
+      );
+    }
+
+    if (!profil.stripe_payouts_enabled) {
+      return NextResponse.json(
+        { error: "Les virements ne sont pas encore activés sur votre compte. Finalisez la vérification Stripe." },
+        { status: 400 }
+      );
+    }
+
+    const stripe = getStripe();
+
+    // Vérifier le solde disponible sur le compte Connect
+    const balance = await stripe.balance.retrieve({ stripeAccount: profil.stripe_account_id });
+    const availableAmount = balance.available.reduce((sum, b) => sum + b.amount, 0);
+    const montantPayout = Math.round(montant);
+
+    // Si le solde Connect est insuffisant, on transfère d'abord depuis la plateforme
+    if (availableAmount < montantPayout) {
+      try {
+        await stripe.transfers.create({
+          amount: montantPayout,
+          currency: "xof",
+          destination: profil.stripe_account_id,
+          description: `Retrait épargne Binq - ${epargne.nom}`,
+          metadata: {
+            type: "epargne_retrait_banque",
+            epargne_id: epargne.id,
+            user_id: user.id,
+          },
+        });
+      } catch (transferErr) {
+        console.error("Stripe transfer error:", transferErr);
+        const msg = transferErr instanceof Error ? transferErr.message : "Erreur transfert";
+        return NextResponse.json({ error: `Impossible de préparer le virement : ${msg}` }, { status: 400 });
+      }
+    }
+
+    // Créer le Payout vers le compte bancaire
+    try {
+      const payout = await stripe.payouts.create(
+        {
+          amount: montantPayout,
+          currency: "xof",
+          description: `Retrait épargne Binq - ${epargne.nom}`,
+          metadata: {
+            type: "epargne_retrait_banque",
+            epargne_id: epargne.id,
+            user_id: user.id,
+          },
+        },
+        { stripeAccount: profil.stripe_account_id }
+      );
+
+      stripePaymentId = payout.id;
+    } catch (payoutErr) {
+      console.error("Stripe payout error:", payoutErr);
+      const msg = payoutErr instanceof Error ? payoutErr.message : "Erreur payout";
+      return NextResponse.json({ error: `Virement bancaire échoué : ${msg}` }, { status: 400 });
+    }
+
+    nouveauSolde = soldeActuel - montant;
   }
 
   // ── DÉPÔT PORTEFEUILLE ──
@@ -178,9 +270,9 @@ export async function POST(request: NextRequest) {
       epargne_id,
       user_id: user.id,
       type,
-      montant: type === "retrait" ? -montant : montant,
+      montant: (type === "retrait" || type === "retrait_banque") ? -montant : montant,
       solde_apres: nouveauSolde,
-      description: description || (type === "retrait" ? "Retrait vers portefeuille" : "Dépôt"),
+      description: description || (type === "retrait" ? "Retrait vers portefeuille" : type === "retrait_banque" ? "Virement vers compte bancaire" : "Dépôt"),
       stripe_payment_id: stripePaymentId,
     })
     .select()
