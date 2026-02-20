@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS epargnes (
   user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
   nom TEXT NOT NULL DEFAULT 'Mon épargne',
   type TEXT NOT NULL CHECK (type IN ('libre', 'objectif', 'programmee')),
-  devise TEXT NOT NULL DEFAULT 'XOF',
+  devise TEXT NOT NULL DEFAULT 'EUR',
   solde NUMERIC(12,2) NOT NULL DEFAULT 0,
   -- Pour type "objectif"
   objectif_montant NUMERIC(12,2),

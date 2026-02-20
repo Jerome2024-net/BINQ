@@ -43,7 +43,7 @@ export default function HomePage() {
               , à votre rythme.
             </h1>
             <p className="text-lg md:text-xl text-gray-400 mb-10 max-w-2xl mx-auto leading-relaxed">
-              Créez vos comptes épargne, déposez par carte ou portefeuille, et profitez d&apos;un bonus mensuel. Le tout en F CFA, depuis votre téléphone.
+              Créez vos comptes épargne, déposez par carte ou portefeuille, et profitez d&apos;un bonus mensuel. En EUR ou USD, depuis votre téléphone.
             </p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
               <Link
@@ -266,7 +266,7 @@ export default function HomePage() {
               <div className="w-full space-y-2.5">
                 {[
                   "Paiements sécurisés via Stripe",
-                  "Dépôts et retraits en F CFA",
+                  "Dépôts et retraits en EUR / USD",
                   "Bonus mensuel crédité automatiquement",
                   "Jusqu'à 10 comptes épargne",
                 ].map((text, i) => (

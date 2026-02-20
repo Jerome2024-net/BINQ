@@ -43,11 +43,14 @@ export async function POST(request: NextRequest) {
     bloque_jusqu_a,
     icone,
     couleur,
+    devise,
   } = body;
 
   if (!nom || !type) {
     return NextResponse.json({ error: "Nom et type requis" }, { status: 400 });
   }
+
+  const deviseValide = ["EUR", "USD"].includes(devise) ? devise : "EUR";
 
   if (!["libre", "objectif", "programmee"].includes(type)) {
     return NextResponse.json({ error: "Type invalide" }, { status: 400 });
@@ -89,7 +92,7 @@ export async function POST(request: NextRequest) {
       user_id: user.id,
       nom: nom.trim(),
       type,
-      devise: "XOF",
+      devise: deviseValide,
       objectif_montant: type === "objectif" ? objectif_montant : null,
       objectif_date: type === "objectif" ? objectif_date : null,
       montant_auto: type === "programmee" ? montant_auto : null,

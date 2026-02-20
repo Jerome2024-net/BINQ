@@ -45,8 +45,14 @@ export async function POST(request: NextRequest) {
   }
 
   const soldeActuel = Number(epargne.solde);
+  const devise = (epargne.devise || "EUR").toLowerCase();
   let nouveauSolde: number;
   let stripePaymentId: string | null = null;
+
+  // EUR & USD utilisent les centimes dans Stripe
+  function toStripeAmount(amount: number): number {
+    return Math.round(amount * 100);
+  }
 
   // ── RETRAIT (vers portefeuille) ──
   if (type === "retrait") {
@@ -123,14 +129,14 @@ export async function POST(request: NextRequest) {
     // Vérifier le solde disponible sur le compte Connect
     const balance = await stripe.balance.retrieve({ stripeAccount: profil.stripe_account_id });
     const availableAmount = balance.available.reduce((sum, b) => sum + b.amount, 0);
-    const montantPayout = Math.round(montant);
+    const montantPayout = toStripeAmount(montant);
 
     // Si le solde Connect est insuffisant, on transfère d'abord depuis la plateforme
     if (availableAmount < montantPayout) {
       try {
         await stripe.transfers.create({
           amount: montantPayout,
-          currency: "xof",
+          currency: devise,
           destination: profil.stripe_account_id,
           description: `Retrait épargne Binq - ${epargne.nom}`,
           metadata: {
@@ -151,7 +157,7 @@ export async function POST(request: NextRequest) {
       const payout = await stripe.payouts.create(
         {
           amount: montantPayout,
-          currency: "xof",
+          currency: devise,
           description: `Retrait épargne Binq - ${epargne.nom}`,
           metadata: {
             type: "epargne_retrait_banque",
@@ -186,7 +192,7 @@ export async function POST(request: NextRequest) {
 
     const soldeWallet = Number(profil?.solde_wallet) || 0;
     if (totalDebite > soldeWallet) {
-      return NextResponse.json({ error: `Solde portefeuille insuffisant. Montant + frais (2%) = ${totalDebite} F CFA` }, { status: 400 });
+      return NextResponse.json({ error: `Solde portefeuille insuffisant. Montant + frais (2%) = ${totalDebite} ${epargne.devise}` }, { status: 400 });
     }
 
     // Débiter le wallet (montant + frais)
@@ -228,19 +234,19 @@ export async function POST(request: NextRequest) {
     }
 
     // Montant + 2% de frais Binq
-    const frais = Math.round(montant * 0.02);
+    const frais = Math.round(montant * 0.02 * 100) / 100;
     const totalDebite = montant + frais;
-    const montantStripe = Math.round(totalDebite);
+    const montantStripe = toStripeAmount(totalDebite);
 
     try {
       const pi = await stripe.paymentIntents.create({
         amount: montantStripe,
-        currency: "xof",
+        currency: devise,
         customer: profil.stripe_customer_id,
         payment_method: paymentMethods.data[0].id,
         off_session: true,
         confirm: true,
-        description: `Épargne Binq - ${epargne.nom} (dont ${frais} F CFA de frais)`,
+        description: `Épargne Binq - ${epargne.nom} (dont ${frais} ${epargne.devise} de frais)`,
         metadata: {
           type: "epargne_depot",
           epargne_id: epargne.id,

@@ -84,9 +84,10 @@ export async function GET(request: Request) {
 
               if (paymentMethods.data.length > 0) {
                 try {
+                  const cronDevise = (ep.devise || "eur").toLowerCase();
                   const pi = await stripe.paymentIntents.create({
-                    amount: Math.round(montant),
-                    currency: "xof",
+                    amount: Math.round(montant * 100),
+                    currency: cronDevise,
                     customer: profil.stripe_customer_id,
                     payment_method: paymentMethods.data[0].id,
                     off_session: true,
@@ -185,7 +186,7 @@ export async function GET(request: Request) {
             const solde = Number(ep.solde);
             const bonusMensuel = Math.round((solde * 0.01) / 12 * 100) / 100;
 
-            if (bonusMensuel < 1) continue; // Pas de bonus si < 1 XOF
+            if (bonusMensuel < 1) continue; // Pas de bonus si < 1 EUR
 
             const nouveauSolde = solde + bonusMensuel;
             const nouveauBonusCumule = Number(ep.bonus_cumule) + bonusMensuel;

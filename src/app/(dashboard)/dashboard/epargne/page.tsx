@@ -69,8 +69,11 @@ interface Transaction {
 const ICONES = ["💰", "🏠", "✈️", "🎓", "🚗", "💍", "🏥", "📱", "👶", "🎯", "🌍", "⭐"];
 const COULEURS = ["#6366f1", "#8b5cf6", "#ec4899", "#f43f5e", "#f97316", "#eab308", "#22c55e", "#14b8a6", "#06b6d4", "#3b82f6"];
 
-function formatXOF(montant: number): string {
-  return new Intl.NumberFormat("fr-FR", { style: "decimal", maximumFractionDigits: 0 }).format(montant) + " F CFA";
+function formatDevise(montant: number, devise: string = "EUR"): string {
+  if (devise === "USD") {
+    return new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 2 }).format(montant);
+  }
+  return new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR", maximumFractionDigits: 2 }).format(montant);
 }
 
 export default function EpargnePage() {
@@ -160,13 +163,13 @@ export default function EpargnePage() {
         {/* Solde */}
         <div className="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm">
           <p className="text-sm text-gray-500 mb-1">Solde actuel</p>
-          <p className="text-3xl font-bold text-gray-900">{formatXOF(Number(ep.solde))}</p>
+          <p className="text-3xl font-bold text-gray-900">{formatDevise(Number(ep.solde), ep.devise)}</p>
 
           {ep.type === "objectif" && ep.objectif_montant && (
             <div className="mt-4">
               <div className="flex justify-between text-sm text-gray-500 mb-2">
                 <span>Progression</span>
-                <span>{Math.round(progress)}% — Objectif {formatXOF(Number(ep.objectif_montant))}</span>
+                <span>{Math.round(progress)}% — Objectif {formatDevise(Number(ep.objectif_montant), ep.devise)}</span>
               </div>
               <div className="h-3 bg-gray-100 rounded-full overflow-hidden">
                 <div className="h-full rounded-full transition-all duration-500" style={{ width: `${progress}%`, backgroundColor: ep.couleur }} />
@@ -184,12 +187,12 @@ export default function EpargnePage() {
             <div className="mt-4 flex flex-wrap gap-3">
               <div className="flex items-center gap-2 text-sm bg-indigo-50 px-3 py-1.5 rounded-lg text-indigo-700">
                 <Clock className="w-4 h-4" />
-                {formatXOF(Number(ep.montant_auto))} / {ep.frequence_auto === "quotidien" ? "jour" : ep.frequence_auto === "hebdomadaire" ? "semaine" : "mois"}
+                {formatDevise(Number(ep.montant_auto), ep.devise)} / {ep.frequence_auto === "quotidien" ? "jour" : ep.frequence_auto === "hebdomadaire" ? "semaine" : "mois"}
               </div>
               {Number(ep.bonus_cumule) > 0 && (
                 <div className="flex items-center gap-2 text-sm bg-green-50 px-3 py-1.5 rounded-lg text-green-700">
                   <Gift className="w-4 h-4" />
-                  Bonus cumulé : {formatXOF(Number(ep.bonus_cumule))}
+                  Bonus cumulé : {formatDevise(Number(ep.bonus_cumule), ep.devise)}
                 </div>
               )}
             </div>
@@ -246,7 +249,7 @@ export default function EpargnePage() {
                       </div>
                     </div>
                     <span className={`text-sm font-bold ${isPositive ? "text-green-600" : "text-red-500"}`}>
-                      {isPositive ? "+" : ""}{formatXOF(Number(tx.montant))}
+                      {isPositive ? "+" : ""}{formatDevise(Number(tx.montant), ep.devise)}
                     </span>
                   </div>
                 );
@@ -321,7 +324,7 @@ export default function EpargnePage() {
             </div>
             <span className="text-sm text-gray-500">Total épargné</span>
           </div>
-          <p className="text-2xl font-bold text-gray-900">{formatXOF(totalEpargne)}</p>
+          <p className="text-2xl font-bold text-gray-900">{formatDevise(totalEpargne)}</p>
         </div>
 
         <div className="bg-white rounded-2xl border border-gray-100 p-5 shadow-sm">
@@ -331,7 +334,7 @@ export default function EpargnePage() {
             </div>
             <span className="text-sm text-gray-500">Bonus cumulés</span>
           </div>
-          <p className="text-2xl font-bold text-gray-900">{formatXOF(totalBonus)}</p>
+          <p className="text-2xl font-bold text-gray-900">{formatDevise(totalBonus)}</p>
         </div>
 
         <div className="bg-white rounded-2xl border border-gray-100 p-5 shadow-sm">
@@ -390,21 +393,21 @@ export default function EpargnePage() {
                   )}
                 </div>
 
-                <p className="text-xl font-bold text-gray-900 mb-1">{formatXOF(Number(ep.solde))}</p>
+                <p className="text-xl font-bold text-gray-900 mb-1">{formatDevise(Number(ep.solde), ep.devise)}</p>
 
                 {ep.type === "objectif" && ep.objectif_montant && (
                   <div className="mt-2">
                     <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
                       <div className="h-full rounded-full" style={{ width: `${progress}%`, backgroundColor: ep.couleur }} />
                     </div>
-                    <p className="text-xs text-gray-400 mt-1">{Math.round(progress)}% de {formatXOF(Number(ep.objectif_montant))}</p>
+                    <p className="text-xs text-gray-400 mt-1">{Math.round(progress)}% de {formatDevise(Number(ep.objectif_montant), ep.devise)}</p>
                   </div>
                 )}
 
                 {ep.type === "programmee" && ep.montant_auto && (
                   <p className="text-xs text-gray-400 mt-1 flex items-center gap-1">
                     <Clock className="w-3 h-3" />
-                    {formatXOF(Number(ep.montant_auto))} / {ep.frequence_auto === "quotidien" ? "jour" : ep.frequence_auto === "hebdomadaire" ? "semaine" : "mois"}
+                    {formatDevise(Number(ep.montant_auto), ep.devise)} / {ep.frequence_auto === "quotidien" ? "jour" : ep.frequence_auto === "hebdomadaire" ? "semaine" : "mois"}
                   </p>
                 )}
               </button>
@@ -441,6 +444,7 @@ function CreateEpargneModal({ onClose, onSuccess }: { onClose: () => void; onSuc
   const [bloqueJusqua, setBloqueJusqua] = useState("");
   const [icone, setIcone] = useState("💰");
   const [couleur, setCouleur] = useState("#6366f1");
+  const [devise, setDevise] = useState<"EUR" | "USD">("EUR");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -467,6 +471,7 @@ function CreateEpargneModal({ onClose, onSuccess }: { onClose: () => void; onSuc
           bloque_jusqu_a: bloqueJusqua || null,
           icone,
           couleur,
+          devise,
         }),
       });
 
@@ -530,11 +535,33 @@ function CreateEpargneModal({ onClose, onSuccess }: { onClose: () => void; onSuc
             </div>
           </div>
 
+          {/* Devise */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1.5">Devise</label>
+            <div className="grid grid-cols-2 gap-2">
+              {[
+                { value: "EUR", label: "EUR €", desc: "Euro" },
+                { value: "USD", label: "USD $", desc: "Dollar" },
+              ].map((d) => (
+                <button
+                  key={d.value}
+                  onClick={() => setDevise(d.value as "EUR" | "USD")}
+                  className={`p-3 rounded-xl border-2 text-left transition-all ${
+                    devise === d.value ? "border-indigo-500 bg-indigo-50" : "border-gray-200 hover:border-gray-300"
+                  }`}
+                >
+                  <p className="text-sm font-semibold text-gray-900">{d.label}</p>
+                  <p className="text-xs text-gray-500">{d.desc}</p>
+                </button>
+              ))}
+            </div>
+          </div>
+
           {/* Objectif */}
           {type === "objectif" && (
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5">Montant objectif (F CFA)</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1.5">Montant objectif ({devise})</label>
                 <input
                   type="number"
                   value={objectifMontant}
@@ -560,7 +587,7 @@ function CreateEpargneModal({ onClose, onSuccess }: { onClose: () => void; onSuc
             <div className="space-y-3">
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1.5">Montant auto (F CFA)</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1.5">Montant auto ({devise})</label>
                   <input
                     type="number"
                     value={montantAuto}
@@ -904,7 +931,7 @@ function DepositModal({
             <>
               {/* Montant */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5">Montant (F CFA)</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1.5">Montant ({epargne.devise})</label>
                 <input
                   type="number"
                   value={montant}
@@ -944,15 +971,15 @@ function DepositModal({
                 <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 space-y-1">
                   <div className="flex justify-between text-sm text-gray-700">
                     <span>Montant épargné</span>
-                    <span className="font-medium">{Number(montant).toLocaleString("fr-FR")} F CFA</span>
+                    <span className="font-medium">{formatDevise(Number(montant), epargne.devise)}</span>
                   </div>
                   <div className="flex justify-between text-sm text-amber-700">
                     <span>Frais Binq (2%)</span>
-                    <span className="font-medium">{Math.round(Number(montant) * 0.02).toLocaleString("fr-FR")} F CFA</span>
+                    <span className="font-medium">{formatDevise(Math.round(Number(montant) * 0.02 * 100) / 100, epargne.devise)}</span>
                   </div>
                   <div className="border-t border-amber-200 pt-1 flex justify-between text-sm font-bold text-gray-900">
                     <span>Total débité</span>
-                    <span>{(Number(montant) + Math.round(Number(montant) * 0.02)).toLocaleString("fr-FR")} F CFA</span>
+                    <span>{formatDevise(Number(montant) + Math.round(Number(montant) * 0.02 * 100) / 100, epargne.devise)}</span>
                   </div>
                 </div>
               )}
@@ -1026,7 +1053,7 @@ function DepositModal({
             >
               {actionLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : <ArrowDownCircle className="w-5 h-5" />}
               {Number(montant) > 0
-                ? `Déposer (${(Number(montant) + Math.round(Number(montant) * 0.02)).toLocaleString("fr-FR")} F)`
+                ? `Déposer (${formatDevise(Number(montant) + Math.round(Number(montant) * 0.02 * 100) / 100, epargne.devise)})`
                 : "Déposer"
               }
             </button>
@@ -1149,7 +1176,7 @@ function WithdrawModal({
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1.5">
-                  Montant (F CFA) — Disponible : {formatXOF(Number(epargne.solde))}
+                  Montant ({epargne.devise}) — Disponible : {formatDevise(Number(epargne.solde), epargne.devise)}
                 </label>
                 <input
                   type="number"
