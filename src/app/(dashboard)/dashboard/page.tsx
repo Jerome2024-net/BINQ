@@ -22,7 +22,7 @@ import {
 interface Epargne {
   id: string;
   nom: string;
-  type_epargne: string;
+  type: string;
   solde: number;
   devise: string;
   objectif_montant: number | null;
@@ -203,8 +203,8 @@ export default function DashboardPage() {
                       {ep.icone || "💰"}
                     </div>
                     <span className={`px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider ${
-                      ep.type_epargne === "objectif" ? "bg-amber-50 text-amber-700" : 
-                      ep.type_epargne === "programmee" ? "bg-purple-50 text-purple-700" : 
+                      ep.type === "objectif" ? "bg-amber-50 text-amber-700" : 
+                      ep.type === "programmee" ? "bg-purple-50 text-purple-700" : 
                       "bg-indigo-50 text-indigo-700"
                     }`}>
                       {ep.devise || "EUR"}
@@ -212,7 +212,7 @@ export default function DashboardPage() {
                   </div>
 
                   <h3 className="text-lg font-bold text-gray-900 mb-1 line-clamp-1">{ep.nom}</h3>
-                  <p className="text-sm text-gray-500 mb-4 capitalize">{ep.type_epargne.replace("_", " ")}</p>
+                  <p className="text-sm text-gray-500 mb-4 capitalize">{(ep.type || "libre").replace("_", " ")}</p>
                   
                   <div className="flex items-baseline gap-1 mb-4">
                     <span className="text-2xl font-bold text-gray-900">
