@@ -3,51 +3,36 @@
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
-import { useTontine } from "@/contexts/TontineContext";
-import { useToast } from "@/contexts/ToastContext";
 import { useFinance } from "@/contexts/FinanceContext";
-import PaymentModal from "@/components/PaymentModal";
 import { DashboardSkeleton } from "@/components/Skeleton";
-import { formatMontant, formatDate } from "@/lib/data";
+import { formatMontant } from "@/lib/data";
 import {
-  Users,
-  CircleDollarSign,
   TrendingUp,
-  Calendar,
-  ArrowUpRight,
   ArrowRight,
-  Clock,
-  CheckCircle2,
-  AlertCircle,
-  CreditCard,
   Wallet,
   ArrowDownToLine,
-  Mail,
-  UserPlus,
-  XCircle,
+  PiggyBank,
+  Plus,
+  Target,
+  Sparkles,
 } from "lucide-react";
+
+interface Epargne {
+  id: string;
+  nom: string;
+  type_epargne: string;
+  solde: number;
+  objectif_montant: number | null;
+  statut: string;
+  created_at: string;
+}
 
 export default function DashboardPage() {
   const { user } = useAuth();
-  const { getMesTontines, effectuerPaiement, isLoading: tontineLoading } = useTontine();
-  const { showToast } = useToast();
-  const { getFinancialSummary, wallet, getOrCreateWallet, isLoading: financeLoading } = useFinance();
+  const { wallet, getOrCreateWallet, isLoading: financeLoading } = useFinance();
 
-  // Invitations
-  const { invitationsRecues, accepterInvitation, refuserInvitation } = useTontine();
-
-  const [paymentModal, setPaymentModal] = useState<{
-    open: boolean;
-    tontineId: string;
-    tourId: string;
-    tontineNom: string;
-    montant: number;
-    devise: string;
-    beneficiaire: string;
-  }>({ open: false, tontineId: "", tourId: "", tontineNom: "", montant: 0, devise: "EUR", beneficiaire: "" });
-
-  const mesTontines = getMesTontines();
-  const tontinesActives = mesTontines.filter((t) => t.statut === "active");
+  const [epargnes, setEpargnes] = useState<Epargne[]>([]);
+  const [epargneLoading, setEpargneLoading] = useState(true);
 
   // Initialiser le wallet
   useEffect(() => {
@@ -57,76 +42,50 @@ export default function DashboardPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
-  // Stats
-  const allPaiements = mesTontines.flatMap((t) => t.tours).flatMap((t) => t.paiements);
-  const paiementsConfirmes = allPaiements.filter((p) => p.statut === "confirme");
-  const totalPaye = paiementsConfirmes.reduce((acc, p) => acc + p.montant, 0);
-  const paiementsEnAttente = allPaiements.filter((p) => p.statut === "en_attente");
-  const totalCotisations = mesTontines.reduce(
-    (acc, t) => acc + t.montantCotisation * t.nombreMembres, 0
-  );
+  // Charger les comptes épargne
+  useEffect(() => {
+    const charger = async () => {
+      try {
+        const res = await fetch("/api/epargne");
+        const data = await res.json();
+        if (res.ok) setEpargnes(data.epargnes || []);
+      } catch {
+        /* ignore */
+      } finally {
+        setEpargneLoading(false);
+      }
+    };
+    charger();
+  }, []);
 
-  const prochainsTours = mesTontines
-    .flatMap((t) =>
-      t.tours
-        .filter((tour) => tour.statut === "en_cours" || tour.statut === "a_venir")
-        .map((tour) => ({ ...tour, tontine: t }))
-    )
-    .sort((a, b) => new Date(a.datePrevue).getTime() - new Date(b.datePrevue).getTime())
-    .slice(0, 5);
+  const totalEpargne = epargnes.reduce((acc, e) => acc + Number(e.solde), 0);
+  const comptesActifs = epargnes.filter((e) => e.statut === "active");
 
-  // Trouver les paiements en attente de l'utilisateur courant
-  const mesPaiementsEnAttente = mesTontines.flatMap((t) =>
-    t.tours
-      .filter((tour) => tour.statut === "en_cours")
-      .flatMap((tour) =>
-        tour.paiements
-          .filter((p) => p.statut === "en_attente" && (p.membre.id === user?.id || p.membre.email === user?.email))
-          .map((p) => ({ ...p, tontine: t, tour }))
-      )
-  );
-
-  const handlePay = (tontineId: string, tourId: string, tontineNom: string, montant: number, devise: string, beneficiaire: string) => {
-    setPaymentModal({ open: true, tontineId, tourId, tontineNom, montant, devise, beneficiaire });
-  };
-
-  const handlePaymentConfirm = async (methode: string) => {
-    // Paiement via Stripe Connect — rediriger vers la page de la tontine
-    const result = await effectuerPaiement(paymentModal.tontineId, paymentModal.tourId, methode);
-    if (result.success) {
-      showToast("success", "Paiement effectué !", `Référence: ${result.reference}`);
-    }
-  };
-
-  if (tontineLoading || financeLoading) {
+  if (financeLoading || epargneLoading) {
     return <DashboardSkeleton />;
   }
 
   return (
     <div className="space-y-8">
       {/* Welcome */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
-          <h1 className="text-2xl md:text-3xl font-bold text-gray-900">
-            {new Date().getHours() < 12 ? "Bonjour" : new Date().getHours() < 18 ? "Bon après-midi" : "Bonsoir"}, {user?.prenom || "là"} 👋
-          </h1>
-          <p className="text-gray-500 mt-1">
-            {mesTontines.length === 0 
-              ? "Bienvenue sur Binq ! Commencez par créer votre première tontine."
-              : mesPaiementsEnAttente.length > 0 
-                ? `Vous avez ${mesPaiementsEnAttente.length} paiement${mesPaiementsEnAttente.length > 1 ? "s" : ""} en attente`
-                : "Tout est à jour. Voici un aperçu de vos tontines."}
-          </p>
-        </div>
+      <div>
+        <h1 className="text-2xl md:text-3xl font-bold text-gray-900">
+          {new Date().getHours() < 12 ? "Bonjour" : new Date().getHours() < 18 ? "Bon après-midi" : "Bonsoir"}, {user?.prenom || "là"} 👋
+        </h1>
+        <p className="text-gray-500 mt-1">
+          {epargnes.length === 0
+            ? "Bienvenue sur Binq ! Commencez par créer votre premier compte épargne."
+            : `Vous avez ${comptesActifs.length} compte${comptesActifs.length > 1 ? "s" : ""} d'épargne actif${comptesActifs.length > 1 ? "s" : ""}.`}
+        </p>
       </div>
 
       {/* Quick Actions */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-        <Link href="/tontines/creer" className="flex flex-col items-center gap-2 p-4 bg-white rounded-xl border border-gray-200 hover:border-primary-300 hover:bg-primary-50/50 transition-all group">
-          <div className="w-10 h-10 bg-primary-100 rounded-xl flex items-center justify-center group-hover:bg-primary-200 transition-colors">
-            <CircleDollarSign className="w-5 h-5 text-primary-600" />
+      <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+        <Link href="/dashboard/epargne" className="flex flex-col items-center gap-2 p-4 bg-white rounded-xl border border-gray-200 hover:border-indigo-300 hover:bg-indigo-50/50 transition-all group">
+          <div className="w-10 h-10 bg-indigo-100 rounded-xl flex items-center justify-center group-hover:bg-indigo-200 transition-colors">
+            <PiggyBank className="w-5 h-5 text-indigo-600" />
           </div>
-          <span className="text-sm font-medium text-gray-700">Nouvelle Tontine</span>
+          <span className="text-sm font-medium text-gray-700">Mon Épargne</span>
         </Link>
         <Link href="/portefeuille" className="flex flex-col items-center gap-2 p-4 bg-white rounded-xl border border-gray-200 hover:border-emerald-300 hover:bg-emerald-50/50 transition-all group">
           <div className="w-10 h-10 bg-emerald-100 rounded-xl flex items-center justify-center group-hover:bg-emerald-200 transition-colors">
@@ -134,40 +93,34 @@ export default function DashboardPage() {
           </div>
           <span className="text-sm font-medium text-gray-700">Déposer</span>
         </Link>
-        <Link href="/explorer" className="flex flex-col items-center gap-2 p-4 bg-white rounded-xl border border-gray-200 hover:border-violet-300 hover:bg-violet-50/50 transition-all group">
-          <div className="w-10 h-10 bg-violet-100 rounded-xl flex items-center justify-center group-hover:bg-violet-200 transition-colors">
-            <Users className="w-5 h-5 text-violet-600" />
-          </div>
-          <span className="text-sm font-medium text-gray-700">Explorer</span>
-        </Link>
         <Link href="/transactions" className="flex flex-col items-center gap-2 p-4 bg-white rounded-xl border border-gray-200 hover:border-amber-300 hover:bg-amber-50/50 transition-all group">
           <div className="w-10 h-10 bg-amber-100 rounded-xl flex items-center justify-center group-hover:bg-amber-200 transition-colors">
-            <Clock className="w-5 h-5 text-amber-600" />
+            <TrendingUp className="w-5 h-5 text-amber-600" />
           </div>
           <span className="text-sm font-medium text-gray-700">Historique</span>
         </Link>
       </div>
 
       {/* Onboarding Banner for new users */}
-      {mesTontines.length === 0 && (
-        <div className="relative overflow-hidden bg-gradient-to-r from-blue-50 to-indigo-50 border-2 border-blue-200 rounded-2xl p-8">
-          <div className="absolute top-0 right-0 w-64 h-64 bg-primary-100/50 rounded-full -translate-y-1/2 translate-x-1/3"></div>
+      {epargnes.length === 0 && (
+        <div className="relative overflow-hidden bg-gradient-to-r from-indigo-50 to-purple-50 border-2 border-indigo-200 rounded-2xl p-8">
+          <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-100/50 rounded-full -translate-y-1/2 translate-x-1/3"></div>
           <div className="relative z-10">
             <div className="flex items-center gap-2 mb-3">
-              <span className="text-2xl">🚀</span>
+              <span className="text-2xl">💰</span>
               <h2 className="text-xl font-bold text-gray-900">Bienvenue sur Binq !</h2>
             </div>
             <p className="text-gray-600 mb-6 max-w-lg">
-              Commencez par créer votre première tontine ou rejoignez un groupe existant. En quelques clics, gérez vos cotisations et suivez vos tours en temps réel.
+              Épargnez simplement et à votre rythme. Créez un compte épargne libre, avec objectif ou programmé, et regardez votre argent fructifier avec un bonus mensuel de 1%/an.
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
               {[
-                { step: "1", title: "Créez une tontine", desc: "Définissez montant, fréquence et nombre de membres" },
-                { step: "2", title: "Invitez vos proches", desc: "Partagez le lien pour compléter votre groupe" },
-                { step: "3", title: "Démarrez les tours", desc: "Les cotisations et tours se gèrent automatiquement" },
+                { step: "1", title: "Créez un compte", desc: "Libre, avec objectif ou épargne programmée", icon: Plus },
+                { step: "2", title: "Déposez de l'argent", desc: "Via portefeuille ou carte bancaire", icon: ArrowDownToLine },
+                { step: "3", title: "Gagnez des intérêts", desc: "Bonus mensuel de 1%/an sur votre solde", icon: Sparkles },
               ].map((item) => (
-                <div key={item.step} className="bg-white/70 rounded-xl p-4 border border-primary-100">
-                  <div className="w-8 h-8 bg-primary-600 text-white rounded-lg flex items-center justify-center font-bold text-sm mb-2">
+                <div key={item.step} className="bg-white/70 rounded-xl p-4 border border-indigo-100">
+                  <div className="w-8 h-8 bg-indigo-600 text-white rounded-lg flex items-center justify-center font-bold text-sm mb-2">
                     {item.step}
                   </div>
                   <h3 className="font-semibold text-gray-900 text-sm mb-1">{item.title}</h3>
@@ -176,9 +129,9 @@ export default function DashboardPage() {
               ))}
             </div>
             <div className="flex flex-wrap gap-3">
-              <Link href="/tontines/creer" className="btn-primary flex items-center gap-2">
-                <CircleDollarSign className="w-5 h-5" />
-                Créer ma première tontine
+              <Link href="/dashboard/epargne" className="btn-primary flex items-center gap-2">
+                <PiggyBank className="w-5 h-5" />
+                Créer mon premier compte épargne
               </Link>
               <Link href="/portefeuille" className="btn-secondary flex items-center gap-2">
                 <Wallet className="w-5 h-5" />
@@ -190,7 +143,7 @@ export default function DashboardPage() {
       )}
 
       {/* Wallet Quick View */}
-      <Link href="/portefeuille" className="block mb-8">
+      <Link href="/portefeuille" className="block">
         <div className="relative overflow-hidden bg-gray-900 rounded-xl p-6 text-white shadow-lg shadow-gray-200/50 transition-transform active:scale-[0.99]">
           <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none"></div>
           <div className="relative z-10 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
@@ -200,256 +153,130 @@ export default function DashboardPage() {
               </div>
               <div>
                 <p className="text-sm font-medium text-gray-400">Solde portefeuille</p>
-                <div className="flex items-baseline gap-2">
-                  <p className="text-2xl sm:text-3xl font-bold tracking-tight text-white">{formatMontant(wallet?.solde ?? 0)}</p>
-                  <span className="text-sm font-medium text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">
-                    +0%
-                  </span>
-                </div>
+                <p className="text-2xl sm:text-3xl font-bold tracking-tight text-white">{formatMontant(wallet?.solde ?? 0)}</p>
               </div>
             </div>
-            <div className="flex items-center gap-3 w-full sm:w-auto">
-              <div className="hidden sm:flex items-center gap-2 text-sm font-medium text-gray-300 mr-4">
-                <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
-                Portefeuille actif
-              </div>
-              <div className="flex items-center gap-2 bg-white text-gray-900 hover:bg-gray-100 px-5 py-2.5 rounded-lg text-sm font-bold transition-colors">
-                <ArrowDownToLine className="w-4 h-4" />
-                Déposer
-              </div>
+            <div className="flex items-center gap-2 bg-white text-gray-900 hover:bg-gray-100 px-5 py-2.5 rounded-lg text-sm font-bold transition-colors">
+              <ArrowDownToLine className="w-4 h-4" />
+              Déposer
             </div>
           </div>
         </div>
       </Link>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm flex items-start justify-between">
           <div>
-            <p className="text-sm font-medium text-gray-500">Mes Tontines</p>
-            <p className="text-2xl font-bold text-gray-900 mt-2">{mesTontines.length}</p>
-            <p className="text-xs text-green-600 font-medium mt-1">{tontinesActives.length} actives</p>
+            <p className="text-sm font-medium text-gray-500">Total épargné</p>
+            <p className="text-2xl font-bold text-gray-900 mt-2">{totalEpargne.toLocaleString("fr-FR")} F</p>
+            <p className="text-xs text-indigo-600 font-medium mt-1">Tous comptes confondus</p>
           </div>
-          <div className="p-2.5 bg-gray-50 rounded-lg border border-gray-100">
-            <Users className="w-5 h-5 text-gray-600" />
+          <div className="p-2.5 bg-indigo-50 rounded-lg border border-indigo-100">
+            <PiggyBank className="w-5 h-5 text-indigo-600" />
           </div>
         </div>
 
         <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm flex items-start justify-between">
           <div>
-            <p className="text-sm font-medium text-gray-500">Total payé</p>
-            <p className="text-2xl font-bold text-gray-900 mt-2">{formatMontant(totalPaye)}</p>
-            <p className="text-xs text-gray-400 font-medium mt-1">Depuis le début</p>
+            <p className="text-sm font-medium text-gray-500">Comptes actifs</p>
+            <p className="text-2xl font-bold text-gray-900 mt-2">{comptesActifs.length}</p>
+            <p className="text-xs text-emerald-600 font-medium mt-1">sur {epargnes.length} créé{epargnes.length > 1 ? "s" : ""}</p>
           </div>
-          <div className="p-2.5 bg-gray-50 rounded-lg border border-gray-100">
-            <CheckCircle2 className="w-5 h-5 text-gray-600" />
-          </div>
-        </div>
-
-        <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm flex items-start justify-between">
-          <div>
-            <p className="text-sm font-medium text-gray-500">En attente</p>
-            <p className="text-2xl font-bold text-gray-900 mt-2">{paiementsEnAttente.length}</p>
-            <p className="text-xs text-amber-600 font-medium mt-1">paiements à venir</p>
-          </div>
-          <div className="p-2.5 bg-gray-50 rounded-lg border border-gray-100">
-            <Clock className="w-5 h-5 text-gray-600" />
+          <div className="p-2.5 bg-emerald-50 rounded-lg border border-emerald-100">
+            <TrendingUp className="w-5 h-5 text-emerald-600" />
           </div>
         </div>
 
         <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm flex items-start justify-between">
           <div>
-            <p className="text-sm font-medium text-gray-500">Engagement total</p>
-            <p className="text-2xl font-bold text-gray-900 mt-2">{formatMontant(totalCotisations)}</p>
-            <p className="text-xs text-blue-600 font-medium mt-1">toutes tontines</p>
+            <p className="text-sm font-medium text-gray-500">Portefeuille</p>
+            <p className="text-2xl font-bold text-gray-900 mt-2">{formatMontant(wallet?.solde ?? 0)}</p>
+            <p className="text-xs text-gray-400 font-medium mt-1">Disponible</p>
           </div>
           <div className="p-2.5 bg-gray-50 rounded-lg border border-gray-100">
-            <TrendingUp className="w-5 h-5 text-gray-600" />
+            <Wallet className="w-5 h-5 text-gray-600" />
           </div>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Mes Tontines */}
-        <div className="lg:col-span-2">
-          <div className="card">
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-lg font-bold text-gray-900">Mes Tontines</h2>
-              <Link href="/tontines" className="text-primary-600 hover:text-primary-700 text-sm font-medium flex items-center gap-1">
-                Voir tout <ArrowRight className="w-4 h-4" />
-              </Link>
-            </div>
-
-            {mesTontines.length === 0 ? (
-              <div className="text-center py-16">
-                <div className="w-20 h-20 bg-gray-100 rounded-2xl flex items-center justify-center mx-auto mb-5">
-                  <Users className="w-10 h-10 text-gray-300" />
-                </div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">Aucune tontine</h3>
-                <p className="text-gray-500 text-sm mb-6 max-w-sm mx-auto">
-                  Créez votre première tontine ou rejoignez un groupe existant pour commencer à épargner ensemble.
-                </p>
-                <div className="flex flex-col sm:flex-row gap-3 justify-center">
-                  <Link href="/tontines/creer" className="btn-primary inline-flex items-center gap-2">
-                    <CircleDollarSign className="w-5 h-5" />
-                    Créer une tontine
-                  </Link>
-                  <Link href="/explorer" className="btn-secondary inline-flex items-center gap-2">
-                    <Users className="w-5 h-5" />
-                    Explorer
-                  </Link>
-                </div>
-              </div>
-            ) : (
-              <div className="space-y-4">
-                {mesTontines.map((tontine) => {
-                  const tourEnCours = tontine.tours.find((t) => t.statut === "en_cours");
-                  const progression = tourEnCours
-                    ? Math.round(
-                        (tourEnCours.paiements.filter((p) => p.statut === "confirme").length /
-                          Math.max(1, tontine.nombreMembres - 1)) * 100
-                      )
-                    : 0;
-
-                  return (
-                    <Link
-                      key={tontine.id}
-                      href={`/tontines/${tontine.id}`}
-                      className="block p-4 rounded-xl border border-gray-100 hover:border-primary-200 hover:bg-primary-50/30 transition-all"
-                    >
-                      <div className="flex items-start justify-between mb-3">
-                        <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 bg-primary-100 rounded-xl flex items-center justify-center">
-                            <Users className="w-5 h-5 text-primary-600" />
-                          </div>
-                          <div>
-                            <h3 className="font-semibold text-gray-900">{tontine.nom}</h3>
-                            <p className="text-sm text-gray-500">
-                              {tontine.nombreMembres}/{tontine.membresMax} membres · {formatMontant(tontine.montantCotisation, tontine.devise)}/mois
-                            </p>
-                          </div>
-                        </div>
-                        <span className={tontine.statut === "active" ? "badge-success" : tontine.statut === "en_attente" ? "badge-warning" : "badge-info"}>
-                          {tontine.statut === "active" ? "Active" : tontine.statut === "en_attente" ? "En attente" : "Terminée"}
-                        </span>
-                      </div>
-
-                      {tourEnCours && (
-                        <div className="mt-3">
-                          <div className="flex justify-between items-center mb-1.5">
-                            <span className="text-xs text-gray-500">
-                              Tour {tourEnCours.numero} · {tourEnCours.beneficiaire.prenom} {tourEnCours.beneficiaire.nom}
-                            </span>
-                            <span className="text-xs font-bold text-primary-600">{progression}%</span>
-                          </div>
-                          <div className="w-full bg-gray-200 rounded-full h-2">
-                            <div className="bg-primary-600 h-2 rounded-full transition-all" style={{ width: `${progression}%` }}></div>
-                          </div>
-                        </div>
-                      )}
-                    </Link>
-                  );
-                })}
-              </div>
-            )}
-          </div>
+      {/* Mes Comptes Épargne */}
+      <div className="card">
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="text-lg font-bold text-gray-900 flex items-center gap-2">
+            <PiggyBank className="w-5 h-5 text-indigo-600" />
+            Mes Comptes Épargne
+          </h2>
+          <Link href="/dashboard/epargne" className="text-indigo-600 hover:text-indigo-700 text-sm font-medium flex items-center gap-1">
+            Gérer <ArrowRight className="w-4 h-4" />
+          </Link>
         </div>
 
-        {/* Sidebar */}
-        <div className="space-y-6">
-          {/* Prochains tours */}
-          <div className="card">
-            <h2 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
-              <Calendar className="w-5 h-5 text-primary-600" />
-              Prochains tours
-            </h2>
-            {prochainsTours.length === 0 ? (
-              <div className="text-center py-8">
-                <div className="w-12 h-12 bg-gray-100 rounded-xl flex items-center justify-center mx-auto mb-3">
-                  <Calendar className="w-6 h-6 text-gray-300" />
-                </div>
-                <p className="text-sm text-gray-400">Aucun tour planifié</p>
-                <p className="text-xs text-gray-300 mt-1">Les prochains tours apparaîtront ici</p>
-              </div>
-            ) : (
-              <div className="space-y-3">
-                {prochainsTours.map((tour) => (
-                  <Link
-                    key={tour.id}
-                    href={`/tontines/${tour.tontine.id}`}
-                    className="flex items-center gap-3 p-3 rounded-xl bg-gray-50 hover:bg-gray-100 transition-colors"
-                  >
-                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${
-                      tour.statut === "en_cours" ? "bg-amber-100" : "bg-blue-100"
-                    }`}>
-                      {tour.statut === "en_cours" ? (
-                        <AlertCircle className="w-5 h-5 text-amber-600" />
-                      ) : (
-                        <Clock className="w-5 h-5 text-blue-600" />
-                      )}
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-semibold text-gray-900 truncate">
-                        {tour.beneficiaire.prenom} {tour.beneficiaire.nom}
-                      </p>
-                      <p className="text-xs text-gray-500">{tour.tontine.nom} · {formatDate(tour.datePrevue)}</p>
-                    </div>
-                    <span className={tour.statut === "en_cours" ? "badge-warning" : "badge-info"}>
-                      {tour.statut === "en_cours" ? "En cours" : "À venir"}
-                    </span>
-                  </Link>
-                ))}
-              </div>
-            )}
-          </div>
-
-          {/* Derniers paiements */}
-          <div className="card">
-            <h2 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
-              <CreditCard className="w-5 h-5 text-primary-600" />
-              Derniers paiements
-            </h2>
-            {paiementsConfirmes.length === 0 ? (
-              <div className="text-center py-8">
-                <div className="w-12 h-12 bg-gray-100 rounded-xl flex items-center justify-center mx-auto mb-3">
-                  <CreditCard className="w-6 h-6 text-gray-300" />
-                </div>
-                <p className="text-sm text-gray-400">Aucun paiement</p>
-                <p className="text-xs text-gray-300 mt-1">Vos cotisations confirmées apparaîtront ici</p>
-              </div>
-            ) : (
-              <div className="space-y-3">
-                {paiementsConfirmes.slice(-4).reverse().map((p) => (
-                  <div key={p.id} className="flex items-center gap-3">
-                    <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
-                      <CheckCircle2 className="w-4 h-4 text-green-600" />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-gray-900 truncate">{p.membre.prenom} {p.membre.nom}</p>
-                      <p className="text-xs text-gray-500">{formatDate(p.datePaiement)}</p>
-                    </div>
-                    <span className="text-sm font-bold text-green-600">{formatMontant(p.montant)}</span>
-                  </div>
-                ))}
-              </div>
-            )}
-            <Link href="/paiements" className="mt-4 text-primary-600 hover:text-primary-700 text-sm font-medium flex items-center gap-1">
-              Voir tous les paiements <ArrowRight className="w-4 h-4" />
+        {epargnes.length === 0 ? (
+          <div className="text-center py-16">
+            <div className="w-20 h-20 bg-indigo-50 rounded-2xl flex items-center justify-center mx-auto mb-5">
+              <PiggyBank className="w-10 h-10 text-indigo-300" />
+            </div>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">Aucun compte épargne</h3>
+            <p className="text-gray-500 text-sm mb-6 max-w-sm mx-auto">
+              Créez votre premier compte épargne pour commencer à mettre de l&apos;argent de côté.
+            </p>
+            <Link href="/dashboard/epargne" className="btn-primary inline-flex items-center gap-2">
+              <Plus className="w-5 h-5" />
+              Créer un compte épargne
             </Link>
           </div>
-        </div>
-      </div>
+        ) : (
+          <div className="space-y-3">
+            {comptesActifs.map((ep) => {
+              const progression = ep.objectif_montant
+                ? Math.min(100, Math.round((Number(ep.solde) / ep.objectif_montant) * 100))
+                : null;
 
-      {/* Payment Modal */}
-      <PaymentModal
-        isOpen={paymentModal.open}
-        onClose={() => setPaymentModal((prev) => ({ ...prev, open: false }))}
-        onConfirm={handlePaymentConfirm}
-        tontineNom={paymentModal.tontineNom}
-        montant={paymentModal.montant}
-        devise={paymentModal.devise}
-        beneficiaire={paymentModal.beneficiaire}
-      />
+              return (
+                <Link
+                  key={ep.id}
+                  href="/dashboard/epargne"
+                  className="block p-4 rounded-xl border border-gray-100 hover:border-indigo-200 hover:bg-indigo-50/30 transition-all"
+                >
+                  <div className="flex items-start justify-between mb-2">
+                    <div className="flex items-center gap-3">
+                      <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${
+                        ep.type_epargne === "objectif" ? "bg-amber-100" : ep.type_epargne === "programmee" ? "bg-purple-100" : "bg-indigo-100"
+                      }`}>
+                        {ep.type_epargne === "objectif" ? (
+                          <Target className="w-5 h-5 text-amber-600" />
+                        ) : ep.type_epargne === "programmee" ? (
+                          <Sparkles className="w-5 h-5 text-purple-600" />
+                        ) : (
+                          <PiggyBank className="w-5 h-5 text-indigo-600" />
+                        )}
+                      </div>
+                      <div>
+                        <h3 className="font-semibold text-gray-900">{ep.nom}</h3>
+                        <p className="text-xs text-gray-500 capitalize">{ep.type_epargne === "programmee" ? "Programmée" : ep.type_epargne === "objectif" ? "Objectif" : "Libre"}</p>
+                      </div>
+                    </div>
+                    <span className="text-lg font-bold text-gray-900">{Number(ep.solde).toLocaleString("fr-FR")} F</span>
+                  </div>
+
+                  {progression !== null && (
+                    <div className="mt-2">
+                      <div className="flex justify-between items-center mb-1">
+                        <span className="text-xs text-gray-500">Objectif : {ep.objectif_montant!.toLocaleString("fr-FR")} F</span>
+                        <span className="text-xs font-bold text-indigo-600">{progression}%</span>
+                      </div>
+                      <div className="w-full bg-gray-200 rounded-full h-2">
+                        <div className="bg-indigo-600 h-2 rounded-full transition-all" style={{ width: `${progression}%` }}></div>
+                      </div>
+                    </div>
+                  )}
+                </Link>
+              );
+            })}
+          </div>
+        )}
+      </div>
     </div>
   );
 }

@@ -8,10 +8,6 @@ import AuthGuard from "@/components/AuthGuard";
 import Avatar from "@/components/Avatar";
 import {
   LayoutDashboard,
-  Users,
-  CreditCard,
-  Star,
-  Compass,
   Settings,
   Bell,
   LogOut,
@@ -24,19 +20,17 @@ import {
   ArrowLeftRight,
   Search,
   PiggyBank,
+  Sparkles,
 } from "lucide-react";
 
 const mainLinks = [
   { href: "/dashboard", label: "Tableau de bord", icon: LayoutDashboard },
+  { href: "/dashboard/epargne", label: "Épargne", icon: PiggyBank },
   { href: "/portefeuille", label: "Portefeuille", icon: Wallet },
-  { href: "/tontines", label: "Mes Tontines", icon: Users },
-  { href: "/explorer", label: "Explorer", icon: Compass },
 ];
 
 const financeLinks = [
-  { href: "/paiements", label: "Paiements", icon: CreditCard },
   { href: "/transactions", label: "Transactions", icon: ArrowLeftRight },
-  { href: "/dashboard/epargne", label: "Épargne", icon: PiggyBank },
 ];
 
 export default function DashboardLayout({
@@ -76,7 +70,7 @@ export default function DashboardLayout({
           <div className="flex items-center justify-between px-6 h-[72px] border-b border-gray-100">
             <Link href="/" className="flex items-center gap-3">
               <div className="w-8 h-8 bg-primary-600 rounded-lg flex items-center justify-center shadow-lg shadow-primary-500/20">
-                <Star className="w-4 h-4 text-white fill-current" />
+                <Sparkles className="w-4 h-4 text-white fill-current" />
               </div>
               <span className="text-xl font-bold text-gray-900 tracking-tight">
                 Binq
@@ -148,14 +142,14 @@ export default function DashboardLayout({
               Actions Rapides
             </div>
             <Link
-              href="/tontines/creer"
+              href="/dashboard/epargne"
               className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-50 hover:text-gray-900 transition-all duration-200 group"
               onClick={() => setSidebarOpen(false)}
             >
               <div className="w-[20px] h-[20px] rounded-md bg-white border border-gray-200 flex items-center justify-center text-gray-400 group-hover:text-primary-600 group-hover:border-primary-200 transition-colors">
                 <Plus className="w-3.5 h-3.5" />
               </div>
-              Nouvelle Tontine
+              Nouveau Compte Épargne
             </Link>
           </nav>
 
