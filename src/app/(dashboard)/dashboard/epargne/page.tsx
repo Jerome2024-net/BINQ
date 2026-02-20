@@ -299,120 +299,198 @@ export default function EpargnePage() {
 
   // ── Vue principale : liste des comptes ──
   return (
-    <div className="max-w-5xl mx-auto space-y-6">
-      {/* Header */}
-      <div className="flex items-center justify-between">
+    <div className="max-w-6xl mx-auto space-y-8">
+      {/* Header with quick creation */}
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Épargne</h1>
-          <p className="text-sm text-gray-500 mt-1">Gérez vos comptes d&apos;épargne individuelle</p>
+          <h1 className="text-3xl font-bold text-gray-900 tracking-tight">Mon Épargne</h1>
+          <p className="text-gray-500 mt-1">
+            Gérez vos comptes et visualisez votre progression vers vos objectifs.
+          </p>
         </div>
         <button
           onClick={() => setShowCreate(true)}
-          className="flex items-center gap-2 px-4 py-2.5 bg-indigo-600 text-white rounded-xl font-semibold hover:bg-indigo-700 transition-colors shadow-lg shadow-indigo-500/20"
+          className="group flex items-center gap-2 px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl font-semibold shadow-lg shadow-indigo-200 hover:shadow-indigo-300 hover:-translate-y-0.5 transition-all text-sm sm:text-base"
         >
-          <Plus className="w-5 h-5" />
+          <Plus className="w-5 h-5 group-hover:rotate-90 transition-transform" />
           Nouveau compte
         </button>
       </div>
 
-      {/* Stats */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div className="bg-white rounded-2xl border border-gray-100 p-5 shadow-sm">
-          <div className="flex items-center gap-3 mb-3">
-            <div className="w-10 h-10 rounded-xl bg-indigo-50 flex items-center justify-center">
-              <PiggyBank className="w-5 h-5 text-indigo-600" />
+      {/* Stats Summary Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="bg-gradient-to-br from-indigo-500 to-violet-600 rounded-3xl p-6 text-white shadow-xl shadow-indigo-200 relative overflow-hidden">
+          <div className="relative z-10">
+            <div className="flex items-center gap-3 mb-4 opacity-90">
+              <div className="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center backdrop-blur-sm border border-white/10">
+                <PiggyBank className="w-5 h-5 text-white" />
+              </div>
+              <span className="text-sm font-medium tracking-wide uppercase">Total Épargné</span>
             </div>
-            <span className="text-sm text-gray-500">Total épargné</span>
+            
+            <div className="space-y-1">
+              {epargnes.filter(e => (e.devise || "EUR") === "EUR").length > 0 && (
+                <p className="text-3xl font-bold tracking-tight">
+                  {formatDevise(epargnes.filter(e => (e.devise || "EUR") === "EUR").reduce((sum, e) => sum + Number(e.solde), 0), "EUR")}
+                </p>
+              )}
+              {epargnes.filter(e => e.devise === "USD").length > 0 && (
+                <p className="text-2xl font-bold tracking-tight opacity-90">
+                  {formatDevise(epargnes.filter(e => e.devise === "USD").reduce((sum, e) => sum + Number(e.solde), 0), "USD")}
+                </p>
+              )}
+              {epargnes.length === 0 && <p className="text-3xl font-bold tracking-tight">0,00 €</p>}
+            </div>
           </div>
-          <p className="text-2xl font-bold text-gray-900">{formatDevise(totalEpargne)}</p>
+          <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-2xl -translate-y-1/2 translate-x-1/2"></div>
         </div>
 
-        <div className="bg-white rounded-2xl border border-gray-100 p-5 shadow-sm">
-          <div className="flex items-center gap-3 mb-3">
-            <div className="w-10 h-10 rounded-xl bg-green-50 flex items-center justify-center">
-              <TrendingUp className="w-5 h-5 text-green-600" />
+        <div className="bg-white rounded-3xl p-6 border border-gray-100 shadow-sm relative overflow-hidden group hover:border-emerald-200 transition-colors">
+          <div className="relative z-10">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-10 h-10 rounded-xl bg-emerald-50 flex items-center justify-center text-emerald-600 group-hover:scale-110 transition-transform">
+                <Gift className="w-5 h-5" />
+              </div>
+              <span className="text-sm font-medium text-gray-500 uppercase tracking-wide">Bonus cumulés</span>
             </div>
-            <span className="text-sm text-gray-500">Bonus cumulés</span>
+            <p className="text-3xl font-bold text-gray-900 group-hover:text-emerald-700 transition-colors">
+              {formatDevise(totalBonus)}
+            </p>
           </div>
-          <p className="text-2xl font-bold text-gray-900">{formatDevise(totalBonus)}</p>
         </div>
 
-        <div className="bg-white rounded-2xl border border-gray-100 p-5 shadow-sm">
-          <div className="flex items-center gap-3 mb-3">
-            <div className="w-10 h-10 rounded-xl bg-purple-50 flex items-center justify-center">
-              <Target className="w-5 h-5 text-purple-600" />
+        <div className="bg-white rounded-3xl p-6 border border-gray-100 shadow-sm relative overflow-hidden group hover:border-purple-200 transition-colors">
+          <div className="relative z-10">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-10 h-10 rounded-xl bg-purple-50 flex items-center justify-center text-purple-600 group-hover:scale-110 transition-transform">
+                <Target className="w-5 h-5" />
+              </div>
+              <span className="text-sm font-medium text-gray-500 uppercase tracking-wide">Comptes actifs</span>
             </div>
-            <span className="text-sm text-gray-500">Comptes actifs</span>
+            <p className="text-3xl font-bold text-gray-900 group-hover:text-purple-700 transition-colors">
+              {epargnes.length}
+            </p>
           </div>
-          <p className="text-2xl font-bold text-gray-900">{epargnes.length}</p>
         </div>
       </div>
 
-      {/* Liste */}
+      {/* Grid des comptes */}
       {epargnes.length === 0 ? (
-        <div className="bg-white rounded-2xl border border-gray-100 p-12 text-center shadow-sm">
-          <div className="w-16 h-16 rounded-2xl bg-indigo-50 flex items-center justify-center mx-auto mb-4">
-            <PiggyBank className="w-8 h-8 text-indigo-500" />
+        <div className="bg-white rounded-3xl border-2 border-dashed border-gray-200 p-12 text-center hover:border-indigo-300 transition-colors group">
+          <div className="w-20 h-20 bg-indigo-50 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform">
+            <PiggyBank className="w-10 h-10 text-indigo-400" />
           </div>
-          <h3 className="text-lg font-bold text-gray-900 mb-2">Commencez à épargner</h3>
-          <p className="text-gray-500 mb-6 max-w-md mx-auto">
-            Créez votre premier compte d&apos;épargne et commencez à mettre de l&apos;argent de côté pour vos projets.
+          <h3 className="text-xl font-bold text-gray-900 mb-2">Votre aventure commence ici</h3>
+          <p className="text-gray-500 mb-8 max-w-md mx-auto">
+            Créez votre premier compte d&apos;épargne et commencez à mettre de l&apos;argent de côté pour vos projets, avec des intérêts annuels.
           </p>
           <button
             onClick={() => setShowCreate(true)}
-            className="inline-flex items-center gap-2 px-6 py-3 bg-indigo-600 text-white rounded-xl font-semibold hover:bg-indigo-700 transition-colors"
+            className="inline-flex items-center gap-2 px-8 py-3 bg-indigo-600 text-white rounded-2xl font-bold shadow-lg shadow-indigo-200 hover:shadow-indigo-300 hover:-translate-y-0.5 transition-all"
           >
             <Plus className="w-5 h-5" />
-            Créer un compte
+            Créer mon premier compte
           </button>
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {epargnes.map((ep) => {
             const progress = ep.objectif_montant ? Math.min((Number(ep.solde) / Number(ep.objectif_montant)) * 100, 100) : 0;
+            const isProgrammee = ep.type === "programmee";
+            const isObjectif = ep.type === "objectif";
+            
             return (
               <button
                 key={ep.id}
                 onClick={() => setSelectedEpargne(ep)}
-                className="bg-white rounded-2xl border border-gray-100 p-5 shadow-sm hover:shadow-md hover:border-gray-200 transition-all text-left group"
+                className="group relative flex flex-col bg-white rounded-3xl border border-gray-100 p-6 shadow-sm hover:shadow-xl hover:translate-y-[-2px] hover:border-indigo-100 transition-all text-left duration-300"
               >
-                <div className="flex items-start justify-between mb-3">
-                  <div className="flex items-center gap-3">
-                    <div className="w-11 h-11 rounded-xl flex items-center justify-center text-xl" style={{ backgroundColor: ep.couleur + "20" }}>
+                {/* Header Card */}
+                <div className="flex items-start justify-between mb-6 w-full">
+                  <div className="flex items-center gap-4">
+                    <div 
+                      className="w-14 h-14 rounded-2xl flex items-center justify-center text-2xl shadow-sm transition-transform group-hover:rotate-6"
+                      style={{ backgroundColor: (ep.couleur || "#6366f1") + "15", color: ep.couleur || "#6366f1" }}
+                    >
                       {ep.icone}
                     </div>
                     <div>
-                      <h3 className="font-semibold text-gray-900 group-hover:text-indigo-600 transition-colors">{ep.nom}</h3>
-                      <span className="text-xs font-medium px-2 py-0.5 rounded-full" style={{ backgroundColor: ep.couleur + "15", color: ep.couleur }}>
-                        {ep.type === "libre" ? "Libre" : ep.type === "objectif" ? "Objectif" : "Programmée"}
-                      </span>
+                      <h3 className="font-bold text-lg text-gray-900 group-hover:text-indigo-600 transition-colors line-clamp-1">{ep.nom}</h3>
+                      <div className="flex items-center gap-2 mt-1">
+                        <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded-md ${
+                          isProgrammee ? "bg-purple-50 text-purple-700" : 
+                          isObjectif ? "bg-amber-50 text-amber-700" : 
+                          "bg-indigo-50 text-indigo-700"
+                        }`}>
+                          {ep.type === "libre" ? "Libre" : ep.type === "objectif" ? "Objectif" : "Programmée"}
+                        </span>
+                        <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded-md bg-gray-100 text-gray-600">
+                          {ep.devise || "EUR"}
+                        </span>
+                      </div>
                     </div>
                   </div>
                   {ep.bloque_jusqu_a && new Date(ep.bloque_jusqu_a) > new Date() && (
-                    <Lock className="w-4 h-4 text-amber-500" />
+                    <div className="w-8 h-8 bg-amber-50 rounded-full flex items-center justify-center text-amber-500" title="Bloqué">
+                      <Lock className="w-4 h-4" />
+                    </div>
                   )}
                 </div>
 
-                <p className="text-xl font-bold text-gray-900 mb-1">{formatDevise(Number(ep.solde), ep.devise)}</p>
+                {/* Amount */}
+                <div className="mb-6">
+                  <p className="text-sm text-gray-400 font-medium mb-1">Solde actuel</p>
+                  <p className="text-3xl font-bold text-gray-900 tracking-tight">{formatDevise(Number(ep.solde), ep.devise)}</p>
+                </div>
 
-                {ep.type === "objectif" && ep.objectif_montant && (
-                  <div className="mt-2">
-                    <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
-                      <div className="h-full rounded-full" style={{ width: `${progress}%`, backgroundColor: ep.couleur }} />
+                {/* Footer / Progress */}
+                <div className="mt-auto w-full pt-4 border-t border-gray-50">
+                  {isObjectif && ep.objectif_montant && (
+                    <div className="space-y-2">
+                      <div className="flex justify-between items-center text-xs font-medium">
+                        <span className="text-gray-500">Objectif : {formatDevise(Number(ep.objectif_montant), ep.devise)}</span>
+                        <span style={{ color: ep.couleur }}>{Math.round(progress)}%</span>
+                      </div>
+                      <div className="h-2.5 bg-gray-100 rounded-full overflow-hidden">
+                        <div 
+                          className="h-full rounded-full transition-all duration-1000 ease-out" 
+                          style={{ width: `${progress}%`, backgroundColor: ep.couleur || "#6366f1" }} 
+                        />
+                      </div>
                     </div>
-                    <p className="text-xs text-gray-400 mt-1">{Math.round(progress)}% de {formatDevise(Number(ep.objectif_montant), ep.devise)}</p>
-                  </div>
-                )}
+                  )}
 
-                {ep.type === "programmee" && ep.montant_auto && (
-                  <p className="text-xs text-gray-400 mt-1 flex items-center gap-1">
-                    <Clock className="w-3 h-3" />
-                    {formatDevise(Number(ep.montant_auto), ep.devise)} / {ep.frequence_auto === "quotidien" ? "jour" : ep.frequence_auto === "hebdomadaire" ? "semaine" : "mois"}
-                  </p>
-                )}
+                  {isProgrammee && ep.montant_auto && (
+                    <div className="flex items-center gap-2 text-xs text-gray-500 bg-gray-50 px-3 py-2 rounded-xl">
+                      <Clock className="w-3.5 h-3.5" />
+                      <span>
+                        <span className="font-semibold text-gray-900">{formatDevise(Number(ep.montant_auto), ep.devise)}</span>
+                        {" / "}{ep.frequence_auto === "quotidien" ? "jour" : ep.frequence_auto === "hebdomadaire" ? "semaine" : "mois"}
+                      </span>
+                    </div>
+                  )}
+
+                  {ep.type === "libre" && (
+                    <div className="flex items-center gap-2 text-xs text-gray-500">
+                      <ArrowUpCircle className="w-4 h-4 text-emerald-500" />
+                      <span>Dépôts et retraits libres</span>
+                    </div>
+                  )}
+                </div>
               </button>
             );
           })}
+          
+          {/* Add New Card (at the end of grid) */}
+          <button
+            onClick={() => setShowCreate(true)}
+            className="group flex flex-col items-center justify-center p-6 rounded-3xl border-2 border-dashed border-gray-200 hover:border-indigo-400 hover:bg-indigo-50/10 transition-all min-h-[280px]"
+          >
+            <div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center text-gray-400 shadow-sm group-hover:scale-110 group-hover:bg-indigo-100 group-hover:text-indigo-600 transition-all mb-4">
+              <Plus className="w-8 h-8" />
+            </div>
+            <span className="font-bold text-gray-500 group-hover:text-indigo-600 transition-colors">Créer un nouveau compte</span>
+          </button>
         </div>
       )}
 

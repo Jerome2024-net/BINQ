@@ -14,8 +14,7 @@ import {
 const navLinks = [
   { href: "/#fonctionnalites", label: "Fonctionnalités" },
   { href: "/#tarifs", label: "Tarifs" },
-  { href: "/explorer", label: "Explorer" },
-  { href: "/dashboard", label: "Dashboard" },
+  // { href: "/explorer", label: "Explorer" }, // Removed as page doesn't exist
 ];
 
 export default function Navbar() {
