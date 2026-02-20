@@ -589,7 +589,7 @@ function CreateEpargneModal({ onClose, onSuccess }: { onClose: () => void; onSuc
               {[
                 { value: "libre", label: "Libre", desc: "Sans contrainte" },
                 { value: "objectif", label: "Objectif", desc: "Avec but" },
-                { value: "programmee", label: "Programmée", desc: "+1%/an" },
+                { value: "programmee", label: "Programmée", desc: "Automatique" },
               ].map((t) => (
                 <button
                   key={t.value}
