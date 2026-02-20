@@ -23,6 +23,7 @@ import {
   Wallet,
   ArrowLeftRight,
   Search,
+  PiggyBank,
 } from "lucide-react";
 
 const mainLinks = [
@@ -35,6 +36,7 @@ const mainLinks = [
 const financeLinks = [
   { href: "/paiements", label: "Paiements", icon: CreditCard },
   { href: "/transactions", label: "Transactions", icon: ArrowLeftRight },
+  { href: "/dashboard/epargne", label: "Épargne", icon: PiggyBank },
 ];
 
 export default function DashboardLayout({
