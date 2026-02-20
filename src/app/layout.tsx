@@ -7,9 +7,9 @@ import NavigationProgress from "@/components/NavigationProgress";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Binq - Tontine en Ligne",
+  title: "Binq - Épargne Intelligente",
   description:
-    "Gérez vos tontines en ligne facilement. Créez des groupes, suivez les cotisations et les tours de bénéfice en toute transparence.",
+    "Épargnez intelligemment avec Binq. Créez vos comptes épargne en EUR ou USD, déposez par carte ou portefeuille, et gérez votre argent en toute sécurité.",
 };
 
 export default function RootLayout({
