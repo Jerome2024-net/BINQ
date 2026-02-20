@@ -43,7 +43,7 @@ export default function HomePage() {
               , à votre rythme.
             </h1>
             <p className="text-lg md:text-xl text-gray-400 mb-10 max-w-2xl mx-auto leading-relaxed">
-              Créez vos comptes épargne, déposez par carte ou portefeuille, et profitez d&apos;un bonus mensuel. En EUR ou USD, depuis votre téléphone.
+              Créez vos comptes épargne, déposez par carte ou portefeuille, et gérez votre argent en toute sécurité. En EUR ou USD, depuis votre téléphone.
             </p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
               <Link
@@ -71,7 +71,7 @@ export default function HomePage() {
               </div>
               <div className="flex items-center gap-2">
                 <CheckCircle2 className="w-4 h-4 text-accent-500" />
-                <span className="text-[13px]">Bonus 1%/an</span>
+                <span className="text-[13px]">EUR & USD</span>
               </div>
             </div>
           </div>
@@ -121,9 +121,9 @@ export default function HomePage() {
               },
               {
                 icon: BadgePercent,
-                title: "Bonus Mensuel",
+                title: "Frais Transparents",
                 description:
-                  "Gagnez un bonus de 1%/an calculé mensuellement sur votre solde. Votre épargne travaille pour vous.",
+                  "Seulement 2% de frais sur les dépôts. Pas de frais cachés, pas de surprises.",
                 gradient: "from-emerald-500 to-teal-600",
                 bg: "bg-emerald-50",
               },
@@ -195,7 +195,7 @@ export default function HomePage() {
                 icon: TrendingUp,
                 title: "Épargnez et gagnez",
                 description:
-                  "Déposez par carte ou portefeuille et profitez d'un bonus mensuel automatique.",
+                  "Déposez par carte ou portefeuille et suivez votre épargne en temps réel.",
               },
             ].map((step, i) => (
               <div key={i} className="relative text-center">
@@ -267,7 +267,7 @@ export default function HomePage() {
                 {[
                   "Paiements sécurisés via Stripe",
                   "Dépôts et retraits en EUR / USD",
-                  "Bonus mensuel crédité automatiquement",
+                  "Suivi en temps réel de vos comptes",
                   "Jusqu'à 10 comptes épargne",
                 ].map((text, i) => (
                   <div key={i} className="flex items-center gap-3 p-3.5 bg-accent-50 rounded-xl border border-accent-100/60">
@@ -314,7 +314,7 @@ export default function HomePage() {
                   "Épargne libre, objectif ou programmée",
                   "Dépôt par carte ou portefeuille",
                   "Retrait vers portefeuille ou banque",
-                  "Bonus mensuel de 1%/an sur le solde",
+                  "Suivi complet de votre épargne",
                   "2% de frais sur les dépôts uniquement",
                   "Historique complet des transactions",
                 ].map((text, i) => (
@@ -344,7 +344,7 @@ export default function HomePage() {
             Prêt à faire grandir votre épargne ?
           </h2>
           <p className="text-gray-400 text-lg mb-10 max-w-2xl mx-auto">
-            Rejoignez Binq et commencez à épargner intelligemment dès aujourd&apos;hui. Gratuit, sécurisé, et avec un bonus mensuel.
+            Rejoignez Binq et commencez à épargner intelligemment dès aujourd&apos;hui. Gratuit, sécurisé, et flexible.
           </p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <Link

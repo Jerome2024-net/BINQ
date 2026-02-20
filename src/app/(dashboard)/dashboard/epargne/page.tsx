@@ -16,7 +16,6 @@ import {
   X,
   Loader2,
   ChevronLeft,
-  Gift,
   Lock,
   Wallet,
   CreditCard,
@@ -49,7 +48,6 @@ interface Epargne {
   source_auto: string | null;
   prochaine_date_auto: string | null;
   bloque_jusqu_a: string | null;
-  bonus_cumule: number;
   icone: string;
   couleur: string;
   statut: string;
@@ -122,7 +120,6 @@ export default function EpargnePage() {
   }, [selectedEpargne, chargerTransactions]);
 
   const totalEpargne = epargnes.reduce((sum, e) => sum + Number(e.solde), 0);
-  const totalBonus = epargnes.reduce((sum, e) => sum + Number(e.bonus_cumule), 0);
 
   if (loading) {
     return (
@@ -189,12 +186,7 @@ export default function EpargnePage() {
                 <Clock className="w-4 h-4" />
                 {formatDevise(Number(ep.montant_auto), ep.devise)} / {ep.frequence_auto === "quotidien" ? "jour" : ep.frequence_auto === "hebdomadaire" ? "semaine" : "mois"}
               </div>
-              {Number(ep.bonus_cumule) > 0 && (
-                <div className="flex items-center gap-2 text-sm bg-green-50 px-3 py-1.5 rounded-lg text-green-700">
-                  <Gift className="w-4 h-4" />
-                  Bonus cumulé : {formatDevise(Number(ep.bonus_cumule), ep.devise)}
-                </div>
-              )}
+
             </div>
           )}
 
@@ -349,12 +341,12 @@ export default function EpargnePage() {
           <div className="relative z-10">
             <div className="flex items-center gap-3 mb-4">
               <div className="w-10 h-10 rounded-xl bg-emerald-50 flex items-center justify-center text-emerald-600 group-hover:scale-110 transition-transform">
-                <Gift className="w-5 h-5" />
+                <TrendingUp className="w-5 h-5" />
               </div>
-              <span className="text-sm font-medium text-gray-500 uppercase tracking-wide">Bonus cumulés</span>
+              <span className="text-sm font-medium text-gray-500 uppercase tracking-wide">Devises</span>
             </div>
-            <p className="text-3xl font-bold text-gray-900 group-hover:text-emerald-700 transition-colors">
-              {formatDevise(totalBonus)}
+            <p className="text-xl font-bold text-gray-900 group-hover:text-emerald-700 transition-colors">
+              EUR / USD
             </p>
           </div>
         </div>

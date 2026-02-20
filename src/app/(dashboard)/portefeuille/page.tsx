@@ -260,7 +260,7 @@ export default function PortefeuillePage() {
               </div>
               <h3 className="text-lg font-bold mb-2">Faites fructifier votre argent</h3>
               <p className="text-indigo-100 text-sm mb-5">
-                Transférez vos fonds vers un compte épargne et profitez d&apos;un bonus annuel de 1%.
+                Transférez vos fonds vers un compte épargne et faites fructifier votre argent en toute sécurité.
               </p>
               <Link
                 href="/dashboard/epargne"
@@ -300,13 +300,7 @@ export default function PortefeuillePage() {
                 </div>
                 <span className="text-sm font-bold text-amber-600">2%</span>
               </div>
-              <div className="flex justify-between items-center p-3 bg-indigo-50 rounded-2xl border border-indigo-100">
-                <div>
-                  <p className="text-sm font-semibold text-gray-900">Bonus épargne programmée</p>
-                  <p className="text-xs text-gray-500">Intérêts annuels</p>
-                </div>
-                <span className="text-sm font-bold text-indigo-600">+1%/an</span>
-              </div>
+
             </div>
           </div>
         </div>

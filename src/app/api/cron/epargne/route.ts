@@ -22,7 +22,6 @@ export async function GET(request: Request) {
   const now = new Date();
   const resultats = {
     depotsAuto: 0,
-    bonusAppliques: 0,
     erreurs: [] as string[],
   };
 
@@ -155,69 +154,7 @@ export async function GET(request: Request) {
       }
     }
 
-    // ═══════════════════════════════════════════
-    // 2. BONUS MENSUEL (1% / an sur programmée)
-    // ═══════════════════════════════════════════
-    // Calcul : (solde × 0.01) / 12 chaque mois
-    const premierDuMois = now.getDate() === 1;
 
-    if (premierDuMois) {
-      const { data: epargnesProgrammees } = await supabase
-        .from("epargnes")
-        .select("*")
-        .eq("statut", "active")
-        .eq("type", "programmee")
-        .gt("solde", 0);
-
-      if (epargnesProgrammees?.length) {
-        for (const ep of epargnesProgrammees) {
-          try {
-            // Vérifier qu'on n'a pas déjà appliqué le bonus ce mois
-            const debutMois = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
-            const { count } = await supabase
-              .from("epargne_transactions")
-              .select("id", { count: "exact", head: true })
-              .eq("epargne_id", ep.id)
-              .eq("type", "bonus")
-              .gte("created_at", debutMois);
-
-            if ((count || 0) > 0) continue;
-
-            const solde = Number(ep.solde);
-            const bonusMensuel = Math.round((solde * 0.01) / 12 * 100) / 100;
-
-            if (bonusMensuel < 1) continue; // Pas de bonus si < 1 EUR
-
-            const nouveauSolde = solde + bonusMensuel;
-            const nouveauBonusCumule = Number(ep.bonus_cumule) + bonusMensuel;
-
-            await supabase
-              .from("epargnes")
-              .update({
-                solde: nouveauSolde,
-                bonus_cumule: nouveauBonusCumule,
-                dernier_bonus: now.toISOString(),
-                updated_at: now.toISOString(),
-              })
-              .eq("id", ep.id);
-
-            await supabase.from("epargne_transactions").insert({
-              epargne_id: ep.id,
-              user_id: ep.user_id,
-              type: "bonus",
-              montant: bonusMensuel,
-              solde_apres: nouveauSolde,
-              description: `Bonus mensuel (1%/an)`,
-            });
-
-            resultats.bonusAppliques++;
-          } catch (err) {
-            const msg = err instanceof Error ? err.message : "Erreur bonus";
-            resultats.erreurs.push(`Bonus ${ep.id}: ${msg}`);
-          }
-        }
-      }
-    }
   } catch (err) {
     console.error("Erreur cron épargne:", err);
     return NextResponse.json(
