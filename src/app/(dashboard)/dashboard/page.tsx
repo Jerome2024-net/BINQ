@@ -80,35 +80,35 @@ export default function DashboardPage() {
   return (
     <div className="space-y-8 max-w-7xl mx-auto">
       {/* Welcome Header with Glassmorphism */}
-      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-indigo-600 to-violet-600 p-8 text-white shadow-xl shadow-indigo-200">
+      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-indigo-600 to-violet-600 p-6 sm:p-8 text-white shadow-xl shadow-indigo-200">
         <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3"></div>
         <div className="absolute bottom-0 left-0 w-40 h-40 bg-indigo-500/30 rounded-full blur-2xl translate-y-1/3 -translate-x-1/4"></div>
         
         <div className="relative z-10">
-          <h1 className="text-3xl font-bold mb-2">
+          <h1 className="text-2xl sm:text-3xl font-bold mb-2">
             {new Date().getHours() < 12 ? "Bonjour" : new Date().getHours() < 18 ? "Bon après-midi" : "Bonsoir"}, {user?.prenom || "là"} 👋
           </h1>
-          <p className="text-indigo-100 max-w-lg mb-6 text-lg">
+          <p className="text-indigo-100 max-w-lg mb-6 text-base sm:text-lg">
             Heureux de vous revoir. Voici un aperçu de vos finances aujourd&apos;hui.
           </p>
 
           <div className="flex flex-wrap gap-4">
-            <div className="flex items-center gap-3 bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/10 min-w-[200px]">
-              <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center">
-                <Wallet className="w-5 h-5 text-white" />
+            <div className="flex items-center gap-3 bg-white/10 backdrop-blur-md rounded-2xl p-3 sm:p-4 border border-white/10 min-w-[160px] sm:min-w-[200px]">
+              <div className="w-9 h-9 sm:w-10 sm:h-10 bg-white/20 rounded-xl flex items-center justify-center">
+                <Wallet className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
               </div>
               <div>
-                <p className="text-xs text-indigo-100 font-medium uppercase tracking-wider">Portefeuille</p>
-                <p className="text-2xl font-bold">{formatMontant(wallet?.solde ?? 0)}</p>
+                <p className="text-[10px] sm:text-xs text-indigo-100 font-medium uppercase tracking-wider">Portefeuille</p>
+                <p className="text-xl sm:text-2xl font-bold">{formatMontant(wallet?.solde ?? 0)}</p>
               </div>
             </div>
 
-            <div className="flex items-center gap-3 bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/10 min-w-[200px]">
-              <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center">
-                <PiggyBank className="w-5 h-5 text-white" />
+            <div className="flex items-center gap-3 bg-white/10 backdrop-blur-md rounded-2xl p-3 sm:p-4 border border-white/10 min-w-[160px] sm:min-w-[200px]">
+              <div className="w-9 h-9 sm:w-10 sm:h-10 bg-white/20 rounded-xl flex items-center justify-center">
+                <PiggyBank className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
               </div>
               <div>
-                <p className="text-xs text-indigo-100 font-medium uppercase tracking-wider">Épargne Total</p>
+                <p className="text-[10px] sm:text-xs text-indigo-100 font-medium uppercase tracking-wider">Épargne Total</p>
                 <div className="flex flex-col">
                   {/* Si on a des EUR */}
                   {(totalEpargneEUR > 0 || totalEpargneUSD === 0) && (
@@ -128,33 +128,33 @@ export default function DashboardPage() {
       {/* Quick Actions Grid */}
       <h2 className="text-lg font-bold text-gray-900">Actions Rapides</h2>
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-        <Link href="/dashboard/epargne" className="group flex flex-col items-center justify-center gap-3 p-6 bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md hover:border-indigo-100 transition-all duration-300">
-          <div className="w-14 h-14 bg-indigo-50 rounded-2xl flex items-center justify-center group-hover:bg-indigo-100 transition-all group-hover:scale-110 duration-300">
-            <Plus className="w-7 h-7 text-indigo-600" />
+        <Link href="/dashboard/epargne" className="group flex flex-col items-center justify-center gap-2 sm:gap-3 p-4 sm:p-6 bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md hover:border-indigo-100 transition-all duration-300">
+          <div className="w-11 h-11 sm:w-14 sm:h-14 bg-indigo-50 rounded-2xl flex items-center justify-center group-hover:bg-indigo-100 transition-all group-hover:scale-110 duration-300">
+            <Plus className="w-5 h-5 sm:w-7 sm:h-7 text-indigo-600" />
           </div>
-          <span className="font-semibold text-gray-700 group-hover:text-indigo-700 transition-colors">Nouvelle Épargne</span>
+          <span className="font-semibold text-xs sm:text-base text-gray-700 group-hover:text-indigo-700 transition-colors text-center">Nouvelle Épargne</span>
         </Link>
         
-        <Link href="/portefeuille" className="group flex flex-col items-center justify-center gap-3 p-6 bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md hover:border-emerald-100 transition-all duration-300">
-          <div className="w-14 h-14 bg-emerald-50 rounded-2xl flex items-center justify-center group-hover:bg-emerald-100 transition-all group-hover:scale-110 duration-300">
-            <ArrowDownToLine className="w-7 h-7 text-emerald-600" />
+        <Link href="/portefeuille" className="group flex flex-col items-center justify-center gap-2 sm:gap-3 p-4 sm:p-6 bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md hover:border-emerald-100 transition-all duration-300">
+          <div className="w-11 h-11 sm:w-14 sm:h-14 bg-emerald-50 rounded-2xl flex items-center justify-center group-hover:bg-emerald-100 transition-all group-hover:scale-110 duration-300">
+            <ArrowDownToLine className="w-5 h-5 sm:w-7 sm:h-7 text-emerald-600" />
           </div>
-          <span className="font-semibold text-gray-700 group-hover:text-emerald-700 transition-colors">Déposer</span>
+          <span className="font-semibold text-xs sm:text-base text-gray-700 group-hover:text-emerald-700 transition-colors text-center">Déposer</span>
         </Link>
         
-        <Link href="/transactions" className="group flex flex-col items-center justify-center gap-3 p-6 bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md hover:border-amber-100 transition-all duration-300">
-          <div className="w-14 h-14 bg-amber-50 rounded-2xl flex items-center justify-center group-hover:bg-amber-100 transition-all group-hover:scale-110 duration-300">
-            <History className="w-7 h-7 text-amber-600" />
+        <Link href="/transactions" className="group flex flex-col items-center justify-center gap-2 sm:gap-3 p-4 sm:p-6 bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md hover:border-amber-100 transition-all duration-300">
+          <div className="w-11 h-11 sm:w-14 sm:h-14 bg-amber-50 rounded-2xl flex items-center justify-center group-hover:bg-amber-100 transition-all group-hover:scale-110 duration-300">
+            <History className="w-5 h-5 sm:w-7 sm:h-7 text-amber-600" />
           </div>
-          <span className="font-semibold text-gray-700 group-hover:text-amber-700 transition-colors">Historique</span>
+          <span className="font-semibold text-xs sm:text-base text-gray-700 group-hover:text-amber-700 transition-colors text-center">Historique</span>
         </Link>
 
         {/* Placeholder for future feature or Card Setup */}
-        <Link href="/dashboard/parametres" className="group flex flex-col items-center justify-center gap-3 p-6 bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md hover:border-gray-200 transition-all duration-300">
-           <div className="w-14 h-14 bg-gray-50 rounded-2xl flex items-center justify-center group-hover:bg-gray-100 transition-all group-hover:scale-110 duration-300">
-             <CreditCard className="w-7 h-7 text-gray-600" />
+        <Link href="/dashboard/parametres" className="group flex flex-col items-center justify-center gap-2 sm:gap-3 p-4 sm:p-6 bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md hover:border-gray-200 transition-all duration-300">
+           <div className="w-11 h-11 sm:w-14 sm:h-14 bg-gray-50 rounded-2xl flex items-center justify-center group-hover:bg-gray-100 transition-all group-hover:scale-110 duration-300">
+             <CreditCard className="w-5 h-5 sm:w-7 sm:h-7 text-gray-600" />
            </div>
-           <span className="font-semibold text-gray-700 group-hover:text-gray-900 transition-colors">Gérer Cartes</span>
+           <span className="font-semibold text-xs sm:text-base text-gray-700 group-hover:text-gray-900 transition-colors text-center">Gérer Cartes</span>
         </Link>
       </div>
 

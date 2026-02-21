@@ -4,10 +4,10 @@ import { Star, Mail, Shield, Headphones } from "lucide-react";
 export default function Footer() {
   return (
     <footer className="bg-gray-950 text-gray-400">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-10">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-14">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 sm:gap-10">
           {/* Brand */}
-          <div className="col-span-1 md:col-span-1">
+          <div className="col-span-2 md:col-span-1">
             <div className="flex items-center gap-2.5 mb-4">
               <div className="w-8 h-8 bg-gradient-to-br from-primary-500 to-primary-700 rounded-lg flex items-center justify-center">
                 <Star className="w-4 h-4 text-white fill-current" />
@@ -98,7 +98,7 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="border-t border-gray-800/60 mt-10 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
+        <div className="border-t border-gray-800/60 mt-8 sm:mt-10 pt-6 sm:pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-gray-600 text-[13px]">
             © 2026 Binq. Tous droits réservés.
           </p>

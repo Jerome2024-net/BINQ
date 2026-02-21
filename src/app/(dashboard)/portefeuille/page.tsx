@@ -104,14 +104,14 @@ export default function PortefeuillePage() {
     <div className="space-y-8 max-w-7xl mx-auto">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold text-gray-900 tracking-tight flex items-center gap-3">
+        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 tracking-tight flex items-center gap-3">
           Mon Portefeuille
         </h1>
         <p className="text-gray-500 mt-1">Gérez vos fonds et suivez vos mouvements</p>
       </div>
 
       {/* Carte Solde Principal */}
-      <div className="relative overflow-hidden bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-800 rounded-3xl p-8 text-white shadow-xl shadow-blue-200">
+      <div className="relative overflow-hidden bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-800 rounded-3xl p-6 sm:p-8 text-white shadow-xl shadow-blue-200">
         <div className="absolute top-0 right-0 w-72 h-72 bg-white/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3"></div>
         <div className="absolute bottom-0 left-0 w-48 h-48 bg-white/5 rounded-full blur-2xl translate-y-1/3 -translate-x-1/4"></div>
 
@@ -130,7 +130,7 @@ export default function PortefeuillePage() {
           </div>
 
           <p className="text-sm text-blue-200 font-medium uppercase tracking-wider mb-2">Solde disponible</p>
-          <p className="text-5xl sm:text-6xl font-bold mb-8 tracking-tight">
+          <p className="text-4xl sm:text-5xl md:text-6xl font-bold mb-6 sm:mb-8 tracking-tight">
             {showSolde ? formatMontant(soldeWallet) : "••••••"}
           </p>
 
@@ -154,7 +154,7 @@ export default function PortefeuillePage() {
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
         <div className="bg-white rounded-3xl border border-gray-100 p-6 shadow-sm hover:shadow-md transition-shadow">
           <div className="flex items-center gap-3 mb-4">
             <div className="w-12 h-12 bg-green-50 rounded-2xl flex items-center justify-center">
@@ -187,10 +187,10 @@ export default function PortefeuillePage() {
       </div>
 
       {/* Grille : Transactions + Sidebar info */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
         {/* Dernières transactions */}
         <div className="lg:col-span-2">
-          <div className="bg-white rounded-3xl border border-gray-100 shadow-sm p-6">
+          <div className="bg-white rounded-3xl border border-gray-100 shadow-sm p-5 sm:p-6">
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-lg font-bold text-gray-900 flex items-center gap-2">
                 Dernières transactions
@@ -252,7 +252,7 @@ export default function PortefeuillePage() {
         {/* Sidebar Infos */}
         <div className="space-y-6">
           {/* CTA Épargne */}
-          <div className="bg-gradient-to-br from-indigo-500 to-violet-600 rounded-3xl p-6 text-white shadow-lg shadow-indigo-200 relative overflow-hidden">
+          <div className="bg-gradient-to-br from-indigo-500 to-violet-600 rounded-3xl p-5 sm:p-6 text-white shadow-lg shadow-indigo-200 relative overflow-hidden">
             <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-2xl -translate-y-1/2 translate-x-1/2"></div>
             <div className="relative z-10">
               <div className="w-12 h-12 bg-white/20 rounded-2xl flex items-center justify-center mb-4">

@@ -29,7 +29,7 @@ export default function HomePage() {
         <div className="absolute bottom-0 right-1/4 w-[400px] h-[400px] bg-purple-400/10 rounded-full blur-[100px]" />
         <div className="absolute top-1/2 right-0 w-[300px] h-[300px] bg-accent-500/10 rounded-full blur-[80px]" />
         
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 md:py-36 relative">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24 md:py-36 relative">
           <div className="text-center max-w-3xl mx-auto">
             <div className="inline-flex items-center gap-2 bg-white/[0.08] backdrop-blur-sm border border-white/[0.12] rounded-full px-4 py-2 mb-8">
               <Sparkles className="w-3.5 h-3.5 text-accent-400" />
@@ -60,7 +60,7 @@ export default function HomePage() {
                 Se connecter
               </Link>
             </div>
-            <div className="mt-14 flex items-center justify-center gap-8 text-gray-500">
+            <div className="mt-10 sm:mt-14 flex flex-wrap items-center justify-center gap-4 sm:gap-8 text-gray-500">
               <div className="flex items-center gap-2">
                 <CheckCircle2 className="w-4 h-4 text-accent-500" />
                 <span className="text-[13px]">100% gratuit</span>
@@ -79,7 +79,7 @@ export default function HomePage() {
       </section>
 
       {/* Features */}
-      <section className="py-24 bg-surface-50" id="fonctionnalites">
+      <section className="py-16 sm:py-24 bg-surface-50" id="fonctionnalites">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <span className="section-label">
@@ -161,9 +161,9 @@ export default function HomePage() {
       </section>
 
       {/* How it works */}
-      <section className="py-24 bg-white">
+      <section className="py-16 sm:py-24 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
+          <div className="text-center mb-12 sm:mb-16">
             <span className="section-label">
               Comment ça marche
             </span>
@@ -214,9 +214,9 @@ export default function HomePage() {
       </section>
 
       {/* Trust section */}
-      <section className="py-24 bg-surface-50">
+      <section className="py-16 sm:py-24 bg-surface-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center">
             <div>
               <span className="section-label">
                 Confiance &amp; Sécurité
@@ -257,7 +257,7 @@ export default function HomePage() {
               </div>
             </div>
 
-            <div className="bg-white rounded-3xl shadow-soft border border-gray-100 p-8 flex flex-col items-center justify-center text-center">
+            <div className="bg-white rounded-3xl shadow-soft border border-gray-100 p-6 sm:p-8 flex flex-col items-center justify-center text-center">
               <div className="w-16 h-16 bg-gradient-to-br from-indigo-100 to-purple-200 rounded-2xl flex items-center justify-center mb-6">
                 <Shield className="w-8 h-8 text-indigo-600" />
               </div>
@@ -282,7 +282,7 @@ export default function HomePage() {
       </section>
 
       {/* Tarifs */}
-      <section className="py-24 bg-white" id="tarifs">
+      <section className="py-16 sm:py-24 bg-white" id="tarifs">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <span className="section-label">
@@ -297,7 +297,7 @@ export default function HomePage() {
           </div>
 
           <div className="max-w-lg mx-auto">
-            <div className="bg-gray-950 rounded-3xl p-8 relative shadow-2xl">
+            <div className="bg-gray-950 rounded-3xl p-6 sm:p-8 relative shadow-2xl">
               <div className="absolute -top-3 right-6 bg-gradient-to-r from-accent-500 to-accent-600 text-white px-4 py-1 rounded-full text-xs font-semibold shadow-glow-accent">
                 100% Gratuit
               </div>
@@ -305,7 +305,7 @@ export default function HomePage() {
               <p className="text-gray-400 text-[15px] mb-6">Tout ce dont vous avez besoin pour épargner</p>
 
               <div className="mb-6">
-                <span className="text-4xl font-bold text-white">0 F</span>
+                <span className="text-4xl font-bold text-white">0 €</span>
                 <span className="text-lg text-gray-400"> /mois</span>
               </div>
               <ul className="space-y-3 mb-8">
@@ -336,7 +336,7 @@ export default function HomePage() {
       </section>
 
       {/* CTA */}
-      <section className="py-24 bg-gray-950 text-white relative overflow-hidden">
+      <section className="py-16 sm:py-24 bg-gray-950 text-white relative overflow-hidden">
         <div className="absolute top-0 left-1/3 w-[500px] h-[500px] bg-indigo-600/15 rounded-full blur-[120px]" />
         <div className="absolute bottom-0 right-1/3 w-[300px] h-[300px] bg-purple-500/10 rounded-full blur-[80px]" />
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative">
