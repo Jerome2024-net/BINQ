@@ -16,6 +16,7 @@ import {
   Plus,
   ChevronDown,
   User,
+  Users,
   Wallet,
   ArrowLeftRight,
   Search,
@@ -26,6 +27,7 @@ import {
 const mainLinks = [
   { href: "/dashboard", label: "Tableau de bord", icon: LayoutDashboard },
   { href: "/dashboard/epargne", label: "Épargne", icon: PiggyBank },
+  { href: "/dashboard/cagnottes", label: "Cagnottes", icon: Users },
   { href: "/portefeuille", label: "Portefeuille", icon: Wallet },
 ];
 
