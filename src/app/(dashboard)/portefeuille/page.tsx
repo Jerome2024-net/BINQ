@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { useFinance } from "@/contexts/FinanceContext";
 import { useAuth } from "@/contexts/AuthContext";
@@ -24,7 +24,35 @@ import {
   PiggyBank,
   Sparkles,
   Info,
+  Send,
+  LinkIcon,
+  Search,
+  X,
+  Loader2,
+  CheckCircle2,
+  User,
+  Copy,
+  Share2,
+  Trash2,
+  ExternalLink,
 } from "lucide-react";
+
+interface SearchUser {
+  id: string;
+  prenom: string;
+  nom: string;
+  avatar_url: string | null;
+  email_masked: string | null;
+}
+
+interface PaymentLink {
+  id: string;
+  code: string;
+  montant: number | null;
+  description: string | null;
+  statut: string;
+  created_at: string;
+}
 
 export default function PortefeuillePage() {
   const { user } = useAuth();
@@ -42,6 +70,26 @@ export default function PortefeuillePage() {
   const [depositModalOpen, setDepositModalOpen] = useState(false);
   const [depositModalMode, setDepositModalMode] = useState<"depot" | "retrait">("depot");
 
+  // ── Send Money ──
+  const [sendModalOpen, setSendModalOpen] = useState(false);
+  const [sendStep, setSendStep] = useState<"search" | "amount" | "confirm" | "success">("search");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchResults, setSearchResults] = useState<SearchUser[]>([]);
+  const [searchLoading, setSearchLoading] = useState(false);
+  const [selectedUser, setSelectedUser] = useState<SearchUser | null>(null);
+  const [sendAmount, setSendAmount] = useState("");
+  const [sendMessage, setSendMessage] = useState("");
+  const [sendLoading, setSendLoading] = useState(false);
+  const [sendRef, setSendRef] = useState("");
+
+  // ── Payment Links ──
+  const [linkModalOpen, setLinkModalOpen] = useState(false);
+  const [linkAmount, setLinkAmount] = useState("");
+  const [linkDescription, setLinkDescription] = useState("");
+  const [linkCreating, setLinkCreating] = useState(false);
+  const [myLinks, setMyLinks] = useState<PaymentLink[]>([]);
+  const [linksLoading, setLinksLoading] = useState(false);
+
   useEffect(() => {
     if (user) getOrCreateWallet();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -50,6 +98,32 @@ export default function PortefeuillePage() {
   const summary = getFinancialSummary();
   const recentTx = getTransactions({ limit: 8 });
   const soldeWallet = wallet?.solde ?? 0;
+
+  // ── Search Users ──
+  const handleSearch = useCallback(async (q: string) => {
+    setSearchQuery(q);
+    if (q.length < 2) { setSearchResults([]); return; }
+    setSearchLoading(true);
+    try {
+      const res = await fetch(`/api/users/search?q=${encodeURIComponent(q)}`);
+      const data = await res.json();
+      setSearchResults(data.users || []);
+    } catch { setSearchResults([]); } finally { setSearchLoading(false); }
+  }, []);
+
+  // ── Payment Links fetch ──
+  const fetchMyLinks = useCallback(async () => {
+    setLinksLoading(true);
+    try {
+      const res = await fetch("/api/payment-links");
+      const data = await res.json();
+      setMyLinks(data.links || []);
+    } catch { /* ignore */ } finally { setLinksLoading(false); }
+  }, []);
+
+  useEffect(() => {
+    if (user) fetchMyLinks();
+  }, [user, fetchMyLinks]);
 
   if (financeLoading) {
     return <PortefeuilleSkeleton />;
@@ -100,6 +174,115 @@ export default function PortefeuillePage() {
 
   const isCredit = (type: string) => ["depot", "remboursement", "transfert_entrant"].includes(type);
 
+  // ── Send Money ──
+  const openSendModal = () => {
+    setSendModalOpen(true);
+    setSendStep("search");
+    setSearchQuery("");
+    setSearchResults([]);
+    setSelectedUser(null);
+    setSendAmount("");
+    setSendMessage("");
+    setSendRef("");
+  };
+
+  const handleSelectUser = (u: SearchUser) => {
+    setSelectedUser(u);
+    setSendStep("amount");
+  };
+
+  const handleSendConfirm = async () => {
+    if (!selectedUser) return;
+    const montant = parseFloat(sendAmount);
+    if (!montant || montant <= 0) {
+      showToast("error", "Erreur", "Montant invalide");
+      return;
+    }
+    if (montant > soldeWallet) {
+      showToast("error", "Erreur", "Solde insuffisant");
+      return;
+    }
+    setSendLoading(true);
+    try {
+      const res = await fetch("/api/transferts/send", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          destinataire_id: selectedUser.id,
+          montant,
+          message: sendMessage || undefined,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        showToast("error", "Erreur", data.error || "Transfert échoué");
+        return;
+      }
+      setSendRef(data.transfert.reference);
+      setSendStep("success");
+      showToast("success", "Envoyé !", `${montant.toFixed(2)} € envoyés à ${selectedUser.prenom}`);
+      // Refresh wallet
+      getOrCreateWallet();
+    } catch {
+      showToast("error", "Erreur", "Erreur lors du transfert");
+    } finally { setSendLoading(false); }
+  };
+
+  // ── Payment Links ──
+  const handleCreateLink = async () => {
+    setLinkCreating(true);
+    try {
+      const montant = linkAmount ? parseFloat(linkAmount) : null;
+      const res = await fetch("/api/payment-links", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          montant,
+          description: linkDescription || undefined,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        showToast("error", "Erreur", data.error || "Erreur création lien");
+        return;
+      }
+      showToast("success", "Lien créé", "Votre lien de paiement est prêt !");
+      setLinkModalOpen(false);
+      setLinkAmount("");
+      setLinkDescription("");
+      fetchMyLinks();
+    } catch {
+      showToast("error", "Erreur", "Erreur création lien");
+    } finally { setLinkCreating(false); }
+  };
+
+  const handleDeleteLink = async (id: string) => {
+    try {
+      const res = await fetch(`/api/payment-links?id=${id}`, { method: "DELETE" });
+      if (res.ok) {
+        showToast("success", "Supprimé", "Lien annulé");
+        fetchMyLinks();
+      }
+    } catch { /* ignore */ }
+  };
+
+  const copyLinkUrl = (code: string) => {
+    const url = `${window.location.origin}/pay/${code}`;
+    navigator.clipboard.writeText(url);
+    showToast("success", "Copié", "Lien copié dans le presse-papier");
+  };
+
+  const shareLink = async (code: string, description: string | null) => {
+    const url = `${window.location.origin}/pay/${code}`;
+    const text = description ? `${description} — Payer via Binq` : "Payer via Binq";
+    if (typeof navigator.share === "function") {
+      try { await navigator.share({ title: "Binq Pay", text, url }); } catch { /* cancelled */ }
+    } else {
+      navigator.clipboard.writeText(url);
+      showToast("success", "Copié", "Lien copié !");
+    }
+  };
+
   return (
     <div className="space-y-8 max-w-7xl mx-auto">
       {/* Header */}
@@ -148,6 +331,20 @@ export default function PortefeuillePage() {
             >
               <ArrowUpRight className="w-5 h-5" />
               Retirer
+            </button>
+            <button
+              onClick={openSendModal}
+              className="flex items-center justify-center gap-2 bg-purple-500/90 text-white px-8 py-3.5 rounded-2xl font-bold hover:bg-purple-500 transition-all border border-purple-400/30"
+            >
+              <Send className="w-5 h-5" />
+              Envoyer
+            </button>
+            <button
+              onClick={() => setLinkModalOpen(true)}
+              className="flex items-center justify-center gap-2 bg-white/10 text-white px-8 py-3.5 rounded-2xl font-bold hover:bg-white/20 transition-all border border-white/20"
+            >
+              <LinkIcon className="w-5 h-5" />
+              Lien
             </button>
           </div>
         </div>
@@ -306,6 +503,79 @@ export default function PortefeuillePage() {
         </div>
       </div>
 
+      {/* Mes liens de paiement */}
+      <div className="bg-white rounded-3xl border border-gray-100 shadow-sm p-5 sm:p-6">
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="text-lg font-bold text-gray-900 flex items-center gap-2">
+            <LinkIcon className="w-5 h-5 text-indigo-600" />
+            Mes liens de paiement
+          </h2>
+          <button
+            onClick={() => setLinkModalOpen(true)}
+            className="text-sm font-semibold text-indigo-600 hover:text-indigo-700 flex items-center gap-1"
+          >
+            + Créer un lien
+          </button>
+        </div>
+
+        {linksLoading ? (
+          <div className="flex justify-center py-8">
+            <Loader2 className="w-6 h-6 text-indigo-400 animate-spin" />
+          </div>
+        ) : myLinks.length === 0 ? (
+          <div className="text-center py-10">
+            <div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-3">
+              <LinkIcon className="w-8 h-8 text-gray-300" />
+            </div>
+            <p className="text-gray-900 font-semibold mb-1">Aucun lien de paiement</p>
+            <p className="text-sm text-gray-400">Créez un lien pour recevoir de l&apos;argent facilement</p>
+          </div>
+        ) : (
+          <div className="space-y-2">
+            {myLinks.slice(0, 5).map((pl) => (
+              <div key={pl.id} className="flex items-center gap-4 p-3 rounded-2xl hover:bg-gray-50 transition-colors">
+                <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${
+                  pl.statut === "actif" ? "bg-indigo-50" : pl.statut === "paye" ? "bg-green-50" : "bg-gray-50"
+                }`}>
+                  <LinkIcon className={`w-5 h-5 ${
+                    pl.statut === "actif" ? "text-indigo-600" : pl.statut === "paye" ? "text-green-600" : "text-gray-400"
+                  }`} />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-semibold text-gray-900 truncate">
+                    {pl.description || "Lien de paiement"}
+                  </p>
+                  <div className="flex items-center gap-2 text-xs text-gray-400 mt-0.5">
+                    <span className={`px-2 py-0.5 rounded-md font-medium ${
+                      pl.statut === "actif" ? "bg-indigo-50 text-indigo-700" : pl.statut === "paye" ? "bg-green-50 text-green-700" : "bg-gray-100 text-gray-500"
+                    }`}>
+                      {pl.statut === "actif" ? "Actif" : pl.statut === "paye" ? "Payé" : "Annulé"}
+                    </span>
+                    <span>{formatDate(pl.created_at)}</span>
+                  </div>
+                </div>
+                <p className="text-sm font-bold text-gray-900 whitespace-nowrap mr-2">
+                  {pl.montant ? `${pl.montant.toLocaleString("fr-FR")} €` : "Libre"}
+                </p>
+                {pl.statut === "actif" && (
+                  <div className="flex items-center gap-1">
+                    <button onClick={() => copyLinkUrl(pl.code)} className="p-2 rounded-lg hover:bg-gray-100 transition" title="Copier">
+                      <Copy className="w-4 h-4 text-gray-500" />
+                    </button>
+                    <button onClick={() => shareLink(pl.code, pl.description)} className="p-2 rounded-lg hover:bg-gray-100 transition" title="Partager">
+                      <Share2 className="w-4 h-4 text-gray-500" />
+                    </button>
+                    <button onClick={() => handleDeleteLink(pl.id)} className="p-2 rounded-lg hover:bg-red-50 transition" title="Annuler">
+                      <Trash2 className="w-4 h-4 text-red-400" />
+                    </button>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
       {/* Modal Dépôt / Retrait */}
       <DepositWithdrawModal
         isOpen={depositModalOpen}
@@ -315,6 +585,251 @@ export default function PortefeuillePage() {
         soldeActuel={soldeWallet}
         devise="EUR"
       />
+
+      {/* ── Modal Envoyer de l'argent ── */}
+      {sendModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+          <div className="bg-white rounded-3xl w-full max-w-md shadow-2xl relative overflow-hidden">
+            {/* Header */}
+            <div className="flex items-center justify-between p-5 border-b border-gray-100">
+              <h3 className="text-lg font-bold text-gray-900">
+                {sendStep === "search" && "Envoyer de l'argent"}
+                {sendStep === "amount" && "Montant"}
+                {sendStep === "confirm" && "Confirmer"}
+                {sendStep === "success" && "Envoyé !"}
+              </h3>
+              <button onClick={() => setSendModalOpen(false)} className="p-2 rounded-xl hover:bg-gray-100">
+                <X className="w-5 h-5 text-gray-500" />
+              </button>
+            </div>
+
+            <div className="p-5">
+              {/* Step 1: Search */}
+              {sendStep === "search" && (
+                <div>
+                  <div className="relative mb-4">
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                    <input
+                      type="text"
+                      placeholder="Rechercher par nom, email..."
+                      value={searchQuery}
+                      onChange={(e) => handleSearch(e.target.value)}
+                      className="w-full pl-11 pr-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none text-sm"
+                      autoFocus
+                    />
+                  </div>
+
+                  {searchLoading && (
+                    <div className="flex justify-center py-6">
+                      <Loader2 className="w-6 h-6 text-indigo-400 animate-spin" />
+                    </div>
+                  )}
+
+                  {!searchLoading && searchResults.length === 0 && searchQuery.length >= 2 && (
+                    <div className="text-center py-6">
+                      <User className="w-10 h-10 text-gray-300 mx-auto mb-2" />
+                      <p className="text-sm text-gray-500">Aucun utilisateur trouvé</p>
+                    </div>
+                  )}
+
+                  <div className="space-y-1 max-h-64 overflow-y-auto">
+                    {searchResults.map((u) => (
+                      <button
+                        key={u.id}
+                        onClick={() => handleSelectUser(u)}
+                        className="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-gray-50 transition text-left"
+                      >
+                        {u.avatar_url ? (
+                          <img src={u.avatar_url} alt="" className="w-10 h-10 rounded-full object-cover" />
+                        ) : (
+                          <div className="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center">
+                            <span className="text-sm font-bold text-indigo-600">
+                              {(u.prenom?.[0] || "?")}{(u.nom?.[0] || "")}
+                            </span>
+                          </div>
+                        )}
+                        <div>
+                          <p className="text-sm font-semibold text-gray-900">{u.prenom} {u.nom}</p>
+                          {u.email_masked && <p className="text-xs text-gray-400">{u.email_masked}</p>}
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Step 2: Amount */}
+              {sendStep === "amount" && selectedUser && (
+                <div>
+                  <div className="flex items-center gap-3 mb-5 p-3 bg-gray-50 rounded-xl">
+                    {selectedUser.avatar_url ? (
+                      <img src={selectedUser.avatar_url} alt="" className="w-10 h-10 rounded-full object-cover" />
+                    ) : (
+                      <div className="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center">
+                        <span className="text-sm font-bold text-indigo-600">
+                          {(selectedUser.prenom?.[0] || "?")}{(selectedUser.nom?.[0] || "")}
+                        </span>
+                      </div>
+                    )}
+                    <div>
+                      <p className="text-sm font-semibold text-gray-900">{selectedUser.prenom} {selectedUser.nom}</p>
+                      <p className="text-xs text-gray-400">Destinataire</p>
+                    </div>
+                  </div>
+
+                  <div className="mb-4">
+                    <label className="text-sm font-medium text-gray-700 mb-1 block">Montant (€)</label>
+                    <input
+                      type="number"
+                      min="1"
+                      step="0.01"
+                      value={sendAmount}
+                      onChange={(e) => setSendAmount(e.target.value)}
+                      placeholder="0.00"
+                      className="w-full p-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none text-2xl font-bold text-center [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                      autoFocus
+                    />
+                    <p className="text-xs text-gray-400 mt-1 text-center">Solde : {formatMontant(soldeWallet)}</p>
+                  </div>
+
+                  <div className="mb-5">
+                    <label className="text-sm font-medium text-gray-700 mb-1 block">Message (optionnel)</label>
+                    <input
+                      type="text"
+                      value={sendMessage}
+                      onChange={(e) => setSendMessage(e.target.value)}
+                      placeholder="Ex: Remboursement dîner"
+                      className="w-full p-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none text-sm"
+                      maxLength={100}
+                    />
+                  </div>
+
+                  <div className="flex gap-3">
+                    <button
+                      onClick={() => setSendStep("search")}
+                      className="flex-1 py-3 rounded-xl border border-gray-200 text-gray-700 font-semibold hover:bg-gray-50 transition"
+                    >
+                      Retour
+                    </button>
+                    <button
+                      onClick={() => setSendStep("confirm")}
+                      disabled={!sendAmount || parseFloat(sendAmount) <= 0}
+                      className="flex-1 py-3 rounded-xl bg-indigo-600 text-white font-semibold hover:bg-indigo-700 transition disabled:opacity-50"
+                    >
+                      Suivant
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* Step 3: Confirm */}
+              {sendStep === "confirm" && selectedUser && (
+                <div>
+                  <div className="bg-gray-50 rounded-2xl p-5 mb-5 text-center">
+                    <p className="text-sm text-gray-500 mb-1">Vous envoyez</p>
+                    <p className="text-3xl font-black text-gray-900">{parseFloat(sendAmount).toFixed(2)} €</p>
+                    <p className="text-sm text-gray-500 mt-2">
+                      à <span className="font-semibold text-gray-900">{selectedUser.prenom} {selectedUser.nom}</span>
+                    </p>
+                    {sendMessage && (
+                      <p className="text-xs text-gray-400 mt-2 italic">&ldquo;{sendMessage}&rdquo;</p>
+                    )}
+                  </div>
+
+                  <div className="flex gap-3">
+                    <button
+                      onClick={() => setSendStep("amount")}
+                      className="flex-1 py-3 rounded-xl border border-gray-200 text-gray-700 font-semibold hover:bg-gray-50 transition"
+                    >
+                      Retour
+                    </button>
+                    <button
+                      onClick={handleSendConfirm}
+                      disabled={sendLoading}
+                      className="flex-1 py-3 rounded-xl bg-indigo-600 text-white font-bold hover:bg-indigo-700 transition disabled:opacity-50 flex items-center justify-center gap-2"
+                    >
+                      {sendLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Send className="w-4 h-4" />}
+                      {sendLoading ? "Envoi..." : "Confirmer"}
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* Step 4: Success */}
+              {sendStep === "success" && (
+                <div className="text-center py-4">
+                  <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <CheckCircle2 className="w-8 h-8 text-green-600" />
+                  </div>
+                  <h3 className="text-lg font-bold text-gray-900 mb-1">Transfert effectué !</h3>
+                  <p className="text-sm text-gray-500 mb-1">
+                    {parseFloat(sendAmount).toFixed(2)} € envoyés à {selectedUser?.prenom} {selectedUser?.nom}
+                  </p>
+                  <p className="text-xs text-gray-400 mb-5">Réf: {sendRef}</p>
+                  <button
+                    onClick={() => setSendModalOpen(false)}
+                    className="w-full py-3 rounded-xl bg-indigo-600 text-white font-bold hover:bg-indigo-700 transition"
+                  >
+                    Fermer
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── Modal Créer un lien de paiement ── */}
+      {linkModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+          <div className="bg-white rounded-3xl w-full max-w-md shadow-2xl relative overflow-hidden">
+            <div className="flex items-center justify-between p-5 border-b border-gray-100">
+              <h3 className="text-lg font-bold text-gray-900">Créer un lien de paiement</h3>
+              <button onClick={() => setLinkModalOpen(false)} className="p-2 rounded-xl hover:bg-gray-100">
+                <X className="w-5 h-5 text-gray-500" />
+              </button>
+            </div>
+
+            <div className="p-5">
+              <div className="mb-4">
+                <label className="text-sm font-medium text-gray-700 mb-1 block">
+                  Montant (€) <span className="text-gray-400 font-normal">— laisser vide pour montant libre</span>
+                </label>
+                <input
+                  type="number"
+                  min="1"
+                  step="0.01"
+                  value={linkAmount}
+                  onChange={(e) => setLinkAmount(e.target.value)}
+                  placeholder="Montant libre si vide"
+                  className="w-full p-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none text-lg font-semibold [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                />
+              </div>
+
+              <div className="mb-5">
+                <label className="text-sm font-medium text-gray-700 mb-1 block">Description (optionnel)</label>
+                <input
+                  type="text"
+                  value={linkDescription}
+                  onChange={(e) => setLinkDescription(e.target.value)}
+                  placeholder="Ex: Remboursement restaurant"
+                  className="w-full p-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none text-sm"
+                  maxLength={120}
+                />
+              </div>
+
+              <button
+                onClick={handleCreateLink}
+                disabled={linkCreating}
+                className="w-full py-3.5 rounded-xl bg-indigo-600 text-white font-bold hover:bg-indigo-700 transition disabled:opacity-50 flex items-center justify-center gap-2"
+              >
+                {linkCreating ? <Loader2 className="w-5 h-5 animate-spin" /> : <LinkIcon className="w-5 h-5" />}
+                {linkCreating ? "Création..." : "Créer le lien"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
