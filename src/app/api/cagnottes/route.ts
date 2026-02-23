@@ -6,7 +6,8 @@ import crypto from "crypto";
 function getServiceClient() {
   return createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!
+    process.env.SUPABASE_SERVICE_ROLE_KEY!,
+    { auth: { autoRefreshToken: false, persistSession: false } }
   );
 }
 
@@ -111,12 +112,18 @@ export async function POST(request: NextRequest) {
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
 
   // Ajouter le créateur comme membre admin
-  await supabase.from("cagnotte_membres").insert({
+  const { error: membreError } = await supabase.from("cagnotte_membres").insert({
     cagnotte_id: cagnotte.id,
     user_id: user.id,
     role: "admin",
     total_contribue: 0,
   });
+
+  if (membreError) {
+    // Nettoyer la cagnotte créée si l'ajout membre échoue
+    await supabase.from("cagnottes").delete().eq("id", cagnotte.id);
+    return NextResponse.json({ error: "Erreur lors de la création: " + membreError.message }, { status: 500 });
+  }
 
   return NextResponse.json({ cagnotte, code }, { status: 201 });
 }
