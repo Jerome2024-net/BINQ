@@ -24,7 +24,7 @@ export async function GET(
 
   const { data: link, error } = await supabase
     .from("payment_links")
-    .select("id, code, montant, devise, description, statut, createur_id, type, created_at")
+    .select("*")
     .eq("code", code)
     .single();
 
