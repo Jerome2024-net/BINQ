@@ -153,7 +153,7 @@ export default function ParametresPage() {
           Zone dangereuse
         </h2>
         <p className="text-sm text-gray-500 mb-4">
-          La suppression de votre compte est irréversible. Toutes vos données, tontines et historiques seront perdus.
+          La suppression de votre compte est irréversible. Toutes vos données et historiques seront perdus.
         </p>
         <button
           onClick={async () => {
