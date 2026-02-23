@@ -61,8 +61,7 @@ export default function TransactionsPage() {
       result = result.filter(
         (t) =>
           t.description.toLowerCase().includes(q) ||
-          t.reference.toLowerCase().includes(q) ||
-          (t.metadata.tontineNom && t.metadata.tontineNom.toLowerCase().includes(q))
+          t.reference.toLowerCase().includes(q)
       );
     }
 
@@ -279,7 +278,7 @@ export default function TransactionsPage() {
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Rechercher par description, référence, tontine..."
+              placeholder="Rechercher par description, référence..."
               className="input-field !pl-10"
             />
           </div>
@@ -403,18 +402,7 @@ export default function TransactionsPage() {
                             {tx.soldeApres.toLocaleString("fr-FR")} €
                           </p>
                         </div>
-                        {tx.metadata.tontineNom && (
-                          <div>
-                            <p className="text-gray-500">Tontine</p>
-                            <p className="font-medium text-gray-900">{tx.metadata.tontineNom}</p>
-                          </div>
-                        )}
-                        {tx.metadata.tourNumero && (
-                          <div>
-                            <p className="text-gray-500">Tour</p>
-                            <p className="font-medium text-gray-900">Tour {tx.metadata.tourNumero}</p>
-                          </div>
-                        )}
+
                         {tx.metadata.methode && (
                           <div>
                             <p className="text-gray-500">Méthode</p>

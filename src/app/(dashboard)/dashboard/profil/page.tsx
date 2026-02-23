@@ -3,7 +3,6 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useAuth } from "@/contexts/AuthContext";
-import { useTontine } from "@/contexts/TontineContext";
 import { useFinance } from "@/contexts/FinanceContext";
 import { useToast } from "@/contexts/ToastContext";
 import Avatar from "@/components/Avatar";
@@ -29,7 +28,6 @@ import {
   Bell,
   Eye,
   EyeOff,
-  Crown,
   Star,
   TrendingUp,
   ExternalLink,
@@ -38,7 +36,6 @@ import {
 
 export default function ProfilPage() {
   const { user, updateProfile } = useAuth();
-  const { getMesTontines } = useTontine();
   const { getFinancialSummary, wallet } = useFinance();
   const { showToast } = useToast();
   const [loading, setLoading] = useState(false);
@@ -66,10 +63,6 @@ export default function ProfilPage() {
     profilPublic: user?.profilPublic ?? true,
   });
 
-  const mesTontines = getMesTontines();
-  const tontinesOrga = mesTontines.filter(
-    (t) => t.organisateur.id === user?.id || t.organisateur.email === user?.email
-  );
   const summary = getFinancialSummary();
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -169,19 +162,7 @@ export default function ProfilPage() {
       </div>
 
       {/* Stats rapides */}
-      <div className="grid grid-cols-2 lg:grid-cols-5 gap-3">
-        <div className="card py-4 text-center">
-          <p className="text-2xl font-bold text-gray-900">{mesTontines.length}</p>
-          <p className="text-xs text-gray-500 flex items-center justify-center gap-1 mt-1">
-            <Users className="w-3 h-3" /> Tontines
-          </p>
-        </div>
-        <div className="card py-4 text-center">
-          <p className="text-2xl font-bold text-gray-900">{tontinesOrga.length}</p>
-          <p className="text-xs text-gray-500 flex items-center justify-center gap-1 mt-1">
-            <Crown className="w-3 h-3" /> Organisées
-          </p>
-        </div>
+      <div className="grid grid-cols-2 lg:grid-cols-3 gap-3">
         <div className="card py-4 text-center">
           <p className="text-2xl font-bold text-green-600">{formatMontant(wallet?.solde ?? 0)}</p>
           <p className="text-xs text-gray-500 flex items-center justify-center gap-1 mt-1">

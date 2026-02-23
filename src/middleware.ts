@@ -12,6 +12,17 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(httpsUrl, 301);
   }
 
+  // Masquer les pages tontine — rediriger vers le dashboard
+  const path = request.nextUrl.pathname;
+  if (
+    path.startsWith("/tontines") ||
+    path.startsWith("/explorer") ||
+    path.startsWith("/rejoindre") ||
+    path.startsWith("/membres")
+  ) {
+    return NextResponse.redirect(new URL("/dashboard", request.url));
+  }
+
   return await updateSession(request);
 }
 
