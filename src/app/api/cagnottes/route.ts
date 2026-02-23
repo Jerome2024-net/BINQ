@@ -19,14 +19,29 @@ export async function GET() {
   const supabase = getServiceClient();
 
   // Récupérer toutes les cagnottes où l'utilisateur est membre
-  const { data: memberships } = await supabase
+  const { data: memberships, error: memError } = await supabase
     .from("cagnotte_membres")
     .select("cagnotte_id")
     .eq("user_id", user.id);
 
-  const cagnotteIds = memberships?.map((m) => m.cagnotte_id) || [];
+  if (memError) {
+    console.error("Erreur memberships cagnottes:", memError);
+    return NextResponse.json({ error: "Erreur chargement: " + memError.message }, { status: 500 });
+  }
 
-  if (cagnotteIds.length === 0) {
+  // Aussi récupérer les cagnottes créées par l'utilisateur (fallback)
+  const { data: created } = await supabase
+    .from("cagnottes")
+    .select("id")
+    .eq("createur_id", user.id)
+    .neq("statut", "supprimee");
+
+  // Fusionner les IDs (membres + créées)
+  const memberIds = memberships?.map((m) => m.cagnotte_id) || [];
+  const createdIds = created?.map((c) => c.id) || [];
+  const allIds = Array.from(new Set([...memberIds, ...createdIds]));
+
+  if (allIds.length === 0) {
     return NextResponse.json({ cagnottes: [] });
   }
 
@@ -42,11 +57,14 @@ export async function GET() {
         profiles:user_id ( prenom, nom, avatar_url )
       )
     `)
-    .in("id", cagnotteIds)
+    .in("id", allIds)
     .neq("statut", "supprimee")
     .order("created_at", { ascending: false });
 
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  if (error) {
+    console.error("Erreur fetch cagnottes:", error);
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
 
   // Ajouter le rôle de l'utilisateur courant
   const cagnottes = (data || []).map((c) => ({

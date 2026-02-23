@@ -295,7 +295,12 @@ export default function CagnottesPage() {
       {showCreate && (
         <CreateCagnotteModal
           onClose={() => setShowCreate(false)}
-          onSuccess={() => { setShowCreate(false); charger(); showToast("success", "Cagnotte créée !"); }}
+          onSuccess={() => {
+            setShowCreate(false);
+            showToast("success", "Cagnotte créée !");
+            // Petit délai pour laisser la BDD se synchroniser
+            setTimeout(() => charger(), 500);
+          }}
         />
       )}
       {showJoin && (
