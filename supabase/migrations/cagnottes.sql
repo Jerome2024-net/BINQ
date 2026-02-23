@@ -17,6 +17,7 @@ CREATE TABLE IF NOT EXISTS cagnottes (
   code_invitation TEXT UNIQUE NOT NULL,
   visibilite_montants BOOLEAN DEFAULT true,
   solde NUMERIC(12,2) DEFAULT 0,
+  image_url TEXT,
   statut TEXT NOT NULL DEFAULT 'active' CHECK (statut IN ('active', 'cloturee', 'supprimee')),
   created_at TIMESTAMPTZ DEFAULT now(),
   updated_at TIMESTAMPTZ DEFAULT now()
@@ -82,3 +83,6 @@ CREATE POLICY "Membres voient les contributions" ON cagnotte_contributions
 
 -- 6. Autoriser le service role à accéder à la colonne profiles pour les jointures
 -- (normalement déjà configuré si les profiles sont accessibles)
+
+-- 7. Si la table existe déjà, ajouter la colonne image_url
+-- ALTER TABLE cagnottes ADD COLUMN IF NOT EXISTS image_url TEXT;

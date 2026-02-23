@@ -27,6 +27,9 @@ import {
   DollarSign,
   Euro,
   SplitSquareHorizontal,
+  Trash2,
+  Camera,
+  Image as ImageIcon,
 } from "lucide-react";
 
 // ── Types ──
@@ -74,6 +77,7 @@ interface Cagnotte {
   statut: string;
   mon_role: string;
   nombre_membres: number;
+  image_url: string | null;
   created_at: string;
   cagnotte_membres?: Membre[];
   cagnotte_contributions?: Contribution[];
@@ -236,12 +240,20 @@ export default function CagnottesPage() {
                 )}
 
                 <div className="flex items-start gap-4">
-                  <div
-                    className="w-12 h-12 rounded-2xl flex items-center justify-center text-2xl flex-shrink-0 group-hover:scale-110 transition-transform duration-300"
-                    style={{ backgroundColor: (c.couleur || "#6366f1") + "15", color: c.couleur }}
-                  >
-                    {c.icone || "🎯"}
-                  </div>
+                  {c.image_url ? (
+                    <img
+                      src={c.image_url}
+                      alt={c.nom}
+                      className="w-12 h-12 rounded-2xl object-cover flex-shrink-0 group-hover:scale-110 transition-transform duration-300"
+                    />
+                  ) : (
+                    <div
+                      className="w-12 h-12 rounded-2xl flex items-center justify-center text-2xl flex-shrink-0 group-hover:scale-110 transition-transform duration-300"
+                      style={{ backgroundColor: (c.couleur || "#6366f1") + "15", color: c.couleur }}
+                    >
+                      {c.icone || "🎯"}
+                    </div>
+                  )}
                   <div className="min-w-0 flex-1">
                     <h3 className="font-bold text-gray-900 group-hover:text-indigo-600 transition-colors truncate">{c.nom}</h3>
                     <div className="flex items-center gap-3 mt-1 text-xs text-gray-500">
@@ -337,8 +349,26 @@ function CagnotteDetail({
   const [showRetrait, setShowRetrait] = useState(false);
   const [copied, setCopied] = useState(false);
   const [showInvite, setShowInvite] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [deleting, setDeleting] = useState(false);
 
   const isAdmin = cagnotte.mon_role === "admin";
+
+  const supprimerCagnotte = async () => {
+    setDeleting(true);
+    try {
+      const res = await fetch(`/api/cagnottes/${cagnotte.id}`, { method: "DELETE" });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error);
+      showToast("success", "Cagnotte supprimée");
+      onBack();
+    } catch (err) {
+      showToast("error", err instanceof Error ? err.message : "Erreur");
+    } finally {
+      setDeleting(false);
+      setShowDeleteConfirm(false);
+    }
+  };
   const membres = cagnotte.cagnotte_membres || [];
   const contributions = cagnotte.cagnotte_contributions || [];
   const progress = cagnotte.objectif_montant
@@ -374,9 +404,17 @@ function CagnotteDetail({
         <div className="relative z-10">
           <div className="flex items-start justify-between mb-6">
             <div className="flex items-center gap-3">
-              <div className="w-14 h-14 rounded-2xl bg-white/20 flex items-center justify-center text-3xl backdrop-blur-sm border border-white/10">
-                {cagnotte.icone}
-              </div>
+              {cagnotte.image_url ? (
+                <img
+                  src={cagnotte.image_url}
+                  alt={cagnotte.nom}
+                  className="w-14 h-14 rounded-2xl object-cover border-2 border-white/20"
+                />
+              ) : (
+                <div className="w-14 h-14 rounded-2xl bg-white/20 flex items-center justify-center text-3xl backdrop-blur-sm border border-white/10">
+                  {cagnotte.icone}
+                </div>
+              )}
               <div>
                 <h1 className="text-xl sm:text-2xl font-bold">{cagnotte.nom}</h1>
                 {cagnotte.description && (
@@ -458,7 +496,49 @@ function CagnotteDetail({
             Retirer
           </button>
         )}
+        {isAdmin && (
+          <button
+            onClick={() => setShowDeleteConfirm(true)}
+            className="flex items-center gap-2 px-5 py-2.5 border-2 border-red-200 rounded-xl text-sm font-semibold text-red-600 hover:bg-red-50 transition-all ml-auto"
+          >
+            <Trash2 className="w-4 h-4" />
+            Supprimer
+          </button>
+        )}
       </div>
+
+      {/* Confirmation suppression */}
+      {showDeleteConfirm && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4" onClick={() => setShowDeleteConfirm(false)}>
+          <div className="bg-white rounded-2xl w-full max-w-sm p-6 space-y-4" onClick={(e) => e.stopPropagation()}>
+            <div className="w-12 h-12 mx-auto rounded-full bg-red-100 flex items-center justify-center">
+              <Trash2 className="w-6 h-6 text-red-600" />
+            </div>
+            <h3 className="text-lg font-bold text-center text-gray-900">Supprimer cette cagnotte ?</h3>
+            <p className="text-sm text-gray-500 text-center">
+              {Number(cagnotte.solde) > 0
+                ? "Vous devez d'abord retirer tout le solde avant de supprimer."
+                : "Cette action est irréversible. La cagnotte et tout son historique seront supprimés."}
+            </p>
+            <div className="flex gap-3">
+              <button
+                onClick={() => setShowDeleteConfirm(false)}
+                className="flex-1 py-2.5 border-2 border-gray-200 rounded-xl text-sm font-semibold text-gray-700 hover:bg-gray-50"
+              >
+                Annuler
+              </button>
+              <button
+                onClick={supprimerCagnotte}
+                disabled={deleting || Number(cagnotte.solde) > 0}
+                className="flex-1 py-2.5 bg-red-600 text-white rounded-xl text-sm font-semibold hover:bg-red-700 disabled:opacity-50 flex items-center justify-center gap-2"
+              >
+                {deleting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Trash2 className="w-4 h-4" />}
+                {deleting ? "Suppression..." : "Supprimer"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Grid: Membres + Contributions */}
       <div className="grid gap-6 lg:grid-cols-2">
@@ -695,6 +775,31 @@ function CreateCagnotteModal({ onClose, onSuccess }: { onClose: () => void; onSu
   const [visibilite, setVisibilite] = useState(true);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setImageFile(file);
+      const reader = new FileReader();
+      reader.onload = (ev) => setImagePreview(ev.target?.result as string);
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const uploadImage = async (cagnotteId: string): Promise<string | null> => {
+    if (!imageFile) return null;
+    const formData = new FormData();
+    formData.append("file", imageFile);
+    formData.append("cagnotteId", cagnotteId);
+    try {
+      const res = await fetch("/api/cagnottes/upload-image", { method: "POST", body: formData });
+      const data = await res.json();
+      if (res.ok) return data.url;
+    } catch {}
+    return null;
+  };
 
   const handleSubmit = async () => {
     if (!nom.trim()) { setError("Nom requis"); return; }
@@ -718,6 +823,10 @@ function CreateCagnotteModal({ onClose, onSuccess }: { onClose: () => void; onSu
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error);
+      // Upload image si sélectionnée
+      if (imageFile && data.cagnotte?.id) {
+        await uploadImage(data.cagnotte.id);
+      }
       onSuccess();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Erreur");
@@ -736,6 +845,28 @@ function CreateCagnotteModal({ onClose, onSuccess }: { onClose: () => void; onSu
 
         <div className="p-6 space-y-5">
           {error && <div className="p-3 bg-red-50 border border-red-200 rounded-xl text-sm text-red-600">{error}</div>}
+
+          {/* Photo de profil */}
+          <div className="flex flex-col items-center">
+            <label className="block text-sm font-medium text-gray-700 mb-2 self-start">Photo de la cagnotte (optionnel)</label>
+            <div className="relative group cursor-pointer" onClick={() => document.getElementById("cagnotte-image-input")?.click()}>
+              {imagePreview ? (
+                <img src={imagePreview} alt="Preview" className="w-24 h-24 rounded-2xl object-cover border-2 border-gray-200 group-hover:border-indigo-400 transition-colors" />
+              ) : (
+                <div className="w-24 h-24 rounded-2xl border-2 border-dashed border-gray-300 group-hover:border-indigo-400 flex flex-col items-center justify-center gap-1 transition-colors bg-gray-50">
+                  <Camera className="w-6 h-6 text-gray-400 group-hover:text-indigo-500" />
+                  <span className="text-[10px] text-gray-400 group-hover:text-indigo-500">Ajouter</span>
+                </div>
+              )}
+              <input
+                id="cagnotte-image-input"
+                type="file"
+                accept="image/jpeg,image/png,image/webp"
+                onChange={handleImageChange}
+                className="hidden"
+              />
+            </div>
+          </div>
 
           {/* Nom */}
           <div>
