@@ -66,7 +66,7 @@ export default function Footer() {
           </div>
 
           {/* Contact */}
-          <div>
+          <div className="col-span-2 md:col-span-1">
             <h3 className="text-white text-sm font-semibold mb-4">Contact</h3>
             <ul className="space-y-3 text-gray-500 text-[14px]">
               <li className="flex items-center gap-2">
@@ -83,13 +83,13 @@ export default function Footer() {
             <div className="mt-6 bg-white/[0.04] border border-white/[0.06] rounded-xl p-4">
               <p className="text-[13px] text-gray-400 font-medium mb-1">Newsletter</p>
               <p className="text-[12px] text-gray-600 mb-3">Restez informé des nouveautés</p>
-              <div className="flex gap-2">
+              <div className="flex flex-col sm:flex-row gap-2">
                 <input
                   type="email"
                   placeholder="votre@email.com"
-                  className="flex-1 px-3 py-2 bg-white/[0.06] border border-white/[0.08] rounded-lg text-[13px] text-white placeholder:text-gray-600 outline-none focus:border-primary-500/50"
+                  className="flex-1 min-w-0 px-3 py-2 bg-white/[0.06] border border-white/[0.08] rounded-lg text-[13px] text-white placeholder:text-gray-600 outline-none focus:border-primary-500/50"
                 />
-                <button className="px-3 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-lg text-[13px] font-medium transition-colors">
+                <button className="px-3 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-lg text-[13px] font-medium transition-colors whitespace-nowrap">
                   OK
                 </button>
               </div>
