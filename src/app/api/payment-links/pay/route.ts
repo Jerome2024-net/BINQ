@@ -39,11 +39,119 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Ce lien n'est plus actif" }, { status: 410 });
   }
 
+  const linkType = link.type || "request";
+
+  // Pour les liens 'send', le créateur envoie, donc le claimant ne peut pas être le créateur
+  // Pour les liens 'request', le créateur demande, donc le payeur ne peut pas être le créateur
   if (link.createur_id === user.id) {
-    return NextResponse.json({ error: "Vous ne pouvez pas payer votre propre lien" }, { status: 400 });
+    return NextResponse.json({
+      error: linkType === "send"
+        ? "Vous ne pouvez pas récupérer votre propre envoi"
+        : "Vous ne pouvez pas payer votre propre lien",
+    }, { status: 400 });
   }
 
-  // Déterminer le montant
+  // ── Type 'send': l'expéditeur a déjà été débité, on crédite le claimant ──
+  if (linkType === "send") {
+    const montant = Number(link.montant);
+    if (!montant || montant <= 0) {
+      return NextResponse.json({ error: "Montant invalide" }, { status: 400 });
+    }
+
+    // Récupérer ou créer le wallet du claimant
+    let { data: claimantWallet } = await supabase
+      .from("wallets")
+      .select("*")
+      .eq("user_id", user.id)
+      .single();
+
+    if (!claimantWallet) {
+      const { data: created } = await supabase
+        .from("wallets")
+        .insert({ user_id: user.id, solde: 0, solde_bloque: 0, devise: "EUR" })
+        .select()
+        .single();
+      claimantWallet = created;
+    }
+
+    if (!claimantWallet) {
+      return NextResponse.json({ error: "Erreur wallet" }, { status: 500 });
+    }
+
+    const reference = `CLM-${Date.now().toString(36).toUpperCase()}`;
+    const now = new Date().toISOString();
+
+    // Profils
+    const { data: senderProfile } = await supabase
+      .from("profiles")
+      .select("prenom, nom")
+      .eq("id", link.createur_id)
+      .single();
+
+    const { data: claimantProfile } = await supabase
+      .from("profiles")
+      .select("prenom, nom")
+      .eq("id", user.id)
+      .single();
+
+    const senderName = senderProfile ? `${senderProfile.prenom} ${senderProfile.nom}`.trim() : "Utilisateur";
+    const claimantName = claimantProfile ? `${claimantProfile.prenom} ${claimantProfile.nom}`.trim() : "Utilisateur";
+
+    // Créditer le claimant
+    const newClaimantSolde = claimantWallet.solde + montant;
+    const { error: creditErr } = await supabase
+      .from("wallets")
+      .update({ solde: newClaimantSolde })
+      .eq("id", claimantWallet.id);
+
+    if (creditErr) {
+      return NextResponse.json({ error: "Erreur lors du crédit" }, { status: 500 });
+    }
+
+    // Transfert
+    await supabase.from("transferts").insert({
+      expediteur_id: link.createur_id,
+      destinataire_id: user.id,
+      montant,
+      devise: "EUR",
+      message: link.description || "Envoi via lien",
+      statut: "confirme",
+      payment_link_id: link.id,
+      reference,
+    });
+
+    // Transaction pour le claimant
+    const linkDesc = link.description ? ` — ${link.description}` : "";
+    await supabase.from("transactions").insert({
+      user_id: user.id,
+      wallet_id: claimantWallet.id,
+      type: "transfert_entrant",
+      montant,
+      solde_avant: claimantWallet.solde,
+      solde_apres: newClaimantSolde,
+      devise: "EUR",
+      statut: "confirme",
+      reference,
+      description: `Reçu de ${senderName}${linkDesc}`,
+      meta_methode: "send_link",
+      confirmed_at: now,
+    });
+
+    // Marquer comme payé
+    if (link.usage_unique) {
+      await supabase
+        .from("payment_links")
+        .update({ statut: "paye", paye_par: user.id, paye_at: now })
+        .eq("id", link.id);
+    }
+
+    return NextResponse.json({
+      success: true,
+      transfert: { reference, montant, expediteur: senderName },
+    });
+  }
+
+  // ── Type 'request': flow normal — débit payeur + crédit créateur ──
   const montant = link.montant ? Number(link.montant) : Number(montantLibre);
 
   if (!montant || montant <= 0) {

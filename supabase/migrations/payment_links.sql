@@ -11,10 +11,14 @@ CREATE TABLE IF NOT EXISTS payment_links (
   statut TEXT NOT NULL DEFAULT 'actif' CHECK (statut IN ('actif', 'paye', 'expire', 'annule')),
   paye_par UUID REFERENCES auth.users(id),
   paye_at TIMESTAMPTZ,
+  type TEXT NOT NULL DEFAULT 'request' CHECK (type IN ('request', 'send')),
   usage_unique BOOLEAN NOT NULL DEFAULT true,
   created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
   expires_at TIMESTAMPTZ
 );
+
+-- If table already exists, add column
+ALTER TABLE payment_links ADD COLUMN IF NOT EXISTS type TEXT NOT NULL DEFAULT 'request';
 
 -- Index
 CREATE INDEX IF NOT EXISTS idx_payment_links_code ON payment_links(code);

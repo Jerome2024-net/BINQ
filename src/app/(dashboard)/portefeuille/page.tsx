@@ -72,6 +72,7 @@ export default function PortefeuillePage() {
 
   // ── Send Money ──
   const [sendModalOpen, setSendModalOpen] = useState(false);
+  const [sendMode, setSendMode] = useState<"direct" | "link">("direct");
   const [sendStep, setSendStep] = useState<"search" | "amount" | "confirm" | "success">("search");
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState<SearchUser[]>([]);
@@ -81,6 +82,12 @@ export default function PortefeuillePage() {
   const [sendMessage, setSendMessage] = useState("");
   const [sendLoading, setSendLoading] = useState(false);
   const [sendRef, setSendRef] = useState("");
+  // Send via link
+  const [sendLinkStep, setSendLinkStep] = useState<"form" | "success">("form");
+  const [sendLinkAmount, setSendLinkAmount] = useState("");
+  const [sendLinkDesc, setSendLinkDesc] = useState("");
+  const [sendLinkCreating, setSendLinkCreating] = useState(false);
+  const [sendLinkCode, setSendLinkCode] = useState<string | null>(null);
 
   // ── Payment Links ──
   const [linkModalOpen, setLinkModalOpen] = useState(false);
@@ -178,6 +185,7 @@ export default function PortefeuillePage() {
   // ── Send Money ──
   const openSendModal = () => {
     setSendModalOpen(true);
+    setSendMode("direct");
     setSendStep("search");
     setSearchQuery("");
     setSearchResults([]);
@@ -185,6 +193,10 @@ export default function PortefeuillePage() {
     setSendAmount("");
     setSendMessage("");
     setSendRef("");
+    setSendLinkStep("form");
+    setSendLinkAmount("");
+    setSendLinkDesc("");
+    setSendLinkCode(null);
   };
 
   const handleSelectUser = (u: SearchUser) => {
@@ -227,6 +239,40 @@ export default function PortefeuillePage() {
     } catch {
       showToast("error", "Erreur", "Erreur lors du transfert");
     } finally { setSendLoading(false); }
+  };
+
+  // ── Send via Link ──
+  const handleSendViaLink = async () => {
+    const montant = parseFloat(sendLinkAmount);
+    if (!montant || montant <= 0) {
+      showToast("error", "Erreur", "Montant invalide");
+      return;
+    }
+    if (montant > soldeWallet) {
+      showToast("error", "Erreur", "Solde insuffisant");
+      return;
+    }
+    setSendLinkCreating(true);
+    try {
+      const res = await fetch("/api/payment-links/send", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          montant,
+          description: sendLinkDesc || undefined,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        showToast("error", "Erreur", data.error || "Erreur création");
+        return;
+      }
+      setSendLinkCode(data.link.code);
+      setSendLinkStep("success");
+      getOrCreateWallet();
+    } catch {
+      showToast("error", "Erreur", "Erreur création du lien");
+    } finally { setSendLinkCreating(false); }
   };
 
   // ── Payment Links ──
@@ -592,17 +638,46 @@ export default function PortefeuillePage() {
             {/* Header */}
             <div className="flex items-center justify-between p-5 border-b border-gray-100">
               <h3 className="text-lg font-bold text-gray-900">
-                {sendStep === "search" && "Envoyer de l'argent"}
-                {sendStep === "amount" && "Montant"}
-                {sendStep === "confirm" && "Confirmer"}
-                {sendStep === "success" && "Envoyé !"}
+                {sendMode === "link" ? (
+                  sendLinkStep === "success" ? "Lien prêt !" : "Envoyer via lien"
+                ) : (
+                  <>
+                    {sendStep === "search" && "Envoyer de l'argent"}
+                    {sendStep === "amount" && "Montant"}
+                    {sendStep === "confirm" && "Confirmer"}
+                    {sendStep === "success" && "Envoyé !"}
+                  </>
+                )}
               </h3>
               <button onClick={() => setSendModalOpen(false)} className="p-2 rounded-xl hover:bg-gray-100">
                 <X className="w-5 h-5 text-gray-500" />
               </button>
             </div>
 
+            {/* Tabs: Direct / Via lien — visible only at initial steps */}
+            {((sendMode === "direct" && sendStep === "search") || (sendMode === "link" && sendLinkStep === "form")) && (
+              <div className="flex border-b border-gray-100">
+                <button
+                  onClick={() => { setSendMode("direct"); setSendStep("search"); }}
+                  className={`flex-1 py-3 text-sm font-semibold text-center transition ${sendMode === "direct" ? "text-purple-600 border-b-2 border-purple-600" : "text-gray-400 hover:text-gray-600"}`}
+                >
+                  <Search className="w-4 h-4 inline mr-1.5 -mt-0.5" />
+                  Rechercher
+                </button>
+                <button
+                  onClick={() => { setSendMode("link"); setSendLinkStep("form"); }}
+                  className={`flex-1 py-3 text-sm font-semibold text-center transition ${sendMode === "link" ? "text-purple-600 border-b-2 border-purple-600" : "text-gray-400 hover:text-gray-600"}`}
+                >
+                  <LinkIcon className="w-4 h-4 inline mr-1.5 -mt-0.5" />
+                  Via lien
+                </button>
+              </div>
+            )}
+
             <div className="p-5">
+              {/* ═══ Mode Direct: rechercher un user ═══ */}
+              {sendMode === "direct" && (
+                <>
               {/* Step 1: Search */}
               {sendStep === "search" && (
                 <div>
@@ -772,6 +847,116 @@ export default function PortefeuillePage() {
                     Fermer
                   </button>
                 </div>
+              )}
+                </>
+              )}
+
+              {/* ═══ Mode Lien: envoyer via lien ═══ */}
+              {sendMode === "link" && (
+                <>
+                  {sendLinkStep === "form" && (
+                    <div>
+                      <p className="text-sm text-gray-500 mb-5">
+                        Votre argent sera débité immédiatement. Partagez le lien — le destinataire clique pour récupérer les fonds.
+                      </p>
+
+                      <div className="mb-4">
+                        <label className="text-sm font-medium text-gray-700 mb-1 block">Montant (€)</label>
+                        <input
+                          type="number"
+                          min="1"
+                          step="0.01"
+                          value={sendLinkAmount}
+                          onChange={(e) => setSendLinkAmount(e.target.value)}
+                          placeholder="0.00"
+                          className="w-full p-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none text-2xl font-bold text-center [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                          autoFocus
+                        />
+                        <p className="text-xs text-gray-400 mt-1 text-center">Solde : {formatMontant(soldeWallet)}</p>
+                      </div>
+
+                      <div className="mb-5">
+                        <label className="text-sm font-medium text-gray-700 mb-1 block">Message (optionnel)</label>
+                        <input
+                          type="text"
+                          value={sendLinkDesc}
+                          onChange={(e) => setSendLinkDesc(e.target.value)}
+                          placeholder="Ex: Cadeau d'anniversaire"
+                          className="w-full p-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none text-sm"
+                          maxLength={120}
+                        />
+                      </div>
+
+                      <button
+                        onClick={handleSendViaLink}
+                        disabled={sendLinkCreating || !sendLinkAmount || parseFloat(sendLinkAmount) <= 0}
+                        className="w-full py-3.5 rounded-xl bg-purple-600 text-white font-bold hover:bg-purple-700 transition disabled:opacity-50 flex items-center justify-center gap-2"
+                      >
+                        {sendLinkCreating ? <Loader2 className="w-5 h-5 animate-spin" /> : <Send className="w-5 h-5" />}
+                        {sendLinkCreating ? "Création..." : "Envoyer via lien"}
+                      </button>
+                    </div>
+                  )}
+
+                  {sendLinkStep === "success" && sendLinkCode && (
+                    <div className="text-center">
+                      <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <CheckCircle2 className="w-8 h-8 text-green-600" />
+                      </div>
+                      <h4 className="text-lg font-bold text-gray-900 mb-1">Lien prêt !</h4>
+                      <p className="text-sm text-gray-500 mb-1">
+                        {parseFloat(sendLinkAmount).toFixed(2)} € débités de votre portefeuille
+                      </p>
+                      <p className="text-sm text-gray-500 mb-4">Partagez ce lien pour que le destinataire récupère l&apos;argent</p>
+
+                      <div className="bg-gray-50 rounded-xl p-3 mb-5 flex items-center gap-2">
+                        <input
+                          type="text"
+                          readOnly
+                          value={`${typeof window !== "undefined" ? window.location.origin : ""}/pay/${sendLinkCode}`}
+                          className="flex-1 bg-transparent text-sm text-gray-700 outline-none font-mono truncate"
+                        />
+                        <button
+                          onClick={() => copyLinkUrl(sendLinkCode)}
+                          className="p-2 rounded-lg bg-white border border-gray-200 hover:bg-gray-100 transition"
+                        >
+                          <Copy className="w-4 h-4 text-gray-600" />
+                        </button>
+                      </div>
+
+                      <div className="grid grid-cols-3 gap-3 mb-5">
+                        <button
+                          onClick={() => { const url = `${window.location.origin}/pay/${sendLinkCode}`; window.open(`https://wa.me/?text=${encodeURIComponent(url)}`, "_blank"); }}
+                          className="flex flex-col items-center gap-1.5 p-3 rounded-xl bg-green-50 hover:bg-green-100 transition"
+                        >
+                          <span className="text-lg">💬</span>
+                          <span className="text-xs font-medium text-gray-700">WhatsApp</span>
+                        </button>
+                        <button
+                          onClick={() => { const url = `${window.location.origin}/pay/${sendLinkCode}`; window.open(`sms:?body=${encodeURIComponent(url)}`, "_blank"); }}
+                          className="flex flex-col items-center gap-1.5 p-3 rounded-xl bg-blue-50 hover:bg-blue-100 transition"
+                        >
+                          <span className="text-lg">📱</span>
+                          <span className="text-xs font-medium text-gray-700">SMS</span>
+                        </button>
+                        <button
+                          onClick={() => shareLink(sendLinkCode, sendLinkDesc || null)}
+                          className="flex flex-col items-center gap-1.5 p-3 rounded-xl bg-indigo-50 hover:bg-indigo-100 transition"
+                        >
+                          <Share2 className="w-5 h-5 text-indigo-600" />
+                          <span className="text-xs font-medium text-gray-700">Partager</span>
+                        </button>
+                      </div>
+
+                      <button
+                        onClick={() => setSendModalOpen(false)}
+                        className="w-full py-3 rounded-xl border border-gray-200 text-gray-700 font-semibold hover:bg-gray-50 transition"
+                      >
+                        Fermer
+                      </button>
+                    </div>
+                  )}
+                </>
               )}
             </div>
           </div>

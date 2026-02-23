@@ -23,6 +23,7 @@ interface PaymentLinkPublic {
   devise: string;
   description: string | null;
   statut: string;
+  type: "send" | "request";
   createur: {
     prenom: string;
     nom: string;
@@ -107,7 +108,8 @@ export default function PayPage() {
 
       setPaid(true);
       setPaidRef(data.transfert.reference);
-      showToast("success", "Paiement effectué", `${formatMontant(montant)} envoyé avec succès`);
+      const isSend = link.type === "send";
+      showToast("success", isSend ? "Argent récupéré" : "Paiement effectué", `${formatMontant(montant)} ${isSend ? "reçus" : "envoyés"} avec succès`);
     } catch {
       showToast("error", "Erreur", "Erreur lors du paiement");
     } finally {
@@ -156,9 +158,15 @@ export default function PayPage() {
           <div className="w-20 h-20 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-5">
             <CheckCircle2 className="w-10 h-10 text-green-400" />
           </div>
-          <h1 className="text-2xl font-bold text-white mb-2">Paiement effectué !</h1>
+          <h1 className="text-2xl font-bold text-white mb-2">
+            {link?.type === "send" ? "Argent récupéré !" : "Paiement effectué !"}
+          </h1>
           <p className="text-gray-400 mb-2">
-            Votre paiement à <span className="text-white font-semibold">{link?.createur.prenom} {link?.createur.nom}</span> a été effectué avec succès.
+            {link?.type === "send" ? (
+              <>Vous avez reçu <span className="text-white font-semibold">{link?.montant ? formatMontant(link.montant) : ""}</span> de <span className="text-white font-semibold">{link?.createur.prenom} {link?.createur.nom}</span>.</>
+            ) : (
+              <>Votre paiement à <span className="text-white font-semibold">{link?.createur.prenom} {link?.createur.nom}</span> a été effectué avec succès.</>
+            )}
           </p>
           <p className="text-xs text-gray-500 mb-6">Réf: {paidRef}</p>
           <Link
@@ -207,12 +215,21 @@ export default function PayPage() {
             <p className="text-lg font-semibold text-white">
               {link.createur.prenom} {link.createur.nom}
             </p>
-            <p className="text-gray-400 text-sm">vous demande un paiement</p>
+            <p className="text-gray-400 text-sm">
+              {link.type === "send" ? "vous envoie de l'argent" : "vous demande un paiement"}
+            </p>
           </div>
 
           {/* Montant */}
           <div className="bg-gray-900/50 rounded-2xl p-5 mb-6 text-center border border-gray-700/30">
-            {montantFixe ? (
+            {link.type === "send" ? (
+              <>
+                <p className="text-sm text-gray-400 mb-1">Montant à récupérer</p>
+                <p className="text-3xl font-black text-emerald-400">
+                  {formatMontant(link.montant!, link.devise)}
+                </p>
+              </>
+            ) : montantFixe ? (
               <>
                 <p className="text-sm text-gray-400 mb-1">Montant à payer</p>
                 <p className="text-3xl font-black text-white">
@@ -249,7 +266,7 @@ export default function PayPage() {
           {!user ? (
             <div className="text-center">
               <p className="text-gray-400 text-sm mb-4">
-                Connectez-vous pour effectuer ce paiement
+                Connectez-vous pour {link.type === "send" ? "récupérer cet argent" : "effectuer ce paiement"}
               </p>
               <Link
                 href={`/auth/login?redirect=/pay/${code}`}
@@ -268,15 +285,15 @@ export default function PayPage() {
           ) : (
             <button
               onClick={handlePay}
-              disabled={paying || (!montantFixe && (!montantLibre || parseFloat(montantLibre) <= 0))}
-              className="w-full flex items-center justify-center gap-2 bg-indigo-600 text-white py-3.5 rounded-xl font-bold hover:bg-indigo-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
+              disabled={paying || (link.type !== "send" && !montantFixe && (!montantLibre || parseFloat(montantLibre) <= 0))}
+              className={`w-full flex items-center justify-center gap-2 ${link.type === "send" ? "bg-emerald-600 hover:bg-emerald-700" : "bg-indigo-600 hover:bg-indigo-700"} text-white py-3.5 rounded-xl font-bold transition disabled:opacity-50 disabled:cursor-not-allowed`}
             >
               {paying ? (
                 <Loader2 className="w-5 h-5 animate-spin" />
               ) : (
-                <Send className="w-5 h-5" />
+                <Send className={`w-5 h-5 ${link.type === "send" ? "rotate-180" : ""}`} />
               )}
-              {paying ? "Paiement en cours..." : "Payer"}
+              {paying ? (link.type === "send" ? "Récupération..." : "Paiement en cours...") : (link.type === "send" ? "Récupérer l'argent" : "Payer")}
             </button>
           )}
         </div>
