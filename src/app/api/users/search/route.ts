@@ -24,19 +24,41 @@ export async function GET(request: NextRequest) {
 
   const supabase = getServiceClient();
 
-  // Recherche par nom, prénom ou email (ilike)
-  const searchPattern = `%${q}%`;
-
+  // Recherche par nom, prénom, email ou telephone
   const { data, error } = await supabase
     .from("profiles")
-    .select("id, prenom, nom, avatar_url, email, telephone")
-    .or(`prenom.ilike.${searchPattern},nom.ilike.${searchPattern},email.ilike.${searchPattern},telephone.ilike.${searchPattern}`)
-    .neq("id", user.id) // Exclure soi-même
+    .select("id, prenom, nom, avatar, email, telephone")
+    .or(
+      `prenom.ilike.%${q}%,nom.ilike.%${q}%,email.ilike.%${q}%,telephone.ilike.%${q}%`
+    )
+    .neq("id", user.id)
     .limit(10);
 
   if (error) {
     console.error("Erreur recherche utilisateurs:", error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+
+    // Fallback : recherche simple sur prenom + nom uniquement
+    const { data: fallback, error: fbErr } = await supabase
+      .from("profiles")
+      .select("id, prenom, nom, avatar, email, telephone")
+      .or(`prenom.ilike.%${q}%,nom.ilike.%${q}%`)
+      .neq("id", user.id)
+      .limit(10);
+
+    if (fbErr) {
+      console.error("Erreur fallback recherche:", fbErr);
+      return NextResponse.json({ error: fbErr.message }, { status: 500 });
+    }
+
+    const results = (fallback || []).map((u) => ({
+      id: u.id,
+      prenom: u.prenom || "",
+      nom: u.nom || "",
+      avatar_url: u.avatar || null,
+      email_masked: u.email ? maskEmail(u.email) : null,
+    }));
+
+    return NextResponse.json({ users: results });
   }
 
   // Ne pas exposer trop d'infos — masquer email/téléphone partiellement
@@ -44,7 +66,7 @@ export async function GET(request: NextRequest) {
     id: u.id,
     prenom: u.prenom || "",
     nom: u.nom || "",
-    avatar_url: u.avatar_url,
+    avatar_url: u.avatar || null,
     email_masked: u.email ? maskEmail(u.email) : null,
   }));
 

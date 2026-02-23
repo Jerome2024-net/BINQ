@@ -42,7 +42,7 @@ export async function GET(
   // Récupérer le profil du créateur
   const { data: profile } = await supabase
     .from("profiles")
-    .select("prenom, nom, avatar")
+    .select("prenom, nom, avatar_url")
     .eq("id", link.createur_id)
     .single();
 
@@ -56,7 +56,7 @@ export async function GET(
       statut: link.statut,
       type: link.type || 'request',
       createur: profile
-        ? { prenom: profile.prenom, nom: profile.nom, avatar_url: profile.avatar || null }
+        ? { prenom: profile.prenom, nom: profile.nom, avatar_url: profile.avatar_url }
         : { prenom: "Utilisateur", nom: "Binq", avatar_url: null },
     },
   });
