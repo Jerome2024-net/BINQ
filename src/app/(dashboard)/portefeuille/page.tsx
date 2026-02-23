@@ -89,6 +89,7 @@ export default function PortefeuillePage() {
   const [linkCreating, setLinkCreating] = useState(false);
   const [myLinks, setMyLinks] = useState<PaymentLink[]>([]);
   const [linksLoading, setLinksLoading] = useState(false);
+  const [createdLinkCode, setCreatedLinkCode] = useState<string | null>(null);
 
   useEffect(() => {
     if (user) getOrCreateWallet();
@@ -229,7 +230,7 @@ export default function PortefeuillePage() {
   };
 
   // ── Payment Links ──
-  const handleCreateLink = async () => {
+  const handleCreateLinkWithCode = async () => {
     setLinkCreating(true);
     try {
       const montant = linkAmount ? parseFloat(linkAmount) : null;
@@ -246,10 +247,7 @@ export default function PortefeuillePage() {
         showToast("error", "Erreur", data.error || "Erreur création lien");
         return;
       }
-      showToast("success", "Lien créé", "Votre lien de paiement est prêt !");
-      setLinkModalOpen(false);
-      setLinkAmount("");
-      setLinkDescription("");
+      setCreatedLinkCode(data.link.code);
       fetchMyLinks();
     } catch {
       showToast("error", "Erreur", "Erreur création lien");
@@ -317,34 +315,35 @@ export default function PortefeuillePage() {
             {showSolde ? formatMontant(soldeWallet) : "••••••"}
           </p>
 
-          <div className="flex flex-col sm:flex-row gap-3">
+          {/* Actions principales */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
             <button
               onClick={handleDeposit}
-              className="flex items-center justify-center gap-2 bg-white text-blue-700 px-8 py-3.5 rounded-2xl font-bold hover:bg-blue-50 transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5"
+              className="flex flex-col items-center gap-2 bg-white text-blue-700 py-4 rounded-2xl font-bold hover:bg-blue-50 transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5"
             >
-              <ArrowDownLeft className="w-5 h-5" />
-              Déposer
+              <ArrowDownLeft className="w-6 h-6" />
+              <span className="text-xs sm:text-sm">Déposer</span>
             </button>
             <button
               onClick={handleWithdraw}
-              className="flex items-center justify-center gap-2 bg-white/10 text-white px-8 py-3.5 rounded-2xl font-bold hover:bg-white/20 transition-all border border-white/20"
+              className="flex flex-col items-center gap-2 bg-white/10 text-white py-4 rounded-2xl font-bold hover:bg-white/20 transition-all border border-white/20"
             >
-              <ArrowUpRight className="w-5 h-5" />
-              Retirer
+              <ArrowUpRight className="w-6 h-6" />
+              <span className="text-xs sm:text-sm">Retirer</span>
             </button>
             <button
               onClick={openSendModal}
-              className="flex items-center justify-center gap-2 bg-purple-500/90 text-white px-8 py-3.5 rounded-2xl font-bold hover:bg-purple-500 transition-all border border-purple-400/30"
+              className="flex flex-col items-center gap-2 bg-purple-500/90 text-white py-4 rounded-2xl font-bold hover:bg-purple-500 transition-all border border-purple-400/30"
             >
-              <Send className="w-5 h-5" />
-              Envoyer
+              <Send className="w-6 h-6" />
+              <span className="text-xs sm:text-sm">Envoyer</span>
             </button>
             <button
               onClick={() => setLinkModalOpen(true)}
-              className="flex items-center justify-center gap-2 bg-white/10 text-white px-8 py-3.5 rounded-2xl font-bold hover:bg-white/20 transition-all border border-white/20"
+              className="flex flex-col items-center gap-2 bg-emerald-500/90 text-white py-4 rounded-2xl font-bold hover:bg-emerald-500 transition-all border border-emerald-400/30"
             >
-              <LinkIcon className="w-5 h-5" />
-              Lien
+              <ArrowDownLeft className="w-6 h-6" />
+              <span className="text-xs sm:text-sm">Recevoir</span>
             </button>
           </div>
         </div>
@@ -503,32 +502,32 @@ export default function PortefeuillePage() {
         </div>
       </div>
 
-      {/* Mes liens de paiement */}
+      {/* Demandes de paiement */}
       <div className="bg-white rounded-3xl border border-gray-100 shadow-sm p-5 sm:p-6">
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-lg font-bold text-gray-900 flex items-center gap-2">
-            <LinkIcon className="w-5 h-5 text-indigo-600" />
-            Mes liens de paiement
+            <LinkIcon className="w-5 h-5 text-emerald-600" />
+            Demandes de paiement
           </h2>
           <button
             onClick={() => setLinkModalOpen(true)}
-            className="text-sm font-semibold text-indigo-600 hover:text-indigo-700 flex items-center gap-1"
+            className="text-sm font-semibold text-emerald-600 hover:text-emerald-700 flex items-center gap-1"
           >
-            + Créer un lien
+            + Nouvelle demande
           </button>
         </div>
 
         {linksLoading ? (
           <div className="flex justify-center py-8">
-            <Loader2 className="w-6 h-6 text-indigo-400 animate-spin" />
+            <Loader2 className="w-6 h-6 text-emerald-400 animate-spin" />
           </div>
         ) : myLinks.length === 0 ? (
           <div className="text-center py-10">
-            <div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-3">
-              <LinkIcon className="w-8 h-8 text-gray-300" />
+            <div className="w-16 h-16 bg-emerald-50 rounded-full flex items-center justify-center mx-auto mb-3">
+              <ArrowDownLeft className="w-8 h-8 text-emerald-300" />
             </div>
-            <p className="text-gray-900 font-semibold mb-1">Aucun lien de paiement</p>
-            <p className="text-sm text-gray-400">Créez un lien pour recevoir de l&apos;argent facilement</p>
+            <p className="text-gray-900 font-semibold mb-1">Aucune demande de paiement</p>
+            <p className="text-sm text-gray-400">Demandez de l&apos;argent via un lien partageable</p>
           </div>
         ) : (
           <div className="space-y-2">
@@ -779,53 +778,117 @@ export default function PortefeuillePage() {
         </div>
       )}
 
-      {/* ── Modal Créer un lien de paiement ── */}
+      {/* ── Modal Recevoir de l'argent (Request Money) ── */}
       {linkModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
           <div className="bg-white rounded-3xl w-full max-w-md shadow-2xl relative overflow-hidden">
             <div className="flex items-center justify-between p-5 border-b border-gray-100">
-              <h3 className="text-lg font-bold text-gray-900">Créer un lien de paiement</h3>
-              <button onClick={() => setLinkModalOpen(false)} className="p-2 rounded-xl hover:bg-gray-100">
+              <h3 className="text-lg font-bold text-gray-900 flex items-center gap-2">
+                <ArrowDownLeft className="w-5 h-5 text-emerald-600" />
+                Recevoir de l&apos;argent
+              </h3>
+              <button onClick={() => { setLinkModalOpen(false); setCreatedLinkCode(null); }} className="p-2 rounded-xl hover:bg-gray-100">
                 <X className="w-5 h-5 text-gray-500" />
               </button>
             </div>
 
             <div className="p-5">
-              <div className="mb-4">
-                <label className="text-sm font-medium text-gray-700 mb-1 block">
-                  Montant (€) <span className="text-gray-400 font-normal">— laisser vide pour montant libre</span>
-                </label>
-                <input
-                  type="number"
-                  min="1"
-                  step="0.01"
-                  value={linkAmount}
-                  onChange={(e) => setLinkAmount(e.target.value)}
-                  placeholder="Montant libre si vide"
-                  className="w-full p-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none text-lg font-semibold [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                />
-              </div>
+              {!createdLinkCode ? (
+                <>
+                  <p className="text-sm text-gray-500 mb-5">Créez un lien de paiement et partagez-le. Le destinataire paiera depuis son portefeuille Binq.</p>
 
-              <div className="mb-5">
-                <label className="text-sm font-medium text-gray-700 mb-1 block">Description (optionnel)</label>
-                <input
-                  type="text"
-                  value={linkDescription}
-                  onChange={(e) => setLinkDescription(e.target.value)}
-                  placeholder="Ex: Remboursement restaurant"
-                  className="w-full p-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none text-sm"
-                  maxLength={120}
-                />
-              </div>
+                  <div className="mb-4">
+                    <label className="text-sm font-medium text-gray-700 mb-1 block">
+                      Combien demandez-vous ? <span className="text-gray-400 font-normal">— vide = montant libre</span>
+                    </label>
+                    <input
+                      type="number"
+                      min="1"
+                      step="0.01"
+                      value={linkAmount}
+                      onChange={(e) => setLinkAmount(e.target.value)}
+                      placeholder="Ex: 25.00"
+                      className="w-full p-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none text-2xl font-bold text-center [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                      autoFocus
+                    />
+                  </div>
 
-              <button
-                onClick={handleCreateLink}
-                disabled={linkCreating}
-                className="w-full py-3.5 rounded-xl bg-indigo-600 text-white font-bold hover:bg-indigo-700 transition disabled:opacity-50 flex items-center justify-center gap-2"
-              >
-                {linkCreating ? <Loader2 className="w-5 h-5 animate-spin" /> : <LinkIcon className="w-5 h-5" />}
-                {linkCreating ? "Création..." : "Créer le lien"}
-              </button>
+                  <div className="mb-5">
+                    <label className="text-sm font-medium text-gray-700 mb-1 block">Motif (optionnel)</label>
+                    <input
+                      type="text"
+                      value={linkDescription}
+                      onChange={(e) => setLinkDescription(e.target.value)}
+                      placeholder="Ex: Part du resto, loyer, cadeau..."
+                      className="w-full p-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none text-sm"
+                      maxLength={120}
+                    />
+                  </div>
+
+                  <button
+                    onClick={handleCreateLinkWithCode}
+                    disabled={linkCreating}
+                    className="w-full py-3.5 rounded-xl bg-emerald-600 text-white font-bold hover:bg-emerald-700 transition disabled:opacity-50 flex items-center justify-center gap-2"
+                  >
+                    {linkCreating ? <Loader2 className="w-5 h-5 animate-spin" /> : <Send className="w-5 h-5 rotate-180" />}
+                    {linkCreating ? "Création..." : "Générer le lien"}
+                  </button>
+                </>
+              ) : (
+                <div className="text-center">
+                  <div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <CheckCircle2 className="w-8 h-8 text-emerald-600" />
+                  </div>
+                  <h4 className="text-lg font-bold text-gray-900 mb-1">Lien prêt !</h4>
+                  <p className="text-sm text-gray-500 mb-4">Partagez ce lien pour recevoir votre paiement</p>
+
+                  <div className="bg-gray-50 rounded-xl p-3 mb-5 flex items-center gap-2">
+                    <input
+                      type="text"
+                      readOnly
+                      value={`${typeof window !== 'undefined' ? window.location.origin : ''}/pay/${createdLinkCode}`}
+                      className="flex-1 bg-transparent text-sm text-gray-700 outline-none font-mono truncate"
+                    />
+                    <button
+                      onClick={() => copyLinkUrl(createdLinkCode)}
+                      className="p-2 rounded-lg bg-white border border-gray-200 hover:bg-gray-100 transition"
+                    >
+                      <Copy className="w-4 h-4 text-gray-600" />
+                    </button>
+                  </div>
+
+                  <div className="grid grid-cols-3 gap-3 mb-5">
+                    <button
+                      onClick={() => { const url = `${window.location.origin}/pay/${createdLinkCode}`; window.open(`https://wa.me/?text=${encodeURIComponent(url)}`, '_blank'); }}
+                      className="flex flex-col items-center gap-1.5 p-3 rounded-xl bg-green-50 hover:bg-green-100 transition"
+                    >
+                      <span className="text-lg">💬</span>
+                      <span className="text-xs font-medium text-gray-700">WhatsApp</span>
+                    </button>
+                    <button
+                      onClick={() => { const url = `${window.location.origin}/pay/${createdLinkCode}`; window.open(`sms:?body=${encodeURIComponent(url)}`, '_blank'); }}
+                      className="flex flex-col items-center gap-1.5 p-3 rounded-xl bg-blue-50 hover:bg-blue-100 transition"
+                    >
+                      <span className="text-lg">📱</span>
+                      <span className="text-xs font-medium text-gray-700">SMS</span>
+                    </button>
+                    <button
+                      onClick={() => shareLink(createdLinkCode, linkDescription || null)}
+                      className="flex flex-col items-center gap-1.5 p-3 rounded-xl bg-indigo-50 hover:bg-indigo-100 transition"
+                    >
+                      <Share2 className="w-5 h-5 text-indigo-600" />
+                      <span className="text-xs font-medium text-gray-700">Partager</span>
+                    </button>
+                  </div>
+
+                  <button
+                    onClick={() => { setLinkModalOpen(false); setCreatedLinkCode(null); setLinkAmount(''); setLinkDescription(''); }}
+                    className="w-full py-3 rounded-xl border border-gray-200 text-gray-700 font-semibold hover:bg-gray-50 transition"
+                  >
+                    Fermer
+                  </button>
+                </div>
+              )}
             </div>
           </div>
         </div>
