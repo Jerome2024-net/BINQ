@@ -41,22 +41,51 @@ export async function GET(
         user_id,
         role,
         total_contribue,
-        joined_at,
-        profiles:user_id ( prenom, nom, avatar_url, email )
+        joined_at
       ),
       cagnotte_contributions (
         id,
         user_id,
         montant,
         message,
-        created_at,
-        profiles:user_id ( prenom, nom, avatar_url )
+        type,
+        created_at
       )
     `)
     .eq("id", params.id)
     .single();
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+
+  // Récupérer les profils de tous les user_id (membres + contributions)
+  const membreUserIds = (cagnotte.cagnotte_membres || []).map((m: { user_id: string }) => m.user_id);
+  const contribUserIds = (cagnotte.cagnotte_contributions || []).map((c: { user_id: string }) => c.user_id);
+  const allUserIds = Array.from(new Set([...membreUserIds, ...contribUserIds]));
+
+  let profilesMap: Record<string, { prenom: string; nom: string; avatar_url: string | null; email?: string }> = {};
+  if (allUserIds.length > 0) {
+    const { data: profiles } = await supabase
+      .from("profiles")
+      .select("id, prenom, nom, avatar_url, email")
+      .in("id", allUserIds);
+    if (profiles) {
+      for (const p of profiles) {
+        profilesMap[p.id] = { prenom: p.prenom || "", nom: p.nom || "", avatar_url: p.avatar_url, email: p.email };
+      }
+    }
+  }
+
+  // Enrichir membres avec profils
+  cagnotte.cagnotte_membres = (cagnotte.cagnotte_membres || []).map((m: { user_id: string }) => ({
+    ...m,
+    profiles: profilesMap[m.user_id] || { prenom: "", nom: "", avatar_url: null, email: "" },
+  }));
+
+  // Enrichir contributions avec profils
+  cagnotte.cagnotte_contributions = (cagnotte.cagnotte_contributions || []).map((c: { user_id: string }) => ({
+    ...c,
+    profiles: profilesMap[c.user_id] || { prenom: "", nom: "", avatar_url: null },
+  }));
 
   // Trier contributions par date décroissante
   if (cagnotte.cagnotte_contributions) {

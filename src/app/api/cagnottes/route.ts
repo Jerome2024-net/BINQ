@@ -53,8 +53,7 @@ export async function GET() {
         id,
         user_id,
         role,
-        total_contribue,
-        profiles:user_id ( prenom, nom, avatar_url )
+        total_contribue
       )
     `)
     .in("id", allIds)
@@ -66,9 +65,33 @@ export async function GET() {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
-  // Ajouter le rôle de l'utilisateur courant
+  // Récupérer les profils des membres
+  const allUserIds = Array.from(new Set(
+    (data || []).flatMap((c) =>
+      (c.cagnotte_membres || []).map((m: { user_id: string }) => m.user_id)
+    )
+  ));
+
+  let profilesMap: Record<string, { prenom: string; nom: string; avatar_url: string | null }> = {};
+  if (allUserIds.length > 0) {
+    const { data: profiles } = await supabase
+      .from("profiles")
+      .select("id, prenom, nom, avatar_url")
+      .in("id", allUserIds);
+    if (profiles) {
+      for (const p of profiles) {
+        profilesMap[p.id] = { prenom: p.prenom || "", nom: p.nom || "", avatar_url: p.avatar_url };
+      }
+    }
+  }
+
+  // Ajouter le rôle de l'utilisateur courant + enrichir les membres avec les profils
   const cagnottes = (data || []).map((c) => ({
     ...c,
+    cagnotte_membres: (c.cagnotte_membres || []).map((m: { user_id: string; id: string; role: string; total_contribue: number }) => ({
+      ...m,
+      profiles: profilesMap[m.user_id] || { prenom: "", nom: "", avatar_url: null },
+    })),
     mon_role: c.cagnotte_membres?.find((m: { user_id: string }) => m.user_id === user.id)?.role || "membre",
     nombre_membres: c.cagnotte_membres?.length || 0,
   }));

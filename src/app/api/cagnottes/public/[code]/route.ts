@@ -21,7 +21,7 @@ export async function GET(
     .select(`
       id, nom, description, objectif_montant, date_limite,
       devise, icone, couleur, solde, statut, created_at,
-      cagnotte_membres ( id, user_id, profiles:user_id ( prenom, avatar_url ) )
+      cagnotte_membres ( id, user_id )
     `)
     .eq("code_invitation", params.code.toUpperCase())
     .single();
@@ -32,6 +32,20 @@ export async function GET(
 
   if (cagnotte.statut !== "active") {
     return NextResponse.json({ error: "Cette cagnotte n'est plus active" }, { status: 400 });
+  }
+
+  // Récupérer les profils des 5 premiers membres
+  const membreUserIds = (cagnotte.cagnotte_membres || []).slice(0, 5).map((m: { user_id: string }) => m.user_id);
+  let membresApercu: { prenom: string; avatar_url: string | null }[] = [];
+  if (membreUserIds.length > 0) {
+    const { data: profiles } = await supabase
+      .from("profiles")
+      .select("id, prenom, avatar_url")
+      .in("id", membreUserIds);
+    membresApercu = (profiles || []).map((p) => ({
+      prenom: p.prenom || "",
+      avatar_url: p.avatar_url || null,
+    }));
   }
 
   return NextResponse.json({
@@ -45,12 +59,6 @@ export async function GET(
     couleur: cagnotte.couleur,
     solde: cagnotte.solde,
     nombre_membres: cagnotte.cagnotte_membres?.length || 0,
-    membres_apercu: (cagnotte.cagnotte_membres || []).slice(0, 5).map((m: any) => {
-      const p = Array.isArray(m.profiles) ? m.profiles[0] : m.profiles;
-      return {
-        prenom: p?.prenom || "",
-        avatar_url: p?.avatar_url || null,
-      };
-    }),
+    membres_apercu: membresApercu,
   });
 }
