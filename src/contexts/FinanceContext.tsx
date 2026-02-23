@@ -540,7 +540,7 @@ function rowToWallet(row: Record<string, unknown>): Wallet {
     userId: row.user_id as string,
     solde: parseFloat(row.solde as string) || 0,
     soldeBloquer: parseFloat(row.solde_bloque as string) || 0,
-    devise: (row.devise as string) || "EUR",
+    devise: ((row.devise as string) === "USD" ? "USD" : "EUR"),
     dateCreation: (row.created_at as string) || new Date().toISOString(),
     derniereMaj: (row.updated_at as string) || new Date().toISOString(),
   };
@@ -555,7 +555,7 @@ function rowToTransaction(row: Record<string, unknown>): Transaction {
     montant: parseFloat(row.montant as string) || 0,
     soldeAvant: parseFloat(row.solde_avant as string) || 0,
     soldeApres: parseFloat(row.solde_apres as string) || 0,
-    devise: (row.devise as string) || "EUR",
+    devise: ((row.devise as string) === "USD" ? "USD" : "EUR"),
     statut: (row.statut as TransactionStatut) || "confirme",
     reference: (row.reference as string) || "",
     description: (row.description as string) || "",

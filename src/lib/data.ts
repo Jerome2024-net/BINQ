@@ -1,7 +1,13 @@
 // Fonctions utilitaires
 
+export function normalizeDevise(devise?: string | null): "EUR" | "USD" {
+  if (devise === "USD") return "USD";
+  return "EUR";
+}
+
 export function formatMontant(montant: number, devise: string = "EUR"): string {
-  if (devise === "USD") {
+  const d = normalizeDevise(devise);
+  if (d === "USD") {
     return `$${montant.toLocaleString("en-US", { minimumFractionDigits: 0, maximumFractionDigits: 2 })}`;
   }
   // EUR par défaut

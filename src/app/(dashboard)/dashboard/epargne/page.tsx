@@ -67,8 +67,13 @@ interface Transaction {
 const ICONES = ["💰", "🏠", "✈️", "🎓", "🚗", "💍", "🏥", "📱", "👶", "🎯", "🌍", "⭐"];
 const COULEURS = ["#6366f1", "#8b5cf6", "#ec4899", "#f43f5e", "#f97316", "#eab308", "#22c55e", "#14b8a6", "#06b6d4", "#3b82f6"];
 
+function normalizeD(d?: string | null): "EUR" | "USD" {
+  return d === "USD" ? "USD" : "EUR";
+}
+
 function formatDevise(montant: number, devise: string = "EUR"): string {
-  if (devise === "USD") {
+  const d = normalizeD(devise);
+  if (d === "USD") {
     return new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 2 }).format(montant);
   }
   return new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR", maximumFractionDigits: 2 }).format(montant);
@@ -321,9 +326,9 @@ export default function EpargnePage() {
             </div>
             
             <div className="space-y-1">
-              {epargnes.filter(e => (e.devise || "EUR") === "EUR").length > 0 && (
+              {epargnes.filter(e => e.devise !== "USD").length > 0 && (
                 <p className="text-2xl sm:text-3xl font-bold tracking-tight">
-                  {formatDevise(epargnes.filter(e => (e.devise || "EUR") === "EUR").reduce((sum, e) => sum + Number(e.solde), 0), "EUR")}
+                  {formatDevise(epargnes.filter(e => e.devise !== "USD").reduce((sum, e) => sum + Number(e.solde), 0), "EUR")}
                 </p>
               )}
               {epargnes.filter(e => e.devise === "USD").length > 0 && (
@@ -417,7 +422,7 @@ export default function EpargnePage() {
                           {ep.type === "libre" ? "Libre" : ep.type === "objectif" ? "Objectif" : "Programmée"}
                         </span>
                         <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded-md bg-gray-100 text-gray-600">
-                          {ep.devise || "EUR"}
+                          {normalizeD(ep.devise)}
                         </span>
                       </div>
                     </div>

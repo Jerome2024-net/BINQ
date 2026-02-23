@@ -64,7 +64,7 @@ export default function DashboardPage() {
   }, []);
 
   const totalEpargneEUR = epargnes
-    .filter((e) => (e.devise || "EUR") === "EUR")
+    .filter((e) => e.devise !== "USD")
     .reduce((acc, e) => acc + Number(e.solde), 0);
   
   const totalEpargneUSD = epargnes
@@ -190,7 +190,7 @@ export default function DashboardPage() {
                 ? Math.min(100, Math.round((Number(ep.solde) / ep.objectif_montant) * 100))
                 : 0;
               
-              const isEUR = (ep.devise || "EUR") === "EUR";
+              const isEUR = ep.devise !== "USD";
 
               return (
                 <Link
@@ -207,7 +207,7 @@ export default function DashboardPage() {
                       ep.type === "programmee" ? "bg-purple-50 text-purple-700" : 
                       "bg-indigo-50 text-indigo-700"
                     }`}>
-                      {ep.devise || "EUR"}
+                      {ep.devise === "USD" ? "USD" : "EUR"}
                     </span>
                   </div>
 
