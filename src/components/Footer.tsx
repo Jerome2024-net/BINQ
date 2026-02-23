@@ -71,8 +71,8 @@ export default function Footer() {
             <ul className="space-y-3 text-gray-500 text-[14px]">
               <li className="flex items-center gap-2">
                 <Mail className="w-4 h-4 text-gray-600" />
-                <a href="mailto:support@binq.com" className="hover:text-gray-300 transition-colors">
-                  support@binq.com
+                <a href="mailto:support@binq.io" className="hover:text-gray-300 transition-colors">
+                  support@binq.io
                 </a>
               </li>
               <li className="flex items-center gap-2">
