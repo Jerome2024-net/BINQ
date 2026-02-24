@@ -493,27 +493,6 @@ export default function PortefeuillePage() {
 
         {/* Sidebar Infos */}
         <div className="space-y-6">
-          {/* CTA Épargne */}
-          <div className="bg-gradient-to-br from-indigo-500 to-violet-600 rounded-3xl p-5 sm:p-6 text-white shadow-lg shadow-indigo-200 relative overflow-hidden">
-            <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-2xl -translate-y-1/2 translate-x-1/2"></div>
-            <div className="relative z-10">
-              <div className="w-12 h-12 bg-white/20 rounded-2xl flex items-center justify-center mb-4">
-                <PiggyBank className="w-6 h-6 text-white" />
-              </div>
-              <h3 className="text-lg font-bold mb-2">Faites fructifier votre argent</h3>
-              <p className="text-indigo-100 text-sm mb-5">
-                Transférez vos fonds vers un compte épargne et faites fructifier votre argent en toute sécurité.
-              </p>
-              <Link
-                href="/dashboard/epargne"
-                className="inline-flex items-center gap-2 bg-white text-indigo-700 px-5 py-2.5 rounded-xl font-bold text-sm hover:bg-indigo-50 transition-colors"
-              >
-                <Sparkles className="w-4 h-4" />
-                Voir mes épargnes
-              </Link>
-            </div>
-          </div>
-
           {/* Tarification */}
           <div className="bg-white rounded-3xl border border-gray-100 shadow-sm p-6">
             <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
