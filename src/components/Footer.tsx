@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Star, Mail, Shield, Headphones } from "lucide-react";
+import { Mail, Shield, Headphones } from "lucide-react";
 
 export default function Footer() {
   return (
@@ -9,12 +9,7 @@ export default function Footer() {
           {/* Brand */}
           <div className="col-span-2 md:col-span-1">
             <div className="flex items-center gap-2.5 mb-4">
-              <div className="w-8 h-8 bg-gradient-to-br from-primary-500 to-primary-700 rounded-lg flex items-center justify-center">
-                <Star className="w-4 h-4 text-white fill-current" />
-              </div>
-              <span className="text-lg font-bold text-white tracking-tight">
-                Binq
-              </span>
+              <img src="https://res.cloudinary.com/dn8ed1doa/image/upload/ChatGPT_Image_24_f%C3%A9vr._2026_15_44_47_sgwgvi" alt="Binq" className="h-8 w-auto brightness-0 invert" />
             </div>
             <p className="text-gray-500 text-[14px] leading-relaxed mb-6">
               La fintech digitale pour gérer votre argent simplement et en toute sécurité.

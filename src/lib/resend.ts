@@ -18,11 +18,8 @@ export const FROM_EMAIL = "Binq <noreply@binq.io>";
 const LOGO_HTML = `
   <table cellpadding="0" cellspacing="0" border="0" style="margin: 0 auto;">
     <tr>
-      <td style="width: 36px; height: 36px; border-radius: 10px; text-align: center; vertical-align: middle;" bgcolor="#4f46e5">
-        <span style="color: white; font-size: 18px;">&#9733;</span>
-      </td>
-      <td style="padding-left: 10px; vertical-align: middle;">
-        <span style="font-family: 'Segoe UI', Arial, sans-serif; font-size: 22px; font-weight: 700; color: white;">Binq</span>
+      <td style="vertical-align: middle;">
+        <img src="https://res.cloudinary.com/dn8ed1doa/image/upload/ChatGPT_Image_24_f%C3%A9vr._2026_15_44_47_sgwgvi" alt="Binq" width="140" style="height: auto; display: block;" />
       </td>
     </tr>
   </table>

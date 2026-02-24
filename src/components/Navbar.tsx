@@ -7,7 +7,6 @@ import {
   X,
   LogIn,
   UserPlus,
-  Star,
   ArrowRight,
 } from "lucide-react";
 
@@ -26,12 +25,7 @@ export default function Navbar() {
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2.5">
-            <div className="w-9 h-9 bg-gradient-to-br from-primary-500 to-primary-700 rounded-xl flex items-center justify-center shadow-glow">
-              <Star className="w-5 h-5 text-white fill-current" />
-            </div>
-            <span className="text-xl font-bold text-gray-900 tracking-tight">
-              Binq
-            </span>
+            <img src="https://res.cloudinary.com/dn8ed1doa/image/upload/ChatGPT_Image_24_f%C3%A9vr._2026_15_44_47_sgwgvi" alt="Binq" className="h-9 w-auto" />
           </Link>
 
           {/* Desktop Navigation */}
