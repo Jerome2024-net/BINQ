@@ -110,14 +110,14 @@ function StripePaymentForm({
   return (
     <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-5">
       {/* Récapitulatif */}
-      <div className="bg-green-50 rounded-xl p-3 sm:p-4 text-center border border-green-200">
-        <p className="text-xs sm:text-sm text-green-600 mb-1">Montant crédité sur votre wallet</p>
-        <p className="text-2xl sm:text-3xl font-bold text-green-700">
+      <div className="bg-primary-50 rounded-xl p-3 sm:p-4 text-center border border-primary-200">
+        <p className="text-xs sm:text-sm text-primary-600 mb-1">Montant crédité sur votre wallet</p>
+        <p className="text-2xl sm:text-3xl font-bold text-primary-700">
           {montant.toLocaleString("fr-FR")} {deviseSymbol}
         </p>
         <div className="mt-2 space-y-0.5">
-          <p className="text-xs text-green-600">Frais Binq (1%) : +{(montant * 0.01).toFixed(2)} {deviseSymbol}</p>
-          <p className="text-xs sm:text-sm font-semibold text-green-800">Total débité : {(montant * 1.01).toFixed(2)} {deviseSymbol}</p>
+          <p className="text-xs text-primary-600">Frais Binq (1%) : +{(montant * 0.01).toFixed(2)} {deviseSymbol}</p>
+          <p className="text-xs sm:text-sm font-semibold text-primary-800">Total débité : {(montant * 1.01).toFixed(2)} {deviseSymbol}</p>
         </div>
       </div>
 
@@ -151,7 +151,7 @@ function StripePaymentForm({
         <button
           type="submit"
           disabled={!stripe || !elements || isSubmitting}
-          className="flex-1 py-3 rounded-xl font-semibold text-white bg-green-600 hover:bg-green-700 transition-colors flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base"
+          className="flex-1 py-3 rounded-xl font-semibold text-white bg-primary-600 hover:bg-primary-700 transition-colors flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base"
         >
           {isSubmitting ? (
             <>
@@ -287,8 +287,8 @@ export default function DepositWithdrawModal({
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className={`flex items-center gap-3 p-4 sm:p-6 border-b border-gray-100 ${isDepot ? "bg-green-50" : "bg-blue-50"}`}>
-          <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${isDepot ? "bg-green-100 text-green-600" : "bg-blue-100 text-blue-600"}`}>
+        <div className="flex items-center gap-3 p-4 sm:p-6 border-b border-gray-100 bg-primary-50">
+          <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 bg-primary-100 text-primary-600">
             {icon}
           </div>
           <div className="min-w-0">
@@ -382,7 +382,7 @@ export default function DepositWithdrawModal({
                 appearance: {
                   theme: "stripe",
                   variables: {
-                    colorPrimary: "#059669",
+                    colorPrimary: "#4f46e5",
                     borderRadius: "12px",
                   },
                 },
@@ -476,7 +476,7 @@ export default function DepositWithdrawModal({
                 disabled={montantNum < 1 || isProcessing || isCreatingIntent}
                 className={`w-full py-3 sm:py-3.5 rounded-xl font-semibold text-white transition-colors flex items-center justify-center gap-2 text-sm sm:text-base ${
                   montantNum >= 1 && !isCreatingIntent
-                    ? "bg-green-600 hover:bg-green-700"
+                    ? "bg-primary-600 hover:bg-primary-700"
                     : "bg-gray-300 cursor-not-allowed"
                 }`}
               >
@@ -600,7 +600,7 @@ export default function DepositWithdrawModal({
                 disabled={montantNum <= 0 || isDepassement || !destination.trim()}
                 className={`w-full py-3 sm:py-3.5 rounded-xl font-semibold text-white transition-colors flex items-center justify-center gap-2 text-sm sm:text-base ${
                   montantNum > 0 && !isDepassement && destination.trim()
-                    ? "bg-blue-600 hover:bg-blue-700"
+                    ? "bg-primary-600 hover:bg-primary-700"
                     : "bg-gray-300 cursor-not-allowed"
                 }`}
               >

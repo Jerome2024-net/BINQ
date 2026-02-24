@@ -104,7 +104,7 @@ export default function StripeVerificationGuard({
             onClick={(e) => e.stopPropagation()}
           >
             {/* Header */}
-            <div className="bg-gradient-to-r from-primary-600 to-indigo-600 p-6 text-center relative">
+            <div className="bg-gradient-to-r from-primary-600 to-primary-700 p-6 text-center relative">
               <button
                 onClick={() => setShowModal(false)}
                 className="absolute top-4 right-4 p-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-white/80 transition-colors"

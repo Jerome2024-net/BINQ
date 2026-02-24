@@ -205,9 +205,9 @@ export default function CreerTontinePage() {
       </div>
 
       {/* Info */}
-      <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 flex gap-3">
-        <Info className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
-        <div className="text-sm text-blue-700">
+      <div className="bg-primary-50 border border-primary-200 rounded-xl p-4 flex gap-3">
+        <Info className="w-5 h-5 text-primary-600 flex-shrink-0 mt-0.5" />
+        <div className="text-sm text-primary-700">
           <p className="font-medium mb-1">Comment ça marche ?</p>
           <p>
             Créez votre tontine en définissant le montant de cotisation, la
@@ -219,9 +219,9 @@ export default function CreerTontinePage() {
 
       {/* Subscription Gate */}
       {!isAbonnementActif() && (
-        <div className="bg-gradient-to-br from-emerald-50 to-teal-50 border-2 border-emerald-200 rounded-2xl p-6 text-center space-y-4">
-          <div className="w-16 h-16 bg-emerald-100 rounded-2xl flex items-center justify-center mx-auto">
-            <ShieldAlert className="w-8 h-8 text-emerald-600" />
+        <div className="bg-gradient-to-br from-primary-50 to-primary-50/50 border-2 border-primary-200 rounded-2xl p-6 text-center space-y-4">
+          <div className="w-16 h-16 bg-primary-100 rounded-2xl flex items-center justify-center mx-auto">
+            <ShieldAlert className="w-8 h-8 text-primary-600" />
           </div>
           <div>
             <h3 className="text-xl font-bold text-gray-900">Activez votre accès organisateur</h3>
@@ -229,8 +229,8 @@ export default function CreerTontinePage() {
               Pour créer et gérer des tontines, activez votre essai gratuit de 90 jours — sans engagement.
             </p>
           </div>
-          <div className="bg-white rounded-xl p-4 border border-blue-100 max-w-sm mx-auto">
-            <p className="text-2xl font-bold text-blue-600 mb-1">🎁 Essai gratuit 90 jours</p>
+          <div className="bg-white rounded-xl p-4 border border-primary-100 max-w-sm mx-auto">
+            <p className="text-2xl font-bold text-primary-600 mb-1">Essai gratuit 90 jours</p>
             <p className="text-sm text-gray-500">Puis {(getFraisConfig().abonnementAnnuel).toLocaleString("fr-FR")} €/an</p>
             <ul className="text-sm text-gray-600 mt-3 space-y-1 text-left">
               <li>✅ Tontines illimitées</li>
@@ -243,7 +243,7 @@ export default function CreerTontinePage() {
             <button
               type="button"
               onClick={() => setSubscriptionModalOpen(true)}
-              className="flex items-center justify-center gap-2 bg-blue-600 text-white px-6 py-3 rounded-xl font-semibold hover:bg-blue-700 transition-colors"
+              className="flex items-center justify-center gap-2 bg-primary-600 text-white px-6 py-3 rounded-xl font-semibold hover:bg-primary-700 transition-colors"
             >
               <CreditCard className="w-5 h-5" />
               Commencer l&apos;essai gratuit
@@ -633,14 +633,14 @@ export default function CreerTontinePage() {
 
             {/* Date de fin auto-calculée */}
             {dateFinEstimee && (
-              <div className="bg-blue-50 border border-blue-100 rounded-xl p-4 flex items-start gap-3">
-                <Calendar className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
+              <div className="bg-primary-50 border border-primary-100 rounded-xl p-4 flex items-start gap-3">
+                <Calendar className="w-5 h-5 text-primary-600 flex-shrink-0 mt-0.5" />
                 <div>
-                  <p className="text-sm font-semibold text-blue-900">Date de fin estimée</p>
-                  <p className="text-sm text-blue-700 mt-0.5">
+                  <p className="text-sm font-semibold text-primary-900">Date de fin estimée</p>
+                  <p className="text-sm text-primary-700 mt-0.5">
                     {new Date(dateFinEstimee).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" })}
                   </p>
-                  <p className="text-xs text-blue-500 mt-1">
+                  <p className="text-xs text-primary-500 mt-1">
                     Calculée automatiquement : {formData.membresMax} membres × {formData.frequence === "hebdomadaire" ? "1 semaine" : formData.frequence === "bimensuel" ? "2 semaines" : "1 mois"} par tour
                   </p>
                 </div>

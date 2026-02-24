@@ -96,8 +96,8 @@ function CotisationPaymentForm({
   return (
     <form onSubmit={handleSubmit} className="space-y-5">
       {/* Récapitulatif */}
-      <div className="bg-emerald-50 rounded-xl p-4 border border-emerald-200">
-        <p className="text-sm font-medium text-emerald-800 mb-3">Récapitulatif de la cotisation</p>
+      <div className="bg-primary-50 rounded-xl p-4 border border-primary-200">
+        <p className="text-sm font-medium text-primary-800 mb-3">Récapitulatif de la cotisation</p>
         <div className="space-y-2 text-sm">
           <div className="flex justify-between">
             <span className="text-gray-600">Tontine</span>
@@ -111,7 +111,7 @@ function CotisationPaymentForm({
             <span className="text-gray-600">Bénéficiaire</span>
             <span className="font-medium text-gray-900">{beneficiaire}</span>
           </div>
-          <hr className="border-emerald-200" />
+          <hr className="border-primary-200" />
           <div className="flex justify-between">
             <span className="text-gray-600">Cotisation</span>
             <span className="font-medium">{montant.toLocaleString("fr-FR")} {deviseSymbol}</span>
@@ -123,8 +123,8 @@ function CotisationPaymentForm({
             </span>
             <span className="font-medium">{frais.toLocaleString("fr-FR", { minimumFractionDigits: 2 })} {deviseSymbol}</span>
           </div>
-          <hr className="border-emerald-200" />
-          <div className="flex justify-between text-lg font-bold text-emerald-700">
+          <hr className="border-primary-200" />
+          <div className="flex justify-between text-lg font-bold text-primary-700">
             <span>Total</span>
             <span>{total.toLocaleString("fr-FR", { minimumFractionDigits: 2 })} {deviseSymbol}</span>
           </div>
@@ -156,7 +156,7 @@ function CotisationPaymentForm({
         <button
           type="submit"
           disabled={!stripe || !elements || isSubmitting}
-          className="flex-1 py-3 rounded-xl font-semibold text-white bg-emerald-600 hover:bg-emerald-700 transition-colors flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="flex-1 py-3 rounded-xl font-semibold text-white bg-primary-600 hover:bg-primary-700 transition-colors flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {isSubmitting ? (
             <>
@@ -249,8 +249,8 @@ export default function StripeCotisationModal({
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="flex items-center gap-3 p-6 border-b border-gray-100 bg-emerald-50">
-          <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-emerald-100 text-emerald-600">
+        <div className="flex items-center gap-3 p-6 border-b border-gray-100 bg-primary-50">
+          <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-primary-100 text-primary-600">
             <CircleDollarSign className="w-6 h-6" />
           </div>
           <div>
@@ -292,7 +292,7 @@ export default function StripeCotisationModal({
                   <span className="font-medium">{frais.toLocaleString("fr-FR", { minimumFractionDigits: 2 })} {deviseSymbol}</span>
                 </div>
                 <hr />
-                <div className="flex justify-between text-lg font-bold text-emerald-700">
+                <div className="flex justify-between text-lg font-bold text-primary-700">
                   <span>Total à payer</span>
                   <span>{(montant + frais).toLocaleString("fr-FR", { minimumFractionDigits: 2 })} {deviseSymbol}</span>
                 </div>
@@ -301,7 +301,7 @@ export default function StripeCotisationModal({
               <button
                 onClick={handleProceedToPayment}
                 disabled={isProcessing}
-                className="w-full py-3.5 rounded-xl font-semibold text-white bg-emerald-600 hover:bg-emerald-700 transition-colors flex items-center justify-center gap-2 text-lg disabled:opacity-50"
+                className="w-full py-3.5 rounded-xl font-semibold text-white bg-primary-600 hover:bg-primary-700 transition-colors flex items-center justify-center gap-2 text-lg disabled:opacity-50"
               >
                 {isProcessing ? (
                   <>
@@ -323,7 +323,7 @@ export default function StripeCotisationModal({
                 clientSecret,
                 appearance: {
                   theme: "stripe",
-                  variables: { colorPrimary: "#059669", borderRadius: "12px" },
+                  variables: { colorPrimary: "#4f46e5", borderRadius: "12px" },
                 },
                 locale: "fr",
               }}

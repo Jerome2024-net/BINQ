@@ -92,9 +92,9 @@ export default function SubscriptionModal({ isOpen, onClose }: SubscriptionModal
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="flex items-center gap-3 p-6 border-b border-gray-100 bg-gradient-to-r from-purple-50 to-indigo-50">
-          <div className="w-12 h-12 bg-purple-100 rounded-2xl flex items-center justify-center">
-            <Crown className="w-6 h-6 text-purple-600" />
+        <div className="flex items-center gap-3 p-6 border-b border-gray-100 bg-primary-50">
+          <div className="w-12 h-12 bg-primary-100 rounded-2xl flex items-center justify-center">
+            <Crown className="w-6 h-6 text-primary-600" />
           </div>
           <div>
             <h2 className="text-lg font-bold text-gray-900">Abonnement Organisateur</h2>
@@ -108,8 +108,8 @@ export default function SubscriptionModal({ isOpen, onClose }: SubscriptionModal
         <div className="p-6">
           {step === "done" ? (
             <div className="text-center py-8">
-              <div className="w-20 h-20 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4 animate-bounce">
-                {mode === "essai" ? <Gift className="w-10 h-10 text-purple-600" /> : <Crown className="w-10 h-10 text-purple-600" />}
+              <div className="w-20 h-20 bg-primary-100 rounded-full flex items-center justify-center mx-auto mb-4 animate-bounce">
+                {mode === "essai" ? <Gift className="w-10 h-10 text-primary-600" /> : <Crown className="w-10 h-10 text-primary-600" />}
               </div>
               <h3 className="text-xl font-bold text-gray-900 mb-2">
                 {mode === "essai" ? "Essai gratuit activé ! 🎉" : "Abonnement activé ! 🎉"}
@@ -117,7 +117,7 @@ export default function SubscriptionModal({ isOpen, onClose }: SubscriptionModal
               <p className="text-gray-500">
                 Vous pouvez maintenant créer et gérer vos propres tontines
               </p>
-              <div className="mt-4 flex items-center justify-center gap-2 text-sm text-purple-600">
+              <div className="mt-4 flex items-center justify-center gap-2 text-sm text-primary-600">
                 <CheckCircle2 className="w-4 h-4" />
                 <span>{mode === "essai" ? "Valide pendant 90 jours" : "Valide pour 1 an"}</span>
               </div>
@@ -139,9 +139,9 @@ export default function SubscriptionModal({ isOpen, onClose }: SubscriptionModal
             <div className="text-center py-12">
               <div className="relative mx-auto w-16 h-16 mb-6">
                 <div className="absolute inset-0 rounded-full border-4 border-gray-200"></div>
-                <div className="absolute inset-0 rounded-full border-4 border-purple-600 border-t-transparent animate-spin"></div>
-                <div className="absolute inset-3 rounded-full bg-purple-50 flex items-center justify-center">
-                  <Crown className="w-5 h-5 text-purple-600" />
+                <div className="absolute inset-0 rounded-full border-4 border-primary-600 border-t-transparent animate-spin"></div>
+                <div className="absolute inset-3 rounded-full bg-primary-50 flex items-center justify-center">
+                  <Crown className="w-5 h-5 text-primary-600" />
                 </div>
               </div>
               <p className="text-gray-900 font-semibold text-lg">Activation en cours...</p>
@@ -149,18 +149,18 @@ export default function SubscriptionModal({ isOpen, onClose }: SubscriptionModal
                 {mode === "essai" ? "Activation de votre essai gratuit" : "Redirection vers le paiement sécurisé..."}
               </p>
               <div className="mt-4 flex items-center justify-center gap-1.5">
-                <div className="w-2 h-2 rounded-full bg-purple-600 animate-pulse"></div>
-                <div className="w-2 h-2 rounded-full bg-purple-400 animate-pulse" style={{ animationDelay: "0.2s" }}></div>
-                <div className="w-2 h-2 rounded-full bg-purple-300 animate-pulse" style={{ animationDelay: "0.4s" }}></div>
+                <div className="w-2 h-2 rounded-full bg-primary-600 animate-pulse"></div>
+                <div className="w-2 h-2 rounded-full bg-primary-400 animate-pulse" style={{ animationDelay: "0.2s" }}></div>
+                <div className="w-2 h-2 rounded-full bg-primary-300 animate-pulse" style={{ animationDelay: "0.4s" }}></div>
               </div>
             </div>
           ) : (
             <div className="space-y-5">
               {/* Essai gratuit — CTA principal si pas encore utilisé */}
               {!dejaEuEssai && !enEssai && (
-                <div className="bg-gradient-to-r from-emerald-50 to-teal-50 border-2 border-emerald-200 rounded-xl p-5 text-center space-y-3">
-                  <div className="w-14 h-14 bg-emerald-100 rounded-2xl flex items-center justify-center mx-auto">
-                    <Gift className="w-7 h-7 text-emerald-600" />
+                <div className="bg-gradient-to-r from-primary-50 to-primary-50/50 border-2 border-primary-200 rounded-xl p-5 text-center space-y-3">
+                  <div className="w-14 h-14 bg-primary-100 rounded-2xl flex items-center justify-center mx-auto">
+                    <Gift className="w-7 h-7 text-primary-600" />
                   </div>
                   <div>
                     <h3 className="text-lg font-bold text-gray-900">Essai gratuit 90 jours</h3>
@@ -170,7 +170,7 @@ export default function SubscriptionModal({ isOpen, onClose }: SubscriptionModal
                   </div>
                   <button
                     onClick={handleActiverEssai}
-                    className="w-full flex items-center justify-center gap-2 bg-emerald-600 text-white py-3.5 rounded-xl font-semibold hover:bg-emerald-700 transition-colors text-lg"
+                    className="w-full flex items-center justify-center gap-2 bg-primary-600 text-white py-3.5 rounded-xl font-semibold hover:bg-primary-700 transition-colors text-lg"
                   >
                     <Gift className="w-5 h-5" />
                     Commencer l&apos;essai gratuit
@@ -199,7 +199,7 @@ export default function SubscriptionModal({ isOpen, onClose }: SubscriptionModal
                     <span className="text-lg text-gray-500 font-normal">€/an</span>
                   </div>
                   {enEssai && (
-                    <p className="text-sm text-purple-600 mt-1 font-medium">
+                    <p className="text-sm text-primary-600 mt-1 font-medium">
                       Passez au plan annuel pour continuer après votre essai
                     </p>
                   )}
@@ -209,8 +209,8 @@ export default function SubscriptionModal({ isOpen, onClose }: SubscriptionModal
                 <div className="space-y-3">
                   {avantages.map((a, i) => (
                     <div key={i} className="flex items-center gap-3 p-3 bg-gray-50 rounded-xl">
-                      <div className="w-10 h-10 bg-purple-100 rounded-xl flex items-center justify-center flex-shrink-0">
-                        <a.icon className="w-5 h-5 text-purple-600" />
+                      <div className="w-10 h-10 bg-primary-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                        <a.icon className="w-5 h-5 text-primary-600" />
                       </div>
                       <div>
                         <p className="text-sm font-semibold text-gray-900">{a.label}</p>
@@ -224,7 +224,7 @@ export default function SubscriptionModal({ isOpen, onClose }: SubscriptionModal
                 {/* Bouton payer par carte */}
                 <button
                   onClick={handlePayerParCarte}
-                  className={`w-full flex items-center justify-center gap-2 bg-indigo-600 text-white py-3.5 rounded-xl font-semibold hover:bg-indigo-700 transition-colors mt-4 ${dejaEuEssai || enEssai ? 'text-lg' : 'text-base'}`}
+                  className={`w-full flex items-center justify-center gap-2 bg-primary-600 text-white py-3.5 rounded-xl font-semibold hover:bg-primary-700 transition-colors mt-4 ${dejaEuEssai || enEssai ? 'text-lg' : 'text-base'}`}
                 >
                   <CreditCard className="w-5 h-5" />
                   {enEssai ? "Passer au plan annuel" : dejaEuEssai ? "Souscrire maintenant" : "Souscrire par carte"}

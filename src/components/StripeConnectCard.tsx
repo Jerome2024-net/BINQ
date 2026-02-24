@@ -72,19 +72,19 @@ export default function StripeConnectCard() {
         ? "border-green-200 bg-gradient-to-r from-green-50 to-emerald-50"
         : hasAccount
         ? "border-amber-200 bg-gradient-to-r from-amber-50 to-orange-50"
-        : "border-blue-200 bg-gradient-to-r from-blue-50 to-indigo-50"
+        : "border-primary-200 bg-gradient-to-r from-primary-50 to-primary-50/50"
     }`}>
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div className="flex items-center gap-4">
           <div className={`w-14 h-14 rounded-2xl flex items-center justify-center ${
-            isVerified ? "bg-green-100" : hasAccount ? "bg-amber-100" : "bg-blue-100"
+            isVerified ? "bg-green-100" : hasAccount ? "bg-amber-100" : "bg-primary-100"
           }`}>
             {isVerified ? (
               <ShieldCheck className="w-7 h-7 text-green-600" />
             ) : hasAccount ? (
               <AlertTriangle className="w-7 h-7 text-amber-600" />
             ) : (
-              <CreditCard className="w-7 h-7 text-blue-600" />
+              <CreditCard className="w-7 h-7 text-primary-600" />
             )}
           </div>
           <div>
@@ -133,7 +133,7 @@ export default function StripeConnectCard() {
             <button
               onClick={handleCreateAccount}
               disabled={isProcessing}
-              className="flex items-center gap-2 bg-blue-600 text-white px-5 py-2.5 rounded-xl font-semibold hover:bg-blue-700 transition-colors text-sm disabled:opacity-50"
+              className="flex items-center gap-2 bg-primary-600 text-white px-5 py-2.5 rounded-xl font-semibold hover:bg-primary-700 transition-colors text-sm disabled:opacity-50"
             >
               {isProcessing ? (
                 <Loader2 className="w-4 h-4 animate-spin" />

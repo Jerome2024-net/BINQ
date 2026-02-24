@@ -20,8 +20,8 @@ export default function HomePage() {
 
       {/* Hero */}
       <section className="relative overflow-hidden bg-gray-950 text-white">
-        <div className="absolute top-0 left-1/4 w-[600px] h-[600px] bg-indigo-600/20 rounded-full blur-[120px]" />
-        <div className="absolute bottom-0 right-1/4 w-[400px] h-[400px] bg-purple-400/10 rounded-full blur-[100px]" />
+        <div className="absolute top-0 left-1/4 w-[600px] h-[600px] bg-primary-600/20 rounded-full blur-[120px]" />
+        <div className="absolute bottom-0 right-1/4 w-[400px] h-[400px] bg-primary-400/10 rounded-full blur-[100px]" />
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 sm:py-28 md:py-40 relative">
           <div className="text-center max-w-3xl mx-auto">
@@ -33,7 +33,7 @@ export default function HomePage() {
             </div>
             <h1 className="text-4xl md:text-6xl lg:text-[68px] font-bold leading-[1.08] mb-6 tracking-tight">
               Contrôlez votre argent.{" "}
-              <span className="bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-primary-400 to-primary-400 bg-clip-text text-transparent">
                 Simplement
               </span>
               .
@@ -86,16 +86,16 @@ export default function HomePage() {
                 title: "Un wallet puissant",
                 description:
                   "Déposez, retirez et suivez votre solde en temps réel. EUR et USD supportés.",
-                bg: "bg-indigo-50",
-                color: "text-indigo-600",
+                bg: "bg-primary-50",
+                color: "text-primary-600",
               },
               {
                 icon: Zap,
                 title: "Des transferts instantanés",
                 description:
                   "Envoyez de l'argent à n'importe qui en quelques secondes, sans intermédiaire.",
-                bg: "bg-purple-50",
-                color: "text-purple-600",
+                bg: "bg-primary-50",
+                color: "text-primary-600",
               },
               {
                 icon: CreditCard,
@@ -146,7 +146,7 @@ export default function HomePage() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 relative">
-            <div className="hidden md:block absolute top-16 left-[16.67%] right-[16.67%] h-px bg-gradient-to-r from-indigo-200 via-indigo-300 to-indigo-200" />
+            <div className="hidden md:block absolute top-16 left-[16.67%] right-[16.67%] h-px bg-gradient-to-r from-primary-200 via-primary-300 to-primary-200" />
 
             {[
               {
@@ -166,7 +166,7 @@ export default function HomePage() {
               },
             ].map((step, i) => (
               <div key={i} className="relative text-center">
-                <div className="w-14 h-14 bg-gradient-to-br from-indigo-600 to-purple-700 rounded-2xl flex items-center justify-center mx-auto mb-5 shadow-glow relative z-10">
+                <div className="w-14 h-14 bg-gradient-to-br from-primary-600 to-primary-700 rounded-2xl flex items-center justify-center mx-auto mb-5 shadow-glow relative z-10">
                   <span className="text-white text-lg font-bold">{step.step}</span>
                 </div>
                 <h3 className="text-xl font-semibold text-gray-900 mb-2">
@@ -213,8 +213,8 @@ export default function HomePage() {
                 key={i}
                 className="bg-white rounded-2xl border border-gray-100/80 p-6 text-center"
               >
-                <div className="w-12 h-12 bg-indigo-50 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                  <item.icon className="w-6 h-6 text-indigo-600" />
+                <div className="w-12 h-12 bg-primary-50 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                  <item.icon className="w-6 h-6 text-primary-600" />
                 </div>
                 <h3 className="font-semibold text-gray-900 mb-1">{item.title}</h3>
                 <p className="text-gray-500 text-[15px]">{item.desc}</p>
@@ -264,7 +264,7 @@ export default function HomePage() {
                     key={i}
                     className="flex items-center gap-3 text-gray-300 text-[15px]"
                   >
-                    <CheckCircle2 className="w-4 h-4 text-indigo-400 flex-shrink-0" />
+                    <CheckCircle2 className="w-4 h-4 text-primary-400 flex-shrink-0" />
                     {text}
                   </li>
                 ))}
@@ -282,8 +282,8 @@ export default function HomePage() {
 
       {/* CTA */}
       <section className="py-16 sm:py-24 bg-gray-950 text-white relative overflow-hidden">
-        <div className="absolute top-0 left-1/3 w-[500px] h-[500px] bg-indigo-600/15 rounded-full blur-[120px]" />
-        <div className="absolute bottom-0 right-1/3 w-[300px] h-[300px] bg-purple-500/10 rounded-full blur-[80px]" />
+        <div className="absolute top-0 left-1/3 w-[500px] h-[500px] bg-primary-600/15 rounded-full blur-[120px]" />
+        <div className="absolute bottom-0 right-1/3 w-[300px] h-[300px] bg-primary-500/10 rounded-full blur-[80px]" />
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative">
           <h2 className="text-3xl md:text-5xl font-bold mb-5 tracking-tight">
             Prenez le contrôle de votre argent.

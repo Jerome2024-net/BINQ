@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState, useEffect, useCallback } from "react";
 import { Elements, PaymentElement, useStripe, useElements } from "@stripe/react-stripe-js";
@@ -61,7 +61,7 @@ interface Transaction {
   created_at: string;
 }
 
-const ICONES = ["💰", "🏠", "✈️", "🎓", "🚗", "💍", "🏥", "📱", "👶", "🎯", "🌍", "⭐"];
+const ICONES = ["ðŸ’°", "ðŸ ", "âœˆï¸", "ðŸŽ“", "ðŸš—", "ðŸ’", "ðŸ¥", "ðŸ“±", "ðŸ‘¶", "ðŸŽ¯", "ðŸŒ", "â­"];
 const COULEURS = ["#6366f1", "#8b5cf6", "#ec4899", "#f43f5e", "#f97316", "#eab308", "#22c55e", "#14b8a6", "#06b6d4", "#3b82f6"];
 
 function normalizeD(d?: string | null): "EUR" | "USD" {
@@ -94,7 +94,7 @@ export default function EpargnePage() {
       const data = await res.json();
       if (data.epargnes) setEpargnes(data.epargnes);
     } catch (err) {
-      console.error("Erreur chargement épargnes:", err);
+      console.error("Erreur chargement Ã©pargnes:", err);
     } finally {
       setLoading(false);
     }
@@ -126,12 +126,12 @@ export default function EpargnePage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
-        <Loader2 className="w-8 h-8 animate-spin text-indigo-500" />
+        <Loader2 className="w-8 h-8 animate-spin text-primary-500" />
       </div>
     );
   }
 
-  // ── Vue détaillée d'un compte ──
+  // â”€â”€ Vue dÃ©taillÃ©e d'un compte â”€â”€
   if (selectedEpargne) {
     const ep = selectedEpargne;
     const progress = ep.objectif_montant ? Math.min((Number(ep.solde) / Number(ep.objectif_montant)) * 100, 100) : 0;
@@ -155,7 +155,7 @@ export default function EpargnePage() {
           <div className="flex-1">
             <h1 className="text-lg font-bold text-gray-900">{ep.nom}</h1>
             <span className="text-xs text-gray-400 uppercase tracking-wider">
-              {ep.type === "libre" ? "Libre" : ep.type === "objectif" ? "Objectif" : "Programmée"} · {normalizeD(ep.devise)}
+              {ep.type === "libre" ? "Libre" : ep.type === "objectif" ? "Objectif" : "ProgrammÃ©e"} Â· {normalizeD(ep.devise)}
             </span>
           </div>
         </div>
@@ -177,7 +177,7 @@ export default function EpargnePage() {
               <p className="text-xs text-gray-400 mt-2">
                 Objectif : {formatDevise(Number(ep.objectif_montant), ep.devise)}
                 {ep.objectif_date && (
-                  <span className="ml-2">· Échéance {new Date(ep.objectif_date).toLocaleDateString("fr-FR")}</span>
+                  <span className="ml-2">Â· Ã‰chÃ©ance {new Date(ep.objectif_date).toLocaleDateString("fr-FR")}</span>
                 )}
               </p>
             </div>
@@ -193,7 +193,7 @@ export default function EpargnePage() {
           {ep.bloque_jusqu_a && new Date(ep.bloque_jusqu_a) > new Date() && (
             <div className="mt-3 inline-flex items-center gap-1.5 text-xs text-amber-600 bg-amber-50 px-3 py-1.5 rounded-lg">
               <Lock className="w-3 h-3" />
-              Bloquée jusqu&apos;au {new Date(ep.bloque_jusqu_a).toLocaleDateString("fr-FR")}
+              BloquÃ©e jusqu&apos;au {new Date(ep.bloque_jusqu_a).toLocaleDateString("fr-FR")}
             </div>
           )}
         </div>
@@ -205,7 +205,7 @@ export default function EpargnePage() {
             className="flex-1 flex items-center justify-center gap-2.5 py-3.5 bg-gray-900 text-white rounded-2xl font-semibold text-[15px] hover:bg-gray-800 active:scale-[0.98] transition-all"
           >
             <ArrowDownCircle className="w-5 h-5" />
-            Déposer
+            DÃ©poser
           </button>
           <button
             onClick={() => setShowWithdraw(true)}
@@ -250,7 +250,7 @@ export default function EpargnePage() {
           )}
         </div>
 
-        {/* Modal Dépôt */}
+        {/* Modal DÃ©pÃ´t */}
         {showDeposit && (
           <DepositModal
             epargne={ep}
@@ -289,20 +289,20 @@ export default function EpargnePage() {
     );
   }
 
-  // ── Vue principale : néobanque premium ──
+  // â”€â”€ Vue principale : nÃ©obanque premium â”€â”€
   return (
     <div className="max-w-3xl mx-auto space-y-6">
 
-      {/* ── Solde principal ── */}
+      {/* â”€â”€ Solde principal â”€â”€ */}
       <div className="text-center pt-2 pb-2">
-        <p className="text-sm font-medium text-gray-400 uppercase tracking-widest mb-3">Épargne totale</p>
+        <p className="text-sm font-medium text-gray-400 uppercase tracking-widest mb-3">Ã‰pargne totale</p>
         <div className="space-y-1">
           {epargnes.filter(e => e.devise !== "USD").length > 0 ? (
             <p className="text-4xl sm:text-5xl font-bold text-gray-900 tracking-tight">
               {formatDevise(epargnes.filter(e => e.devise !== "USD").reduce((sum, e) => sum + Number(e.solde), 0), "EUR")}
             </p>
           ) : (
-            <p className="text-4xl sm:text-5xl font-bold text-gray-900 tracking-tight">0,00 €</p>
+            <p className="text-4xl sm:text-5xl font-bold text-gray-900 tracking-tight">0,00 â‚¬</p>
           )}
           {epargnes.filter(e => e.devise === "USD").length > 0 && (
             <p className="text-xl font-semibold text-gray-400">
@@ -313,7 +313,7 @@ export default function EpargnePage() {
         <p className="text-sm text-gray-400 mt-2">{epargnes.length} compte{epargnes.length !== 1 ? "s" : ""} actif{epargnes.length !== 1 ? "s" : ""}</p>
       </div>
 
-      {/* ── Actions principales ── */}
+      {/* â”€â”€ Actions principales â”€â”€ */}
       <div className="flex gap-3">
         <button
           onClick={() => {
@@ -324,31 +324,31 @@ export default function EpargnePage() {
           className="flex-1 flex items-center justify-center gap-2.5 py-3.5 bg-gray-900 text-white rounded-2xl font-semibold text-[15px] hover:bg-gray-800 active:scale-[0.98] transition-all disabled:opacity-40 disabled:cursor-not-allowed"
         >
           <ArrowDownCircle className="w-5 h-5" />
-          Déposer
+          DÃ©poser
         </button>
         <button
           onClick={() => setShowCreate(true)}
           className="flex-1 flex items-center justify-center gap-2.5 py-3.5 bg-white border border-gray-200 text-gray-900 rounded-2xl font-semibold text-[15px] hover:bg-gray-50 active:scale-[0.98] transition-all"
         >
           <Plus className="w-5 h-5" />
-          Nouvelle épargne
+          Nouvelle Ã©pargne
         </button>
       </div>
 
-      {/* ── Mes comptes ── */}
+      {/* â”€â”€ Mes comptes â”€â”€ */}
       <div>
         <h2 className="text-sm font-semibold text-gray-400 uppercase tracking-widest mb-4">Mes comptes</h2>
 
         {epargnes.length === 0 ? (
           <button
             onClick={() => setShowCreate(true)}
-            className="w-full group bg-white rounded-2xl border border-dashed border-gray-200 hover:border-indigo-300 p-8 text-center transition-all"
+            className="w-full group bg-white rounded-2xl border border-dashed border-gray-200 hover:border-primary-300 p-8 text-center transition-all"
           >
-            <div className="w-14 h-14 bg-gray-50 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:bg-indigo-50 transition-colors">
-              <PiggyBank className="w-7 h-7 text-gray-300 group-hover:text-indigo-500 transition-colors" />
+            <div className="w-14 h-14 bg-gray-50 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:bg-primary-50 transition-colors">
+              <PiggyBank className="w-7 h-7 text-gray-300 group-hover:text-primary-500 transition-colors" />
             </div>
-            <p className="font-semibold text-gray-900 mb-1">Créez votre premier compte</p>
-            <p className="text-sm text-gray-400">Commencez à épargner pour vos projets</p>
+            <p className="font-semibold text-gray-900 mb-1">CrÃ©ez votre premier compte</p>
+            <p className="text-sm text-gray-400">Commencez Ã  Ã©pargner pour vos projets</p>
           </button>
         ) : (
           <div className="space-y-3">
@@ -363,7 +363,7 @@ export default function EpargnePage() {
                   onClick={() => setSelectedEpargne(ep)}
                   className="w-full group flex items-center gap-4 bg-white rounded-2xl border border-gray-100 hover:border-gray-200 p-4 sm:p-5 active:scale-[0.99] transition-all text-left"
                 >
-                  {/* Icône */}
+                  {/* IcÃ´ne */}
                   <div
                     className="w-12 h-12 rounded-2xl flex items-center justify-center flex-shrink-0 text-xl"
                     style={{ backgroundColor: (ep.couleur || "#6366f1") + "12" }}
@@ -397,7 +397,7 @@ export default function EpargnePage() {
                         {formatDevise(Number(ep.montant_auto), ep.devise)} / {ep.frequence_auto === "quotidien" ? "jour" : ep.frequence_auto === "hebdomadaire" ? "semaine" : "mois"}
                       </p>
                     ) : (
-                      <p className="text-xs text-gray-400">Épargne libre</p>
+                      <p className="text-xs text-gray-400">Ã‰pargne libre</p>
                     )}
                   </div>
 
@@ -407,19 +407,19 @@ export default function EpargnePage() {
               );
             })}
 
-            {/* Créer un compte — compact */}
+            {/* CrÃ©er un compte â€” compact */}
             <button
               onClick={() => setShowCreate(true)}
-              className="w-full flex items-center justify-center gap-2 py-3.5 text-sm font-semibold text-gray-400 hover:text-indigo-600 transition-colors"
+              className="w-full flex items-center justify-center gap-2 py-3.5 text-sm font-semibold text-gray-400 hover:text-primary-600 transition-colors"
             >
               <Plus className="w-4 h-4" />
-              Créer un nouveau compte
+              CrÃ©er un nouveau compte
             </button>
           </div>
         )}
       </div>
 
-      {/* Modal Créer */}
+      {/* Modal CrÃ©er */}
       {showCreate && (
         <CreateEpargneModal
           onClose={() => setShowCreate(false)}
@@ -433,9 +433,9 @@ export default function EpargnePage() {
   );
 }
 
-// ═══════════════════════════════════════════
-// COMPOSANT : Modal Création
-// ═══════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// COMPOSANT : Modal CrÃ©ation
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 function CreateEpargneModal({ onClose, onSuccess }: { onClose: () => void; onSuccess: () => void }) {
   const [nom, setNom] = useState("");
   const [type, setType] = useState<"libre" | "objectif" | "programmee">("libre");
@@ -445,7 +445,7 @@ function CreateEpargneModal({ onClose, onSuccess }: { onClose: () => void; onSuc
   const [frequenceAuto, setFrequenceAuto] = useState("mensuel");
   const [sourceAuto, setSourceAuto] = useState("wallet");
   const [bloqueJusqua, setBloqueJusqua] = useState("");
-  const [icone, setIcone] = useState("💰");
+  const [icone, setIcone] = useState("ðŸ’°");
   const [couleur, setCouleur] = useState("#6366f1");
   const [devise, setDevise] = useState<"EUR" | "USD">("EUR");
   const [loading, setLoading] = useState(false);
@@ -492,7 +492,7 @@ function CreateEpargneModal({ onClose, onSuccess }: { onClose: () => void; onSuc
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-3 sm:p-4" onClick={onClose}>
       <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
         <div className="flex items-center justify-between p-4 sm:p-6 border-b border-gray-100">
-          <h2 className="text-base sm:text-lg font-bold text-gray-900">Nouveau compte d&apos;épargne</h2>
+          <h2 className="text-base sm:text-lg font-bold text-gray-900">Nouveau compte d&apos;Ã©pargne</h2>
           <button onClick={onClose} className="p-2 rounded-lg hover:bg-gray-100">
             <X className="w-5 h-5 text-gray-400" />
           </button>
@@ -511,24 +511,24 @@ function CreateEpargneModal({ onClose, onSuccess }: { onClose: () => void; onSuc
               value={nom}
               onChange={(e) => setNom(e.target.value)}
               placeholder="Ex: Vacances, Maison, Urgences..."
-              className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 outline-none text-sm"
+              className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 outline-none text-sm"
             />
           </div>
 
           {/* Type */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1.5">Type d&apos;épargne</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1.5">Type d&apos;Ã©pargne</label>
             <div className="grid grid-cols-3 gap-2">
               {[
                 { value: "libre", label: "Libre", desc: "Sans contrainte" },
                 { value: "objectif", label: "Objectif", desc: "Avec but" },
-                { value: "programmee", label: "Programmée", desc: "Automatique" },
+                { value: "programmee", label: "ProgrammÃ©e", desc: "Automatique" },
               ].map((t) => (
                 <button
                   key={t.value}
                   onClick={() => setType(t.value as typeof type)}
                   className={`p-3 rounded-xl border-2 text-left transition-all ${
-                    type === t.value ? "border-indigo-500 bg-indigo-50" : "border-gray-200 hover:border-gray-300"
+                    type === t.value ? "border-primary-500 bg-primary-50" : "border-gray-200 hover:border-gray-300"
                   }`}
                 >
                   <p className="text-sm font-semibold text-gray-900">{t.label}</p>
@@ -543,14 +543,14 @@ function CreateEpargneModal({ onClose, onSuccess }: { onClose: () => void; onSuc
             <label className="block text-sm font-medium text-gray-700 mb-1.5">Devise</label>
             <div className="grid grid-cols-2 gap-2">
               {[
-                { value: "EUR", label: "EUR €", desc: "Euro" },
+                { value: "EUR", label: "EUR â‚¬", desc: "Euro" },
                 { value: "USD", label: "USD $", desc: "Dollar" },
               ].map((d) => (
                 <button
                   key={d.value}
                   onClick={() => setDevise(d.value as "EUR" | "USD")}
                   className={`p-3 rounded-xl border-2 text-left transition-all ${
-                    devise === d.value ? "border-indigo-500 bg-indigo-50" : "border-gray-200 hover:border-gray-300"
+                    devise === d.value ? "border-primary-500 bg-primary-50" : "border-gray-200 hover:border-gray-300"
                   }`}
                 >
                   <p className="text-sm font-semibold text-gray-900">{d.label}</p>
@@ -570,7 +570,7 @@ function CreateEpargneModal({ onClose, onSuccess }: { onClose: () => void; onSuc
                   value={objectifMontant}
                   onChange={(e) => setObjectifMontant(e.target.value)}
                   placeholder="500 000"
-                  className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 outline-none text-sm"
+                  className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 outline-none text-sm"
                 />
               </div>
               <div>
@@ -579,13 +579,13 @@ function CreateEpargneModal({ onClose, onSuccess }: { onClose: () => void; onSuc
                   type="date"
                   value={objectifDate}
                   onChange={(e) => setObjectifDate(e.target.value)}
-                  className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 outline-none text-sm"
+                  className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 outline-none text-sm"
                 />
               </div>
             </div>
           )}
 
-          {/* Programmée */}
+          {/* ProgrammÃ©e */}
           {type === "programmee" && (
             <div className="space-y-3">
               <div className="grid grid-cols-2 gap-3">
@@ -596,15 +596,15 @@ function CreateEpargneModal({ onClose, onSuccess }: { onClose: () => void; onSuc
                     value={montantAuto}
                     onChange={(e) => setMontantAuto(e.target.value)}
                     placeholder="10 000"
-                    className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 outline-none text-sm"
+                    className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 outline-none text-sm"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1.5">Fréquence</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1.5">FrÃ©quence</label>
                   <select
                     value={frequenceAuto}
                     onChange={(e) => setFrequenceAuto(e.target.value)}
-                    className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 outline-none text-sm"
+                    className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 outline-none text-sm"
                   >
                     <option value="quotidien">Quotidien</option>
                     <option value="hebdomadaire">Hebdomadaire</option>
@@ -618,7 +618,7 @@ function CreateEpargneModal({ onClose, onSuccess }: { onClose: () => void; onSuc
                   <button
                     onClick={() => setSourceAuto("wallet")}
                     className={`flex items-center gap-2 p-3 rounded-xl border-2 transition-all ${
-                      sourceAuto === "wallet" ? "border-indigo-500 bg-indigo-50" : "border-gray-200"
+                      sourceAuto === "wallet" ? "border-primary-500 bg-primary-50" : "border-gray-200"
                     }`}
                   >
                     <Wallet className="w-4 h-4" />
@@ -627,7 +627,7 @@ function CreateEpargneModal({ onClose, onSuccess }: { onClose: () => void; onSuc
                   <button
                     onClick={() => setSourceAuto("carte")}
                     className={`flex items-center gap-2 p-3 rounded-xl border-2 transition-all ${
-                      sourceAuto === "carte" ? "border-indigo-500 bg-indigo-50" : "border-gray-200"
+                      sourceAuto === "carte" ? "border-primary-500 bg-primary-50" : "border-gray-200"
                     }`}
                   >
                     <CreditCard className="w-4 h-4" />
@@ -647,21 +647,21 @@ function CreateEpargneModal({ onClose, onSuccess }: { onClose: () => void; onSuc
               type="date"
               value={bloqueJusqua}
               onChange={(e) => setBloqueJusqua(e.target.value)}
-              className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 outline-none text-sm"
+              className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 outline-none text-sm"
             />
           </div>
 
-          {/* Icône et Couleur */}
+          {/* IcÃ´ne et Couleur */}
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1.5">Icône</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1.5">IcÃ´ne</label>
               <div className="flex flex-wrap gap-1.5">
                 {ICONES.map((ic) => (
                   <button
                     key={ic}
                     onClick={() => setIcone(ic)}
                     className={`w-9 h-9 rounded-lg flex items-center justify-center text-lg transition-all ${
-                      icone === ic ? "bg-indigo-100 ring-2 ring-indigo-500" : "bg-gray-50 hover:bg-gray-100"
+                      icone === ic ? "bg-primary-100 ring-2 ring-primary-500" : "bg-gray-50 hover:bg-gray-100"
                     }`}
                   >
                     {ic}
@@ -677,7 +677,7 @@ function CreateEpargneModal({ onClose, onSuccess }: { onClose: () => void; onSuc
                     key={c}
                     onClick={() => setCouleur(c)}
                     className={`w-9 h-9 rounded-lg transition-all ${
-                      couleur === c ? "ring-2 ring-offset-2 ring-indigo-500" : ""
+                      couleur === c ? "ring-2 ring-offset-2 ring-primary-500" : ""
                     }`}
                     style={{ backgroundColor: c }}
                   />
@@ -695,10 +695,10 @@ function CreateEpargneModal({ onClose, onSuccess }: { onClose: () => void; onSuc
           <button
             onClick={handleSubmit}
             disabled={loading}
-            className="flex-1 py-3 rounded-xl bg-indigo-600 text-white font-semibold hover:bg-indigo-700 disabled:opacity-50 transition-colors flex items-center justify-center gap-2"
+            className="flex-1 py-3 rounded-xl bg-primary-600 text-white font-semibold hover:bg-primary-700 disabled:opacity-50 transition-colors flex items-center justify-center gap-2"
           >
             {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Plus className="w-5 h-5" />}
-            Créer
+            CrÃ©er
           </button>
         </div>
       </div>
@@ -706,9 +706,9 @@ function CreateEpargneModal({ onClose, onSuccess }: { onClose: () => void; onSuc
   );
 }
 
-// ═══════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 // COMPOSANT : Formulaire Stripe Elements pour ajouter une carte
-// ═══════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 function AddCardForm({ onSuccess, onCancel }: { onSuccess: () => void; onCancel: () => void }) {
   const stripe = useStripe();
   const elements = useElements();
@@ -765,7 +765,7 @@ function AddCardForm({ onSuccess, onCancel }: { onSuccess: () => void; onCancel:
         <button
           type="submit"
           disabled={!stripe || !elements || isSubmitting}
-          className="flex-1 py-3 rounded-xl bg-indigo-600 text-white font-semibold hover:bg-indigo-700 disabled:opacity-50 flex items-center justify-center gap-2"
+          className="flex-1 py-3 rounded-xl bg-primary-600 text-white font-semibold hover:bg-primary-700 disabled:opacity-50 flex items-center justify-center gap-2"
         >
           {isSubmitting ? <Loader2 className="w-5 h-5 animate-spin" /> : <ShieldCheck className="w-5 h-5" />}
           Enregistrer la carte
@@ -774,15 +774,15 @@ function AddCardForm({ onSuccess, onCancel }: { onSuccess: () => void; onCancel:
 
       <div className="flex items-center justify-center gap-2 text-xs text-gray-400">
         <ShieldCheck className="w-3.5 h-3.5" />
-        <span>Sécurisé par Stripe · Vos données ne sont jamais stockées sur nos serveurs</span>
+        <span>SÃ©curisÃ© par Stripe Â· Vos donnÃ©es ne sont jamais stockÃ©es sur nos serveurs</span>
       </div>
     </form>
   );
 }
 
-// ═══════════════════════════════════════════
-// COMPOSANT : Modal Dépôt
-// ═══════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// COMPOSANT : Modal DÃ©pÃ´t
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 function DepositModal({
   epargne,
   onClose,
@@ -846,7 +846,7 @@ function DepositModal({
     }
   };
 
-  // Après ajout réussi d'une carte
+  // AprÃ¨s ajout rÃ©ussi d'une carte
   const handleCardAdded = () => {
     setShowAddCard(false);
     setSetupClientSecret("");
@@ -860,7 +860,7 @@ function DepositModal({
       return;
     }
     if (source === "depot_carte" && !selectedCardId) {
-      setError("Veuillez sélectionner ou ajouter une carte");
+      setError("Veuillez sÃ©lectionner ou ajouter une carte");
       return;
     }
     setActionLoading(true);
@@ -874,7 +874,7 @@ function DepositModal({
           epargne_id: epargne.id,
           type: source,
           montant: m,
-          description: source === "depot_wallet" ? "Dépôt depuis portefeuille" : "Dépôt par carte",
+          description: source === "depot_wallet" ? "DÃ©pÃ´t depuis portefeuille" : "DÃ©pÃ´t par carte",
         }),
       });
 
@@ -890,17 +890,17 @@ function DepositModal({
 
   const brandIcon = (brand: string) => {
     const b = brand.toLowerCase();
-    if (b === "visa") return "💳 Visa";
-    if (b === "mastercard") return "💳 Mastercard";
-    if (b === "amex") return "💳 Amex";
-    return `💳 ${brand}`;
+    if (b === "visa") return "ðŸ’³ Visa";
+    if (b === "mastercard") return "ðŸ’³ Mastercard";
+    if (b === "amex") return "ðŸ’³ Amex";
+    return `ðŸ’³ ${brand}`;
   };
 
   return (
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-3 sm:p-4" onClick={onClose}>
       <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
         <div className="flex items-center justify-between p-4 sm:p-6 border-b border-gray-100">
-          <h2 className="text-base sm:text-lg font-bold text-gray-900">Déposer sur {epargne.nom}</h2>
+          <h2 className="text-base sm:text-lg font-bold text-gray-900">DÃ©poser sur {epargne.nom}</h2>
           <button onClick={onClose} className="p-2 rounded-lg hover:bg-gray-100">
             <X className="w-5 h-5 text-gray-400" />
           </button>
@@ -940,7 +940,7 @@ function DepositModal({
                   value={montant}
                   onChange={(e) => setMontant(e.target.value)}
                   placeholder="10 000"
-                  className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 outline-none text-lg font-semibold"
+                  className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 outline-none text-lg font-semibold"
                 />
               </div>
 
@@ -951,7 +951,7 @@ function DepositModal({
                   <button
                     onClick={() => setSource("depot_wallet")}
                     className={`flex items-center gap-2 p-3 rounded-xl border-2 transition-all ${
-                      source === "depot_wallet" ? "border-indigo-500 bg-indigo-50" : "border-gray-200 hover:border-gray-300"
+                      source === "depot_wallet" ? "border-primary-500 bg-primary-50" : "border-gray-200 hover:border-gray-300"
                     }`}
                   >
                     <Wallet className="w-5 h-5 text-gray-600" />
@@ -960,7 +960,7 @@ function DepositModal({
                   <button
                     onClick={() => setSource("depot_carte")}
                     className={`flex items-center gap-2 p-3 rounded-xl border-2 transition-all ${
-                      source === "depot_carte" ? "border-indigo-500 bg-indigo-50" : "border-gray-200 hover:border-gray-300"
+                      source === "depot_carte" ? "border-primary-500 bg-primary-50" : "border-gray-200 hover:border-gray-300"
                     }`}
                   >
                     <CreditCard className="w-5 h-5 text-gray-600" />
@@ -969,11 +969,11 @@ function DepositModal({
                 </div>
               </div>
 
-              {/* Récapitulatif frais 2% */}
+              {/* RÃ©capitulatif frais 2% */}
               {Number(montant) > 0 && (
                 <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 space-y-1">
                   <div className="flex justify-between text-sm text-gray-700">
-                    <span>Montant épargné</span>
+                    <span>Montant Ã©pargnÃ©</span>
                     <span className="font-medium">{formatDevise(Number(montant), epargne.devise)}</span>
                   </div>
                   <div className="flex justify-between text-sm text-amber-700">
@@ -981,13 +981,13 @@ function DepositModal({
                     <span className="font-medium">{formatDevise(Math.round(Number(montant) * 0.02 * 100) / 100, epargne.devise)}</span>
                   </div>
                   <div className="border-t border-amber-200 pt-1 flex justify-between text-sm font-bold text-gray-900">
-                    <span>Total débité</span>
+                    <span>Total dÃ©bitÃ©</span>
                     <span>{formatDevise(Number(montant) + Math.round(Number(montant) * 0.02 * 100) / 100, epargne.devise)}</span>
                   </div>
                 </div>
               )}
 
-              {/* Sélection / ajout de carte */}
+              {/* SÃ©lection / ajout de carte */}
               {source === "depot_carte" && (
                 <div className="space-y-3">
                   {loadingCartes ? (
@@ -996,27 +996,27 @@ function DepositModal({
                     </div>
                   ) : cartes.length > 0 ? (
                     <>
-                      <label className="block text-sm font-medium text-gray-700">Carte enregistrée</label>
+                      <label className="block text-sm font-medium text-gray-700">Carte enregistrÃ©e</label>
                       <div className="space-y-2">
                         {cartes.map((carte) => (
                           <button
                             key={carte.id}
                             onClick={() => setSelectedCardId(carte.id)}
                             className={`w-full flex items-center gap-3 p-3 rounded-xl border-2 transition-all text-left ${
-                              selectedCardId === carte.id ? "border-indigo-500 bg-indigo-50" : "border-gray-200 hover:border-gray-300"
+                              selectedCardId === carte.id ? "border-primary-500 bg-primary-50" : "border-gray-200 hover:border-gray-300"
                             }`}
                           >
                             <div className={`w-9 h-9 rounded-lg flex items-center justify-center ${
-                              selectedCardId === carte.id ? "bg-indigo-100" : "bg-gray-100"
+                              selectedCardId === carte.id ? "bg-primary-100" : "bg-gray-100"
                             }`}>
                               <CreditCard className="w-5 h-5 text-gray-600" />
                             </div>
                             <div className="flex-1">
                               <p className="text-sm font-medium text-gray-900">{brandIcon(carte.marque)}</p>
-                              <p className="text-xs text-gray-500">•••• {carte.last4} — Exp. {String(carte.exp_month).padStart(2, "0")}/{carte.exp_year}</p>
+                              <p className="text-xs text-gray-500">â€¢â€¢â€¢â€¢ {carte.last4} â€” Exp. {String(carte.exp_month).padStart(2, "0")}/{carte.exp_year}</p>
                             </div>
                             {selectedCardId === carte.id && (
-                              <CheckCircle2 className="w-5 h-5 text-indigo-600" />
+                              <CheckCircle2 className="w-5 h-5 text-primary-600" />
                             )}
                           </button>
                         ))}
@@ -1025,14 +1025,14 @@ function DepositModal({
                   ) : (
                     <div className="p-4 bg-gray-50 rounded-xl text-center">
                       <CreditCard className="w-8 h-8 text-gray-300 mx-auto mb-2" />
-                      <p className="text-sm text-gray-500">Aucune carte enregistrée</p>
+                      <p className="text-sm text-gray-500">Aucune carte enregistrÃ©e</p>
                     </div>
                   )}
 
                   <button
                     onClick={handleAddCard}
                     disabled={loadingSetup}
-                    className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl border-2 border-dashed border-gray-300 text-sm font-medium text-gray-600 hover:border-indigo-400 hover:text-indigo-600 hover:bg-indigo-50/50 transition-all"
+                    className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl border-2 border-dashed border-gray-300 text-sm font-medium text-gray-600 hover:border-primary-400 hover:text-primary-600 hover:bg-primary-50/50 transition-all"
                   >
                     {loadingSetup ? <Loader2 className="w-4 h-4 animate-spin" /> : <Plus className="w-4 h-4" />}
                     Ajouter une carte
@@ -1043,7 +1043,7 @@ function DepositModal({
           )}
         </div>
 
-        {/* Footer — caché pendant l'ajout de carte */}
+        {/* Footer â€” cachÃ© pendant l'ajout de carte */}
         {!showAddCard && (
           <div className="p-6 border-t border-gray-100 flex gap-3">
             <button onClick={onClose} className="flex-1 py-3 rounded-xl border-2 border-gray-200 font-semibold text-gray-600 hover:bg-gray-50">
@@ -1052,12 +1052,12 @@ function DepositModal({
             <button
               onClick={handleDeposit}
               disabled={actionLoading || (source === "depot_carte" && !selectedCardId)}
-              className="flex-1 py-3 rounded-xl bg-indigo-600 text-white font-semibold hover:bg-indigo-700 disabled:opacity-50 flex items-center justify-center gap-2"
+              className="flex-1 py-3 rounded-xl bg-primary-600 text-white font-semibold hover:bg-primary-700 disabled:opacity-50 flex items-center justify-center gap-2"
             >
               {actionLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : <ArrowDownCircle className="w-5 h-5" />}
               {Number(montant) > 0
-                ? `Déposer (${formatDevise(Number(montant) + Math.round(Number(montant) * 0.02 * 100) / 100, epargne.devise)})`
-                : "Déposer"
+                ? `DÃ©poser (${formatDevise(Number(montant) + Math.round(Number(montant) * 0.02 * 100) / 100, epargne.devise)})`
+                : "DÃ©poser"
               }
             </button>
           </div>
@@ -1067,9 +1067,9 @@ function DepositModal({
   );
 }
 
-// ═══════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 // COMPOSANT : Modal Retrait
-// ═══════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 function WithdrawModal({
   epargne,
   onClose,
@@ -1141,7 +1141,7 @@ function WithdrawModal({
             <div className="p-4 bg-amber-50 border border-amber-200 rounded-xl text-center">
               <Lock className="w-8 h-8 text-amber-500 mx-auto mb-2" />
               <p className="text-sm font-medium text-amber-800">
-                Épargne bloquée jusqu&apos;au {new Date(epargne.bloque_jusqu_a!).toLocaleDateString("fr-FR")}
+                Ã‰pargne bloquÃ©e jusqu&apos;au {new Date(epargne.bloque_jusqu_a!).toLocaleDateString("fr-FR")}
               </p>
             </div>
           ) : (
@@ -1153,19 +1153,19 @@ function WithdrawModal({
                   <button
                     onClick={() => setDestination("retrait")}
                     className={`flex items-center gap-2 p-3 rounded-xl border-2 transition-all ${
-                      destination === "retrait" ? "border-indigo-500 bg-indigo-50" : "border-gray-200 hover:border-gray-300"
+                      destination === "retrait" ? "border-primary-500 bg-primary-50" : "border-gray-200 hover:border-gray-300"
                     }`}
                   >
                     <Wallet className="w-5 h-5 text-gray-600" />
                     <div className="text-left">
                       <span className="text-sm font-medium block">Portefeuille</span>
-                      <span className="text-xs text-gray-400">Instantané</span>
+                      <span className="text-xs text-gray-400">InstantanÃ©</span>
                     </div>
                   </button>
                   <button
                     onClick={() => setDestination("retrait_banque")}
                     className={`flex items-center gap-2 p-3 rounded-xl border-2 transition-all ${
-                      destination === "retrait_banque" ? "border-indigo-500 bg-indigo-50" : "border-gray-200 hover:border-gray-300"
+                      destination === "retrait_banque" ? "border-primary-500 bg-primary-50" : "border-gray-200 hover:border-gray-300"
                     }`}
                   >
                     <Building className="w-5 h-5 text-gray-600" />
@@ -1179,7 +1179,7 @@ function WithdrawModal({
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1.5">
-                  Montant ({epargne.devise}) — Disponible : {formatDevise(Number(epargne.solde), epargne.devise)}
+                  Montant ({epargne.devise}) â€” Disponible : {formatDevise(Number(epargne.solde), epargne.devise)}
                 </label>
                 <input
                   type="number"
@@ -1187,12 +1187,12 @@ function WithdrawModal({
                   onChange={(e) => setMontant(e.target.value)}
                   max={Number(epargne.solde)}
                   placeholder="10 000"
-                  className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 outline-none text-lg font-semibold"
+                  className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 outline-none text-lg font-semibold"
                 />
               </div>
               <button
                 onClick={() => setMontant(String(Number(epargne.solde)))}
-                className="text-sm text-indigo-600 font-medium hover:underline"
+                className="text-sm text-primary-600 font-medium hover:underline"
               >
                 Retirer tout
               </button>
@@ -1200,7 +1200,7 @@ function WithdrawModal({
               {destination === "retrait_banque" && (
                 <div className="p-3 bg-blue-50 border border-blue-200 rounded-xl text-xs text-blue-700 flex items-start gap-2">
                   <Building className="w-4 h-4 mt-0.5 flex-shrink-0" />
-                  <span>Le virement sera envoyé vers votre compte bancaire vérifié via Stripe. Délai : 1 à 3 jours ouvrés.</span>
+                  <span>Le virement sera envoyÃ© vers votre compte bancaire vÃ©rifiÃ© via Stripe. DÃ©lai : 1 Ã  3 jours ouvrÃ©s.</span>
                 </div>
               )}
             </>

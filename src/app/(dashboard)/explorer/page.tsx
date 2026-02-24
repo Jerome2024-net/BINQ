@@ -155,19 +155,19 @@ export default function ExplorerPage() {
 
       {/* Info banner */}
       {!user && (
-        <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 flex items-center gap-3">
-          <Shield className="w-5 h-5 text-blue-600 flex-shrink-0" />
+        <div className="bg-primary-50 border border-primary-200 rounded-xl p-4 flex items-center gap-3">
+          <Shield className="w-5 h-5 text-primary-600 flex-shrink-0" />
           <div>
-            <p className="text-sm text-blue-800 font-medium">
+            <p className="text-sm text-primary-800 font-medium">
               Connectez-vous pour rejoindre une tontine
             </p>
-            <p className="text-xs text-blue-600 mt-0.5">
+            <p className="text-xs text-primary-600 mt-0.5">
               Vous pouvez parcourir les tontines disponibles, mais vous devez être connecté pour en rejoindre une.
             </p>
           </div>
           <Link
             href="/connexion"
-            className="ml-auto bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-blue-700 transition-colors flex-shrink-0"
+            className="ml-auto bg-primary-600 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-primary-700 transition-colors flex-shrink-0"
           >
             Se connecter
           </Link>

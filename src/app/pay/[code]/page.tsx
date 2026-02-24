@@ -122,7 +122,7 @@ export default function PayPage() {
     return (
       <div className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-950 flex items-center justify-center">
         <div className="text-center">
-          <Loader2 className="w-10 h-10 text-indigo-400 animate-spin mx-auto mb-4" />
+          <Loader2 className="w-10 h-10 text-primary-400 animate-spin mx-auto mb-4" />
           <p className="text-gray-400">Chargement du lien de paiement...</p>
         </div>
       </div>
@@ -141,7 +141,7 @@ export default function PayPage() {
           <p className="text-gray-400 mb-6">{error}</p>
           <Link
             href="/dashboard"
-            className="inline-flex items-center gap-2 bg-indigo-600 text-white px-6 py-3 rounded-xl font-semibold hover:bg-indigo-700 transition"
+            className="inline-flex items-center gap-2 bg-primary-600 text-white px-6 py-3 rounded-xl font-semibold hover:bg-primary-700 transition"
           >
             Retour à l&apos;accueil
           </Link>
@@ -171,7 +171,7 @@ export default function PayPage() {
           <p className="text-xs text-gray-500 mb-6">Réf: {paidRef}</p>
           <Link
             href="/dashboard/portefeuille"
-            className="inline-flex items-center gap-2 bg-indigo-600 text-white px-6 py-3 rounded-xl font-semibold hover:bg-indigo-700 transition"
+            className="inline-flex items-center gap-2 bg-primary-600 text-white px-6 py-3 rounded-xl font-semibold hover:bg-primary-700 transition"
           >
             <Wallet className="w-4 h-4" />
             Mon portefeuille
@@ -192,7 +192,7 @@ export default function PayPage() {
         {/* Logo */}
         <div className="text-center mb-8">
           <h2 className="text-2xl font-black text-white tracking-tight">
-            <span className="text-indigo-400">Binq</span> Pay
+            <span className="text-primary-400">Binq</span> Pay
           </h2>
           <p className="text-gray-500 text-sm mt-1">Paiement sécurisé entre particuliers</p>
         </div>
@@ -205,11 +205,11 @@ export default function PayPage() {
               <img
                 src={link.createur.avatar_url}
                 alt={link.createur.prenom}
-                className="w-16 h-16 rounded-full object-cover mb-3 ring-2 ring-indigo-500/30"
+                className="w-16 h-16 rounded-full object-cover mb-3 ring-2 ring-primary-500/30"
               />
             ) : (
-              <div className="w-16 h-16 rounded-full bg-indigo-600/30 flex items-center justify-center mb-3 ring-2 ring-indigo-500/30">
-                <span className="text-lg font-bold text-indigo-300">{creatorInitials}</span>
+              <div className="w-16 h-16 rounded-full bg-primary-600/30 flex items-center justify-center mb-3 ring-2 ring-primary-500/30">
+                <span className="text-lg font-bold text-primary-300">{creatorInitials}</span>
               </div>
             )}
             <p className="text-lg font-semibold text-white">
@@ -225,7 +225,7 @@ export default function PayPage() {
             {link.type === "send" ? (
               <>
                 <p className="text-sm text-gray-400 mb-1">Montant à récupérer</p>
-                <p className="text-3xl font-black text-emerald-400">
+                <p className="text-3xl font-black text-primary-400">
                   {formatMontant(link.montant!, link.devise)}
                 </p>
               </>
@@ -270,14 +270,14 @@ export default function PayPage() {
               </p>
               <Link
                 href={`/auth/login?redirect=/pay/${code}`}
-                className="w-full inline-flex items-center justify-center gap-2 bg-indigo-600 text-white px-6 py-3.5 rounded-xl font-bold hover:bg-indigo-700 transition"
+                className="w-full inline-flex items-center justify-center gap-2 bg-primary-600 text-white px-6 py-3.5 rounded-xl font-bold hover:bg-primary-700 transition"
               >
                 <LogIn className="w-5 h-5" />
                 Se connecter
               </Link>
               <p className="text-xs text-gray-500 mt-3">
                 Pas encore de compte ?{" "}
-                <Link href={`/auth/register?redirect=/pay/${code}`} className="text-indigo-400 hover:underline">
+                <Link href={`/auth/register?redirect=/pay/${code}`} className="text-primary-400 hover:underline">
                   Créer un compte
                 </Link>
               </p>
@@ -286,7 +286,7 @@ export default function PayPage() {
             <button
               onClick={handlePay}
               disabled={paying || (link.type !== "send" && !montantFixe && (!montantLibre || parseFloat(montantLibre) <= 0))}
-              className={`w-full flex items-center justify-center gap-2 ${link.type === "send" ? "bg-emerald-600 hover:bg-emerald-700" : "bg-indigo-600 hover:bg-indigo-700"} text-white py-3.5 rounded-xl font-bold transition disabled:opacity-50 disabled:cursor-not-allowed`}
+              className={`w-full flex items-center justify-center gap-2 ${link.type === "send" ? "bg-primary-600 hover:bg-primary-700" : "bg-primary-600 hover:bg-primary-700"} text-white py-3.5 rounded-xl font-bold transition disabled:opacity-50 disabled:cursor-not-allowed`}
             >
               {paying ? (
                 <Loader2 className="w-5 h-5 animate-spin" />
