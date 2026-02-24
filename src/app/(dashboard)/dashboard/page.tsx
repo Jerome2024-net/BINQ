@@ -5,18 +5,19 @@ import { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useFinance } from "@/contexts/FinanceContext";
 import { DashboardSkeleton } from "@/components/Skeleton";
-import { formatMontant } from "@/lib/data";
+import { formatMontant, formatDate } from "@/lib/data";
 import {
-  TrendingUp,
+  Eye,
+  EyeOff,
   ArrowRight,
-  Wallet,
-  ArrowDownToLine,
-  PiggyBank,
+  ArrowUpRight,
+  ArrowDownLeft,
   Plus,
-  Target,
-  Sparkles,
+  Minus,
+  Send,
   CreditCard,
-  History,
+  PiggyBank,
+  LinkIcon,
 } from "lucide-react";
 
 interface Epargne {
@@ -34,16 +35,20 @@ interface Epargne {
 
 export default function DashboardPage() {
   const { user } = useAuth();
-  const { wallet, getOrCreateWallet, isLoading: financeLoading } = useFinance();
+  const {
+    wallet,
+    getOrCreateWallet,
+    getTransactions,
+    getFinancialSummary,
+    isLoading: financeLoading,
+  } = useFinance();
 
   const [epargnes, setEpargnes] = useState<Epargne[]>([]);
   const [epargneLoading, setEpargneLoading] = useState(true);
+  const [showSolde, setShowSolde] = useState(true);
 
-  // Initialiser le wallet
   useEffect(() => {
-    if (user) {
-      getOrCreateWallet();
-    }
+    if (user) getOrCreateWallet();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
@@ -63,200 +68,260 @@ export default function DashboardPage() {
     charger();
   }, []);
 
+  const soldeWallet = wallet?.solde ?? 0;
+  const recentTx = getTransactions({ limit: 5 });
+  const summary = getFinancialSummary();
+
   const totalEpargneEUR = epargnes
     .filter((e) => e.devise !== "USD")
     .reduce((acc, e) => acc + Number(e.solde), 0);
-  
   const totalEpargneUSD = epargnes
     .filter((e) => e.devise === "USD")
     .reduce((acc, e) => acc + Number(e.solde), 0);
-
   const comptesActifs = epargnes.filter((e) => e.statut === "active");
+
+  const isCredit = (type: string) =>
+    ["depot", "remboursement", "transfert_entrant"].includes(type);
+
+  const getTransactionLabel = (type: string) => {
+    const labels: Record<string, string> = {
+      depot: "Dépôt",
+      retrait: "Retrait",
+      remboursement: "Remboursement",
+      transfert_entrant: "Reçu",
+      transfert_sortant: "Envoyé",
+    };
+    return labels[type] || type;
+  };
 
   if (financeLoading || epargneLoading) {
     return <DashboardSkeleton />;
   }
 
   return (
-    <div className="space-y-8 max-w-7xl mx-auto">
-      {/* Welcome Header with Glassmorphism */}
-      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-indigo-600 to-violet-600 p-6 sm:p-8 text-white shadow-xl shadow-indigo-200">
-        <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3"></div>
-        <div className="absolute bottom-0 left-0 w-40 h-40 bg-indigo-500/30 rounded-full blur-2xl translate-y-1/3 -translate-x-1/4"></div>
-        
-        <div className="relative z-10">
-          <h1 className="text-2xl sm:text-3xl font-bold mb-2">
-            {new Date().getHours() < 12 ? "Bonjour" : new Date().getHours() < 18 ? "Bon après-midi" : "Bonsoir"}, {user?.prenom || "là"} 👋
-          </h1>
-          <p className="text-indigo-100 max-w-lg mb-6 text-base sm:text-lg">
-            Heureux de vous revoir. Voici un aperçu de vos finances aujourd&apos;hui.
+    <div className="max-w-2xl mx-auto space-y-8 pb-12">
+
+      {/* ── 1. Wallet Hero ── */}
+      <div className="pt-8 pb-2 text-center">
+        <p className="text-xs font-medium uppercase tracking-widest text-gray-400 mb-1">
+          Bonjour, {user?.prenom || "là"}
+        </p>
+        <p className="text-xs text-gray-400 mb-5">Solde disponible</p>
+        <div className="flex items-center justify-center gap-3">
+          <p className="text-5xl sm:text-6xl font-extrabold text-gray-900 tracking-tight tabular-nums">
+            {showSolde ? formatMontant(soldeWallet) : "••••••"}
           </p>
-
-          <div className="flex flex-wrap gap-4">
-            <div className="flex items-center gap-3 bg-white/10 backdrop-blur-md rounded-2xl p-3 sm:p-4 border border-white/10 min-w-[160px] sm:min-w-[200px]">
-              <div className="w-9 h-9 sm:w-10 sm:h-10 bg-white/20 rounded-xl flex items-center justify-center">
-                <Wallet className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
-              </div>
-              <div>
-                <p className="text-[10px] sm:text-xs text-indigo-100 font-medium uppercase tracking-wider">Portefeuille</p>
-                <p className="text-xl sm:text-2xl font-bold">{formatMontant(wallet?.solde ?? 0)}</p>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-3 bg-white/10 backdrop-blur-md rounded-2xl p-3 sm:p-4 border border-white/10 min-w-[160px] sm:min-w-[200px]">
-              <div className="w-9 h-9 sm:w-10 sm:h-10 bg-white/20 rounded-xl flex items-center justify-center">
-                <PiggyBank className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
-              </div>
-              <div>
-                <p className="text-[10px] sm:text-xs text-indigo-100 font-medium uppercase tracking-wider">Épargne Total</p>
-                <div className="flex flex-col">
-                  {/* Si on a des EUR */}
-                  {(totalEpargneEUR > 0 || totalEpargneUSD === 0) && (
-                    <span className="text-xl font-bold">{formatMontant(totalEpargneEUR, "EUR")}</span>
-                  )}
-                  {/* Si on a des USD */}
-                  {totalEpargneUSD > 0 && (
-                    <span className="text-xl font-bold">{formatMontant(totalEpargneUSD, "USD")}</span>
-                  )}
-                </div>
-              </div>
-            </div>
-          </div>
+          <button
+            onClick={() => setShowSolde(!showSolde)}
+            className="p-2 rounded-full hover:bg-gray-100 transition"
+          >
+            {showSolde ? (
+              <EyeOff className="w-5 h-5 text-gray-400" />
+            ) : (
+              <Eye className="w-5 h-5 text-gray-400" />
+            )}
+          </button>
         </div>
       </div>
 
-      {/* Quick Actions Grid */}
-      <h2 className="text-lg font-bold text-gray-900">Actions Rapides</h2>
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-        <Link href="/dashboard/epargne" className="group flex flex-col items-center justify-center gap-2 sm:gap-3 p-4 sm:p-6 bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md hover:border-indigo-100 transition-all duration-300">
-          <div className="w-11 h-11 sm:w-14 sm:h-14 bg-indigo-50 rounded-2xl flex items-center justify-center group-hover:bg-indigo-100 transition-all group-hover:scale-110 duration-300">
-            <Plus className="w-5 h-5 sm:w-7 sm:h-7 text-indigo-600" />
-          </div>
-          <span className="font-semibold text-xs sm:text-base text-gray-700 group-hover:text-indigo-700 transition-colors text-center">Nouvelle Épargne</span>
+      {/* ── Actions rapides ── */}
+      <div className="grid grid-cols-4 gap-3">
+        <Link
+          href="/portefeuille"
+          className="flex flex-col items-center gap-2.5 py-5 rounded-2xl bg-gray-900 text-white hover:bg-gray-800 transition-colors"
+        >
+          <Send className="w-5 h-5" />
+          <span className="text-xs font-semibold">Envoyer</span>
         </Link>
-        
-        <Link href="/portefeuille" className="group flex flex-col items-center justify-center gap-2 sm:gap-3 p-4 sm:p-6 bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md hover:border-emerald-100 transition-all duration-300">
-          <div className="w-11 h-11 sm:w-14 sm:h-14 bg-emerald-50 rounded-2xl flex items-center justify-center group-hover:bg-emerald-100 transition-all group-hover:scale-110 duration-300">
-            <ArrowDownToLine className="w-5 h-5 sm:w-7 sm:h-7 text-emerald-600" />
-          </div>
-          <span className="font-semibold text-xs sm:text-base text-gray-700 group-hover:text-emerald-700 transition-colors text-center">Déposer</span>
+        <Link
+          href="/portefeuille"
+          className="flex flex-col items-center gap-2.5 py-5 rounded-2xl bg-gray-900 text-white hover:bg-gray-800 transition-colors"
+        >
+          <ArrowDownLeft className="w-5 h-5" />
+          <span className="text-xs font-semibold">Recevoir</span>
         </Link>
-        
-        <Link href="/transactions" className="group flex flex-col items-center justify-center gap-2 sm:gap-3 p-4 sm:p-6 bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md hover:border-amber-100 transition-all duration-300">
-          <div className="w-11 h-11 sm:w-14 sm:h-14 bg-amber-50 rounded-2xl flex items-center justify-center group-hover:bg-amber-100 transition-all group-hover:scale-110 duration-300">
-            <History className="w-5 h-5 sm:w-7 sm:h-7 text-amber-600" />
-          </div>
-          <span className="font-semibold text-xs sm:text-base text-gray-700 group-hover:text-amber-700 transition-colors text-center">Historique</span>
+        <Link
+          href="/portefeuille"
+          className="flex flex-col items-center gap-2.5 py-5 rounded-2xl border border-gray-200 bg-white text-gray-900 hover:bg-gray-50 transition-colors"
+        >
+          <Plus className="w-5 h-5" />
+          <span className="text-xs font-semibold">Déposer</span>
         </Link>
-
-        {/* Placeholder for future feature or Card Setup */}
-        <Link href="/dashboard/parametres" className="group flex flex-col items-center justify-center gap-2 sm:gap-3 p-4 sm:p-6 bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md hover:border-gray-200 transition-all duration-300">
-           <div className="w-11 h-11 sm:w-14 sm:h-14 bg-gray-50 rounded-2xl flex items-center justify-center group-hover:bg-gray-100 transition-all group-hover:scale-110 duration-300">
-             <CreditCard className="w-5 h-5 sm:w-7 sm:h-7 text-gray-600" />
-           </div>
-           <span className="font-semibold text-xs sm:text-base text-gray-700 group-hover:text-gray-900 transition-colors text-center">Gérer Cartes</span>
+        <Link
+          href="/portefeuille"
+          className="flex flex-col items-center gap-2.5 py-5 rounded-2xl border border-gray-200 bg-white text-gray-900 hover:bg-gray-50 transition-colors"
+        >
+          <Minus className="w-5 h-5" />
+          <span className="text-xs font-semibold">Retirer</span>
         </Link>
       </div>
 
-      {/* Mes Comptes Épargne Section */}
-      <div>
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="text-xl font-bold text-gray-900 flex items-center gap-2">
-            Mes Comptes
+      {/* ── 2. Activité récente ── */}
+      <div className="bg-white rounded-2xl border border-gray-200">
+        <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100">
+          <h2 className="text-sm font-semibold text-gray-900 uppercase tracking-wide">
+            Activité récente
           </h2>
-          <Link href="/dashboard/epargne" className="text-indigo-600 hover:text-indigo-700 font-medium flex items-center gap-1 hover:gap-2 transition-all">
-            Tout voir <ArrowRight className="w-4 h-4" />
+          <Link
+            href="/transactions"
+            className="text-xs font-medium text-gray-400 hover:text-gray-600 flex items-center gap-1 transition-colors"
+          >
+            Tout voir <ArrowRight className="w-3.5 h-3.5" />
           </Link>
         </div>
 
-        {epargnes.length === 0 ? (
-          <div className="bg-white rounded-3xl border border-gray-100 p-12 text-center">
-            <div className="w-24 h-24 bg-indigo-50 rounded-full flex items-center justify-center mx-auto mb-6">
-              <Sparkles className="w-12 h-12 text-indigo-400" />
-            </div>
-            <h3 className="text-xl font-bold text-gray-900 mb-2">Commencez votre aventure</h3>
-            <p className="text-gray-500 mb-8 max-w-md mx-auto">
-              Créez votre premier compte épargne pour commencer à mettre de l&apos;argent de côté et réaliser vos projets.
-            </p>
-            <Link href="/dashboard/epargne" className="btn-primary inline-flex items-center gap-2 px-8 py-4 text-lg rounded-2xl shadow-lg shadow-indigo-200 hover:shadow-indigo-300 transition-all hover:-translate-y-1">
-              <Plus className="w-6 h-6" />
-              Créer un compte
-            </Link>
+        {recentTx.length === 0 ? (
+          <div className="text-center py-14 px-5">
+            <p className="text-sm font-medium text-gray-900 mb-1">Aucune activité</p>
+            <p className="text-xs text-gray-400">Vos transactions apparaîtront ici</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {comptesActifs.map((ep) => {
+          <div className="divide-y divide-gray-50">
+            {recentTx.map((tx) => (
+              <div key={tx.id} className="flex items-center gap-4 px-5 py-3.5">
+                <div className={`w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 ${
+                  isCredit(tx.type) ? "bg-green-50" : "bg-gray-100"
+                }`}>
+                  {isCredit(tx.type)
+                    ? <ArrowDownLeft className="w-4 h-4 text-green-600" />
+                    : <ArrowUpRight className="w-4 h-4 text-gray-500" />
+                  }
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-medium text-gray-900 truncate">{tx.description}</p>
+                  <p className="text-xs text-gray-400 mt-0.5">
+                    {getTransactionLabel(tx.type)} · {formatDate(tx.dateCreation)}
+                  </p>
+                </div>
+                <p className={`text-sm font-semibold tabular-nums whitespace-nowrap ${
+                  isCredit(tx.type) ? "text-green-600" : "text-gray-900"
+                }`}>
+                  {isCredit(tx.type) ? "+" : "-"}{tx.montant.toLocaleString("fr-FR")} €
+                </p>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* ── 3. Produits financiers ── */}
+      <div className="bg-white rounded-2xl border border-gray-200">
+        <div className="px-5 py-4 border-b border-gray-100">
+          <h2 className="text-sm font-semibold text-gray-900 uppercase tracking-wide">Vos produits</h2>
+        </div>
+        <div className="divide-y divide-gray-100">
+          <Link href="/portefeuille" className="flex items-center gap-4 px-5 py-4 hover:bg-gray-50 transition-colors">
+            <div className="w-10 h-10 rounded-full bg-gray-900 flex items-center justify-center flex-shrink-0">
+              <Send className="w-4 h-4 text-white" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-medium text-gray-900">Portefeuille</p>
+              <p className="text-xs text-gray-400">Transferts, paiements, liens</p>
+            </div>
+            <p className="text-sm font-semibold text-gray-900 tabular-nums">{formatMontant(soldeWallet)}</p>
+            <ArrowRight className="w-4 h-4 text-gray-300 flex-shrink-0" />
+          </Link>
+
+          <Link href="/dashboard/epargne" className="flex items-center gap-4 px-5 py-4 hover:bg-gray-50 transition-colors">
+            <div className="w-10 h-10 rounded-full bg-gray-900 flex items-center justify-center flex-shrink-0">
+              <PiggyBank className="w-4 h-4 text-white" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-medium text-gray-900">Épargne</p>
+              <p className="text-xs text-gray-400">{comptesActifs.length} compte{comptesActifs.length !== 1 ? "s" : ""} actif{comptesActifs.length !== 1 ? "s" : ""}</p>
+            </div>
+            <div className="text-right">
+              {(totalEpargneEUR > 0 || totalEpargneUSD === 0) && (
+                <p className="text-sm font-semibold text-gray-900 tabular-nums">{formatMontant(totalEpargneEUR, "EUR")}</p>
+              )}
+              {totalEpargneUSD > 0 && (
+                <p className="text-sm font-semibold text-gray-900 tabular-nums">{formatMontant(totalEpargneUSD, "USD")}</p>
+              )}
+            </div>
+            <ArrowRight className="w-4 h-4 text-gray-300 flex-shrink-0" />
+          </Link>
+
+          <Link href="/dashboard/cagnottes" className="flex items-center gap-4 px-5 py-4 hover:bg-gray-50 transition-colors">
+            <div className="w-10 h-10 rounded-full bg-gray-900 flex items-center justify-center flex-shrink-0">
+              <LinkIcon className="w-4 h-4 text-white" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-medium text-gray-900">Cagnottes</p>
+              <p className="text-xs text-gray-400">Collectes de groupe</p>
+            </div>
+            <ArrowRight className="w-4 h-4 text-gray-300 flex-shrink-0" />
+          </Link>
+
+          <Link href="/dashboard/parametres" className="flex items-center gap-4 px-5 py-4 hover:bg-gray-50 transition-colors">
+            <div className="w-10 h-10 rounded-full bg-gray-900 flex items-center justify-center flex-shrink-0">
+              <CreditCard className="w-4 h-4 text-white" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-medium text-gray-900">Cartes</p>
+              <p className="text-xs text-gray-400">Carte virtuelle et physique</p>
+            </div>
+            <ArrowRight className="w-4 h-4 text-gray-300 flex-shrink-0" />
+          </Link>
+        </div>
+      </div>
+
+      {/* ── 4. Comptes épargne (aperçu compact) ── */}
+      {comptesActifs.length > 0 && (
+        <div className="bg-white rounded-2xl border border-gray-200">
+          <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100">
+            <h2 className="text-sm font-semibold text-gray-900 uppercase tracking-wide">Épargne</h2>
+            <Link href="/dashboard/epargne" className="text-xs font-medium text-gray-400 hover:text-gray-600 flex items-center gap-1 transition-colors">
+              Gérer <ArrowRight className="w-3.5 h-3.5" />
+            </Link>
+          </div>
+          <div className="divide-y divide-gray-50">
+            {comptesActifs.slice(0, 3).map((ep) => {
               const progression = ep.objectif_montant
                 ? Math.min(100, Math.round((Number(ep.solde) / ep.objectif_montant) * 100))
-                : 0;
-              
-              const isEUR = ep.devise !== "USD";
+                : null;
 
               return (
-                <Link
-                  key={ep.id}
-                  href="/dashboard/epargne"
-                  className="group relative overflow-hidden bg-white p-6 rounded-3xl border border-gray-100 hover:border-indigo-100 shadow-sm hover:shadow-xl hover:shadow-indigo-100/50 transition-all duration-300"
-                >
-                  <div className="flex justify-between items-start mb-6">
-                    <div className="w-12 h-12 rounded-2xl flex items-center justify-center text-2xl bg-gray-50 group-hover:scale-110 transition-transform duration-300" style={{ backgroundColor: (ep.couleur || "#6366f1") + "15", color: ep.couleur || "#6366f1" }}>
-                      {ep.icone || "💰"}
-                    </div>
-                    <span className={`px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider ${
-                      ep.type === "objectif" ? "bg-amber-50 text-amber-700" : 
-                      ep.type === "programmee" ? "bg-purple-50 text-purple-700" : 
-                      "bg-indigo-50 text-indigo-700"
-                    }`}>
-                      {ep.devise === "USD" ? "USD" : "EUR"}
-                    </span>
-                  </div>
-
-                  <h3 className="text-lg font-bold text-gray-900 mb-1 line-clamp-1">{ep.nom}</h3>
-                  <p className="text-sm text-gray-500 mb-4 capitalize">{(ep.type || "libre").replace("_", " ")}</p>
-                  
-                  <div className="flex items-baseline gap-1 mb-4">
-                    <span className="text-2xl font-bold text-gray-900">
-                      {formatMontant(ep.solde, ep.devise)}
-                    </span>
-                  </div>
-
-                  {ep.objectif_montant && (
-                    <div className="space-y-2">
-                      <div className="flex justify-between text-xs font-medium text-gray-500">
-                        <span>Progression</span>
-                        <span className="text-indigo-600">{progression}%</span>
+                <Link key={ep.id} href="/dashboard/epargne" className="flex items-center gap-4 px-5 py-3.5 hover:bg-gray-50 transition-colors">
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium text-gray-900 truncate">{ep.nom}</p>
+                    {progression !== null ? (
+                      <div className="flex items-center gap-2 mt-1.5">
+                        <div className="flex-1 h-1.5 bg-gray-100 rounded-full overflow-hidden">
+                          <div className="h-full rounded-full bg-gray-900" style={{ width: `${progression}%` }} />
+                        </div>
+                        <span className="text-xs text-gray-400 tabular-nums">{progression}%</span>
                       </div>
-                      <div className="h-2 w-full bg-gray-100 rounded-full overflow-hidden">
-                        <div 
-                          className="h-full rounded-full transition-all duration-1000 ease-out group-hover:opacity-100"
-                          style={{ 
-                            width: `${progression}%`, 
-                            backgroundColor: ep.couleur || "#6366f1" 
-                          }} 
-                        />
-                      </div>
-                    </div>
-                  )}
-
-                  {!ep.objectif_montant && (
-                    <div className="flex items-center gap-2 text-xs font-medium text-green-600 bg-green-50 px-3 py-2 rounded-lg w-fit">
-                      <Sparkles className="w-3 h-3" />
-                      Épargne libre
-                    </div>
-                  )}
+                    ) : (
+                      <p className="text-xs text-gray-400 mt-0.5">Épargne libre</p>
+                    )}
+                  </div>
+                  <p className="text-sm font-semibold text-gray-900 tabular-nums whitespace-nowrap">{formatMontant(ep.solde, ep.devise)}</p>
                 </Link>
               );
             })}
-            
-            {/* Carte "Créer nouveau" à la fin de la liste */}
-            <Link href="/dashboard/epargne" className="group flex flex-col items-center justify-center p-6 rounded-3xl border-2 border-dashed border-gray-200 hover:border-indigo-300 hover:bg-indigo-50/30 transition-all duration-300 min-h-[200px]">
-              <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform duration-300 mb-4 text-indigo-600">
-                <Plus className="w-8 h-8" />
-              </div>
-              <span className="font-semibold text-gray-600 group-hover:text-indigo-700">Créer un nouveau compte</span>
-            </Link>
           </div>
-        )}
+        </div>
+      )}
+
+      {/* ── 5. Résumé global ── */}
+      <div className="bg-white rounded-2xl border border-gray-200">
+        <div className="px-5 py-4 border-b border-gray-100">
+          <h2 className="text-sm font-semibold text-gray-900 uppercase tracking-wide">Résumé</h2>
+        </div>
+        <div className="divide-y divide-gray-100">
+          <div className="flex items-center justify-between px-5 py-4">
+            <span className="text-sm text-gray-500">Total déposé</span>
+            <span className="text-sm font-semibold text-gray-900">{formatMontant(summary.totalDepose)}</span>
+          </div>
+          <div className="flex items-center justify-between px-5 py-4">
+            <span className="text-sm text-gray-500">Total retiré</span>
+            <span className="text-sm font-semibold text-gray-900">{formatMontant(summary.totalRetire)}</span>
+          </div>
+          <div className="flex items-center justify-between px-5 py-4">
+            <span className="text-sm text-gray-500">Transactions</span>
+            <span className="text-sm font-semibold text-gray-900">{summary.nombreTransactions}</span>
+          </div>
+        </div>
       </div>
     </div>
   );
