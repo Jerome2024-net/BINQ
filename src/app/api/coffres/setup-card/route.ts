@@ -11,7 +11,7 @@ function getServiceClient() {
 }
 
 /**
- * POST /api/epargne/setup-card
+ * POST /api/coffres/setup-card
  * Crée un SetupIntent Stripe pour enregistrer une carte de paiement.
  * La carte est liée au customer Stripe de l'utilisateur pour les futurs dépôts épargne.
  */
@@ -69,7 +69,7 @@ export async function POST(request: NextRequest) {
 }
 
 /**
- * GET /api/epargne/setup-card
+ * GET /api/coffres/setup-card
  * Liste les cartes enregistrées du customer Stripe
  */
 export async function GET() {

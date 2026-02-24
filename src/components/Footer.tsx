@@ -17,7 +17,7 @@ export default function Footer() {
               </span>
             </div>
             <p className="text-gray-500 text-[14px] leading-relaxed mb-6">
-              La plateforme digitale pour épargner en toute
+              La plateforme digitale pour gérer votre argent en toute
               simplicité et sécurité.
             </p>
             <div className="flex items-center gap-4">

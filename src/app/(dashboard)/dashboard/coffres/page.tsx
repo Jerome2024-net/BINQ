@@ -90,7 +90,7 @@ export default function EpargnePage() {
 
   const chargerEpargnes = useCallback(async () => {
     try {
-      const res = await fetch("/api/epargne");
+      const res = await fetch("/api/coffres");
       const data = await res.json();
       if (data.epargnes) setEpargnes(data.epargnes);
     } catch (err) {
@@ -103,7 +103,7 @@ export default function EpargnePage() {
   const chargerTransactions = useCallback(async (epargneId: string) => {
     setLoadingTx(true);
     try {
-      const res = await fetch(`/api/epargne/transaction?epargne_id=${epargneId}`);
+      const res = await fetch(`/api/coffres/transaction?epargne_id=${epargneId}`);
       const data = await res.json();
       if (data.transactions) setTransactions(data.transactions);
     } catch (err) {
@@ -460,7 +460,7 @@ function CreateEpargneModal({ onClose, onSuccess }: { onClose: () => void; onSuc
     setError("");
 
     try {
-      const res = await fetch("/api/epargne", {
+      const res = await fetch("/api/coffres", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -726,7 +726,7 @@ function AddCardForm({ onSuccess, onCancel }: { onSuccess: () => void; onCancel:
       const { error } = await stripe.confirmSetup({
         elements,
         confirmParams: {
-          return_url: `${window.location.origin}/dashboard/epargne`,
+          return_url: `${window.location.origin}/dashboard/coffres`,
         },
         redirect: "if_required",
       });
@@ -810,7 +810,7 @@ function DepositModal({
   const chargerCartes = useCallback(async () => {
     setLoadingCartes(true);
     try {
-      const res = await fetch("/api/epargne/setup-card");
+      const res = await fetch("/api/coffres/setup-card");
       const data = await res.json();
       if (data.cartes) {
         setCartes(data.cartes);
@@ -834,7 +834,7 @@ function DepositModal({
     setLoadingSetup(true);
     setError("");
     try {
-      const res = await fetch("/api/epargne/setup-card", { method: "POST" });
+      const res = await fetch("/api/coffres/setup-card", { method: "POST" });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error);
       setSetupClientSecret(data.clientSecret);
@@ -867,7 +867,7 @@ function DepositModal({
     setError("");
 
     try {
-      const res = await fetch("/api/epargne/transaction", {
+      const res = await fetch("/api/coffres/transaction", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -1103,7 +1103,7 @@ function WithdrawModal({
     setError("");
 
     try {
-      const res = await fetch("/api/epargne/transaction", {
+      const res = await fetch("/api/coffres/transaction", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

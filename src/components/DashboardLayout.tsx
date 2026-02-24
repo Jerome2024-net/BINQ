@@ -20,14 +20,13 @@ import {
   Wallet,
   ArrowLeftRight,
   Search,
-  PiggyBank,
+  Lock,
   Sparkles,
 } from "lucide-react";
 
 const mainLinks = [
   { href: "/dashboard", label: "Tableau de bord", icon: LayoutDashboard },
-  { href: "/dashboard/epargne", label: "Épargne", icon: PiggyBank },
-  { href: "/dashboard/cagnottes", label: "Cagnottes", icon: Users },
+  { href: "/dashboard/coffres", label: "Coffres", icon: Lock },
   { href: "/portefeuille", label: "Portefeuille", icon: Wallet },
 ];
 
@@ -144,14 +143,14 @@ export default function DashboardLayout({
               Actions Rapides
             </div>
             <Link
-              href="/dashboard/epargne"
+              href="/dashboard/coffres"
               className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-50 hover:text-gray-900 transition-all duration-200 group"
               onClick={() => setSidebarOpen(false)}
             >
               <div className="w-[20px] h-[20px] rounded-md bg-white border border-gray-200 flex items-center justify-center text-gray-400 group-hover:text-primary-600 group-hover:border-primary-200 transition-colors">
                 <Plus className="w-3.5 h-3.5" />
               </div>
-              Nouveau Compte Épargne
+              Nouveau Coffre
             </Link>
           </nav>
 

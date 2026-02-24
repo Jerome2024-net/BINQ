@@ -13,7 +13,6 @@ import {
   PiggyBank,
   Wallet,
   Send,
-  Users,
   LinkIcon,
   Banknote,
 } from "lucide-react";
@@ -42,7 +41,7 @@ export default function HomePage() {
               <span className="bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">simplifié</span>.
             </h1>
             <p className="text-lg md:text-xl text-gray-400 mb-10 max-w-2xl mx-auto leading-relaxed">
-              Envoyez, recevez, épargnez et gérez votre argent en un seul endroit. Transferts instantanés, liens de paiement, cagnottes et épargne — tout dans une seule app.
+              Envoyez, recevez, déposez et gérez votre argent en un seul endroit. Transferts instantanés, liens de paiement et coffres — tout dans une seule app.
             </p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
               <Link
@@ -88,7 +87,7 @@ export default function HomePage() {
               Tout votre argent, un seul endroit
             </h2>
             <p className="text-gray-500 max-w-2xl mx-auto text-lg">
-              Portefeuille, transferts, paiements, épargne et cagnottes — Binq réunit tout ce dont vous avez besoin.
+              Portefeuille, transferts, paiements et coffres — Binq réunit tout ce dont vous avez besoin.
             </p>
           </div>
 
@@ -120,19 +119,11 @@ export default function HomePage() {
               },
               {
                 icon: PiggyBank,
-                title: "Épargne",
+                title: "Coffres",
                 description:
-                  "Créez des comptes épargne libre, objectif ou programmée. Épargnez à votre rythme.",
+                  "Créez des coffres pour organiser votre argent. Libre, objectif ou programmé.",
                 gradient: "from-amber-500 to-orange-600",
                 bg: "bg-amber-50",
-              },
-              {
-                icon: Users,
-                title: "Cagnottes",
-                description:
-                  "Collectez de l'argent à plusieurs pour un projet, un cadeau ou un événement.",
-                gradient: "from-rose-500 to-rose-600",
-                bg: "bg-rose-50",
               },
               {
                 icon: CreditCard,
@@ -192,9 +183,9 @@ export default function HomePage() {
               {
                 step: "03",
                 icon: TrendingUp,
-                title: "Envoyez, épargnez, partagez",
+                title: "Envoyez, recevez, organisez",
                 description:
-                  "Transférez à vos proches, épargnez, créez des cagnottes ou partagez un lien de paiement.",
+                  "Transférez à vos proches, créez des coffres ou partagez un lien de paiement.",
               },
             ].map((step, i) => (
               <div key={i} className="relative text-center">
@@ -267,7 +258,7 @@ export default function HomePage() {
                   "Paiements sécurisés via Stripe",
                   "Transferts instantanés entre utilisateurs",
                   "Liens de paiement partageables",
-                  "Épargne et cagnottes intégrées",
+                  "Coffres et sous-comptes intégrés",
                   "Suivi en temps réel de vos finances",
                 ].map((text, i) => (
                   <div key={i} className="flex items-center gap-3 p-3.5 bg-accent-50 rounded-xl border border-accent-100/60">
@@ -313,8 +304,7 @@ export default function HomePage() {
                   "Portefeuille EUR & USD",
                   "Transferts P2P instantanés",
                   "Envoyer & recevoir via lien",
-                  "Cagnottes collaboratives",
-                  "Jusqu'à 10 comptes épargne",
+                  "Jusqu'à 10 coffres",
                   "Dépôt par carte bancaire",
                   "Retrait vers portefeuille ou banque",
                   "2% de frais sur les dépôts uniquement",
@@ -345,7 +335,7 @@ export default function HomePage() {
             Prêt à simplifier votre argent ?
           </h2>
           <p className="text-gray-400 text-lg mb-10 max-w-2xl mx-auto">
-            Rejoignez Binq — envoyez, recevez, épargnez et partagez en toute simplicité. Gratuit, sécurisé et instantané.
+            Rejoignez Binq — envoyez, recevez et gérez votre argent en toute simplicité. Gratuit, sécurisé et instantané.
           </p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <Link

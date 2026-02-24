@@ -62,8 +62,8 @@ function ConnexionForm() {
             Bon retour parmi nous !
           </h1>
           <p className="text-gray-400 text-lg leading-relaxed">
-            Connectez-vous pour retrouver vos tontines, suivre vos cotisations
-            et gérer vos groupes d&apos;épargne.
+            Connectez-vous pour retrouver votre portefeuille, vos transferts
+            et gérer votre argent.
           </p>
           <div className="mt-12 space-y-4">
             {[

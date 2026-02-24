@@ -7,9 +7,9 @@ import NavigationProgress from "@/components/NavigationProgress";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Binq - Épargne Intelligente",
+  title: "Binq - Votre Wallet Complet",
   description:
-    "Épargnez intelligemment avec Binq. Créez vos comptes épargne en EUR ou USD, déposez par carte ou portefeuille, et gérez votre argent en toute sécurité.",
+    "Envoyez, recevez, déposez et retirez votre argent en toute sécurité. Portefeuille multi-devises, transferts P2P, liens de paiement et coffres.",
 };
 
 export default function RootLayout({

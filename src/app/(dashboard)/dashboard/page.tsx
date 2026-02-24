@@ -15,11 +15,10 @@ import {
   Plus,
   Minus,
   Send,
-  PiggyBank,
-  LinkIcon,
+  Lock,
 } from "lucide-react";
 
-interface Epargne {
+interface Coffre {
   id: string;
   nom: string;
   type: string;
@@ -42,8 +41,8 @@ export default function DashboardPage() {
     isLoading: financeLoading,
   } = useFinance();
 
-  const [epargnes, setEpargnes] = useState<Epargne[]>([]);
-  const [epargneLoading, setEpargneLoading] = useState(true);
+  const [coffres, setCoffres] = useState<Coffre[]>([]);
+  const [coffresLoading, setCoffresLoading] = useState(true);
   const [showSolde, setShowSolde] = useState(true);
 
   useEffect(() => {
@@ -51,17 +50,17 @@ export default function DashboardPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
-  // Charger les comptes épargne
+  // Charger les coffres
   useEffect(() => {
     const charger = async () => {
       try {
-        const res = await fetch("/api/epargne");
+        const res = await fetch("/api/coffres");
         const data = await res.json();
-        if (res.ok) setEpargnes(data.epargnes || []);
+        if (res.ok) setCoffres(data.epargnes || []);
       } catch {
         /* ignore */
       } finally {
-        setEpargneLoading(false);
+        setCoffresLoading(false);
       }
     };
     charger();
@@ -71,13 +70,13 @@ export default function DashboardPage() {
   const recentTx = getTransactions({ limit: 5 });
   const summary = getFinancialSummary();
 
-  const totalEpargneEUR = epargnes
+  const totalCoffresEUR = coffres
     .filter((e) => e.devise !== "USD")
     .reduce((acc, e) => acc + Number(e.solde), 0);
-  const totalEpargneUSD = epargnes
+  const totalCoffresUSD = coffres
     .filter((e) => e.devise === "USD")
     .reduce((acc, e) => acc + Number(e.solde), 0);
-  const comptesActifs = epargnes.filter((e) => e.statut === "active");
+  const coffresActifs = coffres.filter((e) => e.statut === "active");
 
   const isCredit = (type: string) =>
     ["depot", "remboursement", "transfert_entrant"].includes(type);
@@ -93,7 +92,7 @@ export default function DashboardPage() {
     return labels[type] || type;
   };
 
-  if (financeLoading || epargneLoading) {
+  if (financeLoading || coffresLoading) {
     return <DashboardSkeleton />;
   }
 
@@ -221,32 +220,21 @@ export default function DashboardPage() {
             <ArrowRight className="w-4 h-4 text-gray-300 flex-shrink-0" />
           </Link>
 
-          <Link href="/dashboard/epargne" className="flex items-center gap-4 px-5 py-4 hover:bg-gray-50 transition-colors">
+          <Link href="/dashboard/coffres" className="flex items-center gap-4 px-5 py-4 hover:bg-gray-50 transition-colors">
             <div className="w-10 h-10 rounded-full bg-gray-900 flex items-center justify-center flex-shrink-0">
-              <PiggyBank className="w-4 h-4 text-white" />
+              <Lock className="w-4 h-4 text-white" />
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-gray-900">Épargne</p>
-              <p className="text-xs text-gray-400">{comptesActifs.length} compte{comptesActifs.length !== 1 ? "s" : ""} actif{comptesActifs.length !== 1 ? "s" : ""}</p>
+              <p className="text-sm font-medium text-gray-900">Coffres</p>
+              <p className="text-xs text-gray-400">{coffresActifs.length} coffre{coffresActifs.length !== 1 ? "s" : ""} actif{coffresActifs.length !== 1 ? "s" : ""}</p>
             </div>
             <div className="text-right">
-              {(totalEpargneEUR > 0 || totalEpargneUSD === 0) && (
-                <p className="text-sm font-semibold text-gray-900 tabular-nums">{formatMontant(totalEpargneEUR, "EUR")}</p>
+              {(totalCoffresEUR > 0 || totalCoffresUSD === 0) && (
+                <p className="text-sm font-semibold text-gray-900 tabular-nums">{formatMontant(totalCoffresEUR, "EUR")}</p>
               )}
-              {totalEpargneUSD > 0 && (
-                <p className="text-sm font-semibold text-gray-900 tabular-nums">{formatMontant(totalEpargneUSD, "USD")}</p>
+              {totalCoffresUSD > 0 && (
+                <p className="text-sm font-semibold text-gray-900 tabular-nums">{formatMontant(totalCoffresUSD, "USD")}</p>
               )}
-            </div>
-            <ArrowRight className="w-4 h-4 text-gray-300 flex-shrink-0" />
-          </Link>
-
-          <Link href="/dashboard/cagnottes" className="flex items-center gap-4 px-5 py-4 hover:bg-gray-50 transition-colors">
-            <div className="w-10 h-10 rounded-full bg-gray-900 flex items-center justify-center flex-shrink-0">
-              <LinkIcon className="w-4 h-4 text-white" />
-            </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-gray-900">Cagnottes</p>
-              <p className="text-xs text-gray-400">Collectes de groupe</p>
             </div>
             <ArrowRight className="w-4 h-4 text-gray-300 flex-shrink-0" />
           </Link>
@@ -255,23 +243,23 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {/* ── 4. Comptes épargne (aperçu compact) ── */}
-      {comptesActifs.length > 0 && (
+      {/* ── 4. Coffres (aperçu compact) ── */}
+      {coffresActifs.length > 0 && (
         <div className="bg-white rounded-2xl border border-gray-200">
           <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100">
-            <h2 className="text-sm font-semibold text-gray-900 uppercase tracking-wide">Épargne</h2>
-            <Link href="/dashboard/epargne" className="text-xs font-medium text-gray-400 hover:text-gray-600 flex items-center gap-1 transition-colors">
+            <h2 className="text-sm font-semibold text-gray-900 uppercase tracking-wide">Coffres</h2>
+            <Link href="/dashboard/coffres" className="text-xs font-medium text-gray-400 hover:text-gray-600 flex items-center gap-1 transition-colors">
               Gérer <ArrowRight className="w-3.5 h-3.5" />
             </Link>
           </div>
           <div className="divide-y divide-gray-50">
-            {comptesActifs.slice(0, 3).map((ep) => {
+            {coffresActifs.slice(0, 3).map((ep) => {
               const progression = ep.objectif_montant
                 ? Math.min(100, Math.round((Number(ep.solde) / ep.objectif_montant) * 100))
                 : null;
 
               return (
-                <Link key={ep.id} href="/dashboard/epargne" className="flex items-center gap-4 px-5 py-3.5 hover:bg-gray-50 transition-colors">
+                <Link key={ep.id} href="/dashboard/coffres" className="flex items-center gap-4 px-5 py-3.5 hover:bg-gray-50 transition-colors">
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium text-gray-900 truncate">{ep.nom}</p>
                     {progression !== null ? (
@@ -282,7 +270,7 @@ export default function DashboardPage() {
                         <span className="text-xs text-gray-400 tabular-nums">{progression}%</span>
                       </div>
                     ) : (
-                      <p className="text-xs text-gray-400 mt-0.5">Épargne libre</p>
+                      <p className="text-xs text-gray-400 mt-0.5">Coffre libre</p>
                     )}
                   </div>
                   <p className="text-sm font-semibold text-gray-900 tabular-nums whitespace-nowrap">{formatMontant(ep.solde, ep.devise)}</p>
