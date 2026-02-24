@@ -10,7 +10,7 @@ function getServiceClient() {
   );
 }
 
-// ── GET : rechercher des utilisateurs par nom, prénom, email ou téléphone ──
+// ── GET : rechercher des utilisateurs par nom ou prénom ──
 export async function GET(request: NextRequest) {
   const user = await getAuthenticatedUser();
   if (!user) return NextResponse.json({ error: "Non authentifié" }, { status: 401 });
@@ -24,58 +24,25 @@ export async function GET(request: NextRequest) {
 
   const supabase = getServiceClient();
 
-  // Recherche par nom, prénom, email ou telephone
+  // Recherche par prénom ou nom
   const { data, error } = await supabase
     .from("profiles")
-    .select("id, prenom, nom, avatar, email, telephone")
-    .or(
-      `prenom.ilike.%${q}%,nom.ilike.%${q}%,email.ilike.%${q}%,telephone.ilike.%${q}%`
-    )
+    .select("id, prenom, nom, avatar")
+    .or(`prenom.ilike.%${q}%,nom.ilike.%${q}%`)
     .neq("id", user.id)
     .limit(10);
 
   if (error) {
     console.error("Erreur recherche utilisateurs:", error);
-
-    // Fallback : recherche simple sur prenom + nom uniquement
-    const { data: fallback, error: fbErr } = await supabase
-      .from("profiles")
-      .select("id, prenom, nom, avatar, email, telephone")
-      .or(`prenom.ilike.%${q}%,nom.ilike.%${q}%`)
-      .neq("id", user.id)
-      .limit(10);
-
-    if (fbErr) {
-      console.error("Erreur fallback recherche:", fbErr);
-      return NextResponse.json({ error: fbErr.message }, { status: 500 });
-    }
-
-    const results = (fallback || []).map((u) => ({
-      id: u.id,
-      prenom: u.prenom || "",
-      nom: u.nom || "",
-      avatar_url: u.avatar || null,
-      email_masked: u.email ? maskEmail(u.email) : null,
-    }));
-
-    return NextResponse.json({ users: results });
+    return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
-  // Ne pas exposer trop d'infos — masquer email/téléphone partiellement
   const results = (data || []).map((u) => ({
     id: u.id,
     prenom: u.prenom || "",
     nom: u.nom || "",
     avatar_url: u.avatar || null,
-    email_masked: u.email ? maskEmail(u.email) : null,
   }));
 
   return NextResponse.json({ users: results });
-}
-
-function maskEmail(email: string): string {
-  const [local, domain] = email.split("@");
-  if (!domain) return "***";
-  const visible = local.slice(0, 2);
-  return `${visible}***@${domain}`;
 }
