@@ -327,7 +327,7 @@ export default function PortefeuillePage() {
       </div>
 
       {/* ── Actions ── */}
-      <div className="grid grid-cols-4 gap-3">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         <button
           onClick={handleDeposit}
           className="flex flex-col items-center gap-2.5 py-5 rounded-2xl bg-gray-900 text-white hover:bg-gray-800 transition-colors"
@@ -568,7 +568,7 @@ export default function PortefeuillePage() {
               </div>
             )}
 
-            <div className="p-5">
+            <div className="p-4 sm:p-5">
               {/* ═══ Mode Direct: rechercher un user ═══ */}
               {sendMode === "direct" && (
                 <>
@@ -864,7 +864,7 @@ export default function PortefeuillePage() {
               </button>
             </div>
 
-            <div className="p-5">
+            <div className="p-4 sm:p-5">
               {!createdLinkCode ? (
                 <>
                   <p className="text-sm text-gray-500 mb-5">Créez un lien de paiement et partagez-le. Le destinataire paiera depuis son portefeuille Binq.</p>

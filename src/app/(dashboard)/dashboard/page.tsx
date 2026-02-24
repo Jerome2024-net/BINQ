@@ -123,7 +123,7 @@ export default function DashboardPage() {
       </div>
 
       {/* ── Actions rapides ── */}
-      <div className="grid grid-cols-4 gap-3">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         <Link
           href="/portefeuille"
           className="flex flex-col items-center gap-2.5 py-5 rounded-2xl bg-gray-900 text-white hover:bg-gray-800 transition-colors"

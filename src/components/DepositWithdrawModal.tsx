@@ -287,23 +287,23 @@ export default function DepositWithdrawModal({
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className={`flex items-center gap-3 p-6 border-b border-gray-100 ${isDepot ? "bg-green-50" : "bg-blue-50"}`}>
-          <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${isDepot ? "bg-green-100 text-green-600" : "bg-blue-100 text-blue-600"}`}>
+        <div className={`flex items-center gap-3 p-4 sm:p-6 border-b border-gray-100 ${isDepot ? "bg-green-50" : "bg-blue-50"}`}>
+          <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${isDepot ? "bg-green-100 text-green-600" : "bg-blue-100 text-blue-600"}`}>
             {icon}
           </div>
-          <div>
-            <h2 className="text-lg font-bold text-gray-900">{title}</h2>
+          <div className="min-w-0">
+            <h2 className="text-base sm:text-lg font-bold text-gray-900">{title}</h2>
             <p className="text-xs text-gray-500 flex items-center gap-1">
               <Lock className="w-3 h-3" />
               Paiement sécurisé
             </p>
           </div>
-          <button onClick={handleClose} className="ml-auto p-2 rounded-lg hover:bg-gray-100">
+          <button onClick={handleClose} className="ml-auto p-2 rounded-lg hover:bg-gray-100 flex-shrink-0">
             <X className="w-5 h-5 text-gray-400" />
           </button>
         </div>
 
-        <div className="p-6">
+        <div className="p-4 sm:p-6">
           {/* ============ NON CONFIGURÉ ============ */}
           {!isConfigured && step === "form" ? (
             <div className="text-center py-6 space-y-4">
@@ -326,9 +326,9 @@ export default function DepositWithdrawModal({
                     Ajoutez-les dans le fichier <code className="bg-gray-200 px-1 rounded text-xs">.env.local</code> :
                   </li>
                 </ol>
-                <div className="bg-gray-900 rounded-lg p-3 text-xs font-mono text-green-400">
-                  <p>NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_test_...</p>
-                  <p>STRIPE_SECRET_KEY=sk_test_...</p>
+                <div className="bg-gray-900 rounded-lg p-3 text-xs font-mono text-green-400 overflow-x-auto">
+                  <p className="whitespace-nowrap">NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_test_...</p>
+                  <p className="whitespace-nowrap">STRIPE_SECRET_KEY=sk_test_...</p>
                 </div>
                 <p className="text-xs text-gray-400">Redémarrez le serveur après modification.</p>
               </div>
@@ -474,7 +474,7 @@ export default function DepositWithdrawModal({
               <button
                 onClick={handleProceedToPayment}
                 disabled={montantNum < 1 || isProcessing || isCreatingIntent}
-                className={`w-full py-3.5 rounded-xl font-semibold text-white transition-colors flex items-center justify-center gap-2 text-lg ${
+                className={`w-full py-3 sm:py-3.5 rounded-xl font-semibold text-white transition-colors flex items-center justify-center gap-2 text-base sm:text-lg ${
                   montantNum >= 1 && !isCreatingIntent
                     ? "bg-green-600 hover:bg-green-700"
                     : "bg-gray-300 cursor-not-allowed"
