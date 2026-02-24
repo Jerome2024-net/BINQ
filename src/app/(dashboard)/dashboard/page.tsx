@@ -15,7 +15,6 @@ import {
   Plus,
   Minus,
   Send,
-  CreditCard,
   PiggyBank,
   LinkIcon,
 } from "lucide-react";
@@ -252,16 +251,7 @@ export default function DashboardPage() {
             <ArrowRight className="w-4 h-4 text-gray-300 flex-shrink-0" />
           </Link>
 
-          <Link href="/dashboard/parametres" className="flex items-center gap-4 px-5 py-4 hover:bg-gray-50 transition-colors">
-            <div className="w-10 h-10 rounded-full bg-gray-900 flex items-center justify-center flex-shrink-0">
-              <CreditCard className="w-4 h-4 text-white" />
-            </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-gray-900">Cartes</p>
-              <p className="text-xs text-gray-400">Carte virtuelle et physique</p>
-            </div>
-            <ArrowRight className="w-4 h-4 text-gray-300 flex-shrink-0" />
-          </Link>
+
         </div>
       </div>
 
