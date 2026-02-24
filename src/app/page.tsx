@@ -32,9 +32,9 @@ export default function HomePage() {
               </span>
             </div>
             <h1 className="text-4xl md:text-6xl lg:text-[68px] font-bold leading-[1.08] mb-6 tracking-tight">
-              Le compte digital{" "}
+              Votre argent,{" "}
               <span className="bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">
-                nouvelle génération
+                réinventé
               </span>
               .
             </h1>
