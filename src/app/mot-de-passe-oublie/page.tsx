@@ -43,7 +43,7 @@ export default function MotDePasseOubliePage() {
 
         <div className="relative max-w-md">
           <div className="flex items-center gap-2.5 mb-10">
-            <img src="https://res.cloudinary.com/dn8ed1doa/image/upload/ChatGPT_Image_24_f%C3%A9vr._2026_15_44_47_sgwgvi" alt="Binq" className="h-11 w-auto brightness-0 invert" />
+            <img src="https://res.cloudinary.com/dn8ed1doa/image/upload/ChatGPT_Image_24_f%C3%A9vr._2026_18_41_17_iwqq1o" alt="Binq" className="h-11 w-auto brightness-0 invert" />
           </div>
           <h1 className="text-4xl font-bold mb-4 tracking-tight leading-tight">
             Pas de panique !
@@ -74,7 +74,7 @@ export default function MotDePasseOubliePage() {
         <div className="w-full max-w-md">
           {/* Mobile logo */}
           <div className="lg:hidden flex items-center gap-2 mb-8 justify-center">
-            <img src="https://res.cloudinary.com/dn8ed1doa/image/upload/ChatGPT_Image_24_f%C3%A9vr._2026_15_44_47_sgwgvi" alt="Binq" className="h-9 w-auto" />
+            <img src="https://res.cloudinary.com/dn8ed1doa/image/upload/ChatGPT_Image_24_f%C3%A9vr._2026_18_41_17_iwqq1o" alt="Binq" className="h-9 w-auto" />
           </div>
 
           {sent ? (

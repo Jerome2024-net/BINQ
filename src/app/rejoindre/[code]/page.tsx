@@ -275,7 +275,7 @@ export default function RejoindreParCodePage({
           {/* Logo */}
           <div className="text-center mb-8 animate-fade-up">
             <div className="inline-flex items-center gap-2.5">
-              <img src="https://res.cloudinary.com/dn8ed1doa/image/upload/ChatGPT_Image_24_f%C3%A9vr._2026_15_44_47_sgwgvi" alt="Binq" className="h-10 w-auto brightness-0 invert" />
+              <img src="https://res.cloudinary.com/dn8ed1doa/image/upload/ChatGPT_Image_24_f%C3%A9vr._2026_18_41_17_iwqq1o" alt="Binq" className="h-10 w-auto brightness-0 invert" />
             </div>
           </div>
 

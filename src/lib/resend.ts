@@ -19,7 +19,7 @@ const LOGO_HTML = `
   <table cellpadding="0" cellspacing="0" border="0" style="margin: 0 auto;">
     <tr>
       <td style="vertical-align: middle;">
-        <img src="https://res.cloudinary.com/dn8ed1doa/image/upload/ChatGPT_Image_24_f%C3%A9vr._2026_15_44_47_sgwgvi" alt="Binq" width="140" style="height: auto; display: block;" />
+        <img src="https://res.cloudinary.com/dn8ed1doa/image/upload/ChatGPT_Image_24_f%C3%A9vr._2026_18_41_17_iwqq1o" alt="Binq" width="140" style="height: auto; display: block;" />
       </td>
     </tr>
   </table>
