@@ -126,14 +126,14 @@ export default function DashboardPage() {
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         <Link
           href="/portefeuille"
-          className="flex flex-col items-center gap-2.5 py-5 rounded-2xl bg-gray-900 text-white hover:bg-gray-800 transition-colors"
+          className="flex flex-col items-center gap-2.5 py-5 rounded-2xl bg-primary-600 text-white hover:bg-primary-700 transition-colors"
         >
           <Send className="w-5 h-5" />
           <span className="text-xs font-semibold">Envoyer</span>
         </Link>
         <Link
           href="/portefeuille"
-          className="flex flex-col items-center gap-2.5 py-5 rounded-2xl bg-gray-900 text-white hover:bg-gray-800 transition-colors"
+          className="flex flex-col items-center gap-2.5 py-5 rounded-2xl bg-primary-600 text-white hover:bg-primary-700 transition-colors"
         >
           <ArrowDownLeft className="w-5 h-5" />
           <span className="text-xs font-semibold">Recevoir</span>
@@ -209,7 +209,7 @@ export default function DashboardPage() {
         </div>
         <div className="divide-y divide-gray-100">
           <Link href="/portefeuille" className="flex items-center gap-4 px-5 py-4 hover:bg-gray-50 transition-colors">
-            <div className="w-10 h-10 rounded-full bg-gray-900 flex items-center justify-center flex-shrink-0">
+            <div className="w-10 h-10 rounded-full bg-primary-600 flex items-center justify-center flex-shrink-0">
               <Send className="w-4 h-4 text-white" />
             </div>
             <div className="flex-1 min-w-0">
@@ -221,7 +221,7 @@ export default function DashboardPage() {
           </Link>
 
           <Link href="/dashboard/coffres" className="flex items-center gap-4 px-5 py-4 hover:bg-gray-50 transition-colors">
-            <div className="w-10 h-10 rounded-full bg-gray-900 flex items-center justify-center flex-shrink-0">
+            <div className="w-10 h-10 rounded-full bg-primary-600 flex items-center justify-center flex-shrink-0">
               <Lock className="w-4 h-4 text-white" />
             </div>
             <div className="flex-1 min-w-0">
@@ -265,7 +265,7 @@ export default function DashboardPage() {
                     {progression !== null ? (
                       <div className="flex items-center gap-2 mt-1.5">
                         <div className="flex-1 h-1.5 bg-gray-100 rounded-full overflow-hidden">
-                          <div className="h-full rounded-full bg-gray-900" style={{ width: `${progression}%` }} />
+                          <div className="h-full rounded-full bg-primary-600" style={{ width: `${progression}%` }} />
                         </div>
                         <span className="text-xs text-gray-400 tabular-nums">{progression}%</span>
                       </div>

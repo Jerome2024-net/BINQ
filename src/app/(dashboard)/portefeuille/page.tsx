@@ -330,14 +330,14 @@ export default function PortefeuillePage() {
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         <button
           onClick={handleDeposit}
-          className="flex flex-col items-center gap-2.5 py-5 rounded-2xl bg-gray-900 text-white hover:bg-gray-800 transition-colors"
+          className="flex flex-col items-center gap-2.5 py-5 rounded-2xl bg-primary-600 text-white hover:bg-primary-700 transition-colors"
         >
           <Plus className="w-5 h-5" />
           <span className="text-xs font-semibold">Déposer</span>
         </button>
         <button
           onClick={openSendModal}
-          className="flex flex-col items-center gap-2.5 py-5 rounded-2xl bg-gray-900 text-white hover:bg-gray-800 transition-colors"
+          className="flex flex-col items-center gap-2.5 py-5 rounded-2xl bg-primary-600 text-white hover:bg-primary-700 transition-colors"
         >
           <Send className="w-5 h-5" />
           <span className="text-xs font-semibold">Envoyer</span>
@@ -479,7 +479,7 @@ export default function PortefeuillePage() {
             {myLinks.slice(0, 5).map((pl) => (
               <div key={pl.id} className="flex items-center gap-4 px-5 py-3.5">
                 <div className={`w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 ${
-                  pl.statut === "actif" ? "bg-gray-900" : pl.statut === "paye" ? "bg-green-50" : "bg-gray-100"
+                  pl.statut === "actif" ? "bg-primary-600" : pl.statut === "paye" ? "bg-green-50" : "bg-gray-100"
                 }`}>
                   <LinkIcon className={`w-4 h-4 ${
                     pl.statut === "actif" ? "text-white" : pl.statut === "paye" ? "text-green-600" : "text-gray-400"
@@ -582,7 +582,7 @@ export default function PortefeuillePage() {
                       placeholder="Rechercher par nom..."
                       value={searchQuery}
                       onChange={(e) => handleSearch(e.target.value)}
-                      className="w-full pl-11 pr-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-gray-900 focus:border-transparent outline-none text-sm"
+                      className="w-full pl-11 pr-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none text-sm"
                       autoFocus
                     />
                   </div>
@@ -654,7 +654,7 @@ export default function PortefeuillePage() {
                       value={sendAmount}
                       onChange={(e) => setSendAmount(e.target.value)}
                       placeholder="0.00"
-                      className="w-full p-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-gray-900 focus:border-transparent outline-none text-2xl font-bold text-center [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                      className="w-full p-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none text-2xl font-bold text-center [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                       autoFocus
                     />
                     <p className="text-xs text-gray-400 mt-1 text-center">Solde : {formatMontant(soldeWallet)}</p>
@@ -667,7 +667,7 @@ export default function PortefeuillePage() {
                       value={sendMessage}
                       onChange={(e) => setSendMessage(e.target.value)}
                       placeholder="Ex: Remboursement dîner"
-                      className="w-full p-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-gray-900 focus:border-transparent outline-none text-sm"
+                      className="w-full p-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none text-sm"
                       maxLength={100}
                     />
                   </div>
@@ -682,7 +682,7 @@ export default function PortefeuillePage() {
                     <button
                       onClick={() => setSendStep("confirm")}
                       disabled={!sendAmount || parseFloat(sendAmount) <= 0}
-                      className="flex-1 py-3 rounded-xl bg-gray-900 text-white font-semibold hover:bg-gray-800 transition disabled:opacity-50"
+                      className="flex-1 py-3 rounded-xl bg-primary-600 text-white font-semibold hover:bg-primary-700 transition disabled:opacity-50"
                     >
                       Suivant
                     </button>
@@ -714,7 +714,7 @@ export default function PortefeuillePage() {
                     <button
                       onClick={handleSendConfirm}
                       disabled={sendLoading}
-                      className="flex-1 py-3 rounded-xl bg-gray-900 text-white font-bold hover:bg-gray-800 transition disabled:opacity-50 flex items-center justify-center gap-2"
+                      className="flex-1 py-3 rounded-xl bg-primary-600 text-white font-bold hover:bg-primary-700 transition disabled:opacity-50 flex items-center justify-center gap-2"
                     >
                       {sendLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Send className="w-4 h-4" />}
                       {sendLoading ? "Envoi..." : "Confirmer"}
@@ -736,7 +736,7 @@ export default function PortefeuillePage() {
                   <p className="text-xs text-gray-400 mb-5">Réf: {sendRef}</p>
                   <button
                     onClick={() => setSendModalOpen(false)}
-                    className="w-full py-3 rounded-xl bg-gray-900 text-white font-bold hover:bg-gray-800 transition"
+                    className="w-full py-3 rounded-xl bg-primary-600 text-white font-bold hover:bg-primary-700 transition"
                   >
                     Fermer
                   </button>
@@ -763,7 +763,7 @@ export default function PortefeuillePage() {
                           value={sendLinkAmount}
                           onChange={(e) => setSendLinkAmount(e.target.value)}
                           placeholder="0.00"
-                          className="w-full p-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-gray-900 focus:border-transparent outline-none text-2xl font-bold text-center [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                          className="w-full p-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none text-2xl font-bold text-center [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                           autoFocus
                         />
                         <p className="text-xs text-gray-400 mt-1 text-center">Solde : {formatMontant(soldeWallet)}</p>
@@ -776,7 +776,7 @@ export default function PortefeuillePage() {
                           value={sendLinkDesc}
                           onChange={(e) => setSendLinkDesc(e.target.value)}
                           placeholder="Ex: Cadeau d'anniversaire"
-                          className="w-full p-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-gray-900 focus:border-transparent outline-none text-sm"
+                          className="w-full p-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none text-sm"
                           maxLength={120}
                         />
                       </div>
@@ -784,7 +784,7 @@ export default function PortefeuillePage() {
                       <button
                         onClick={handleSendViaLink}
                         disabled={sendLinkCreating || !sendLinkAmount || parseFloat(sendLinkAmount) <= 0}
-                        className="w-full py-3.5 rounded-xl bg-gray-900 text-white font-bold hover:bg-gray-800 transition disabled:opacity-50 flex items-center justify-center gap-2"
+                        className="w-full py-3.5 rounded-xl bg-primary-600 text-white font-bold hover:bg-primary-700 transition disabled:opacity-50 flex items-center justify-center gap-2"
                       >
                         {sendLinkCreating ? <Loader2 className="w-5 h-5 animate-spin" /> : <Send className="w-5 h-5" />}
                         {sendLinkCreating ? "Création..." : "Envoyer via lien"}
@@ -880,7 +880,7 @@ export default function PortefeuillePage() {
                       value={linkAmount}
                       onChange={(e) => setLinkAmount(e.target.value)}
                       placeholder="Ex: 25.00"
-                      className="w-full p-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-gray-900 focus:border-transparent outline-none text-2xl font-bold text-center [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                      className="w-full p-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none text-2xl font-bold text-center [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                       autoFocus
                     />
                   </div>
@@ -892,7 +892,7 @@ export default function PortefeuillePage() {
                       value={linkDescription}
                       onChange={(e) => setLinkDescription(e.target.value)}
                       placeholder="Ex: Part du resto, loyer, cadeau..."
-                      className="w-full p-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-gray-900 focus:border-transparent outline-none text-sm"
+                      className="w-full p-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none text-sm"
                       maxLength={120}
                     />
                   </div>
@@ -900,7 +900,7 @@ export default function PortefeuillePage() {
                   <button
                     onClick={handleCreateLinkWithCode}
                     disabled={linkCreating}
-                    className="w-full py-3.5 rounded-xl bg-gray-900 text-white font-bold hover:bg-gray-800 transition disabled:opacity-50 flex items-center justify-center gap-2"
+                    className="w-full py-3.5 rounded-xl bg-primary-600 text-white font-bold hover:bg-primary-700 transition disabled:opacity-50 flex items-center justify-center gap-2"
                   >
                     {linkCreating ? <Loader2 className="w-5 h-5 animate-spin" /> : <Send className="w-5 h-5 rotate-180" />}
                     {linkCreating ? "Création..." : "Générer le lien"}

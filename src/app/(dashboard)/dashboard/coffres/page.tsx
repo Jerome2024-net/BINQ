@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useState, useEffect, useCallback } from "react";
 import { Elements, PaymentElement, useStripe, useElements } from "@stripe/react-stripe-js";
@@ -61,7 +61,7 @@ interface Transaction {
   created_at: string;
 }
 
-const ICONES = ["ðŸ’°", "ðŸ ", "âœˆï¸", "ðŸŽ“", "ðŸš—", "ðŸ’", "ðŸ¥", "ðŸ“±", "ðŸ‘¶", "ðŸŽ¯", "ðŸŒ", "â­"];
+const ICONES = ["💰", "🏠", "✈️", "🎓", "🚗", "💍", "🏥", "📱", "👶", "🎯", "🌍", "⭐"];
 const COULEURS = ["#6366f1", "#8b5cf6", "#ec4899", "#f43f5e", "#f97316", "#eab308", "#22c55e", "#14b8a6", "#06b6d4", "#3b82f6"];
 
 function normalizeD(d?: string | null): "EUR" | "USD" {
@@ -94,7 +94,7 @@ export default function EpargnePage() {
       const data = await res.json();
       if (data.epargnes) setEpargnes(data.epargnes);
     } catch (err) {
-      console.error("Erreur chargement Ã©pargnes:", err);
+      console.error("Erreur chargement épargnes:", err);
     } finally {
       setLoading(false);
     }
@@ -131,7 +131,7 @@ export default function EpargnePage() {
     );
   }
 
-  // â”€â”€ Vue dÃ©taillÃ©e d'un compte â”€â”€
+  // ── Vue détaillée d'un compte ──
   if (selectedEpargne) {
     const ep = selectedEpargne;
     const progress = ep.objectif_montant ? Math.min((Number(ep.solde) / Number(ep.objectif_montant)) * 100, 100) : 0;
@@ -155,7 +155,7 @@ export default function EpargnePage() {
           <div className="flex-1">
             <h1 className="text-lg font-bold text-gray-900">{ep.nom}</h1>
             <span className="text-xs text-gray-400 uppercase tracking-wider">
-              {ep.type === "libre" ? "Libre" : ep.type === "objectif" ? "Objectif" : "ProgrammÃ©e"} Â· {normalizeD(ep.devise)}
+              {ep.type === "libre" ? "Libre" : ep.type === "objectif" ? "Objectif" : "Programmée"} · {normalizeD(ep.devise)}
             </span>
           </div>
         </div>
@@ -177,7 +177,7 @@ export default function EpargnePage() {
               <p className="text-xs text-gray-400 mt-2">
                 Objectif : {formatDevise(Number(ep.objectif_montant), ep.devise)}
                 {ep.objectif_date && (
-                  <span className="ml-2">Â· Ã‰chÃ©ance {new Date(ep.objectif_date).toLocaleDateString("fr-FR")}</span>
+                  <span className="ml-2">· Échéance {new Date(ep.objectif_date).toLocaleDateString("fr-FR")}</span>
                 )}
               </p>
             </div>
@@ -193,7 +193,7 @@ export default function EpargnePage() {
           {ep.bloque_jusqu_a && new Date(ep.bloque_jusqu_a) > new Date() && (
             <div className="mt-3 inline-flex items-center gap-1.5 text-xs text-amber-600 bg-amber-50 px-3 py-1.5 rounded-lg">
               <Lock className="w-3 h-3" />
-              BloquÃ©e jusqu&apos;au {new Date(ep.bloque_jusqu_a).toLocaleDateString("fr-FR")}
+              Bloquée jusqu&apos;au {new Date(ep.bloque_jusqu_a).toLocaleDateString("fr-FR")}
             </div>
           )}
         </div>
@@ -202,10 +202,10 @@ export default function EpargnePage() {
         <div className="flex gap-3">
           <button
             onClick={() => setShowDeposit(true)}
-            className="flex-1 flex items-center justify-center gap-2.5 py-3.5 bg-gray-900 text-white rounded-2xl font-semibold text-[15px] hover:bg-gray-800 active:scale-[0.98] transition-all"
+            className="flex-1 flex items-center justify-center gap-2.5 py-3.5 bg-primary-600 text-white rounded-2xl font-semibold text-[15px] hover:bg-primary-700 active:scale-[0.98] transition-all"
           >
             <ArrowDownCircle className="w-5 h-5" />
-            DÃ©poser
+            Déposer
           </button>
           <button
             onClick={() => setShowWithdraw(true)}
@@ -250,7 +250,7 @@ export default function EpargnePage() {
           )}
         </div>
 
-        {/* Modal DÃ©pÃ´t */}
+        {/* Modal Dépôt */}
         {showDeposit && (
           <DepositModal
             epargne={ep}
@@ -289,20 +289,20 @@ export default function EpargnePage() {
     );
   }
 
-  // â”€â”€ Vue principale : nÃ©obanque premium â”€â”€
+  // ── Vue principale : néobanque premium ──
   return (
     <div className="max-w-3xl mx-auto space-y-6">
 
-      {/* â”€â”€ Solde principal â”€â”€ */}
+      {/* ── Solde principal ── */}
       <div className="text-center pt-2 pb-2">
-        <p className="text-sm font-medium text-gray-400 uppercase tracking-widest mb-3">Ã‰pargne totale</p>
+        <p className="text-sm font-medium text-gray-400 uppercase tracking-widest mb-3">Épargne totale</p>
         <div className="space-y-1">
           {epargnes.filter(e => e.devise !== "USD").length > 0 ? (
             <p className="text-4xl sm:text-5xl font-bold text-gray-900 tracking-tight">
               {formatDevise(epargnes.filter(e => e.devise !== "USD").reduce((sum, e) => sum + Number(e.solde), 0), "EUR")}
             </p>
           ) : (
-            <p className="text-4xl sm:text-5xl font-bold text-gray-900 tracking-tight">0,00 â‚¬</p>
+            <p className="text-4xl sm:text-5xl font-bold text-gray-900 tracking-tight">0,00 €</p>
           )}
           {epargnes.filter(e => e.devise === "USD").length > 0 && (
             <p className="text-xl font-semibold text-gray-400">
@@ -313,7 +313,7 @@ export default function EpargnePage() {
         <p className="text-sm text-gray-400 mt-2">{epargnes.length} compte{epargnes.length !== 1 ? "s" : ""} actif{epargnes.length !== 1 ? "s" : ""}</p>
       </div>
 
-      {/* â”€â”€ Actions principales â”€â”€ */}
+      {/* ── Actions principales ── */}
       <div className="flex gap-3">
         <button
           onClick={() => {
@@ -321,21 +321,21 @@ export default function EpargnePage() {
             if (epargnes.length > 0) setShowDeposit(true);
           }}
           disabled={epargnes.length === 0}
-          className="flex-1 flex items-center justify-center gap-2.5 py-3.5 bg-gray-900 text-white rounded-2xl font-semibold text-[15px] hover:bg-gray-800 active:scale-[0.98] transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+          className="flex-1 flex items-center justify-center gap-2.5 py-3.5 bg-primary-600 text-white rounded-2xl font-semibold text-[15px] hover:bg-primary-700 active:scale-[0.98] transition-all disabled:opacity-40 disabled:cursor-not-allowed"
         >
           <ArrowDownCircle className="w-5 h-5" />
-          DÃ©poser
+          Déposer
         </button>
         <button
           onClick={() => setShowCreate(true)}
           className="flex-1 flex items-center justify-center gap-2.5 py-3.5 bg-white border border-gray-200 text-gray-900 rounded-2xl font-semibold text-[15px] hover:bg-gray-50 active:scale-[0.98] transition-all"
         >
           <Plus className="w-5 h-5" />
-          Nouvelle Ã©pargne
+          Nouvelle épargne
         </button>
       </div>
 
-      {/* â”€â”€ Mes comptes â”€â”€ */}
+      {/* ── Mes comptes ── */}
       <div>
         <h2 className="text-sm font-semibold text-gray-400 uppercase tracking-widest mb-4">Mes comptes</h2>
 
@@ -347,8 +347,8 @@ export default function EpargnePage() {
             <div className="w-14 h-14 bg-gray-50 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:bg-primary-50 transition-colors">
               <PiggyBank className="w-7 h-7 text-gray-300 group-hover:text-primary-500 transition-colors" />
             </div>
-            <p className="font-semibold text-gray-900 mb-1">CrÃ©ez votre premier compte</p>
-            <p className="text-sm text-gray-400">Commencez Ã  Ã©pargner pour vos projets</p>
+            <p className="font-semibold text-gray-900 mb-1">Créez votre premier compte</p>
+            <p className="text-sm text-gray-400">Commencez à épargner pour vos projets</p>
           </button>
         ) : (
           <div className="space-y-3">
@@ -363,7 +363,7 @@ export default function EpargnePage() {
                   onClick={() => setSelectedEpargne(ep)}
                   className="w-full group flex items-center gap-4 bg-white rounded-2xl border border-gray-100 hover:border-gray-200 p-4 sm:p-5 active:scale-[0.99] transition-all text-left"
                 >
-                  {/* IcÃ´ne */}
+                  {/* Icône */}
                   <div
                     className="w-12 h-12 rounded-2xl flex items-center justify-center flex-shrink-0 text-xl"
                     style={{ backgroundColor: (ep.couleur || "#6366f1") + "12" }}
@@ -397,7 +397,7 @@ export default function EpargnePage() {
                         {formatDevise(Number(ep.montant_auto), ep.devise)} / {ep.frequence_auto === "quotidien" ? "jour" : ep.frequence_auto === "hebdomadaire" ? "semaine" : "mois"}
                       </p>
                     ) : (
-                      <p className="text-xs text-gray-400">Ã‰pargne libre</p>
+                      <p className="text-xs text-gray-400">Épargne libre</p>
                     )}
                   </div>
 
@@ -407,19 +407,19 @@ export default function EpargnePage() {
               );
             })}
 
-            {/* CrÃ©er un compte â€” compact */}
+            {/* Créer un compte — compact */}
             <button
               onClick={() => setShowCreate(true)}
               className="w-full flex items-center justify-center gap-2 py-3.5 text-sm font-semibold text-gray-400 hover:text-primary-600 transition-colors"
             >
               <Plus className="w-4 h-4" />
-              CrÃ©er un nouveau compte
+              Créer un nouveau compte
             </button>
           </div>
         )}
       </div>
 
-      {/* Modal CrÃ©er */}
+      {/* Modal Créer */}
       {showCreate && (
         <CreateEpargneModal
           onClose={() => setShowCreate(false)}
@@ -433,9 +433,9 @@ export default function EpargnePage() {
   );
 }
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-// COMPOSANT : Modal CrÃ©ation
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ═══════════════════════════════════════════
+// COMPOSANT : Modal Création
+// ═══════════════════════════════════════════
 function CreateEpargneModal({ onClose, onSuccess }: { onClose: () => void; onSuccess: () => void }) {
   const [nom, setNom] = useState("");
   const [type, setType] = useState<"libre" | "objectif" | "programmee">("libre");
@@ -445,7 +445,7 @@ function CreateEpargneModal({ onClose, onSuccess }: { onClose: () => void; onSuc
   const [frequenceAuto, setFrequenceAuto] = useState("mensuel");
   const [sourceAuto, setSourceAuto] = useState("wallet");
   const [bloqueJusqua, setBloqueJusqua] = useState("");
-  const [icone, setIcone] = useState("ðŸ’°");
+  const [icone, setIcone] = useState("💰");
   const [couleur, setCouleur] = useState("#6366f1");
   const [devise, setDevise] = useState<"EUR" | "USD">("EUR");
   const [loading, setLoading] = useState(false);
@@ -492,7 +492,7 @@ function CreateEpargneModal({ onClose, onSuccess }: { onClose: () => void; onSuc
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-3 sm:p-4" onClick={onClose}>
       <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
         <div className="flex items-center justify-between p-4 sm:p-6 border-b border-gray-100">
-          <h2 className="text-base sm:text-lg font-bold text-gray-900">Nouveau compte d&apos;Ã©pargne</h2>
+          <h2 className="text-base sm:text-lg font-bold text-gray-900">Nouveau compte d&apos;épargne</h2>
           <button onClick={onClose} className="p-2 rounded-lg hover:bg-gray-100">
             <X className="w-5 h-5 text-gray-400" />
           </button>
@@ -517,12 +517,12 @@ function CreateEpargneModal({ onClose, onSuccess }: { onClose: () => void; onSuc
 
           {/* Type */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1.5">Type d&apos;Ã©pargne</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1.5">Type d&apos;épargne</label>
             <div className="grid grid-cols-3 gap-2">
               {[
                 { value: "libre", label: "Libre", desc: "Sans contrainte" },
                 { value: "objectif", label: "Objectif", desc: "Avec but" },
-                { value: "programmee", label: "ProgrammÃ©e", desc: "Automatique" },
+                { value: "programmee", label: "Programmée", desc: "Automatique" },
               ].map((t) => (
                 <button
                   key={t.value}
@@ -543,7 +543,7 @@ function CreateEpargneModal({ onClose, onSuccess }: { onClose: () => void; onSuc
             <label className="block text-sm font-medium text-gray-700 mb-1.5">Devise</label>
             <div className="grid grid-cols-2 gap-2">
               {[
-                { value: "EUR", label: "EUR â‚¬", desc: "Euro" },
+                { value: "EUR", label: "EUR €", desc: "Euro" },
                 { value: "USD", label: "USD $", desc: "Dollar" },
               ].map((d) => (
                 <button
@@ -585,7 +585,7 @@ function CreateEpargneModal({ onClose, onSuccess }: { onClose: () => void; onSuc
             </div>
           )}
 
-          {/* ProgrammÃ©e */}
+          {/* Programmée */}
           {type === "programmee" && (
             <div className="space-y-3">
               <div className="grid grid-cols-2 gap-3">
@@ -600,7 +600,7 @@ function CreateEpargneModal({ onClose, onSuccess }: { onClose: () => void; onSuc
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1.5">FrÃ©quence</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1.5">Fréquence</label>
                   <select
                     value={frequenceAuto}
                     onChange={(e) => setFrequenceAuto(e.target.value)}
@@ -651,10 +651,10 @@ function CreateEpargneModal({ onClose, onSuccess }: { onClose: () => void; onSuc
             />
           </div>
 
-          {/* IcÃ´ne et Couleur */}
+          {/* Icône et Couleur */}
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1.5">IcÃ´ne</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1.5">Icône</label>
               <div className="flex flex-wrap gap-1.5">
                 {ICONES.map((ic) => (
                   <button
@@ -698,7 +698,7 @@ function CreateEpargneModal({ onClose, onSuccess }: { onClose: () => void; onSuc
             className="flex-1 py-3 rounded-xl bg-primary-600 text-white font-semibold hover:bg-primary-700 disabled:opacity-50 transition-colors flex items-center justify-center gap-2"
           >
             {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Plus className="w-5 h-5" />}
-            CrÃ©er
+            Créer
           </button>
         </div>
       </div>
@@ -706,9 +706,9 @@ function CreateEpargneModal({ onClose, onSuccess }: { onClose: () => void; onSuc
   );
 }
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ═══════════════════════════════════════════
 // COMPOSANT : Formulaire Stripe Elements pour ajouter une carte
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ═══════════════════════════════════════════
 function AddCardForm({ onSuccess, onCancel }: { onSuccess: () => void; onCancel: () => void }) {
   const stripe = useStripe();
   const elements = useElements();
@@ -774,15 +774,15 @@ function AddCardForm({ onSuccess, onCancel }: { onSuccess: () => void; onCancel:
 
       <div className="flex items-center justify-center gap-2 text-xs text-gray-400">
         <ShieldCheck className="w-3.5 h-3.5" />
-        <span>SÃ©curisÃ© par Stripe Â· Vos donnÃ©es ne sont jamais stockÃ©es sur nos serveurs</span>
+        <span>Sécurisé par Stripe · Vos données ne sont jamais stockées sur nos serveurs</span>
       </div>
     </form>
   );
 }
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-// COMPOSANT : Modal DÃ©pÃ´t
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ═══════════════════════════════════════════
+// COMPOSANT : Modal Dépôt
+// ═══════════════════════════════════════════
 function DepositModal({
   epargne,
   onClose,
@@ -846,7 +846,7 @@ function DepositModal({
     }
   };
 
-  // AprÃ¨s ajout rÃ©ussi d'une carte
+  // Après ajout réussi d'une carte
   const handleCardAdded = () => {
     setShowAddCard(false);
     setSetupClientSecret("");
@@ -860,7 +860,7 @@ function DepositModal({
       return;
     }
     if (source === "depot_carte" && !selectedCardId) {
-      setError("Veuillez sÃ©lectionner ou ajouter une carte");
+      setError("Veuillez sélectionner ou ajouter une carte");
       return;
     }
     setActionLoading(true);
@@ -874,7 +874,7 @@ function DepositModal({
           epargne_id: epargne.id,
           type: source,
           montant: m,
-          description: source === "depot_wallet" ? "DÃ©pÃ´t depuis portefeuille" : "DÃ©pÃ´t par carte",
+          description: source === "depot_wallet" ? "Dépôt depuis portefeuille" : "Dépôt par carte",
         }),
       });
 
@@ -890,17 +890,17 @@ function DepositModal({
 
   const brandIcon = (brand: string) => {
     const b = brand.toLowerCase();
-    if (b === "visa") return "ðŸ’³ Visa";
-    if (b === "mastercard") return "ðŸ’³ Mastercard";
-    if (b === "amex") return "ðŸ’³ Amex";
-    return `ðŸ’³ ${brand}`;
+    if (b === "visa") return "💳 Visa";
+    if (b === "mastercard") return "💳 Mastercard";
+    if (b === "amex") return "💳 Amex";
+    return `💳 ${brand}`;
   };
 
   return (
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-3 sm:p-4" onClick={onClose}>
       <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
         <div className="flex items-center justify-between p-4 sm:p-6 border-b border-gray-100">
-          <h2 className="text-base sm:text-lg font-bold text-gray-900">DÃ©poser sur {epargne.nom}</h2>
+          <h2 className="text-base sm:text-lg font-bold text-gray-900">Déposer sur {epargne.nom}</h2>
           <button onClick={onClose} className="p-2 rounded-lg hover:bg-gray-100">
             <X className="w-5 h-5 text-gray-400" />
           </button>
@@ -969,11 +969,11 @@ function DepositModal({
                 </div>
               </div>
 
-              {/* RÃ©capitulatif frais 2% */}
+              {/* Récapitulatif frais 2% */}
               {Number(montant) > 0 && (
                 <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 space-y-1">
                   <div className="flex justify-between text-sm text-gray-700">
-                    <span>Montant Ã©pargnÃ©</span>
+                    <span>Montant épargné</span>
                     <span className="font-medium">{formatDevise(Number(montant), epargne.devise)}</span>
                   </div>
                   <div className="flex justify-between text-sm text-amber-700">
@@ -981,13 +981,13 @@ function DepositModal({
                     <span className="font-medium">{formatDevise(Math.round(Number(montant) * 0.02 * 100) / 100, epargne.devise)}</span>
                   </div>
                   <div className="border-t border-amber-200 pt-1 flex justify-between text-sm font-bold text-gray-900">
-                    <span>Total dÃ©bitÃ©</span>
+                    <span>Total débité</span>
                     <span>{formatDevise(Number(montant) + Math.round(Number(montant) * 0.02 * 100) / 100, epargne.devise)}</span>
                   </div>
                 </div>
               )}
 
-              {/* SÃ©lection / ajout de carte */}
+              {/* Sélection / ajout de carte */}
               {source === "depot_carte" && (
                 <div className="space-y-3">
                   {loadingCartes ? (
@@ -996,7 +996,7 @@ function DepositModal({
                     </div>
                   ) : cartes.length > 0 ? (
                     <>
-                      <label className="block text-sm font-medium text-gray-700">Carte enregistrÃ©e</label>
+                      <label className="block text-sm font-medium text-gray-700">Carte enregistrée</label>
                       <div className="space-y-2">
                         {cartes.map((carte) => (
                           <button
@@ -1013,7 +1013,7 @@ function DepositModal({
                             </div>
                             <div className="flex-1">
                               <p className="text-sm font-medium text-gray-900">{brandIcon(carte.marque)}</p>
-                              <p className="text-xs text-gray-500">â€¢â€¢â€¢â€¢ {carte.last4} â€” Exp. {String(carte.exp_month).padStart(2, "0")}/{carte.exp_year}</p>
+                              <p className="text-xs text-gray-500">•••• {carte.last4} — Exp. {String(carte.exp_month).padStart(2, "0")}/{carte.exp_year}</p>
                             </div>
                             {selectedCardId === carte.id && (
                               <CheckCircle2 className="w-5 h-5 text-primary-600" />
@@ -1025,7 +1025,7 @@ function DepositModal({
                   ) : (
                     <div className="p-4 bg-gray-50 rounded-xl text-center">
                       <CreditCard className="w-8 h-8 text-gray-300 mx-auto mb-2" />
-                      <p className="text-sm text-gray-500">Aucune carte enregistrÃ©e</p>
+                      <p className="text-sm text-gray-500">Aucune carte enregistrée</p>
                     </div>
                   )}
 
@@ -1043,7 +1043,7 @@ function DepositModal({
           )}
         </div>
 
-        {/* Footer â€” cachÃ© pendant l'ajout de carte */}
+        {/* Footer — caché pendant l'ajout de carte */}
         {!showAddCard && (
           <div className="p-6 border-t border-gray-100 flex gap-3">
             <button onClick={onClose} className="flex-1 py-3 rounded-xl border-2 border-gray-200 font-semibold text-gray-600 hover:bg-gray-50">
@@ -1056,8 +1056,8 @@ function DepositModal({
             >
               {actionLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : <ArrowDownCircle className="w-5 h-5" />}
               {Number(montant) > 0
-                ? `DÃ©poser (${formatDevise(Number(montant) + Math.round(Number(montant) * 0.02 * 100) / 100, epargne.devise)})`
-                : "DÃ©poser"
+                ? `Déposer (${formatDevise(Number(montant) + Math.round(Number(montant) * 0.02 * 100) / 100, epargne.devise)})`
+                : "Déposer"
               }
             </button>
           </div>
@@ -1067,9 +1067,9 @@ function DepositModal({
   );
 }
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ═══════════════════════════════════════════
 // COMPOSANT : Modal Retrait
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ═══════════════════════════════════════════
 function WithdrawModal({
   epargne,
   onClose,
@@ -1141,7 +1141,7 @@ function WithdrawModal({
             <div className="p-4 bg-amber-50 border border-amber-200 rounded-xl text-center">
               <Lock className="w-8 h-8 text-amber-500 mx-auto mb-2" />
               <p className="text-sm font-medium text-amber-800">
-                Ã‰pargne bloquÃ©e jusqu&apos;au {new Date(epargne.bloque_jusqu_a!).toLocaleDateString("fr-FR")}
+                Épargne bloquée jusqu&apos;au {new Date(epargne.bloque_jusqu_a!).toLocaleDateString("fr-FR")}
               </p>
             </div>
           ) : (
@@ -1159,7 +1159,7 @@ function WithdrawModal({
                     <Wallet className="w-5 h-5 text-gray-600" />
                     <div className="text-left">
                       <span className="text-sm font-medium block">Portefeuille</span>
-                      <span className="text-xs text-gray-400">InstantanÃ©</span>
+                      <span className="text-xs text-gray-400">Instantané</span>
                     </div>
                   </button>
                   <button
@@ -1179,7 +1179,7 @@ function WithdrawModal({
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1.5">
-                  Montant ({epargne.devise}) â€” Disponible : {formatDevise(Number(epargne.solde), epargne.devise)}
+                  Montant ({epargne.devise}) — Disponible : {formatDevise(Number(epargne.solde), epargne.devise)}
                 </label>
                 <input
                   type="number"
@@ -1200,7 +1200,7 @@ function WithdrawModal({
               {destination === "retrait_banque" && (
                 <div className="p-3 bg-blue-50 border border-blue-200 rounded-xl text-xs text-blue-700 flex items-start gap-2">
                   <Building className="w-4 h-4 mt-0.5 flex-shrink-0" />
-                  <span>Le virement sera envoyÃ© vers votre compte bancaire vÃ©rifiÃ© via Stripe. DÃ©lai : 1 Ã  3 jours ouvrÃ©s.</span>
+                  <span>Le virement sera envoyé vers votre compte bancaire vérifié via Stripe. Délai : 1 à 3 jours ouvrés.</span>
                 </div>
               )}
             </>
