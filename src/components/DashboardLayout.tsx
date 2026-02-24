@@ -18,7 +18,6 @@ import {
   User,
   Users,
   Wallet,
-  ArrowLeftRight,
   Search,
   Lock,
   Sparkles,
@@ -30,9 +29,7 @@ const mainLinks = [
   { href: "/portefeuille", label: "Portefeuille", icon: Wallet },
 ];
 
-const financeLinks = [
-  { href: "/transactions", label: "Transactions", icon: ArrowLeftRight },
-];
+
 
 export default function DashboardLayout({
   children,
@@ -111,31 +108,7 @@ export default function DashboardLayout({
               );
             })}
 
-            <div className="my-4 mx-3 border-t border-gray-100" />
-            
-            <div className="mb-2 px-3 text-[11px] font-semibold text-gray-400 uppercase tracking-wider">
-              Finances
-            </div>
-            {financeLinks.map((link) => {
-              const isActive = pathname === link.href || pathname.startsWith(link.href);
-              return (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 group ${
-                    isActive
-                      ? "bg-primary-50 text-primary-700"
-                      : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
-                  }`}
-                  onClick={() => setSidebarOpen(false)}
-                >
-                  <link.icon className={`w-[20px] h-[20px] transition-colors ${
-                    isActive ? "text-primary-600" : "text-gray-400 group-hover:text-gray-500"
-                  }`} />
-                  {link.label}
-                </Link>
-              );
-            })}
+
 
             <div className="my-4 mx-3 border-t border-gray-100" />
 
@@ -203,7 +176,7 @@ export default function DashboardLayout({
                 </button>
                 <div>
                   <h1 className="text-lg font-semibold text-gray-900 hidden sm:block">
-                    {[...mainLinks, ...financeLinks].find((l) => l.href === pathname)?.label || "Binq"}
+                    {mainLinks.find((l) => l.href === pathname)?.label || "Binq"}
                   </h1>
                 </div>
               </div>
