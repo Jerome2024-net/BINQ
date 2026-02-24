@@ -5,7 +5,7 @@ import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import type { AuthChangeEvent } from "@supabase/supabase-js";
-import { Star, Lock, ArrowRight, Loader2, CheckCircle2, Eye, EyeOff, ShieldCheck } from "lucide-react";
+import { Lock, ArrowRight, Loader2, CheckCircle2, Eye, EyeOff, ShieldCheck } from "lucide-react";
 
 function ResetPasswordForm() {
   const router = useRouter();
@@ -103,10 +103,7 @@ function ResetPasswordForm() {
 
         <div className="relative max-w-md">
           <div className="flex items-center gap-2.5 mb-10">
-            <div className="w-11 h-11 bg-gradient-to-br from-primary-500 to-primary-700 rounded-xl flex items-center justify-center shadow-glow">
-              <Star className="w-6 h-6 text-white fill-current" />
-            </div>
-            <span className="text-2xl font-bold tracking-tight">Binq</span>
+            <img src="https://res.cloudinary.com/dn8ed1doa/image/upload/ChatGPT_Image_24_f%C3%A9vr._2026_15_44_47_sgwgvi" alt="Binq" className="h-11 w-auto brightness-0 invert" />
           </div>
           <h1 className="text-4xl font-bold mb-4 tracking-tight leading-tight">
             Nouveau départ
@@ -136,10 +133,7 @@ function ResetPasswordForm() {
         <div className="w-full max-w-md">
           {/* Mobile logo */}
           <div className="lg:hidden flex items-center gap-2 mb-8 justify-center">
-            <div className="w-9 h-9 bg-gradient-to-br from-primary-500 to-primary-700 rounded-xl flex items-center justify-center shadow-glow">
-              <Star className="w-5 h-5 text-white fill-current" />
-            </div>
-            <span className="text-xl font-bold text-gray-900 tracking-tight">Binq</span>
+            <img src="https://res.cloudinary.com/dn8ed1doa/image/upload/ChatGPT_Image_24_f%C3%A9vr._2026_15_44_47_sgwgvi" alt="Binq" className="h-9 w-auto" />
           </div>
 
           {success ? (

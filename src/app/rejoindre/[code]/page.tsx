@@ -275,10 +275,7 @@ export default function RejoindreParCodePage({
           {/* Logo */}
           <div className="text-center mb-8 animate-fade-up">
             <div className="inline-flex items-center gap-2.5">
-              <div className="w-10 h-10 bg-gradient-to-br from-primary-500 to-primary-700 rounded-xl flex items-center justify-center shadow-lg shadow-primary-500/25">
-                <Star className="w-5 h-5 text-white fill-current" />
-              </div>
-              <span className="text-xl font-bold text-white tracking-tight">Binq</span>
+              <img src="https://res.cloudinary.com/dn8ed1doa/image/upload/ChatGPT_Image_24_f%C3%A9vr._2026_15_44_47_sgwgvi" alt="Binq" className="h-10 w-auto brightness-0 invert" />
             </div>
           </div>
 

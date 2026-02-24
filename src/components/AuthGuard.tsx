@@ -3,7 +3,7 @@
 import { useAuth } from "@/contexts/AuthContext";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
-import { Star } from "lucide-react";
+
 
 export default function AuthGuard({ children }: { children: React.ReactNode }) {
   const { user, isLoading } = useAuth();
@@ -19,8 +19,8 @@ export default function AuthGuard({ children }: { children: React.ReactNode }) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-surface-50 bg-gradient-mesh">
         <div className="text-center">
-          <div className="w-14 h-14 bg-gradient-to-br from-primary-500 to-primary-700 rounded-2xl flex items-center justify-center animate-pulse shadow-glow mx-auto mb-3">
-            <Star className="w-7 h-7 text-white fill-current" />
+          <div className="flex items-center justify-center animate-pulse mx-auto mb-3">
+            <img src="https://res.cloudinary.com/dn8ed1doa/image/upload/ChatGPT_Image_24_f%C3%A9vr._2026_15_44_47_sgwgvi" alt="Binq" className="h-14 w-auto" />
           </div>
           <p className="text-gray-400 text-sm font-medium">Chargement...</p>
         </div>
