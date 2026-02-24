@@ -162,7 +162,7 @@ export default function InviteModal({ isOpen, onClose, onInvite, tontineNom, pla
   };
 
   return (
-    <div className="fixed inset-0 bg-gray-950/60 backdrop-blur-sm z-[60] flex items-center justify-center p-4" onClick={handleClose}>
+    <div className="fixed inset-0 bg-gray-950/60 backdrop-blur-sm z-[60] flex items-center justify-center p-3 sm:p-4" onClick={handleClose}>
       <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-hidden flex flex-col animate-fade-up" onClick={(e) => e.stopPropagation()}>
         {/* Header */}
         <div className="bg-gradient-to-r from-primary-600 to-primary-700 p-5 text-white">

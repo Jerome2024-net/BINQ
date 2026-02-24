@@ -86,7 +86,7 @@ export default function SubscriptionModal({ isOpen, onClose }: SubscriptionModal
   };
 
   return (
-    <div className="fixed inset-0 bg-black/50 z-[60] flex items-center justify-center p-4" onClick={handleClose}>
+    <div className="fixed inset-0 bg-black/50 z-[60] flex items-center justify-center p-3 sm:p-4" onClick={handleClose}>
       <div
         className="bg-white rounded-2xl shadow-2xl w-full max-w-md max-h-[90vh] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}

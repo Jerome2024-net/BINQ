@@ -527,11 +527,11 @@ export default function PortefeuillePage() {
 
       {/* ── Modal Envoyer de l'argent ── */}
       {sendModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-          <div className="bg-white rounded-3xl w-full max-w-md shadow-2xl relative overflow-hidden">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/60 backdrop-blur-sm">
+          <div className="bg-white rounded-2xl sm:rounded-3xl w-full max-w-md shadow-2xl relative max-h-[90vh] overflow-y-auto">
             {/* Header */}
-            <div className="flex items-center justify-between p-5 border-b border-gray-100">
-              <h3 className="text-lg font-bold text-gray-900">
+            <div className="flex items-center justify-between p-4 sm:p-5 border-b border-gray-100">
+              <h3 className="text-base sm:text-lg font-bold text-gray-900">
                 {sendMode === "link" ? (
                   sendLinkStep === "success" ? "Lien prêt !" : "Envoyer via lien"
                 ) : (
@@ -852,10 +852,10 @@ export default function PortefeuillePage() {
 
       {/* ── Modal Recevoir de l'argent (Request Money) ── */}
       {linkModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-          <div className="bg-white rounded-3xl w-full max-w-md shadow-2xl relative overflow-hidden">
-            <div className="flex items-center justify-between p-5 border-b border-gray-100">
-              <h3 className="text-lg font-bold text-gray-900 flex items-center gap-2">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/60 backdrop-blur-sm">
+          <div className="bg-white rounded-2xl sm:rounded-3xl w-full max-w-md shadow-2xl relative max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between p-4 sm:p-5 border-b border-gray-100">
+              <h3 className="text-base sm:text-lg font-bold text-gray-900 flex items-center gap-2">
                 <ArrowDownLeft className="w-5 h-5 text-gray-900" />
                 Recevoir de l&apos;argent
               </h3>

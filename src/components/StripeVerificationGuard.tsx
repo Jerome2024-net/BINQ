@@ -96,11 +96,11 @@ export default function StripeVerificationGuard({
       {/* Modal de vérification */}
       {showModal && (
         <div
-          className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[70] flex items-center justify-center p-4"
+          className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[70] flex items-center justify-center p-3 sm:p-4"
           onClick={() => setShowModal(false)}
         >
           <div
-            className="bg-white rounded-2xl max-w-md w-full shadow-2xl overflow-hidden"
+            className="bg-white rounded-2xl max-w-md w-full shadow-2xl max-h-[90vh] overflow-y-auto"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Header */}
