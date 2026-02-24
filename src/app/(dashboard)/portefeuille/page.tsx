@@ -9,21 +9,11 @@ import DepositWithdrawModal from "@/components/DepositWithdrawModal";
 import { PortefeuilleSkeleton } from "@/components/Skeleton";
 import { formatMontant, formatDate } from "@/lib/data";
 import {
-  Wallet,
-  TrendingUp,
-  TrendingDown,
   Eye,
   EyeOff,
   ArrowRight,
-  CircleDollarSign,
-  ShieldCheck,
   ArrowUpRight,
   ArrowDownLeft,
-  BarChart3,
-  RefreshCw,
-  PiggyBank,
-  Sparkles,
-  Info,
   Send,
   LinkIcon,
   Search,
@@ -34,7 +24,8 @@ import {
   Copy,
   Share2,
   Trash2,
-  ExternalLink,
+  Plus,
+  Minus,
 } from "lucide-react";
 
 interface SearchUser {
@@ -156,17 +147,6 @@ export default function PortefeuillePage() {
     }
     setDepositModalOpen(false);
     return result;
-  };
-
-  const getTransactionIcon = (type: string) => {
-    switch (type) {
-      case "depot":
-        return <ArrowDownLeft className="w-4 h-4 text-green-600" />;
-      case "retrait":
-        return <ArrowUpRight className="w-4 h-4 text-blue-600" />;
-      default:
-        return <CircleDollarSign className="w-4 h-4 text-gray-600" />;
-    }
   };
 
   const getTransactionLabel = (type: string) => {
@@ -328,269 +308,204 @@ export default function PortefeuillePage() {
   };
 
   return (
-    <div className="space-y-8 max-w-7xl mx-auto">
-      {/* Header */}
-      <div>
-        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 tracking-tight flex items-center gap-3">
-          Mon Portefeuille
-        </h1>
-        <p className="text-gray-500 mt-1">Gérez vos fonds et suivez vos mouvements</p>
-      </div>
+    <div className="max-w-2xl mx-auto space-y-8 pb-12">
 
-      {/* Carte Solde Principal */}
-      <div className="relative overflow-hidden bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-800 rounded-3xl p-6 sm:p-8 text-white shadow-xl shadow-blue-200">
-        <div className="absolute top-0 right-0 w-72 h-72 bg-white/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3"></div>
-        <div className="absolute bottom-0 left-0 w-48 h-48 bg-white/5 rounded-full blur-2xl translate-y-1/3 -translate-x-1/4"></div>
-
-        <div className="relative z-10">
-          <div className="flex items-center justify-between mb-8">
-            <div className="flex items-center gap-2 bg-white/10 px-3 py-1.5 rounded-full">
-              <ShieldCheck className="w-4 h-4 text-green-300" />
-              <span className="text-sm font-medium text-green-200">Sécurisé</span>
-            </div>
-            <button
-              onClick={() => setShowSolde(!showSolde)}
-              className="p-2.5 rounded-xl bg-white/10 hover:bg-white/20 transition-colors"
-            >
-              {showSolde ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-            </button>
-          </div>
-
-          <p className="text-sm text-blue-200 font-medium uppercase tracking-wider mb-2">Solde disponible</p>
-          <p className="text-4xl sm:text-5xl md:text-6xl font-bold mb-6 sm:mb-8 tracking-tight">
+      {/* ── Solde Hero ── */}
+      <div className="pt-8 pb-2 text-center">
+        <p className="text-xs font-medium uppercase tracking-widest text-gray-400 mb-3">Solde disponible</p>
+        <div className="flex items-center justify-center gap-3">
+          <p className="text-5xl sm:text-6xl font-extrabold text-gray-900 tracking-tight tabular-nums">
             {showSolde ? formatMontant(soldeWallet) : "••••••"}
           </p>
+          <button
+            onClick={() => setShowSolde(!showSolde)}
+            className="p-2 rounded-full hover:bg-gray-100 transition"
+          >
+            {showSolde ? <EyeOff className="w-5 h-5 text-gray-400" /> : <Eye className="w-5 h-5 text-gray-400" />}
+          </button>
+        </div>
+      </div>
 
-          {/* Actions principales */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-            <button
-              onClick={handleDeposit}
-              className="flex flex-col items-center gap-2 bg-white text-blue-700 py-4 rounded-2xl font-bold hover:bg-blue-50 transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5"
-            >
-              <ArrowDownLeft className="w-6 h-6" />
-              <span className="text-xs sm:text-sm">Déposer</span>
-            </button>
-            <button
-              onClick={handleWithdraw}
-              className="flex flex-col items-center gap-2 bg-white/10 text-white py-4 rounded-2xl font-bold hover:bg-white/20 transition-all border border-white/20"
-            >
-              <ArrowUpRight className="w-6 h-6" />
-              <span className="text-xs sm:text-sm">Retirer</span>
-            </button>
-            <button
-              onClick={openSendModal}
-              className="flex flex-col items-center gap-2 bg-purple-500/90 text-white py-4 rounded-2xl font-bold hover:bg-purple-500 transition-all border border-purple-400/30"
-            >
-              <Send className="w-6 h-6" />
-              <span className="text-xs sm:text-sm">Envoyer</span>
-            </button>
-            <button
-              onClick={() => setLinkModalOpen(true)}
-              className="flex flex-col items-center gap-2 bg-emerald-500/90 text-white py-4 rounded-2xl font-bold hover:bg-emerald-500 transition-all border border-emerald-400/30"
-            >
-              <ArrowDownLeft className="w-6 h-6" />
-              <span className="text-xs sm:text-sm">Recevoir</span>
-            </button>
+      {/* ── Actions ── */}
+      <div className="grid grid-cols-4 gap-3">
+        <button
+          onClick={handleDeposit}
+          className="flex flex-col items-center gap-2.5 py-5 rounded-2xl bg-gray-900 text-white hover:bg-gray-800 transition-colors"
+        >
+          <Plus className="w-5 h-5" />
+          <span className="text-xs font-semibold">Déposer</span>
+        </button>
+        <button
+          onClick={openSendModal}
+          className="flex flex-col items-center gap-2.5 py-5 rounded-2xl bg-gray-900 text-white hover:bg-gray-800 transition-colors"
+        >
+          <Send className="w-5 h-5" />
+          <span className="text-xs font-semibold">Envoyer</span>
+        </button>
+        <button
+          onClick={handleWithdraw}
+          className="flex flex-col items-center gap-2.5 py-5 rounded-2xl border border-gray-200 bg-white text-gray-900 hover:bg-gray-50 transition-colors"
+        >
+          <Minus className="w-5 h-5" />
+          <span className="text-xs font-semibold">Retirer</span>
+        </button>
+        <button
+          onClick={() => setLinkModalOpen(true)}
+          className="flex flex-col items-center gap-2.5 py-5 rounded-2xl border border-gray-200 bg-white text-gray-900 hover:bg-gray-50 transition-colors"
+        >
+          <ArrowDownLeft className="w-5 h-5" />
+          <span className="text-xs font-semibold">Recevoir</span>
+        </button>
+      </div>
+
+      {/* ── Résumé financier ── */}
+      <div className="bg-white rounded-2xl border border-gray-200">
+        <div className="px-5 py-4 border-b border-gray-100">
+          <h2 className="text-sm font-semibold text-gray-900 uppercase tracking-wide">Résumé</h2>
+        </div>
+        <div className="divide-y divide-gray-100">
+          <div className="flex items-center justify-between px-5 py-4">
+            <span className="text-sm text-gray-500">Total déposé</span>
+            <span className="text-sm font-semibold text-gray-900">{formatMontant(summary.totalDepose)}</span>
+          </div>
+          <div className="flex items-center justify-between px-5 py-4">
+            <span className="text-sm text-gray-500">Total retiré</span>
+            <span className="text-sm font-semibold text-gray-900">{formatMontant(summary.totalRetire)}</span>
+          </div>
+          <div className="flex items-center justify-between px-5 py-4">
+            <span className="text-sm text-gray-500">Transactions</span>
+            <span className="text-sm font-semibold text-gray-900">{summary.nombreTransactions}</span>
           </div>
         </div>
       </div>
 
-      {/* Stats */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
-        <div className="bg-white rounded-3xl border border-gray-100 p-6 shadow-sm hover:shadow-md transition-shadow">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="w-12 h-12 bg-green-50 rounded-2xl flex items-center justify-center">
-              <TrendingUp className="w-6 h-6 text-green-600" />
-            </div>
-          </div>
-          <p className="text-sm text-gray-500 font-medium">Total déposé</p>
-          <p className="text-2xl font-bold text-gray-900 mt-1">{formatMontant(summary.totalDepose)}</p>
+      {/* ── Dernières transactions ── */}
+      <div className="bg-white rounded-2xl border border-gray-200">
+        <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100">
+          <h2 className="text-sm font-semibold text-gray-900 uppercase tracking-wide">Transactions récentes</h2>
+          <Link
+            href="/transactions"
+            className="text-xs font-medium text-gray-400 hover:text-gray-600 flex items-center gap-1 transition-colors"
+          >
+            Tout voir <ArrowRight className="w-3.5 h-3.5" />
+          </Link>
         </div>
 
-        <div className="bg-white rounded-3xl border border-gray-100 p-6 shadow-sm hover:shadow-md transition-shadow">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="w-12 h-12 bg-blue-50 rounded-2xl flex items-center justify-center">
-              <TrendingDown className="w-6 h-6 text-blue-600" />
-            </div>
+        {recentTx.length === 0 ? (
+          <div className="text-center py-14 px-5">
+            <p className="text-sm font-medium text-gray-900 mb-1">Aucune transaction</p>
+            <p className="text-xs text-gray-400">Effectuez votre premier dépôt pour commencer</p>
           </div>
-          <p className="text-sm text-gray-500 font-medium">Total retiré</p>
-          <p className="text-2xl font-bold text-gray-900 mt-1">{formatMontant(summary.totalRetire)}</p>
-        </div>
-
-        <div className="bg-white rounded-3xl border border-gray-100 p-6 shadow-sm hover:shadow-md transition-shadow">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="w-12 h-12 bg-indigo-50 rounded-2xl flex items-center justify-center">
-              <RefreshCw className="w-6 h-6 text-indigo-600" />
-            </div>
-          </div>
-          <p className="text-sm text-gray-500 font-medium">Transactions</p>
-          <p className="text-2xl font-bold text-gray-900 mt-1">{summary.nombreTransactions}</p>
-        </div>
-      </div>
-
-      {/* Grille : Transactions + Sidebar info */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
-        {/* Dernières transactions */}
-        <div className="lg:col-span-2">
-          <div className="bg-white rounded-3xl border border-gray-100 shadow-sm p-5 sm:p-6">
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-lg font-bold text-gray-900 flex items-center gap-2">
-                Dernières transactions
-              </h2>
-              <Link
-                href="/transactions"
-                className="text-indigo-600 hover:text-indigo-700 font-medium flex items-center gap-1 hover:gap-2 transition-all text-sm"
-              >
-                Tout voir <ArrowRight className="w-4 h-4" />
-              </Link>
-            </div>
-
-            {recentTx.length === 0 ? (
-              <div className="text-center py-16">
-                <div className="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <BarChart3 className="w-10 h-10 text-gray-300" />
+        ) : (
+          <div className="divide-y divide-gray-50">
+            {recentTx.map((tx) => (
+              <div key={tx.id} className="flex items-center gap-4 px-5 py-3.5">
+                <div className={`w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 ${
+                  isCredit(tx.type) ? "bg-green-50" : "bg-gray-100"
+                }`}>
+                  {isCredit(tx.type)
+                    ? <ArrowDownLeft className="w-4 h-4 text-green-600" />
+                    : <ArrowUpRight className="w-4 h-4 text-gray-500" />
+                  }
                 </div>
-                <p className="text-gray-900 font-semibold mb-1">Aucune transaction</p>
-                <p className="text-sm text-gray-400">
-                  Effectuez votre premier dépôt pour commencer
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-medium text-gray-900 truncate">{tx.description}</p>
+                  <p className="text-xs text-gray-400 mt-0.5">
+                    {getTransactionLabel(tx.type)} · {formatDate(tx.dateCreation)}
+                  </p>
+                </div>
+                <p className={`text-sm font-semibold tabular-nums whitespace-nowrap ${isCredit(tx.type) ? "text-green-600" : "text-gray-900"}`}>
+                  {isCredit(tx.type) ? "+" : "-"}{tx.montant.toLocaleString("fr-FR")} €
                 </p>
               </div>
-            ) : (
-              <div className="space-y-1">
-                {recentTx.map((tx) => (
-                  <div
-                    key={tx.id}
-                    className="flex items-center gap-4 p-3 rounded-2xl hover:bg-gray-50 transition-colors"
-                  >
-                    <div
-                      className={`w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0 ${
-                        isCredit(tx.type) ? "bg-green-50" : "bg-red-50"
-                      }`}
-                    >
-                      {getTransactionIcon(tx.type)}
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-semibold text-gray-900 truncate">{tx.description}</p>
-                      <div className="flex items-center gap-2 text-xs text-gray-400 mt-0.5">
-                        <span className={`px-2 py-0.5 rounded-md font-medium ${
-                          isCredit(tx.type) ? "bg-green-50 text-green-700" : "bg-red-50 text-red-700"
-                        }`}>
-                          {getTransactionLabel(tx.type)}
-                        </span>
-                        <span>{formatDate(tx.dateCreation)}</span>
-                      </div>
-                    </div>
-                    <p className={`text-sm font-bold whitespace-nowrap ${isCredit(tx.type) ? "text-green-600" : "text-red-600"}`}>
-                      {isCredit(tx.type) ? "+" : "-"}
-                      {tx.montant.toLocaleString("fr-FR")} €
-                    </p>
-                  </div>
-                ))}
-              </div>
-            )}
+            ))}
           </div>
+        )}
+      </div>
+
+      {/* ── Tarification ── */}
+      <div className="bg-white rounded-2xl border border-gray-200">
+        <div className="px-5 py-4 border-b border-gray-100">
+          <h2 className="text-sm font-semibold text-gray-900 uppercase tracking-wide">Tarification</h2>
         </div>
-
-        {/* Sidebar Infos */}
-        <div className="space-y-6">
-          {/* Tarification */}
-          <div className="bg-white rounded-3xl border border-gray-100 shadow-sm p-6">
-            <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
-              <Info className="w-5 h-5 text-indigo-600" />
-              Tarification
-            </h3>
-            <div className="space-y-3">
-              <div className="flex justify-between items-center p-3 bg-green-50 rounded-2xl border border-green-100">
-                <div>
-                  <p className="text-sm font-semibold text-gray-900">Dépôt portefeuille</p>
-                  <p className="text-xs text-gray-500">Via carte ou virement</p>
-                </div>
-                <span className="text-sm font-bold text-green-600">Gratuit</span>
-              </div>
-              <div className="flex justify-between items-center p-3 bg-green-50 rounded-2xl border border-green-100">
-                <div>
-                  <p className="text-sm font-semibold text-gray-900">Retrait</p>
-                  <p className="text-xs text-gray-500">Vers compte bancaire</p>
-                </div>
-                <span className="text-sm font-bold text-green-600">Gratuit</span>
-              </div>
-              <div className="flex justify-between items-center p-3 bg-amber-50 rounded-2xl border border-amber-100">
-                <div>
-                  <p className="text-sm font-semibold text-gray-900">Dépôt épargne</p>
-                  <p className="text-xs text-gray-500">Frais de gestion</p>
-                </div>
-                <span className="text-sm font-bold text-amber-600">2%</span>
-              </div>
-
+        <div className="divide-y divide-gray-100">
+          <div className="flex items-center justify-between px-5 py-4">
+            <div>
+              <p className="text-sm font-medium text-gray-900">Dépôt portefeuille</p>
+              <p className="text-xs text-gray-400">Via carte ou virement</p>
             </div>
+            <span className="text-sm font-semibold text-green-600">Gratuit</span>
+          </div>
+          <div className="flex items-center justify-between px-5 py-4">
+            <div>
+              <p className="text-sm font-medium text-gray-900">Retrait</p>
+              <p className="text-xs text-gray-400">Vers compte bancaire</p>
+            </div>
+            <span className="text-sm font-semibold text-green-600">Gratuit</span>
+          </div>
+          <div className="flex items-center justify-between px-5 py-4">
+            <div>
+              <p className="text-sm font-medium text-gray-900">Dépôt épargne</p>
+              <p className="text-xs text-gray-400">Frais de gestion</p>
+            </div>
+            <span className="text-sm font-semibold text-gray-900">2 %</span>
           </div>
         </div>
       </div>
 
-      {/* Demandes de paiement */}
-      <div className="bg-white rounded-3xl border border-gray-100 shadow-sm p-5 sm:p-6">
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="text-lg font-bold text-gray-900 flex items-center gap-2">
-            <LinkIcon className="w-5 h-5 text-emerald-600" />
-            Demandes de paiement
-          </h2>
+      {/* ── Liens de paiement ── */}
+      <div className="bg-white rounded-2xl border border-gray-200">
+        <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100">
+          <h2 className="text-sm font-semibold text-gray-900 uppercase tracking-wide">Liens de paiement</h2>
           <button
             onClick={() => setLinkModalOpen(true)}
-            className="text-sm font-semibold text-emerald-600 hover:text-emerald-700 flex items-center gap-1"
+            className="text-xs font-medium text-gray-400 hover:text-gray-600 transition-colors"
           >
-            + Nouvelle demande
+            + Nouveau
           </button>
         </div>
 
         {linksLoading ? (
-          <div className="flex justify-center py-8">
-            <Loader2 className="w-6 h-6 text-emerald-400 animate-spin" />
+          <div className="flex justify-center py-10">
+            <Loader2 className="w-5 h-5 text-gray-300 animate-spin" />
           </div>
         ) : myLinks.length === 0 ? (
-          <div className="text-center py-10">
-            <div className="w-16 h-16 bg-emerald-50 rounded-full flex items-center justify-center mx-auto mb-3">
-              <ArrowDownLeft className="w-8 h-8 text-emerald-300" />
-            </div>
-            <p className="text-gray-900 font-semibold mb-1">Aucune demande de paiement</p>
-            <p className="text-sm text-gray-400">Demandez de l&apos;argent via un lien partageable</p>
+          <div className="text-center py-14 px-5">
+            <p className="text-sm font-medium text-gray-900 mb-1">Aucun lien de paiement</p>
+            <p className="text-xs text-gray-400">Demandez de l&apos;argent via un lien partageable</p>
           </div>
         ) : (
-          <div className="space-y-2">
+          <div className="divide-y divide-gray-50">
             {myLinks.slice(0, 5).map((pl) => (
-              <div key={pl.id} className="flex items-center gap-4 p-3 rounded-2xl hover:bg-gray-50 transition-colors">
-                <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${
-                  pl.statut === "actif" ? "bg-indigo-50" : pl.statut === "paye" ? "bg-green-50" : "bg-gray-50"
+              <div key={pl.id} className="flex items-center gap-4 px-5 py-3.5">
+                <div className={`w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 ${
+                  pl.statut === "actif" ? "bg-gray-900" : pl.statut === "paye" ? "bg-green-50" : "bg-gray-100"
                 }`}>
-                  <LinkIcon className={`w-5 h-5 ${
-                    pl.statut === "actif" ? "text-indigo-600" : pl.statut === "paye" ? "text-green-600" : "text-gray-400"
+                  <LinkIcon className={`w-4 h-4 ${
+                    pl.statut === "actif" ? "text-white" : pl.statut === "paye" ? "text-green-600" : "text-gray-400"
                   }`} />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-semibold text-gray-900 truncate">
+                  <p className="text-sm font-medium text-gray-900 truncate">
                     {pl.description || "Lien de paiement"}
                   </p>
-                  <div className="flex items-center gap-2 text-xs text-gray-400 mt-0.5">
-                    <span className={`px-2 py-0.5 rounded-md font-medium ${
-                      pl.statut === "actif" ? "bg-indigo-50 text-indigo-700" : pl.statut === "paye" ? "bg-green-50 text-green-700" : "bg-gray-100 text-gray-500"
-                    }`}>
-                      {pl.statut === "actif" ? "Actif" : pl.statut === "paye" ? "Payé" : "Annulé"}
-                    </span>
-                    <span>{formatDate(pl.created_at)}</span>
-                  </div>
+                  <p className="text-xs text-gray-400 mt-0.5">
+                    {pl.statut === "actif" ? "Actif" : pl.statut === "paye" ? "Payé" : "Annulé"} · {formatDate(pl.created_at)}
+                  </p>
                 </div>
-                <p className="text-sm font-bold text-gray-900 whitespace-nowrap mr-2">
+                <p className="text-sm font-semibold text-gray-900 tabular-nums whitespace-nowrap mr-2">
                   {pl.montant ? `${pl.montant.toLocaleString("fr-FR")} €` : "Libre"}
                 </p>
                 {pl.statut === "actif" && (
-                  <div className="flex items-center gap-1">
+                  <div className="flex items-center gap-0.5">
                     <button onClick={() => copyLinkUrl(pl.code)} className="p-2 rounded-lg hover:bg-gray-100 transition" title="Copier">
-                      <Copy className="w-4 h-4 text-gray-500" />
+                      <Copy className="w-3.5 h-3.5 text-gray-400" />
                     </button>
                     <button onClick={() => shareLink(pl.code, pl.description)} className="p-2 rounded-lg hover:bg-gray-100 transition" title="Partager">
-                      <Share2 className="w-4 h-4 text-gray-500" />
+                      <Share2 className="w-3.5 h-3.5 text-gray-400" />
                     </button>
                     <button onClick={() => handleDeleteLink(pl.id)} className="p-2 rounded-lg hover:bg-red-50 transition" title="Annuler">
-                      <Trash2 className="w-4 h-4 text-red-400" />
+                      <Trash2 className="w-3.5 h-3.5 text-red-400" />
                     </button>
                   </div>
                 )}
@@ -638,14 +553,14 @@ export default function PortefeuillePage() {
               <div className="flex border-b border-gray-100">
                 <button
                   onClick={() => { setSendMode("direct"); setSendStep("search"); }}
-                  className={`flex-1 py-3 text-sm font-semibold text-center transition ${sendMode === "direct" ? "text-purple-600 border-b-2 border-purple-600" : "text-gray-400 hover:text-gray-600"}`}
+                  className={`flex-1 py-3 text-sm font-semibold text-center transition ${sendMode === "direct" ? "text-gray-900 border-b-2 border-gray-900" : "text-gray-400 hover:text-gray-600"}`}
                 >
                   <Search className="w-4 h-4 inline mr-1.5 -mt-0.5" />
                   Rechercher
                 </button>
                 <button
                   onClick={() => { setSendMode("link"); setSendLinkStep("form"); }}
-                  className={`flex-1 py-3 text-sm font-semibold text-center transition ${sendMode === "link" ? "text-purple-600 border-b-2 border-purple-600" : "text-gray-400 hover:text-gray-600"}`}
+                  className={`flex-1 py-3 text-sm font-semibold text-center transition ${sendMode === "link" ? "text-gray-900 border-b-2 border-gray-900" : "text-gray-400 hover:text-gray-600"}`}
                 >
                   <LinkIcon className="w-4 h-4 inline mr-1.5 -mt-0.5" />
                   Via lien
@@ -664,17 +579,17 @@ export default function PortefeuillePage() {
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
                     <input
                       type="text"
-                      placeholder="Rechercher par nom, email..."
+                      placeholder="Rechercher par nom..."
                       value={searchQuery}
                       onChange={(e) => handleSearch(e.target.value)}
-                      className="w-full pl-11 pr-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none text-sm"
+                      className="w-full pl-11 pr-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-gray-900 focus:border-transparent outline-none text-sm"
                       autoFocus
                     />
                   </div>
 
                   {searchLoading && (
                     <div className="flex justify-center py-6">
-                      <Loader2 className="w-6 h-6 text-indigo-400 animate-spin" />
+                      <Loader2 className="w-6 h-6 text-gray-400 animate-spin" />
                     </div>
                   )}
 
@@ -695,8 +610,8 @@ export default function PortefeuillePage() {
                         {u.avatar_url ? (
                           <img src={u.avatar_url} alt="" className="w-10 h-10 rounded-full object-cover" />
                         ) : (
-                          <div className="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center">
-                            <span className="text-sm font-bold text-indigo-600">
+                          <div className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center">
+                            <span className="text-sm font-bold text-gray-600">
                               {(u.prenom?.[0] || "?")}{(u.nom?.[0] || "")}
                             </span>
                           </div>
@@ -718,8 +633,8 @@ export default function PortefeuillePage() {
                     {selectedUser.avatar_url ? (
                       <img src={selectedUser.avatar_url} alt="" className="w-10 h-10 rounded-full object-cover" />
                     ) : (
-                      <div className="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center">
-                        <span className="text-sm font-bold text-indigo-600">
+                      <div className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center">
+                        <span className="text-sm font-bold text-gray-600">
                           {(selectedUser.prenom?.[0] || "?")}{(selectedUser.nom?.[0] || "")}
                         </span>
                       </div>
@@ -739,7 +654,7 @@ export default function PortefeuillePage() {
                       value={sendAmount}
                       onChange={(e) => setSendAmount(e.target.value)}
                       placeholder="0.00"
-                      className="w-full p-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none text-2xl font-bold text-center [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                      className="w-full p-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-gray-900 focus:border-transparent outline-none text-2xl font-bold text-center [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                       autoFocus
                     />
                     <p className="text-xs text-gray-400 mt-1 text-center">Solde : {formatMontant(soldeWallet)}</p>
@@ -752,7 +667,7 @@ export default function PortefeuillePage() {
                       value={sendMessage}
                       onChange={(e) => setSendMessage(e.target.value)}
                       placeholder="Ex: Remboursement dîner"
-                      className="w-full p-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none text-sm"
+                      className="w-full p-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-gray-900 focus:border-transparent outline-none text-sm"
                       maxLength={100}
                     />
                   </div>
@@ -767,7 +682,7 @@ export default function PortefeuillePage() {
                     <button
                       onClick={() => setSendStep("confirm")}
                       disabled={!sendAmount || parseFloat(sendAmount) <= 0}
-                      className="flex-1 py-3 rounded-xl bg-indigo-600 text-white font-semibold hover:bg-indigo-700 transition disabled:opacity-50"
+                      className="flex-1 py-3 rounded-xl bg-gray-900 text-white font-semibold hover:bg-gray-800 transition disabled:opacity-50"
                     >
                       Suivant
                     </button>
@@ -799,7 +714,7 @@ export default function PortefeuillePage() {
                     <button
                       onClick={handleSendConfirm}
                       disabled={sendLoading}
-                      className="flex-1 py-3 rounded-xl bg-indigo-600 text-white font-bold hover:bg-indigo-700 transition disabled:opacity-50 flex items-center justify-center gap-2"
+                      className="flex-1 py-3 rounded-xl bg-gray-900 text-white font-bold hover:bg-gray-800 transition disabled:opacity-50 flex items-center justify-center gap-2"
                     >
                       {sendLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Send className="w-4 h-4" />}
                       {sendLoading ? "Envoi..." : "Confirmer"}
@@ -811,7 +726,7 @@ export default function PortefeuillePage() {
               {/* Step 4: Success */}
               {sendStep === "success" && (
                 <div className="text-center py-4">
-                  <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <div className="w-16 h-16 bg-green-50 rounded-full flex items-center justify-center mx-auto mb-4">
                     <CheckCircle2 className="w-8 h-8 text-green-600" />
                   </div>
                   <h3 className="text-lg font-bold text-gray-900 mb-1">Transfert effectué !</h3>
@@ -821,7 +736,7 @@ export default function PortefeuillePage() {
                   <p className="text-xs text-gray-400 mb-5">Réf: {sendRef}</p>
                   <button
                     onClick={() => setSendModalOpen(false)}
-                    className="w-full py-3 rounded-xl bg-indigo-600 text-white font-bold hover:bg-indigo-700 transition"
+                    className="w-full py-3 rounded-xl bg-gray-900 text-white font-bold hover:bg-gray-800 transition"
                   >
                     Fermer
                   </button>
@@ -848,7 +763,7 @@ export default function PortefeuillePage() {
                           value={sendLinkAmount}
                           onChange={(e) => setSendLinkAmount(e.target.value)}
                           placeholder="0.00"
-                          className="w-full p-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none text-2xl font-bold text-center [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                          className="w-full p-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-gray-900 focus:border-transparent outline-none text-2xl font-bold text-center [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                           autoFocus
                         />
                         <p className="text-xs text-gray-400 mt-1 text-center">Solde : {formatMontant(soldeWallet)}</p>
@@ -861,7 +776,7 @@ export default function PortefeuillePage() {
                           value={sendLinkDesc}
                           onChange={(e) => setSendLinkDesc(e.target.value)}
                           placeholder="Ex: Cadeau d'anniversaire"
-                          className="w-full p-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none text-sm"
+                          className="w-full p-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-gray-900 focus:border-transparent outline-none text-sm"
                           maxLength={120}
                         />
                       </div>
@@ -869,7 +784,7 @@ export default function PortefeuillePage() {
                       <button
                         onClick={handleSendViaLink}
                         disabled={sendLinkCreating || !sendLinkAmount || parseFloat(sendLinkAmount) <= 0}
-                        className="w-full py-3.5 rounded-xl bg-purple-600 text-white font-bold hover:bg-purple-700 transition disabled:opacity-50 flex items-center justify-center gap-2"
+                        className="w-full py-3.5 rounded-xl bg-gray-900 text-white font-bold hover:bg-gray-800 transition disabled:opacity-50 flex items-center justify-center gap-2"
                       >
                         {sendLinkCreating ? <Loader2 className="w-5 h-5 animate-spin" /> : <Send className="w-5 h-5" />}
                         {sendLinkCreating ? "Création..." : "Envoyer via lien"}
@@ -903,26 +818,19 @@ export default function PortefeuillePage() {
                         </button>
                       </div>
 
-                      <div className="grid grid-cols-3 gap-3 mb-5">
+                      <div className="grid grid-cols-2 gap-3 mb-5">
                         <button
-                          onClick={() => { const url = `${window.location.origin}/pay/${sendLinkCode}`; window.open(`https://wa.me/?text=${encodeURIComponent(url)}`, "_blank"); }}
-                          className="flex flex-col items-center gap-1.5 p-3 rounded-xl bg-green-50 hover:bg-green-100 transition"
+                          onClick={() => { const url = `${window.location.origin}/pay/${sendLinkCode}`; navigator.clipboard.writeText(url); }}
+                          className="flex flex-col items-center gap-1.5 p-3 rounded-xl bg-gray-50 hover:bg-gray-100 transition"
                         >
-                          <span className="text-lg">💬</span>
-                          <span className="text-xs font-medium text-gray-700">WhatsApp</span>
-                        </button>
-                        <button
-                          onClick={() => { const url = `${window.location.origin}/pay/${sendLinkCode}`; window.open(`sms:?body=${encodeURIComponent(url)}`, "_blank"); }}
-                          className="flex flex-col items-center gap-1.5 p-3 rounded-xl bg-blue-50 hover:bg-blue-100 transition"
-                        >
-                          <span className="text-lg">📱</span>
-                          <span className="text-xs font-medium text-gray-700">SMS</span>
+                          <Copy className="w-5 h-5 text-gray-600" />
+                          <span className="text-xs font-medium text-gray-700">Copier</span>
                         </button>
                         <button
                           onClick={() => shareLink(sendLinkCode, sendLinkDesc || null)}
-                          className="flex flex-col items-center gap-1.5 p-3 rounded-xl bg-indigo-50 hover:bg-indigo-100 transition"
+                          className="flex flex-col items-center gap-1.5 p-3 rounded-xl bg-gray-50 hover:bg-gray-100 transition"
                         >
-                          <Share2 className="w-5 h-5 text-indigo-600" />
+                          <Share2 className="w-5 h-5 text-gray-600" />
                           <span className="text-xs font-medium text-gray-700">Partager</span>
                         </button>
                       </div>
@@ -948,7 +856,7 @@ export default function PortefeuillePage() {
           <div className="bg-white rounded-3xl w-full max-w-md shadow-2xl relative overflow-hidden">
             <div className="flex items-center justify-between p-5 border-b border-gray-100">
               <h3 className="text-lg font-bold text-gray-900 flex items-center gap-2">
-                <ArrowDownLeft className="w-5 h-5 text-emerald-600" />
+                <ArrowDownLeft className="w-5 h-5 text-gray-900" />
                 Recevoir de l&apos;argent
               </h3>
               <button onClick={() => { setLinkModalOpen(false); setCreatedLinkCode(null); }} className="p-2 rounded-xl hover:bg-gray-100">
@@ -972,7 +880,7 @@ export default function PortefeuillePage() {
                       value={linkAmount}
                       onChange={(e) => setLinkAmount(e.target.value)}
                       placeholder="Ex: 25.00"
-                      className="w-full p-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none text-2xl font-bold text-center [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                      className="w-full p-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-gray-900 focus:border-transparent outline-none text-2xl font-bold text-center [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                       autoFocus
                     />
                   </div>
@@ -984,7 +892,7 @@ export default function PortefeuillePage() {
                       value={linkDescription}
                       onChange={(e) => setLinkDescription(e.target.value)}
                       placeholder="Ex: Part du resto, loyer, cadeau..."
-                      className="w-full p-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none text-sm"
+                      className="w-full p-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-gray-900 focus:border-transparent outline-none text-sm"
                       maxLength={120}
                     />
                   </div>
@@ -992,7 +900,7 @@ export default function PortefeuillePage() {
                   <button
                     onClick={handleCreateLinkWithCode}
                     disabled={linkCreating}
-                    className="w-full py-3.5 rounded-xl bg-emerald-600 text-white font-bold hover:bg-emerald-700 transition disabled:opacity-50 flex items-center justify-center gap-2"
+                    className="w-full py-3.5 rounded-xl bg-gray-900 text-white font-bold hover:bg-gray-800 transition disabled:opacity-50 flex items-center justify-center gap-2"
                   >
                     {linkCreating ? <Loader2 className="w-5 h-5 animate-spin" /> : <Send className="w-5 h-5 rotate-180" />}
                     {linkCreating ? "Création..." : "Générer le lien"}
@@ -1000,8 +908,8 @@ export default function PortefeuillePage() {
                 </>
               ) : (
                 <div className="text-center">
-                  <div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <CheckCircle2 className="w-8 h-8 text-emerald-600" />
+                  <div className="w-16 h-16 bg-green-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <CheckCircle2 className="w-8 h-8 text-green-600" />
                   </div>
                   <h4 className="text-lg font-bold text-gray-900 mb-1">Lien prêt !</h4>
                   <p className="text-sm text-gray-500 mb-4">Partagez ce lien pour recevoir votre paiement</p>
@@ -1021,26 +929,19 @@ export default function PortefeuillePage() {
                     </button>
                   </div>
 
-                  <div className="grid grid-cols-3 gap-3 mb-5">
+                  <div className="grid grid-cols-2 gap-3 mb-5">
                     <button
-                      onClick={() => { const url = `${window.location.origin}/pay/${createdLinkCode}`; window.open(`https://wa.me/?text=${encodeURIComponent(url)}`, '_blank'); }}
-                      className="flex flex-col items-center gap-1.5 p-3 rounded-xl bg-green-50 hover:bg-green-100 transition"
+                      onClick={() => copyLinkUrl(createdLinkCode)}
+                      className="flex flex-col items-center gap-1.5 p-3 rounded-xl bg-gray-50 hover:bg-gray-100 transition"
                     >
-                      <span className="text-lg">💬</span>
-                      <span className="text-xs font-medium text-gray-700">WhatsApp</span>
-                    </button>
-                    <button
-                      onClick={() => { const url = `${window.location.origin}/pay/${createdLinkCode}`; window.open(`sms:?body=${encodeURIComponent(url)}`, '_blank'); }}
-                      className="flex flex-col items-center gap-1.5 p-3 rounded-xl bg-blue-50 hover:bg-blue-100 transition"
-                    >
-                      <span className="text-lg">📱</span>
-                      <span className="text-xs font-medium text-gray-700">SMS</span>
+                      <Copy className="w-5 h-5 text-gray-600" />
+                      <span className="text-xs font-medium text-gray-700">Copier</span>
                     </button>
                     <button
                       onClick={() => shareLink(createdLinkCode, linkDescription || null)}
-                      className="flex flex-col items-center gap-1.5 p-3 rounded-xl bg-indigo-50 hover:bg-indigo-100 transition"
+                      className="flex flex-col items-center gap-1.5 p-3 rounded-xl bg-gray-50 hover:bg-gray-100 transition"
                     >
-                      <Share2 className="w-5 h-5 text-indigo-600" />
+                      <Share2 className="w-5 h-5 text-gray-600" />
                       <span className="text-xs font-medium text-gray-700">Partager</span>
                     </button>
                   </div>
