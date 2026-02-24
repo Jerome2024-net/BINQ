@@ -28,18 +28,18 @@ export default function HomePage() {
             <div className="inline-flex items-center gap-2 bg-white/[0.08] backdrop-blur-sm border border-white/[0.12] rounded-full px-4 py-2 mb-8">
               <Sparkles className="w-3.5 h-3.5 text-accent-400" />
               <span className="text-[13px] font-medium text-gray-300">
-                Votre finance intelligente
+                Intelligent Wallet
               </span>
             </div>
             <h1 className="text-4xl md:text-6xl lg:text-[68px] font-bold leading-[1.08] mb-6 tracking-tight">
-              Votre argent,{" "}
+              Contrôlez votre argent.{" "}
               <span className="bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">
-                réinventé
+                Simplement
               </span>
               .
             </h1>
             <p className="text-lg md:text-xl text-gray-400 mb-10 max-w-2xl mx-auto leading-relaxed">
-              Envoyez, recevez, payez et épargnez — tout depuis un seul compte sécurisé.
+              Un portefeuille sécurisé pour envoyer, recevoir et piloter votre argent en temps réel.
             </p>
             <Link
               href="/inscription"
