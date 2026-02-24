@@ -12,9 +12,9 @@ import {
   Sparkles,
   PiggyBank,
   Wallet,
-  Target,
-  CalendarClock,
-  BadgePercent,
+  Send,
+  Users,
+  LinkIcon,
   Banknote,
 } from "lucide-react";
 
@@ -34,23 +34,22 @@ export default function HomePage() {
             <div className="inline-flex items-center gap-2 bg-white/[0.08] backdrop-blur-sm border border-white/[0.12] rounded-full px-4 py-2 mb-8">
               <Sparkles className="w-3.5 h-3.5 text-accent-400" />
               <span className="text-[13px] font-medium text-gray-300">
-                Votre épargne digitale, simple et sécurisée
+                La fintech nouvelle génération
               </span>
             </div>
             <h1 className="text-4xl md:text-6xl lg:text-[68px] font-bold leading-[1.08] mb-6 tracking-tight">
-              Épargnez{" "}
-              <span className="bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">intelligemment</span>
-              , à votre rythme.
+              Votre argent,{" "}
+              <span className="bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">simplifié</span>.
             </h1>
             <p className="text-lg md:text-xl text-gray-400 mb-10 max-w-2xl mx-auto leading-relaxed">
-              Créez vos comptes épargne, déposez par carte ou portefeuille, et gérez votre argent en toute sécurité. En EUR ou USD, depuis votre téléphone.
+              Envoyez, recevez, épargnez et gérez votre argent en un seul endroit. Transferts instantanés, liens de paiement, cagnottes et épargne — tout dans une seule app.
             </p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
               <Link
                 href="/inscription"
                 className="bg-white text-gray-900 px-8 py-4 rounded-2xl font-semibold text-[15px] transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-0.5 flex items-center justify-center gap-2"
               >
-                Commencer à épargner
+                Créer mon compte gratuit
                 <ArrowRight className="w-4 h-4" />
               </Link>
               <Link
@@ -63,7 +62,7 @@ export default function HomePage() {
             <div className="mt-10 sm:mt-14 flex flex-wrap items-center justify-center gap-4 sm:gap-8 text-gray-500">
               <div className="flex items-center gap-2">
                 <CheckCircle2 className="w-4 h-4 text-accent-500" />
-                <span className="text-[13px]">100% gratuit</span>
+                <span className="text-[13px]">Transferts instantanés</span>
               </div>
               <div className="flex items-center gap-2">
                 <CheckCircle2 className="w-4 h-4 text-accent-500" />
@@ -86,60 +85,60 @@ export default function HomePage() {
               Fonctionnalités
             </span>
             <h2 className="text-3xl md:text-[42px] font-bold text-gray-900 mt-3 mb-4 tracking-tight">
-              Tout pour épargner sereinement
+              Tout votre argent, un seul endroit
             </h2>
             <p className="text-gray-500 max-w-2xl mx-auto text-lg">
-              Des outils simples et puissants pour faire grandir votre épargne, à votre rythme.
+              Portefeuille, transferts, paiements, épargne et cagnottes — Binq réunit tout ce dont vous avez besoin.
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 stagger-children">
             {[
               {
-                icon: PiggyBank,
-                title: "Épargne Libre",
+                icon: Wallet,
+                title: "Portefeuille",
                 description:
-                  "Déposez et retirez quand vous voulez, sans contraintes. Votre argent reste disponible.",
+                  "Un wallet complet pour déposer, retirer et gérer votre solde en EUR ou USD.",
                 gradient: "from-indigo-500 to-indigo-600",
                 bg: "bg-indigo-50",
               },
               {
-                icon: Target,
-                title: "Épargne Objectif",
+                icon: Send,
+                title: "Transferts P2P",
                 description:
-                  "Fixez un objectif et suivez votre progression avec une barre de progression visuelle.",
-                gradient: "from-amber-500 to-orange-600",
-                bg: "bg-amber-50",
-              },
-              {
-                icon: CalendarClock,
-                title: "Épargne Programmée",
-                description:
-                  "Automatisez vos dépôts quotidiens, hebdomadaires ou mensuels. L'épargne sans effort.",
+                  "Envoyez de l'argent instantanément à n'importe quel utilisateur Binq, en quelques clics.",
                 gradient: "from-purple-500 to-purple-600",
                 bg: "bg-purple-50",
               },
               {
-                icon: BadgePercent,
-                title: "Frais Transparents",
+                icon: LinkIcon,
+                title: "Liens de Paiement",
                 description:
-                  "Seulement 2% de frais sur les dépôts. Pas de frais cachés, pas de surprises.",
+                  "Envoyez ou demandez de l'argent via un lien partageable — WhatsApp, SMS ou email.",
                 gradient: "from-emerald-500 to-teal-600",
                 bg: "bg-emerald-50",
               },
               {
-                icon: CreditCard,
-                title: "Dépôt par Carte",
+                icon: PiggyBank,
+                title: "Épargne",
                 description:
-                  "Enregistrez vos cartes bancaires et déposez en un clic, directement via Stripe.",
+                  "Créez des comptes épargne libre, objectif ou programmée. Épargnez à votre rythme.",
+                gradient: "from-amber-500 to-orange-600",
+                bg: "bg-amber-50",
+              },
+              {
+                icon: Users,
+                title: "Cagnottes",
+                description:
+                  "Collectez de l'argent à plusieurs pour un projet, un cadeau ou un événement.",
                 gradient: "from-rose-500 to-rose-600",
                 bg: "bg-rose-50",
               },
               {
-                icon: Banknote,
-                title: "Retrait Flexible",
+                icon: CreditCard,
+                title: "Paiement par Carte",
                 description:
-                  "Retirez vers votre portefeuille Binq ou directement sur votre compte bancaire.",
+                  "Déposez par carte bancaire en un clic. Vos cartes sont enregistrées de manière sécurisée via Stripe.",
                 gradient: "from-blue-500 to-blue-600",
                 bg: "bg-blue-50",
               },
@@ -181,21 +180,21 @@ export default function HomePage() {
                 icon: Wallet,
                 title: "Créez votre compte",
                 description:
-                  "Inscrivez-vous gratuitement et accédez à votre espace épargne en quelques secondes.",
+                  "Inscrivez-vous gratuitement et accédez à votre portefeuille en quelques secondes.",
               },
               {
                 step: "02",
-                icon: PiggyBank,
-                title: "Ouvrez un compte épargne",
+                icon: Banknote,
+                title: "Alimentez votre wallet",
                 description:
-                  "Choisissez entre épargne libre, objectif ou programmée selon vos besoins.",
+                  "Déposez par carte bancaire et commencez à utiliser toutes les fonctionnalités.",
               },
               {
                 step: "03",
                 icon: TrendingUp,
-                title: "Épargnez et gagnez",
+                title: "Envoyez, épargnez, partagez",
                 description:
-                  "Déposez par carte ou portefeuille et suivez votre épargne en temps réel.",
+                  "Transférez à vos proches, épargnez, créez des cagnottes ou partagez un lien de paiement.",
               },
             ].map((step, i) => (
               <div key={i} className="relative text-center">
@@ -228,13 +227,13 @@ export default function HomePage() {
                 {[
                   {
                     icon: Lock,
-                    title: "Paiements chiffrés",
-                    desc: "Tous les dépôts et retraits passent par Stripe, le standard de sécurité bancaire.",
+                    title: "Transactions chiffrées",
+                    desc: "Tous les paiements et transferts passent par Stripe, le standard de sécurité bancaire.",
                   },
                   {
                     icon: Globe,
                     title: "Accessible partout",
-                    desc: "Gérez votre épargne depuis n'importe quel appareil, à tout moment.",
+                    desc: "Gérez votre argent depuis n'importe quel appareil, à tout moment, où que vous soyez.",
                   },
                   {
                     icon: CheckCircle2,
@@ -261,14 +260,15 @@ export default function HomePage() {
               <div className="w-16 h-16 bg-gradient-to-br from-indigo-100 to-purple-200 rounded-2xl flex items-center justify-center mb-6">
                 <Shield className="w-8 h-8 text-indigo-600" />
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-2">Votre épargne protégée</h3>
-              <p className="text-gray-500 mb-6 text-[15px]">Chaque opération est sécurisée et vérifiable en temps réel.</p>
+              <h3 className="text-xl font-bold text-gray-900 mb-2">Une plateforme fiable</h3>
+              <p className="text-gray-500 mb-6 text-[15px]">Tout est pensé pour la sécurité et la simplicité.</p>
               <div className="w-full space-y-2.5">
                 {[
                   "Paiements sécurisés via Stripe",
-                  "Dépôts et retraits en EUR / USD",
-                  "Suivi en temps réel de vos comptes",
-                  "Jusqu'à 10 comptes épargne",
+                  "Transferts instantanés entre utilisateurs",
+                  "Liens de paiement partageables",
+                  "Épargne et cagnottes intégrées",
+                  "Suivi en temps réel de vos finances",
                 ].map((text, i) => (
                   <div key={i} className="flex items-center gap-3 p-3.5 bg-accent-50 rounded-xl border border-accent-100/60">
                     <CheckCircle2 className="w-4 h-4 text-accent-600 flex-shrink-0" />
@@ -292,7 +292,7 @@ export default function HomePage() {
               Simple et transparent
             </h2>
             <p className="text-gray-500 max-w-2xl mx-auto text-lg">
-              Pas de frais cachés. Créez votre compte et épargnez dès aujourd&apos;hui.
+              Pas de frais cachés. Créez votre compte et commencez dès aujourd&apos;hui.
             </p>
           </div>
 
@@ -301,8 +301,8 @@ export default function HomePage() {
               <div className="absolute -top-3 right-6 bg-gradient-to-r from-accent-500 to-accent-600 text-white px-4 py-1 rounded-full text-xs font-semibold shadow-glow-accent">
                 100% Gratuit
               </div>
-              <h3 className="text-xl font-bold text-white mb-1">Épargne Binq</h3>
-              <p className="text-gray-400 text-[15px] mb-6">Tout ce dont vous avez besoin pour épargner</p>
+              <h3 className="text-xl font-bold text-white mb-1">Binq</h3>
+              <p className="text-gray-400 text-[15px] mb-6">Tout ce dont vous avez besoin pour gérer votre argent</p>
 
               <div className="mb-6">
                 <span className="text-4xl font-bold text-white">0 €</span>
@@ -310,13 +310,14 @@ export default function HomePage() {
               </div>
               <ul className="space-y-3 mb-8">
                 {[
+                  "Portefeuille EUR & USD",
+                  "Transferts P2P instantanés",
+                  "Envoyer & recevoir via lien",
+                  "Cagnottes collaboratives",
                   "Jusqu'à 10 comptes épargne",
-                  "Épargne libre, objectif ou programmée",
-                  "Dépôt par carte ou portefeuille",
+                  "Dépôt par carte bancaire",
                   "Retrait vers portefeuille ou banque",
-                  "Suivi complet de votre épargne",
                   "2% de frais sur les dépôts uniquement",
-                  "Historique complet des transactions",
                 ].map((text, i) => (
                   <li key={i} className="flex items-center gap-3 text-gray-300 text-[15px]">
                     <CheckCircle2 className="w-4 h-4 text-indigo-400 flex-shrink-0" />
@@ -341,10 +342,10 @@ export default function HomePage() {
         <div className="absolute bottom-0 right-1/3 w-[300px] h-[300px] bg-purple-500/10 rounded-full blur-[80px]" />
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative">
           <h2 className="text-3xl md:text-5xl font-bold mb-5 tracking-tight">
-            Prêt à faire grandir votre épargne ?
+            Prêt à simplifier votre argent ?
           </h2>
           <p className="text-gray-400 text-lg mb-10 max-w-2xl mx-auto">
-            Rejoignez Binq et commencez à épargner intelligemment dès aujourd&apos;hui. Gratuit, sécurisé, et flexible.
+            Rejoignez Binq — envoyez, recevez, épargnez et partagez en toute simplicité. Gratuit, sécurisé et instantané.
           </p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <Link
