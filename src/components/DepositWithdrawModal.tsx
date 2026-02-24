@@ -108,21 +108,21 @@ function StripePaymentForm({
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-5">
+    <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-5">
       {/* Récapitulatif */}
-      <div className="bg-green-50 rounded-xl p-4 text-center border border-green-200">
-        <p className="text-sm text-green-600 mb-1">Montant crédité sur votre wallet</p>
-        <p className="text-3xl font-bold text-green-700">
+      <div className="bg-green-50 rounded-xl p-3 sm:p-4 text-center border border-green-200">
+        <p className="text-xs sm:text-sm text-green-600 mb-1">Montant crédité sur votre wallet</p>
+        <p className="text-2xl sm:text-3xl font-bold text-green-700">
           {montant.toLocaleString("fr-FR")} {deviseSymbol}
         </p>
         <div className="mt-2 space-y-0.5">
           <p className="text-xs text-green-600">Frais Binq (1%) : +{(montant * 0.01).toFixed(2)} {deviseSymbol}</p>
-          <p className="text-sm font-semibold text-green-800">Total débité : {(montant * 1.01).toFixed(2)} {deviseSymbol}</p>
+          <p className="text-xs sm:text-sm font-semibold text-green-800">Total débité : {(montant * 1.01).toFixed(2)} {deviseSymbol}</p>
         </div>
       </div>
 
       {/* Stripe PaymentElement (vrai formulaire Stripe) */}
-      <div className="border border-gray-200 rounded-xl p-4 bg-white">
+      <div className="border border-gray-200 rounded-xl p-3 sm:p-4 bg-white">
         <PaymentElement
           options={{
             layout: "tabs",
@@ -138,12 +138,12 @@ function StripePaymentForm({
       )}
 
       {/* Boutons */}
-      <div className="flex gap-3">
+      <div className="flex flex-col-reverse sm:flex-row gap-2 sm:gap-3">
         <button
           type="button"
           onClick={onCancel}
           disabled={isSubmitting}
-          className="flex-1 py-3 rounded-xl font-semibold border border-gray-300 text-gray-700 hover:bg-gray-50 transition-colors"
+          className="flex-1 py-3 rounded-xl font-semibold border border-gray-300 text-gray-700 hover:bg-gray-50 transition-colors text-sm sm:text-base"
         >
           <ArrowLeft className="w-4 h-4 inline mr-1" />
           Retour
@@ -151,7 +151,7 @@ function StripePaymentForm({
         <button
           type="submit"
           disabled={!stripe || !elements || isSubmitting}
-          className="flex-1 py-3 rounded-xl font-semibold text-white bg-green-600 hover:bg-green-700 transition-colors flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="flex-1 py-3 rounded-xl font-semibold text-white bg-green-600 hover:bg-green-700 transition-colors flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base"
         >
           {isSubmitting ? (
             <>
@@ -306,31 +306,31 @@ export default function DepositWithdrawModal({
         <div className="p-4 sm:p-6">
           {/* ============ NON CONFIGURÉ ============ */}
           {!isConfigured && step === "form" ? (
-            <div className="text-center py-6 space-y-4">
-              <div className="w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center mx-auto">
-                <AlertTriangle className="w-8 h-8 text-amber-600" />
+            <div className="text-center py-6 space-y-3 sm:space-y-4">
+              <div className="w-14 h-14 sm:w-16 sm:h-16 bg-amber-100 rounded-full flex items-center justify-center mx-auto">
+                <AlertTriangle className="w-7 h-7 sm:w-8 sm:h-8 text-amber-600" />
               </div>
               <div>
-                <h3 className="text-lg font-bold text-gray-900 mb-1">Configuration requise</h3>
-                <p className="text-sm text-gray-500">
-                  Pour effectuer de vrais paiements, vous devez configurer votre compte Stripe.
+                <h3 className="text-base sm:text-lg font-bold text-gray-900 mb-1">Configuration requise</h3>
+                <p className="text-xs sm:text-sm text-gray-500">
+                  Pour effectuer de vrais paiements, configurez votre compte Stripe.
                 </p>
               </div>
 
-              <div className="bg-gray-50 rounded-xl p-4 text-left space-y-3">
-                <p className="text-sm font-semibold text-gray-700">🔧 Étapes de configuration :</p>
-                <ol className="text-sm text-gray-600 space-y-2 list-decimal list-inside">
+              <div className="bg-gray-50 rounded-xl p-3 sm:p-4 text-left space-y-2 sm:space-y-3">
+                <p className="text-xs sm:text-sm font-semibold text-gray-700">Configuration :</p>
+                <ol className="text-xs sm:text-sm text-gray-600 space-y-1.5 sm:space-y-2 list-decimal list-inside">
                   <li>Créez un compte sur <strong>stripe.com</strong></li>
                   <li>Récupérez vos clés <strong>Publishable</strong> et <strong>Secret</strong></li>
                   <li>
-                    Ajoutez-les dans le fichier <code className="bg-gray-200 px-1 rounded text-xs">.env.local</code> :
+                    Ajoutez-les dans <code className="bg-gray-200 px-1 rounded text-xs">.env.local</code>
                   </li>
                 </ol>
-                <div className="bg-gray-900 rounded-lg p-3 text-xs font-mono text-green-400 overflow-x-auto">
+                <div className="bg-gray-900 rounded-lg p-2.5 sm:p-3 text-[10px] sm:text-xs font-mono text-green-400 overflow-x-auto">
                   <p className="whitespace-nowrap">NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_test_...</p>
                   <p className="whitespace-nowrap">STRIPE_SECRET_KEY=sk_test_...</p>
                 </div>
-                <p className="text-xs text-gray-400">Redémarrez le serveur après modification.</p>
+                <p className="text-[10px] sm:text-xs text-gray-400">Redémarrez le serveur après modification.</p>
               </div>
 
               <a
@@ -344,14 +344,14 @@ export default function DepositWithdrawModal({
             </div>
           ) : step === "done" ? (
             /* ============ SUCCÈS ============ */
-            <div className="text-center py-8">
-              <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <CheckCircle2 className="w-10 h-10 text-green-500" />
+            <div className="text-center py-6 sm:py-8">
+              <div className="w-16 h-16 sm:w-20 sm:h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4">
+                <CheckCircle2 className="w-8 h-8 sm:w-10 sm:h-10 text-green-500" />
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-2">
+              <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-2">
                 {isDepot ? "Dépôt confirmé !" : "Retrait initié !"}
               </h3>
-              <p className="text-gray-500">
+              <p className="text-sm text-gray-500">
                 {montantNum.toLocaleString("fr-FR")} {deviseSymbol}{" "}
                 {isDepot ? "ajoutés à votre portefeuille" : `vers ${methode === "virement" ? "votre banque" : "Stripe"}`}
               </p>
@@ -363,12 +363,12 @@ export default function DepositWithdrawModal({
             </div>
           ) : step === "error" ? (
             /* ============ ERREUR ============ */
-            <div className="text-center py-8">
-              <div className="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <AlertTriangle className="w-10 h-10 text-red-500" />
+            <div className="text-center py-6 sm:py-8">
+              <div className="w-16 h-16 sm:w-20 sm:h-20 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4">
+                <AlertTriangle className="w-8 h-8 sm:w-10 sm:h-10 text-red-500" />
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-2">Erreur</h3>
-              <p className="text-red-500 text-sm mb-4">{errorMsg}</p>
+              <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-2">Erreur</h3>
+              <p className="text-red-500 text-xs sm:text-sm mb-4">{errorMsg}</p>
               <button onClick={() => setStep("form")} className="btn-primary">
                 Réessayer
               </button>
@@ -398,20 +398,20 @@ export default function DepositWithdrawModal({
             </Elements>
           ) : isDepot ? (
             /* ============ FORMULAIRE DÉPÔT (saisie montant) ============ */
-            <div className="space-y-5">
+            <div className="space-y-4 sm:space-y-5">
               {/* Info Stripe */}
-              <div className="bg-blue-50 rounded-xl p-3 text-sm text-blue-700 flex items-start gap-2">
+              <div className="bg-blue-50 rounded-xl p-3 text-xs sm:text-sm text-blue-700 flex items-start gap-2">
                 <Info className="w-4 h-4 mt-0.5 flex-shrink-0" />
                 <p>
                   Payez en toute sécurité par <strong>carte bancaire</strong> via Stripe.
-                  Vos informations de paiement ne sont jamais stockées sur nos serveurs.
+                  Vos données ne sont jamais stockées sur nos serveurs.
                 </p>
               </div>
 
               {/* Solde actuel */}
-              <div className="bg-gray-50 rounded-xl p-4 text-center">
-                <p className="text-sm text-gray-500">Solde actuel</p>
-                <p className="text-2xl font-bold text-gray-900">
+              <div className="bg-gray-50 rounded-xl p-3 sm:p-4 text-center">
+                <p className="text-xs sm:text-sm text-gray-500">Solde actuel</p>
+                <p className="text-xl sm:text-2xl font-bold text-gray-900">
                   {soldeActuel.toLocaleString("fr-FR")} {deviseSymbol}
                 </p>
               </div>
@@ -425,23 +425,23 @@ export default function DepositWithdrawModal({
                   type="number"
                   value={montant}
                   onChange={(e) => setMontant(e.target.value)}
-                  className="input-field text-lg"
+                  className="input-field text-base sm:text-lg"
                   placeholder="Ex: 100"
                   min="1"
                   step="0.01"
                 />
                 {montantNum > 0 && montantNum < 1 && (
-                  <p className="text-sm text-red-500 mt-1">Montant minimum : 1 {deviseSymbol}</p>
+                  <p className="text-xs sm:text-sm text-red-500 mt-1">Montant minimum : 1 {deviseSymbol}</p>
                 )}
               </div>
 
               {/* Montants rapides */}
-              <div className="flex flex-wrap gap-2">
+              <div className="grid grid-cols-3 sm:flex sm:flex-wrap gap-2">
                 {montantsRapides.map((m) => (
                   <button
                     key={m}
                     onClick={() => setMontant(String(m))}
-                    className={`px-3 py-1.5 rounded-lg text-sm font-medium border transition-colors ${
+                    className={`px-2 sm:px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium border transition-colors ${
                       montantNum === m
                         ? "border-primary-500 bg-primary-50 text-primary-700"
                         : "border-gray-200 hover:border-gray-300 text-gray-600"
@@ -454,18 +454,18 @@ export default function DepositWithdrawModal({
 
               {/* Résumé avec frais */}
               {montantNum >= 1 && (
-                <div className="bg-gray-50 rounded-xl p-4 space-y-2">
-                  <div className="flex justify-between text-sm">
-                    <span className="text-gray-500">Montant crédité sur votre wallet</span>
-                    <span className="font-semibold text-gray-900">{montantNum.toLocaleString("fr-FR")} {deviseSymbol}</span>
+                <div className="bg-gray-50 rounded-xl p-3 sm:p-4 space-y-2">
+                  <div className="flex justify-between text-xs sm:text-sm gap-2">
+                    <span className="text-gray-500">Crédité sur wallet</span>
+                    <span className="font-semibold text-gray-900 whitespace-nowrap">{montantNum.toLocaleString("fr-FR")} {deviseSymbol}</span>
                   </div>
-                  <div className="flex justify-between text-sm">
+                  <div className="flex justify-between text-xs sm:text-sm gap-2">
                     <span className="text-gray-500">Frais Binq (1%)</span>
-                    <span className="font-medium text-amber-600">+{(montantNum * 0.01).toFixed(2)} {deviseSymbol}</span>
+                    <span className="font-medium text-amber-600 whitespace-nowrap">+{(montantNum * 0.01).toFixed(2)} {deviseSymbol}</span>
                   </div>
-                  <div className="border-t border-gray-200 pt-2 flex justify-between">
-                    <span className="font-semibold text-gray-900 text-sm">Total débité de votre carte</span>
-                    <span className="font-bold text-primary-600">{(montantNum * 1.01).toFixed(2)} {deviseSymbol}</span>
+                  <div className="border-t border-gray-200 pt-2 flex justify-between gap-2">
+                    <span className="font-semibold text-gray-900 text-xs sm:text-sm">Total débité</span>
+                    <span className="font-bold text-primary-600 whitespace-nowrap">{(montantNum * 1.01).toFixed(2)} {deviseSymbol}</span>
                   </div>
                 </div>
               )}
@@ -474,7 +474,7 @@ export default function DepositWithdrawModal({
               <button
                 onClick={handleProceedToPayment}
                 disabled={montantNum < 1 || isProcessing || isCreatingIntent}
-                className={`w-full py-3 sm:py-3.5 rounded-xl font-semibold text-white transition-colors flex items-center justify-center gap-2 text-base sm:text-lg ${
+                className={`w-full py-3 sm:py-3.5 rounded-xl font-semibold text-white transition-colors flex items-center justify-center gap-2 text-sm sm:text-base ${
                   montantNum >= 1 && !isCreatingIntent
                     ? "bg-green-600 hover:bg-green-700"
                     : "bg-gray-300 cursor-not-allowed"
@@ -483,7 +483,7 @@ export default function DepositWithdrawModal({
                 {isCreatingIntent ? (
                   <>
                     <Loader2 className="w-5 h-5 animate-spin" />
-                    Préparation du paiement...
+                    Préparation...
                   </>
                 ) : (
                   <>
@@ -501,11 +501,11 @@ export default function DepositWithdrawModal({
             </div>
           ) : (
             /* ============ FORMULAIRE RETRAIT ============ */
-            <div className="space-y-5">
+            <div className="space-y-4 sm:space-y-5">
               {/* Solde */}
-              <div className="bg-gray-50 rounded-xl p-4 text-center">
-                <p className="text-sm text-gray-500">Solde disponible</p>
-                <p className="text-2xl font-bold text-gray-900">
+              <div className="bg-gray-50 rounded-xl p-3 sm:p-4 text-center">
+                <p className="text-xs sm:text-sm text-gray-500">Solde disponible</p>
+                <p className="text-xl sm:text-2xl font-bold text-gray-900">
                   {soldeActuel.toLocaleString("fr-FR")} {deviseSymbol}
                 </p>
               </div>
@@ -519,25 +519,25 @@ export default function DepositWithdrawModal({
                   type="number"
                   value={montant}
                   onChange={(e) => setMontant(e.target.value)}
-                  className="input-field text-lg"
+                  className="input-field text-base sm:text-lg"
                   placeholder="0"
                   min="0"
                   step="0.01"
                 />
                 {isDepassement && (
-                  <p className="text-sm text-red-500 mt-1">
+                  <p className="text-xs sm:text-sm text-red-500 mt-1">
                     Solde insuffisant (max: {soldeActuel.toLocaleString("fr-FR")} {deviseSymbol})
                   </p>
                 )}
               </div>
 
               {/* Montants rapides */}
-              <div className="flex flex-wrap gap-2">
+              <div className="grid grid-cols-3 sm:flex sm:flex-wrap gap-2">
                 {montantsRapides.map((m) => (
                   <button
                     key={m}
                     onClick={() => setMontant(String(m))}
-                    className={`px-3 py-1.5 rounded-lg text-sm font-medium border transition-colors ${
+                    className={`px-2 sm:px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium border transition-colors ${
                       montantNum === m
                         ? "border-primary-500 bg-primary-50 text-primary-700"
                         : "border-gray-200 hover:border-gray-300 text-gray-600"
@@ -558,22 +558,22 @@ export default function DepositWithdrawModal({
                     <button
                       key={m.id}
                       onClick={() => setMethode(m.id)}
-                      className={`w-full flex items-center gap-3 p-3 rounded-xl border-2 transition-all text-left ${
+                      className={`w-full flex items-center gap-2.5 sm:gap-3 p-2.5 sm:p-3 rounded-xl border-2 transition-all text-left ${
                         methode === m.id
                           ? "border-primary-500 bg-primary-50"
                           : "border-gray-200 hover:border-gray-300"
                       }`}
                     >
                       <div
-                        className={`w-9 h-9 rounded-lg flex items-center justify-center ${
+                        className={`w-8 h-8 sm:w-9 sm:h-9 rounded-lg flex items-center justify-center flex-shrink-0 ${
                           methode === m.id ? "bg-primary-600 text-white" : "bg-gray-100 text-gray-500"
                         }`}
                       >
-                        <m.icon className="w-5 h-5" />
+                        <m.icon className="w-4 h-4 sm:w-5 sm:h-5" />
                       </div>
-                      <div className="flex-1">
-                        <p className="font-medium text-gray-900 text-sm">{m.label}</p>
-                        <p className="text-xs text-gray-500">{m.desc}</p>
+                      <div className="flex-1 min-w-0">
+                        <p className="font-medium text-gray-900 text-xs sm:text-sm">{m.label}</p>
+                        <p className="text-[11px] sm:text-xs text-gray-500 truncate">{m.desc}</p>
                       </div>
                     </button>
                   ))}
@@ -598,7 +598,7 @@ export default function DepositWithdrawModal({
               <button
                 onClick={handleRetrait}
                 disabled={montantNum <= 0 || isDepassement || !destination.trim()}
-                className={`w-full py-3.5 rounded-xl font-semibold text-white transition-colors flex items-center justify-center gap-2 ${
+                className={`w-full py-3 sm:py-3.5 rounded-xl font-semibold text-white transition-colors flex items-center justify-center gap-2 text-sm sm:text-base ${
                   montantNum > 0 && !isDepassement && destination.trim()
                     ? "bg-blue-600 hover:bg-blue-700"
                     : "bg-gray-300 cursor-not-allowed"
