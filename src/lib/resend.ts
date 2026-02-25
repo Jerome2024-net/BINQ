@@ -20,7 +20,7 @@ const LOGO_HTML = `
     <tr>
       <td style="vertical-align: middle; text-align: center;">
         <span style="font-size: 38px; line-height: 1; display: block; margin-bottom: 10px; color: #4f8fff;">&#9733;</span>
-        <img src="https://res.cloudinary.com/dn8ed1doa/image/upload/937CCDA4-A507-4976-A172-182B2ADB4FB9_wdaodr" alt="Binq" width="140" style="height: auto; display: block; margin: 0 auto;" />
+        <img src="https://res.cloudinary.com/dn8ed1doa/image/upload/439C2F26-8F7E-4B39-95EA-979036C8BD85_wwoul1" alt="Binq" width="140" style="height: auto; display: block; margin: 0 auto;" />
       </td>
     </tr>
   </table>
