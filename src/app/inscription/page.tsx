@@ -108,7 +108,7 @@ function InscriptionForm() {
         
         <div className="relative max-w-md">
           <div className="flex items-center gap-2 mb-10">
-            <img src="https://res.cloudinary.com/dn8ed1doa/image/upload/0BBAEE5D-B790-4A3E-9345-A4975C84546D_xfvmso" alt="Binq" className="h-16 w-auto brightness-0 invert" />
+            <img src="https://res.cloudinary.com/dn8ed1doa/image/upload/937CCDA4-A507-4976-A172-182B2ADB4FB9_wdaodr" alt="Binq" className="h-16 w-auto brightness-0 invert" />
           </div>
           <h1 className="text-4xl font-bold mb-4 tracking-tight leading-tight">
             Rejoignez la communauté
