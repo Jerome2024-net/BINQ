@@ -11,8 +11,8 @@ export const metadata: Metadata = {
   description:
     "Envoyez, recevez, déposez et retirez votre argent en toute sécurité. Portefeuille multi-devises, transferts P2P, liens de paiement et coffres.",
   icons: {
-    icon: "https://res.cloudinary.com/dn8ed1doa/image/upload/ChatGPT_Image_24_f%C3%A9vr._2026_18_41_17_iwqq1o",
-    apple: "https://res.cloudinary.com/dn8ed1doa/image/upload/ChatGPT_Image_24_f%C3%A9vr._2026_18_41_17_iwqq1o",
+    icon: "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><defs><linearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'><stop offset='0%25' stop-color='%234f8fff'/><stop offset='100%25' stop-color='%232563eb'/></linearGradient></defs><polygon points='50,5 63,35 95,38 71,60 78,92 50,76 22,92 29,60 5,38 37,35' fill='url(%23g)'/></svg>",
+    apple: "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><defs><linearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'><stop offset='0%25' stop-color='%234f8fff'/><stop offset='100%25' stop-color='%232563eb'/></linearGradient></defs><polygon points='50,5 63,35 95,38 71,60 78,92 50,76 22,92 29,60 5,38 37,35' fill='url(%23g)'/></svg>",
   },
 };
 
