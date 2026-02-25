@@ -24,9 +24,9 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-1.5">
+          <Link href="/" className="flex items-center gap-2">
             <img src="https://res.cloudinary.com/dn8ed1doa/image/upload/ChatGPT_Image_24_f%C3%A9vr._2026_18_41_17_iwqq1o" alt="Binq" className="h-9 w-auto" />
-            <span className="text-xl font-bold text-gray-900 tracking-tight">Binq</span>
+            <span className="text-xl font-bold text-gray-900 tracking-tight leading-none">Binq</span>
           </Link>
 
           {/* Desktop Navigation */}

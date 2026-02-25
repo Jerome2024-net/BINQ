@@ -52,9 +52,9 @@ function ConnexionForm() {
         <div className="absolute bottom-1/4 right-1/4 w-[300px] h-[300px] bg-accent-500/10 rounded-full blur-[80px]" />
         
         <div className="relative max-w-md">
-          <div className="flex items-center gap-1.5 mb-10">
+          <div className="flex items-center gap-2 mb-10">
             <img src="https://res.cloudinary.com/dn8ed1doa/image/upload/ChatGPT_Image_24_f%C3%A9vr._2026_18_41_17_iwqq1o" alt="Binq" className="h-11 w-auto brightness-0 invert" />
-            <span className="text-2xl font-bold tracking-tight">Binq</span>
+            <span className="text-2xl font-bold tracking-tight leading-none">Binq</span>
           </div>
           <h1 className="text-4xl font-bold mb-4 tracking-tight leading-tight">
             Bon retour parmi nous !
@@ -84,9 +84,9 @@ function ConnexionForm() {
       <div className="w-full lg:w-1/2 flex items-center justify-center p-4 sm:p-8">
         <div className="w-full max-w-md">
           {/* Mobile logo */}
-          <div className="lg:hidden flex items-center gap-1.5 mb-8 justify-center">
+          <div className="lg:hidden flex items-center gap-2 mb-8 justify-center">
             <img src="https://res.cloudinary.com/dn8ed1doa/image/upload/ChatGPT_Image_24_f%C3%A9vr._2026_18_41_17_iwqq1o" alt="Binq" className="h-9 w-auto" />
-            <span className="text-xl font-bold text-gray-900 tracking-tight">Binq</span>
+            <span className="text-xl font-bold text-gray-900 tracking-tight leading-none">Binq</span>
           </div>
 
           <h2 className="text-2xl font-bold text-gray-900 mb-1.5">Connexion</h2>

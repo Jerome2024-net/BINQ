@@ -274,15 +274,15 @@ export default function RejoindreParCodePage({
         <div className="w-full max-w-lg">
           {/* Logo */}
           <div className="text-center mb-8 animate-fade-up">
-            <div className="inline-flex items-center gap-1.5">
+            <div className="inline-flex items-center gap-2">
               <img src="https://res.cloudinary.com/dn8ed1doa/image/upload/ChatGPT_Image_24_f%C3%A9vr._2026_18_41_17_iwqq1o" alt="Binq" className="h-10 w-auto brightness-0 invert" />
-              <span className="text-xl font-bold text-white tracking-tight">Binq</span>
+              <span className="text-xl font-bold text-white tracking-tight leading-none">Binq</span>
             </div>
           </div>
 
           {/* Invitation badge */}
           <div className="text-center mb-5 animate-fade-up" style={{ animationDelay: "0.05s" }}>
-            <span className="inline-flex items-center gap-1.5 px-4 py-1.5 bg-primary-500/10 border border-primary-500/20 rounded-full text-primary-300 text-sm font-medium">
+            <span className="inline-flex items-center gap-2 px-4 py-1.5 bg-primary-500/10 border border-primary-500/20 rounded-full text-primary-300 text-sm font-medium">
               <Sparkles className="w-3.5 h-3.5" />
               Invitation personnelle
             </span>
@@ -343,7 +343,7 @@ export default function RejoindreParCodePage({
             {/* Fill progress */}
             <div className="px-6 py-4 border-t border-gray-800">
               <div className="flex justify-between text-xs mb-2">
-                <span className="text-gray-400 flex items-center gap-1.5">
+                <span className="text-gray-400 flex items-center gap-2">
                   <Users className="w-3 h-3" />
                   {tontine?.nombreMembres ?? tontine?.membres?.length ?? 0}/{tontine?.membresMax ?? 0} membres
                 </span>
@@ -523,15 +523,15 @@ export default function RejoindreParCodePage({
           {/* Trust section */}
           <div className="mt-8 animate-fade-up" style={{ animationDelay: "0.25s" }}>
             <div className="grid grid-cols-3 gap-3">
-              <div className="flex flex-col items-center gap-1.5 p-3 bg-gray-900/60 border border-gray-800/60 rounded-xl">
+              <div className="flex flex-col items-center gap-2 p-3 bg-gray-900/60 border border-gray-800/60 rounded-xl">
                 <Shield className="w-4 h-4 text-emerald-400" />
                 <span className="text-[11px] text-gray-400 text-center leading-tight">Paiements<br />sécurisés</span>
               </div>
-              <div className="flex flex-col items-center gap-1.5 p-3 bg-gray-900/60 border border-gray-800/60 rounded-xl">
+              <div className="flex flex-col items-center gap-2 p-3 bg-gray-900/60 border border-gray-800/60 rounded-xl">
                 <Users className="w-4 h-4 text-primary-400" />
                 <span className="text-[11px] text-gray-400 text-center leading-tight">Groupes<br />de confiance</span>
               </div>
-              <div className="flex flex-col items-center gap-1.5 p-3 bg-gray-900/60 border border-gray-800/60 rounded-xl">
+              <div className="flex flex-col items-center gap-2 p-3 bg-gray-900/60 border border-gray-800/60 rounded-xl">
                 <Zap className="w-4 h-4 text-amber-400" />
                 <span className="text-[11px] text-gray-400 text-center leading-tight">Inscription<br />en 30 sec</span>
               </div>
