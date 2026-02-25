@@ -77,94 +77,96 @@ export default function DashboardLayout({
 
         {/* ─── Sidebar ─── */}
         <aside
-          className={`fixed top-0 left-0 h-full w-[260px] bg-gradient-to-b from-gray-900 via-gray-900 to-gray-950 z-50 transform transition-transform duration-300 ease-out ${
+          className={`fixed top-0 left-0 h-full w-[260px] bg-white border-r border-gray-200/80 z-50 transform transition-transform duration-300 ease-out ${
             sidebarOpen ? "translate-x-0" : "-translate-x-full"
-          } lg:translate-x-0 flex flex-col shadow-2xl shadow-gray-900/20`}
+          } lg:translate-x-0 flex flex-col`}
         >
           {/* Logo */}
-          <div className="flex items-center justify-between px-5 h-16 shrink-0">
+          <div className="flex items-center justify-between px-5 h-16 shrink-0 border-b border-gray-100">
             <Link href="/" className="flex items-center">
               <img src="https://res.cloudinary.com/dn8ed1doa/image/upload/24604813-8FD8-45AA-9C68-EBC3169541B9_ccpwbk" alt="Binq" className="h-10 w-auto lg:hidden" />
               <img src="https://res.cloudinary.com/dn8ed1doa/image/upload/0BBAEE5D-B790-4A3E-9345-A4975C84546D_xfvmso" alt="Binq" className="h-10 w-auto hidden lg:block" />
             </Link>
             <button
               onClick={() => setSidebarOpen(false)}
-              className="lg:hidden p-1.5 rounded-lg hover:bg-white/10 text-gray-400 transition-colors"
+              className="lg:hidden p-1.5 rounded-lg hover:bg-gray-100 text-gray-400 transition-colors"
             >
               <X className="w-5 h-5" />
             </button>
           </div>
 
           {/* Nav */}
-          <nav className="flex-1 px-3 py-4 space-y-0.5 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-700">
-            <div className="mb-3 px-3 text-[10px] font-bold text-gray-500 uppercase tracking-[0.12em]">
-              Navigation
+          <nav className="flex-1 px-3 py-5 overflow-y-auto">
+            <div className="mb-2 px-3 text-[10px] font-semibold text-gray-400 uppercase tracking-widest">
+              Menu
             </div>
-            {mainLinks.map((link) => {
-              const isActive = pathname === link.href || (link.href !== "/dashboard" && pathname.startsWith(link.href));
-              return (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13px] font-medium transition-all duration-200 group ${
-                    isActive
-                      ? "bg-primary-600 text-white shadow-lg shadow-primary-600/25"
-                      : "text-gray-400 hover:bg-white/[0.06] hover:text-white"
-                  }`}
-                >
-                  <link.icon className={`w-[18px] h-[18px] shrink-0 transition-colors ${
-                    isActive ? "text-white" : "text-gray-500 group-hover:text-gray-300"
-                  }`} />
-                  <span className="truncate">{link.label}</span>
-                </Link>
-              );
-            })}
+            <div className="space-y-0.5">
+              {mainLinks.map((link) => {
+                const isActive = pathname === link.href || (link.href !== "/dashboard" && pathname.startsWith(link.href));
+                return (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13px] font-medium transition-all duration-150 group ${
+                      isActive
+                        ? "bg-primary-50 text-primary-700 border border-primary-100"
+                        : "text-gray-600 hover:bg-gray-50 hover:text-gray-900 border border-transparent"
+                    }`}
+                  >
+                    <link.icon className={`w-[18px] h-[18px] shrink-0 transition-colors ${
+                      isActive ? "text-primary-600" : "text-gray-400 group-hover:text-gray-600"
+                    }`} />
+                    <span className="truncate">{link.label}</span>
+                  </Link>
+                );
+              })}
+            </div>
 
-            <div className="my-4 mx-3 border-t border-white/[0.06]" />
+            <div className="my-5 mx-3 border-t border-gray-100" />
 
-            <div className="mb-3 px-3 text-[10px] font-bold text-gray-500 uppercase tracking-[0.12em]">
+            <div className="mb-2 px-3 text-[10px] font-semibold text-gray-400 uppercase tracking-widest">
               Raccourcis
             </div>
             <Link
               href="/dashboard/coffres"
-              className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13px] font-medium text-gray-400 hover:bg-white/[0.06] hover:text-white transition-all duration-200 group"
+              className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13px] font-medium text-gray-600 hover:bg-gray-50 hover:text-gray-900 transition-all duration-150 group border border-transparent"
             >
-              <div className="w-[18px] h-[18px] rounded-md border border-gray-600 flex items-center justify-center group-hover:border-primary-500 group-hover:bg-primary-500/10 transition-all">
-                <Plus className="w-3 h-3 text-gray-500 group-hover:text-primary-400 transition-colors" />
+              <div className="w-[18px] h-[18px] rounded flex items-center justify-center border border-gray-300 group-hover:border-primary-400 group-hover:bg-primary-50 transition-all">
+                <Plus className="w-3 h-3 text-gray-400 group-hover:text-primary-600 transition-colors" />
               </div>
               <span className="truncate">Nouveau Coffre</span>
             </Link>
           </nav>
 
           {/* Bottom user area */}
-          <div className="p-3 shrink-0 border-t border-white/[0.06]">
-            <div className="flex items-center gap-3 px-2 py-2 rounded-xl bg-white/[0.04]">
+          <div className="p-3 shrink-0 border-t border-gray-100">
+            <div className="flex items-center gap-3 px-3 py-2.5 rounded-xl bg-gray-50">
               <Avatar user={user!} size="sm" />
               <div className="min-w-0 flex-1">
-                <p className="text-sm font-semibold text-white truncate">{user?.prenom || ""} {user?.nom || ""}</p>
-                <p className="text-[11px] text-gray-500 truncate">{user?.email || ""}</p>
+                <p className="text-[13px] font-semibold text-gray-900 truncate">{user?.prenom || ""} {user?.nom || ""}</p>
+                <p className="text-[11px] text-gray-400 truncate">{user?.email || ""}</p>
               </div>
             </div>
-            <div className="mt-2 space-y-0.5">
+            <div className="mt-1.5 space-y-0.5">
               <Link
                 href="/dashboard/profil"
-                className="flex items-center gap-3 px-3 py-2 rounded-xl text-[13px] text-gray-400 hover:bg-white/[0.06] hover:text-white font-medium transition-all"
+                className="flex items-center gap-3 px-3 py-2 rounded-xl text-[13px] text-gray-500 hover:bg-gray-50 hover:text-gray-900 font-medium transition-all"
               >
-                <User className="w-[16px] h-[16px] text-gray-500" />
+                <User className="w-4 h-4" />
                 Mon Profil
               </Link>
               <Link
                 href="/dashboard/parametres"
-                className="flex items-center gap-3 px-3 py-2 rounded-xl text-[13px] text-gray-400 hover:bg-white/[0.06] hover:text-white font-medium transition-all"
+                className="flex items-center gap-3 px-3 py-2 rounded-xl text-[13px] text-gray-500 hover:bg-gray-50 hover:text-gray-900 font-medium transition-all"
               >
-                <Settings className="w-[16px] h-[16px] text-gray-500" />
+                <Settings className="w-4 h-4" />
                 Paramètres
               </Link>
               <button
                 onClick={handleLogout}
-                className="w-full flex items-center gap-3 px-3 py-2 rounded-xl text-[13px] text-red-400 hover:bg-red-500/10 hover:text-red-300 font-medium text-left transition-all"
+                className="w-full flex items-center gap-3 px-3 py-2 rounded-xl text-[13px] text-red-500 hover:bg-red-50 font-medium text-left transition-all"
               >
-                <LogOut className="w-[16px] h-[16px]" />
+                <LogOut className="w-4 h-4" />
                 Déconnexion
               </button>
             </div>
