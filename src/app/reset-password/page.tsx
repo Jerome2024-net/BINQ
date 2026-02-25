@@ -133,7 +133,7 @@ function ResetPasswordForm() {
         <div className="w-full max-w-md">
           {/* Mobile logo */}
           <div className="lg:hidden flex items-center gap-2 mb-8 justify-center">
-            <img src="https://res.cloudinary.com/dn8ed1doa/image/upload/24604813-8FD8-45AA-9C68-EBC3169541B9_ccpwbk" alt="Binq" className="h-14 w-auto" />
+            <img src="https://res.cloudinary.com/dn8ed1doa/image/upload/937CCDA4-A507-4976-A172-182B2ADB4FB9_wdaodr" alt="Binq" className="h-14 w-auto" />
           </div>
 
           {success ? (
