@@ -56,6 +56,27 @@ export default function DashboardLayout({
   const [unreadCount, setUnreadCount] = useState(0);
   const profileRef = useRef<HTMLDivElement>(null);
   const notifRef = useRef<HTMLDivElement>(null);
+  const prevUnreadRef = useRef<number | null>(null);
+
+  // Play notification sound
+  const playNotifSound = useCallback(() => {
+    try {
+      const ctx = new AudioContext();
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.type = "sine";
+      // Two-tone chime
+      osc.frequency.setValueAtTime(880, ctx.currentTime);
+      osc.frequency.setValueAtTime(1174.66, ctx.currentTime + 0.12);
+      gain.gain.setValueAtTime(0.15, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.3);
+      osc.start(ctx.currentTime);
+      osc.stop(ctx.currentTime + 0.3);
+      setTimeout(() => ctx.close(), 500);
+    } catch { /* ignore if audio blocked */ }
+  }, []);
 
   // Fetch notifications
   const fetchNotifications = useCallback(async () => {
@@ -63,10 +84,18 @@ export default function DashboardLayout({
       const res = await fetch("/api/notifications");
       if (!res.ok) return;
       const data = await res.json();
+      const newUnread = data.unreadCount || 0;
+
+      // Play sound if new notifications arrived (not on first load)
+      if (prevUnreadRef.current !== null && newUnread > prevUnreadRef.current) {
+        playNotifSound();
+      }
+      prevUnreadRef.current = newUnread;
+
       setNotifications(data.notifications || []);
-      setUnreadCount(data.unreadCount || 0);
+      setUnreadCount(newUnread);
     } catch { /* ignore */ }
-  }, []);
+  }, [playNotifSound]);
 
   // Initial fetch + poll every 30s
   useEffect(() => {
