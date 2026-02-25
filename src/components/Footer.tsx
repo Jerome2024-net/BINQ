@@ -9,8 +9,7 @@ export default function Footer() {
           {/* Brand */}
           <div className="col-span-2 md:col-span-1">
             <div className="flex items-center gap-2 mb-4">
-              <img src="https://res.cloudinary.com/dn8ed1doa/image/upload/ChatGPT_Image_24_f%C3%A9vr._2026_18_41_17_iwqq1o" alt="Binq" className="h-8 w-auto brightness-0 invert" />
-              <span className="text-lg font-bold text-white tracking-tight leading-none">Binq</span>
+              <img src="https://res.cloudinary.com/dn8ed1doa/image/upload/FDB3AAEC-0502-4B2B-B6CD-495158D0673B_yl1ztk" alt="Binq" className="h-8 w-auto brightness-0 invert" />
             </div>
             <p className="text-gray-500 text-[14px] leading-relaxed mb-6">
               La fintech digitale pour gérer votre argent simplement et en toute sécurité.

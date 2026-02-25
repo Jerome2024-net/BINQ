@@ -66,8 +66,7 @@ export default function DashboardLayout({
           {/* Logo */}
           <div className="flex items-center justify-between px-6 h-[72px] border-b border-gray-100">
             <Link href="/" className="flex items-center gap-2">
-              <img src="https://res.cloudinary.com/dn8ed1doa/image/upload/ChatGPT_Image_24_f%C3%A9vr._2026_18_41_17_iwqq1o" alt="Binq" className="h-8 w-auto" />
-              <span className="text-xl font-bold text-gray-900 tracking-tight leading-none">Binq</span>
+              <img src="https://res.cloudinary.com/dn8ed1doa/image/upload/FDB3AAEC-0502-4B2B-B6CD-495158D0673B_yl1ztk" alt="Binq" className="h-8 w-auto" />
             </Link>
             <button
               onClick={() => setSidebarOpen(false)}
