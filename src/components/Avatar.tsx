@@ -19,11 +19,11 @@ const sizeClasses = {
 };
 
 const radiusClasses = {
-  xs: "rounded-lg",
-  sm: "rounded-xl",
-  md: "rounded-xl",
-  lg: "rounded-2xl",
-  xl: "rounded-2xl",
+  xs: "rounded-full",
+  sm: "rounded-full",
+  md: "rounded-full",
+  lg: "rounded-full",
+  xl: "rounded-full",
 };
 
 // Couleurs basées sur les initiales pour varier les avatars
