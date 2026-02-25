@@ -19,7 +19,7 @@ const LOGO_HTML = `
   <table cellpadding="0" cellspacing="0" border="0" style="margin: 0 auto;">
     <tr>
       <td style="vertical-align: middle;">
-        <img src="https://res.cloudinary.com/dn8ed1doa/image/upload/B48C52E2-4F45-4BD6-9E28-570D27746459_jrqlgo" alt="Binq" width="140" style="height: auto; display: block;" />
+        <img src="https://res.cloudinary.com/dn8ed1doa/image/upload/0BBAEE5D-B790-4A3E-9345-A4975C84546D_xfvmso" alt="Binq" width="140" style="height: auto; display: block;" />
       </td>
     </tr>
   </table>

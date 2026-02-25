@@ -53,7 +53,7 @@ function ConnexionForm() {
         
         <div className="relative max-w-md">
           <div className="flex items-center gap-2 mb-10">
-            <img src="https://res.cloudinary.com/dn8ed1doa/image/upload/B48C52E2-4F45-4BD6-9E28-570D27746459_jrqlgo" alt="Binq" className="h-16 w-auto brightness-0 invert" />
+            <img src="https://res.cloudinary.com/dn8ed1doa/image/upload/0BBAEE5D-B790-4A3E-9345-A4975C84546D_xfvmso" alt="Binq" className="h-16 w-auto brightness-0 invert" />
           </div>
           <h1 className="text-4xl font-bold mb-4 tracking-tight leading-tight">
             Bon retour parmi nous !
@@ -84,7 +84,7 @@ function ConnexionForm() {
         <div className="w-full max-w-md">
           {/* Mobile logo */}
           <div className="lg:hidden flex items-center gap-2 mb-8 justify-center">
-            <img src="https://res.cloudinary.com/dn8ed1doa/image/upload/B48C52E2-4F45-4BD6-9E28-570D27746459_jrqlgo" alt="Binq" className="h-14 w-auto" />
+            <img src="https://res.cloudinary.com/dn8ed1doa/image/upload/24604813-8FD8-45AA-9C68-EBC3169541B9_ccpwbk" alt="Binq" className="h-14 w-auto" />
           </div>
 
           <h2 className="text-2xl font-bold text-gray-900 mb-1.5">Connexion</h2>
