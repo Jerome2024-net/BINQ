@@ -137,40 +137,6 @@ export default function DashboardLayout({
               <span className="truncate">Nouveau Coffre</span>
             </Link>
           </nav>
-
-          {/* Bottom user area */}
-          <div className="p-3 shrink-0 border-t border-gray-100">
-            <div className="flex items-center gap-3 px-3 py-2.5 rounded-xl bg-gray-50">
-              <Avatar user={user!} size="sm" />
-              <div className="min-w-0 flex-1">
-                <p className="text-[13px] font-semibold text-gray-900 truncate">{user?.prenom || ""} {user?.nom || ""}</p>
-                <p className="text-[11px] text-gray-400 truncate">{user?.email || ""}</p>
-              </div>
-            </div>
-            <div className="mt-1.5 space-y-0.5">
-              <Link
-                href="/dashboard/profil"
-                className="flex items-center gap-3 px-3 py-2 rounded-xl text-[13px] text-gray-500 hover:bg-gray-50 hover:text-gray-900 font-medium transition-all"
-              >
-                <User className="w-4 h-4" />
-                Mon Profil
-              </Link>
-              <Link
-                href="/dashboard/parametres"
-                className="flex items-center gap-3 px-3 py-2 rounded-xl text-[13px] text-gray-500 hover:bg-gray-50 hover:text-gray-900 font-medium transition-all"
-              >
-                <Settings className="w-4 h-4" />
-                Paramètres
-              </Link>
-              <button
-                onClick={handleLogout}
-                className="w-full flex items-center gap-3 px-3 py-2 rounded-xl text-[13px] text-red-500 hover:bg-red-50 font-medium text-left transition-all"
-              >
-                <LogOut className="w-4 h-4" />
-                Déconnexion
-              </button>
-            </div>
-          </div>
         </aside>
 
         {/* ─── Main Content ─── */}
