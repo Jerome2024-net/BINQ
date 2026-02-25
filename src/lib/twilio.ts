@@ -23,34 +23,34 @@ const FROM_PHONE = process.env.TWILIO_PHONE_NUMBER || "";
 // ========================
 export const smsTemplates = {
   welcome: (prenom: string) =>
-    `Bienvenue sur Binq, ${prenom} ! 🌟 Votre compte a été créé. Créez ou rejoignez une tontine dès maintenant sur binq.io`,
+    `Bienvenue sur Binq, ${prenom} ! 🚀 Votre portefeuille est prêt. Envoyez, recevez et épargnez sur binq.io`,
 
   invitation: (prenom: string, tontineName: string, inviteLink: string) =>
-    `${prenom}, vous êtes invité(e) à rejoindre la tontine "${tontineName}" sur Binq ! Rejoignez ici : ${inviteLink}`,
+    `${prenom} vous invite à rejoindre le groupe d'épargne "${tontineName}" sur Binq. Rejoignez : ${inviteLink}`,
 
   paymentReminder: (prenom: string, tontineName: string, montant: number, dateLimite: string) =>
-    `Rappel Binq : ${prenom}, votre cotisation de ${montant.toFixed(2)} € pour "${tontineName}" est due avant le ${dateLimite}. Payez sur binq.io`,
+    `Binq : ${prenom}, cotisation de ${montant.toFixed(2)} € pour "${tontineName}" due avant le ${dateLimite}. Payez sur binq.io`,
 
   paymentConfirmation: (prenom: string, tontineName: string, montant: number) =>
-    `Binq : Paiement confirmé ! ${prenom}, votre cotisation de ${montant.toFixed(2)} € pour "${tontineName}" a été reçue. ✅`,
+    `Binq ✅ : ${prenom}, paiement de ${montant.toFixed(2)} € confirmé pour "${tontineName}".`,
 
   potReceived: (prenom: string, tontineName: string, montant: number) =>
-    `🎉 Binq : Félicitations ${prenom} ! Vous avez reçu le pot de ${montant.toFixed(2)} € de la tontine "${tontineName}".`,
+    `🎉 Binq : ${prenom}, ${montant.toFixed(2)} € crédités sur votre portefeuille depuis "${tontineName}".`,
 
   tourNotification: (prenom: string, tontineName: string, tourNumero: number, montantEstime: number) =>
-    `Binq : ${prenom}, c'est bientôt votre tour (Tour ${tourNumero}) dans "${tontineName}" ! Pot estimé : ${montantEstime.toFixed(2)} €`,
+    `Binq : ${prenom}, c'est bientôt votre tour (Tour ${tourNumero}) dans "${tontineName}" ! Montant estimé : ${montantEstime.toFixed(2)} €`,
 
   echeanceReminder: (prenom: string, tontineName: string, montant: number, joursRestants: number) =>
-    `⏰ Binq : ${prenom}, il reste ${joursRestants} jour(s) pour payer votre cotisation de ${montant.toFixed(2)} € pour "${tontineName}".`,
+    `⏰ Binq : ${prenom}, plus que ${joursRestants}j pour régler ${montant.toFixed(2)} € pour "${tontineName}".`,
 
   tourStarted: (prenom: string, tontineName: string, tourNumero: number, beneficiaire: string, montant: number, dateLimite: string) =>
-    `Binq : Tour ${tourNumero} de "${tontineName}" a démarré ! Bénéficiaire : ${beneficiaire}. Cotisation : ${montant.toFixed(2)} € avant le ${dateLimite}.`,
+    `Binq : Tour ${tourNumero} de "${tontineName}" lancé. Bénéficiaire : ${beneficiaire}. Cotisation : ${montant.toFixed(2)} € avant le ${dateLimite}.`,
 
   paymentLate: (prenom: string, tontineName: string, montant: number, joursRetard: number) =>
-    `🚨 Binq : ${prenom}, votre cotisation de ${montant.toFixed(2)} € pour "${tontineName}" a ${joursRetard} jour(s) de retard. Régularisez vite !`,
+    `⚠️ Binq : ${prenom}, ${montant.toFixed(2)} € en retard de ${joursRetard}j pour "${tontineName}". Régularisez sur binq.io`,
 
   tontineCompleted: (prenom: string, tontineName: string) =>
-    `🏁 Binq : La tontine "${tontineName}" est terminée ! Merci ${prenom} pour votre participation. Consultez le bilan sur binq.io`,
+    `🏆 Binq : Le groupe "${tontineName}" est terminé ! Merci ${prenom}. Retrouvez le bilan sur binq.io`,
 };
 
 // ========================
