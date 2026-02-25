@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useState, Suspense } from "react";
+import { useState, useEffect, useRef, Suspense } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import AuthGuard from "@/components/AuthGuard";
 import Avatar from "@/components/Avatar";
@@ -16,19 +16,20 @@ import {
   Plus,
   ChevronDown,
   User,
-  Users,
   Wallet,
   Search,
   Lock,
+  ArrowLeftRight,
+  CreditCard,
 } from "lucide-react";
 
 const mainLinks = [
   { href: "/dashboard", label: "Tableau de bord", icon: LayoutDashboard },
-  { href: "/dashboard/coffres", label: "Coffres", icon: Lock },
   { href: "/portefeuille", label: "Portefeuille", icon: Wallet },
+  { href: "/transactions", label: "Transactions", icon: ArrowLeftRight },
+  { href: "/paiements", label: "Paiements", icon: CreditCard },
+  { href: "/dashboard/coffres", label: "Coffres", icon: Lock },
 ];
-
-
 
 export default function DashboardLayout({
   children,
@@ -40,6 +41,23 @@ export default function DashboardLayout({
   const { user, logout } = useAuth();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
+  const profileRef = useRef<HTMLDivElement>(null);
+
+  // Close profile dropdown on outside click
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (profileRef.current && !profileRef.current.contains(e.target as Node)) {
+        setProfileOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, []);
+
+  // Close sidebar on route change (mobile)
+  useEffect(() => {
+    setSidebarOpen(false);
+  }, [pathname]);
 
   const handleLogout = async () => {
     await logout();
@@ -48,39 +66,39 @@ export default function DashboardLayout({
 
   return (
     <AuthGuard>
-      <div className="min-h-screen bg-surface-50 bg-gradient-mesh">
+      <div className="min-h-screen bg-gray-50">
         {/* Mobile sidebar overlay */}
         {sidebarOpen && (
           <div
-            className="fixed inset-0 bg-gray-950/60 backdrop-blur-sm z-40 lg:hidden transition-opacity"
+            className="fixed inset-0 bg-black/40 backdrop-blur-sm z-40 lg:hidden animate-fade-in"
             onClick={() => setSidebarOpen(false)}
           />
         )}
 
-        {/* Sidebar */}
+        {/* ─── Sidebar ─── */}
         <aside
-          className={`fixed top-0 left-0 h-full w-[280px] bg-white border-r border-gray-200 z-50 transform transition-transform duration-300 ease-out ${
+          className={`fixed top-0 left-0 h-full w-[260px] bg-gradient-to-b from-gray-900 via-gray-900 to-gray-950 z-50 transform transition-transform duration-300 ease-out ${
             sidebarOpen ? "translate-x-0" : "-translate-x-full"
-          } lg:translate-x-0 flex flex-col`}
+          } lg:translate-x-0 flex flex-col shadow-2xl shadow-gray-900/20`}
         >
           {/* Logo */}
-          <div className="flex items-center justify-between px-6 h-[72px] border-b border-gray-100">
+          <div className="flex items-center justify-between px-5 h-16 shrink-0">
             <Link href="/" className="flex items-center">
-              <img src="https://res.cloudinary.com/dn8ed1doa/image/upload/24604813-8FD8-45AA-9C68-EBC3169541B9_ccpwbk" alt="Binq" className="h-12 w-auto lg:hidden" />
-              <img src="https://res.cloudinary.com/dn8ed1doa/image/upload/0BBAEE5D-B790-4A3E-9345-A4975C84546D_xfvmso" alt="Binq" className="h-12 w-auto hidden lg:block" />
+              <img src="https://res.cloudinary.com/dn8ed1doa/image/upload/24604813-8FD8-45AA-9C68-EBC3169541B9_ccpwbk" alt="Binq" className="h-10 w-auto lg:hidden" />
+              <img src="https://res.cloudinary.com/dn8ed1doa/image/upload/0BBAEE5D-B790-4A3E-9345-A4975C84546D_xfvmso" alt="Binq" className="h-10 w-auto hidden lg:block" />
             </Link>
             <button
               onClick={() => setSidebarOpen(false)}
-              className="lg:hidden p-2 rounded-lg hover:bg-gray-100 text-gray-500"
+              className="lg:hidden p-1.5 rounded-lg hover:bg-white/10 text-gray-400 transition-colors"
             >
               <X className="w-5 h-5" />
             </button>
           </div>
 
           {/* Nav */}
-          <nav className="flex-1 px-4 py-6 space-y-1 overflow-y-auto">
-            <div className="mb-2 px-3 text-[11px] font-semibold text-gray-400 uppercase tracking-wider">
-              Menu Principal
+          <nav className="flex-1 px-3 py-4 space-y-0.5 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-700">
+            <div className="mb-3 px-3 text-[10px] font-bold text-gray-500 uppercase tracking-[0.12em]">
+              Navigation
             </div>
             {mainLinks.map((link) => {
               const isActive = pathname === link.href || (link.href !== "/dashboard" && pathname.startsWith(link.href));
@@ -88,166 +106,157 @@ export default function DashboardLayout({
                 <Link
                   key={link.href}
                   href={link.href}
-                  className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 group ${
+                  className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13px] font-medium transition-all duration-200 group ${
                     isActive
-                      ? "bg-primary-50 text-primary-700"
-                      : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+                      ? "bg-primary-600 text-white shadow-lg shadow-primary-600/25"
+                      : "text-gray-400 hover:bg-white/[0.06] hover:text-white"
                   }`}
-                  onClick={() => setSidebarOpen(false)}
                 >
-                  <link.icon className={`w-[20px] h-[20px] transition-colors ${
-                    isActive ? "text-primary-600" : "text-gray-400 group-hover:text-gray-500"
+                  <link.icon className={`w-[18px] h-[18px] shrink-0 transition-colors ${
+                    isActive ? "text-white" : "text-gray-500 group-hover:text-gray-300"
                   }`} />
-                  {link.label}
+                  <span className="truncate">{link.label}</span>
                 </Link>
               );
             })}
 
+            <div className="my-4 mx-3 border-t border-white/[0.06]" />
 
-
-            <div className="my-4 mx-3 border-t border-gray-100" />
-
-            <div className="mb-2 px-3 text-[11px] font-semibold text-gray-400 uppercase tracking-wider">
-              Actions Rapides
+            <div className="mb-3 px-3 text-[10px] font-bold text-gray-500 uppercase tracking-[0.12em]">
+              Raccourcis
             </div>
             <Link
               href="/dashboard/coffres"
-              className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-50 hover:text-gray-900 transition-all duration-200 group"
-              onClick={() => setSidebarOpen(false)}
+              className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13px] font-medium text-gray-400 hover:bg-white/[0.06] hover:text-white transition-all duration-200 group"
             >
-              <div className="w-[20px] h-[20px] rounded-md bg-white border border-gray-200 flex items-center justify-center text-gray-400 group-hover:text-primary-600 group-hover:border-primary-200 transition-colors">
-                <Plus className="w-3.5 h-3.5" />
+              <div className="w-[18px] h-[18px] rounded-md border border-gray-600 flex items-center justify-center group-hover:border-primary-500 group-hover:bg-primary-500/10 transition-all">
+                <Plus className="w-3 h-3 text-gray-500 group-hover:text-primary-400 transition-colors" />
               </div>
-              Nouveau Coffre
+              <span className="truncate">Nouveau Coffre</span>
             </Link>
           </nav>
 
           {/* Bottom user area */}
-          <div className="p-4 border-t border-gray-200 bg-gray-50/80">
-            <div className="flex items-center gap-3 px-2 mb-3">
+          <div className="p-3 shrink-0 border-t border-white/[0.06]">
+            <div className="flex items-center gap-3 px-2 py-2 rounded-xl bg-white/[0.04]">
               <Avatar user={user!} size="sm" />
               <div className="min-w-0 flex-1">
-                <p className="text-sm font-semibold text-gray-900 truncate">{user?.prenom || ""} {user?.nom || ""}</p>
-                <p className="text-xs text-gray-400 truncate">{user?.email || ""}</p>
+                <p className="text-sm font-semibold text-white truncate">{user?.prenom || ""} {user?.nom || ""}</p>
+                <p className="text-[11px] text-gray-500 truncate">{user?.email || ""}</p>
               </div>
             </div>
-            <div className="space-y-1">
+            <div className="mt-2 space-y-0.5">
               <Link
                 href="/dashboard/profil"
-                className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-gray-600 hover:bg-white hover:text-gray-900 hover:shadow-sm font-medium transition-all"
+                className="flex items-center gap-3 px-3 py-2 rounded-xl text-[13px] text-gray-400 hover:bg-white/[0.06] hover:text-white font-medium transition-all"
               >
-                <User className="w-[18px] h-[18px] text-gray-400" />
+                <User className="w-[16px] h-[16px] text-gray-500" />
                 Mon Profil
               </Link>
               <Link
                 href="/dashboard/parametres"
-                className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-gray-600 hover:bg-white hover:text-gray-900 hover:shadow-sm font-medium transition-all"
+                className="flex items-center gap-3 px-3 py-2 rounded-xl text-[13px] text-gray-400 hover:bg-white/[0.06] hover:text-white font-medium transition-all"
               >
-                <Settings className="w-[18px] h-[18px] text-gray-400" />
+                <Settings className="w-[16px] h-[16px] text-gray-500" />
                 Paramètres
               </Link>
               <button
                 onClick={handleLogout}
-                className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-red-500 hover:bg-red-50 hover:text-red-600 font-medium text-left transition-all"
+                className="w-full flex items-center gap-3 px-3 py-2 rounded-xl text-[13px] text-red-400 hover:bg-red-500/10 hover:text-red-300 font-medium text-left transition-all"
               >
-                <LogOut className="w-[18px] h-[18px]" />
+                <LogOut className="w-[16px] h-[16px]" />
                 Déconnexion
               </button>
             </div>
           </div>
         </aside>
 
-        {/* Main Content */}
-        <div className="lg:ml-[280px] min-h-screen flex flex-col bg-gray-50/50">
+        {/* ─── Main Content ─── */}
+        <div className="lg:ml-[260px] min-h-screen flex flex-col">
           {/* Top bar */}
-          <header className="bg-white/80 backdrop-blur-xl border-b border-gray-200 sticky top-0 z-30 h-[72px]">
+          <header className="bg-white/80 backdrop-blur-xl border-b border-gray-100 sticky top-0 z-30">
             <div className="flex items-center justify-between px-4 sm:px-6 h-16">
-              <div className="flex items-center gap-4">
+              <div className="flex items-center gap-3">
                 <button
                   onClick={() => setSidebarOpen(true)}
                   className="lg:hidden p-2 rounded-xl hover:bg-gray-100 text-gray-500 transition-colors"
                 >
                   <Menu className="w-5 h-5" />
                 </button>
-                <div>
-                  <h1 className="text-lg font-semibold text-gray-900 hidden sm:block">
-                    {mainLinks.find((l) => l.href === pathname)?.label || "Binq"}
-                  </h1>
-                </div>
+                <h1 className="text-base sm:text-lg font-semibold text-gray-900">
+                  {mainLinks.find((l) => l.href === pathname)?.label || "Binq"}
+                </h1>
               </div>
 
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1.5 sm:gap-2">
                 {/* Search */}
-                <button className="p-2.5 rounded-xl hover:bg-gray-100 transition-colors hidden sm:flex">
+                <button className="p-2 rounded-xl hover:bg-gray-100 transition-colors hidden sm:flex">
                   <Search className="w-[18px] h-[18px] text-gray-400" />
                 </button>
 
                 {/* Notifications */}
-                <button className="relative p-2.5 rounded-xl hover:bg-gray-100 transition-colors">
+                <button className="relative p-2 rounded-xl hover:bg-gray-100 transition-colors">
                   <Bell className="w-[18px] h-[18px] text-gray-400" />
-                  <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full ring-2 ring-white"></span>
+                  <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full ring-2 ring-white"></span>
                 </button>
 
                 {/* Divider */}
-                <div className="w-px h-8 bg-gray-200 mx-1 hidden sm:block" />
+                <div className="w-px h-7 bg-gray-200 mx-1 hidden sm:block" />
 
                 {/* Profile */}
-                <div className="relative">
+                <div className="relative" ref={profileRef}>
                   <button
                     onClick={() => setProfileOpen(!profileOpen)}
-                    className="flex items-center gap-2.5 p-1.5 rounded-xl hover:bg-gray-100 transition-colors"
+                    className="flex items-center gap-2 p-1.5 rounded-xl hover:bg-gray-100 transition-colors"
                   >
                     <Avatar user={user!} size="sm" />
-                    <span className="hidden sm:block text-sm font-medium text-gray-700">
-                      {user?.prenom} {user?.nom[0]}.
+                    <span className="hidden sm:block text-sm font-medium text-gray-700 max-w-[120px] truncate">
+                      {user?.prenom} {user?.nom?.[0]}.
                     </span>
-                    <ChevronDown className="w-3.5 h-3.5 text-gray-400 hidden sm:block" />
+                    <ChevronDown className={`w-3.5 h-3.5 text-gray-400 hidden sm:block transition-transform ${profileOpen ? "rotate-180" : ""}`} />
                   </button>
 
                   {profileOpen && (
-                    <>
-                      <div className="fixed inset-0 z-10" onClick={() => setProfileOpen(false)} />
-                      <div className="absolute right-0 top-14 w-60 bg-white rounded-2xl shadow-xl shadow-gray-200/50 border border-gray-100 py-1.5 z-20 animate-fade-up">
-                        <div className="px-4 py-3 border-b border-gray-100 flex items-center gap-3">
-                          <Avatar user={user!} size="sm" />
-                          <div className="min-w-0">
-                            <p className="text-sm font-semibold text-gray-900 truncate">{user?.prenom} {user?.nom}</p>
-                            <p className="text-xs text-gray-500 truncate">{user?.email}</p>
-                          </div>
-                        </div>
-                        <div className="py-1">
-                          <Link
-                            href="/dashboard/profil"
-                            className="block px-4 py-2 text-sm text-gray-600 hover:bg-gray-50 hover:text-gray-900 transition-colors"
-                            onClick={() => setProfileOpen(false)}
-                          >
-                            Mon profil
-                          </Link>
-                          <Link
-                            href={`/membres/${user?.id}`}
-                            className="block px-4 py-2 text-sm text-gray-600 hover:bg-gray-50 hover:text-gray-900 transition-colors"
-                            onClick={() => setProfileOpen(false)}
-                          >
-                            Voir mon profil public
-                          </Link>
-                          <Link
-                            href="/dashboard/parametres"
-                            className="block px-4 py-2 text-sm text-gray-600 hover:bg-gray-50 hover:text-gray-900 transition-colors"
-                            onClick={() => setProfileOpen(false)}
-                          >
-                            Paramètres
-                          </Link>
-                        </div>
-                        <div className="border-t border-gray-100 py-1">
-                          <button
-                            onClick={() => { setProfileOpen(false); handleLogout(); }}
-                            className="block w-full text-left px-4 py-2 text-sm text-red-500 hover:bg-red-50 transition-colors"
-                          >
-                            Déconnexion
-                          </button>
+                    <div className="absolute right-0 top-full mt-2 w-56 bg-white rounded-2xl shadow-xl shadow-gray-200/60 border border-gray-100 py-1 z-20 animate-fade-up">
+                      <div className="px-4 py-3 border-b border-gray-100 flex items-center gap-3">
+                        <Avatar user={user!} size="sm" />
+                        <div className="min-w-0">
+                          <p className="text-sm font-semibold text-gray-900 truncate">{user?.prenom} {user?.nom}</p>
+                          <p className="text-[11px] text-gray-500 truncate">{user?.email}</p>
                         </div>
                       </div>
-                    </>
+                      <div className="py-1">
+                        <Link
+                          href="/dashboard/profil"
+                          className="block px-4 py-2 text-sm text-gray-600 hover:bg-gray-50 hover:text-gray-900 transition-colors"
+                          onClick={() => setProfileOpen(false)}
+                        >
+                          Mon profil
+                        </Link>
+                        <Link
+                          href={`/membres/${user?.id}`}
+                          className="block px-4 py-2 text-sm text-gray-600 hover:bg-gray-50 hover:text-gray-900 transition-colors"
+                          onClick={() => setProfileOpen(false)}
+                        >
+                          Profil public
+                        </Link>
+                        <Link
+                          href="/dashboard/parametres"
+                          className="block px-4 py-2 text-sm text-gray-600 hover:bg-gray-50 hover:text-gray-900 transition-colors"
+                          onClick={() => setProfileOpen(false)}
+                        >
+                          Paramètres
+                        </Link>
+                      </div>
+                      <div className="border-t border-gray-100 py-1">
+                        <button
+                          onClick={() => { setProfileOpen(false); handleLogout(); }}
+                          className="block w-full text-left px-4 py-2 text-sm text-red-500 hover:bg-red-50 transition-colors"
+                        >
+                          Déconnexion
+                        </button>
+                      </div>
+                    </div>
                   )}
                 </div>
               </div>
