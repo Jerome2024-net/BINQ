@@ -19,7 +19,10 @@ const LOGO_HTML = `
   <table cellpadding="0" cellspacing="0" border="0" style="margin: 0 auto;">
     <tr>
       <td style="vertical-align: middle;">
-        <img src="https://res.cloudinary.com/dn8ed1doa/image/upload/ChatGPT_Image_24_f%C3%A9vr._2026_18_41_17_iwqq1o" alt="Binq" width="140" style="height: auto; display: block;" />
+        <img src="https://res.cloudinary.com/dn8ed1doa/image/upload/ChatGPT_Image_24_f%C3%A9vr._2026_18_41_17_iwqq1o" alt="Binq" width="36" style="height: auto; display: block; border-radius: 8px;" />
+      </td>
+      <td style="padding-left: 10px; vertical-align: middle;">
+        <span style="font-family: 'Segoe UI', Arial, sans-serif; font-size: 22px; font-weight: 700; color: white;">Binq</span>
       </td>
     </tr>
   </table>

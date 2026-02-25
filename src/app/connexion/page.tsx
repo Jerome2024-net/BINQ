@@ -54,6 +54,7 @@ function ConnexionForm() {
         <div className="relative max-w-md">
           <div className="flex items-center gap-2.5 mb-10">
             <img src="https://res.cloudinary.com/dn8ed1doa/image/upload/ChatGPT_Image_24_f%C3%A9vr._2026_18_41_17_iwqq1o" alt="Binq" className="h-11 w-auto brightness-0 invert" />
+            <span className="text-2xl font-bold tracking-tight">Binq</span>
           </div>
           <h1 className="text-4xl font-bold mb-4 tracking-tight leading-tight">
             Bon retour parmi nous !
@@ -85,6 +86,7 @@ function ConnexionForm() {
           {/* Mobile logo */}
           <div className="lg:hidden flex items-center gap-2 mb-8 justify-center">
             <img src="https://res.cloudinary.com/dn8ed1doa/image/upload/ChatGPT_Image_24_f%C3%A9vr._2026_18_41_17_iwqq1o" alt="Binq" className="h-9 w-auto" />
+            <span className="text-xl font-bold text-gray-900 tracking-tight">Binq</span>
           </div>
 
           <h2 className="text-2xl font-bold text-gray-900 mb-1.5">Connexion</h2>

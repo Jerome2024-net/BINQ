@@ -26,6 +26,7 @@ export default function Navbar() {
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2.5">
             <img src="https://res.cloudinary.com/dn8ed1doa/image/upload/ChatGPT_Image_24_f%C3%A9vr._2026_18_41_17_iwqq1o" alt="Binq" className="h-9 w-auto" />
+            <span className="text-xl font-bold text-gray-900 tracking-tight">Binq</span>
           </Link>
 
           {/* Desktop Navigation */}
