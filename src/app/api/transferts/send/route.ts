@@ -167,6 +167,22 @@ export async function POST(request: NextRequest) {
     }),
   ]);
 
+  // Notifications in-app
+  await Promise.allSettled([
+    supabase.from("notifications").insert({
+      user_id: destinataire_id,
+      titre: "Argent reçu",
+      message: `${senderName} vous a envoyé ${montant.toFixed(2)} €${message ? ` — ${message}` : ""}`,
+      lu: false,
+    }),
+    supabase.from("notifications").insert({
+      user_id: user.id,
+      titre: "Transfert envoyé",
+      message: `Vous avez envoyé ${montant.toFixed(2)} € à ${destName}`,
+      lu: false,
+    }),
+  ]);
+
   return NextResponse.json({
     success: true,
     transfert: {

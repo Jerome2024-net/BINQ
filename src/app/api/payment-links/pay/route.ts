@@ -145,6 +145,22 @@ export async function POST(request: NextRequest) {
         .eq("id", link.id);
     }
 
+    // Notifications in-app (send link claim)
+    await Promise.allSettled([
+      supabase.from("notifications").insert({
+        user_id: user.id,
+        titre: "Argent récupéré",
+        message: `Vous avez récupéré ${montant.toFixed(2)} € envoyés par ${senderName}`,
+        lu: false,
+      }),
+      supabase.from("notifications").insert({
+        user_id: link.createur_id,
+        titre: "Envoi récupéré",
+        message: `${claimantName} a récupéré vos ${montant.toFixed(2)} €`,
+        lu: false,
+      }),
+    ]);
+
     return NextResponse.json({
       success: true,
       transfert: { reference, montant, expediteur: senderName },
@@ -294,6 +310,22 @@ export async function POST(request: NextRequest) {
       .update({ statut: "paye", paye_par: user.id, paye_at: now })
       .eq("id", link.id);
   }
+
+  // 9. Notifications in-app
+  await Promise.allSettled([
+    supabase.from("notifications").insert({
+      user_id: link.createur_id,
+      titre: "Paiement reçu",
+      message: `${payerName} vous a payé ${montant.toFixed(2)} €${linkDesc}`,
+      lu: false,
+    }),
+    supabase.from("notifications").insert({
+      user_id: user.id,
+      titre: "Paiement effectué",
+      message: `Vous avez payé ${montant.toFixed(2)} € à ${creatorName}${linkDesc}`,
+      lu: false,
+    }),
+  ]);
 
   return NextResponse.json({
     success: true,

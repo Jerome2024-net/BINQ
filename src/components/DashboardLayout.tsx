@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useState, useEffect, useRef, Suspense } from "react";
+import { useState, useEffect, useRef, useCallback, Suspense } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import AuthGuard from "@/components/AuthGuard";
 import Avatar from "@/components/Avatar";
@@ -21,7 +21,17 @@ import {
   Lock,
   ArrowLeftRight,
   CreditCard,
+  Check,
+  CheckCheck,
 } from "lucide-react";
+
+interface Notification {
+  id: string;
+  titre: string;
+  message: string;
+  lu: boolean;
+  created_at: string;
+}
 
 const mainLinks = [
   { href: "/dashboard", label: "Tableau de bord", icon: LayoutDashboard },
@@ -41,13 +51,51 @@ export default function DashboardLayout({
   const { user, logout } = useAuth();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
+  const [notifOpen, setNotifOpen] = useState(false);
+  const [notifications, setNotifications] = useState<Notification[]>([]);
+  const [unreadCount, setUnreadCount] = useState(0);
   const profileRef = useRef<HTMLDivElement>(null);
+  const notifRef = useRef<HTMLDivElement>(null);
 
-  // Close profile dropdown on outside click
+  // Fetch notifications
+  const fetchNotifications = useCallback(async () => {
+    try {
+      const res = await fetch("/api/notifications");
+      if (!res.ok) return;
+      const data = await res.json();
+      setNotifications(data.notifications || []);
+      setUnreadCount(data.unreadCount || 0);
+    } catch { /* ignore */ }
+  }, []);
+
+  // Initial fetch + poll every 30s
+  useEffect(() => {
+    fetchNotifications();
+    const interval = setInterval(fetchNotifications, 30000);
+    return () => clearInterval(interval);
+  }, [fetchNotifications]);
+
+  // Mark all as read
+  const markAllRead = async () => {
+    try {
+      await fetch("/api/notifications", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ all: true }),
+      });
+      setNotifications((prev) => prev.map((n) => ({ ...n, lu: true })));
+      setUnreadCount(0);
+    } catch { /* ignore */ }
+  };
+
+  // Close dropdowns on outside click
   useEffect(() => {
     const handler = (e: MouseEvent) => {
       if (profileRef.current && !profileRef.current.contains(e.target as Node)) {
         setProfileOpen(false);
+      }
+      if (notifRef.current && !notifRef.current.contains(e.target as Node)) {
+        setNotifOpen(false);
       }
     };
     document.addEventListener("mousedown", handler);
@@ -62,6 +110,20 @@ export default function DashboardLayout({
   const handleLogout = async () => {
     await logout();
     router.push("/");
+  };
+
+  // Format relative time
+  const formatTimeAgo = (dateStr: string) => {
+    const now = Date.now();
+    const diff = now - new Date(dateStr).getTime();
+    const mins = Math.floor(diff / 60000);
+    if (mins < 1) return "À l'instant";
+    if (mins < 60) return `Il y a ${mins} min`;
+    const hours = Math.floor(mins / 60);
+    if (hours < 24) return `Il y a ${hours}h`;
+    const days = Math.floor(hours / 24);
+    if (days < 7) return `Il y a ${days}j`;
+    return new Date(dateStr).toLocaleDateString("fr-FR", { day: "numeric", month: "short" });
   };
 
   return (
@@ -163,10 +225,67 @@ export default function DashboardLayout({
                 </button>
 
                 {/* Notifications */}
-                <button className="relative p-2 rounded-xl hover:bg-gray-100 transition-colors">
-                  <Bell className="w-[18px] h-[18px] text-gray-400" />
-                  <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full ring-2 ring-white"></span>
-                </button>
+                <div className="relative" ref={notifRef}>
+                  <button
+                    onClick={() => { setNotifOpen(!notifOpen); setProfileOpen(false); }}
+                    className="relative p-2 rounded-xl hover:bg-gray-100 transition-colors"
+                  >
+                    <Bell className="w-[18px] h-[18px] text-gray-400" />
+                    {unreadCount > 0 && (
+                      <span className="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] flex items-center justify-center bg-red-500 text-white text-[10px] font-bold rounded-full px-1 ring-2 ring-white">
+                        {unreadCount > 99 ? "99+" : unreadCount}
+                      </span>
+                    )}
+                  </button>
+
+                  {notifOpen && (
+                    <div className="absolute right-0 top-full mt-2 w-80 sm:w-96 bg-white rounded-2xl shadow-xl shadow-gray-200/60 border border-gray-100 z-20 animate-fade-up overflow-hidden">
+                      {/* Header */}
+                      <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100">
+                        <h3 className="text-sm font-semibold text-gray-900">Notifications</h3>
+                        {unreadCount > 0 && (
+                          <button
+                            onClick={markAllRead}
+                            className="flex items-center gap-1 text-xs text-primary-600 hover:text-primary-700 font-medium transition-colors"
+                          >
+                            <CheckCheck className="w-3.5 h-3.5" />
+                            Tout marquer lu
+                          </button>
+                        )}
+                      </div>
+
+                      {/* List */}
+                      <div className="max-h-80 overflow-y-auto">
+                        {notifications.length === 0 ? (
+                          <div className="py-10 text-center">
+                            <Bell className="w-8 h-8 text-gray-200 mx-auto mb-2" />
+                            <p className="text-sm text-gray-400">Aucune notification</p>
+                          </div>
+                        ) : (
+                          notifications.map((n) => (
+                            <div
+                              key={n.id}
+                              className={`px-4 py-3 border-b border-gray-50 last:border-0 transition-colors ${
+                                n.lu ? "bg-white" : "bg-primary-50/40"
+                              }`}
+                            >
+                              <div className="flex items-start gap-3">
+                                <div className={`mt-0.5 w-2 h-2 rounded-full shrink-0 ${n.lu ? "bg-transparent" : "bg-primary-500"}`} />
+                                <div className="min-w-0 flex-1">
+                                  <p className="text-[13px] font-semibold text-gray-900">{n.titre}</p>
+                                  <p className="text-[12px] text-gray-500 mt-0.5 line-clamp-2">{n.message}</p>
+                                  <p className="text-[10px] text-gray-300 mt-1">
+                                    {formatTimeAgo(n.created_at)}
+                                  </p>
+                                </div>
+                              </div>
+                            </div>
+                          ))
+                        )}
+                      </div>
+                    </div>
+                  )}
+                </div>
 
                 {/* Divider */}
                 <div className="w-px h-7 bg-gray-200 mx-1 hidden sm:block" />

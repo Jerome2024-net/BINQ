@@ -100,6 +100,16 @@ export async function POST(request: NextRequest) {
     confirmed_at: now,
   });
 
+  // Notification in-app
+  try {
+    await supabase.from("notifications").insert({
+      user_id: user.id,
+      titre: "Lien d'envoi créé",
+      message: `Vous avez créé un lien d'envoi de ${montant.toFixed(2)} €${description ? ` — ${description}` : ""}`,
+      lu: false,
+    });
+  } catch { /* ignore */ }
+
   return NextResponse.json({
     success: true,
     link: { code: link.code, montant, reference },
