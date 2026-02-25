@@ -9,8 +9,8 @@ export default function Footer() {
           {/* Brand */}
           <div className="col-span-2 md:col-span-1">
             <div className="flex items-center mb-4">
-              <img src="https://res.cloudinary.com/dn8ed1doa/image/upload/439C2F26-8F7E-4B39-95EA-979036C8BD85_wwoul1" alt="Binq" className="h-12 w-auto brightness-0 invert md:hidden" />
-              <img src="https://res.cloudinary.com/dn8ed1doa/image/upload/439C2F26-8F7E-4B39-95EA-979036C8BD85_wwoul1" alt="Binq" className="h-12 w-auto brightness-0 invert hidden md:block" />
+              <img src="https://res.cloudinary.com/dn8ed1doa/image/upload/82D516A1-AEEB-4D11-B7F0-C0DB72341613_gz12tn" alt="Binq" className="h-12 w-auto brightness-0 invert md:hidden" />
+              <img src="https://res.cloudinary.com/dn8ed1doa/image/upload/82D516A1-AEEB-4D11-B7F0-C0DB72341613_gz12tn" alt="Binq" className="h-12 w-auto brightness-0 invert hidden md:block" />
             </div>
             <p className="text-gray-500 text-[14px] leading-relaxed mb-6">
               La fintech digitale pour gérer votre argent simplement et en toute sécurité.
