@@ -40,11 +40,15 @@ export async function GET(
   }
 
   // Récupérer le profil du créateur
-  const { data: profile } = await supabase
+  const { data: profile, error: profileError } = await supabase
     .from("profiles")
-    .select("prenom, nom, avatar_url")
+    .select("*")
     .eq("id", link.createur_id)
     .single();
+
+  if (profileError) {
+    console.error("Erreur fetch profil créateur:", profileError, "createur_id:", link.createur_id);
+  }
 
   return NextResponse.json({
     link: {
@@ -56,7 +60,11 @@ export async function GET(
       statut: link.statut,
       type: link.type || 'request',
       createur: profile
-        ? { prenom: profile.prenom, nom: profile.nom, avatar_url: profile.avatar_url }
+        ? {
+            prenom: profile.prenom || "",
+            nom: profile.nom || "",
+            avatar_url: profile.avatar_url || profile.avatar || null,
+          }
         : { prenom: "Utilisateur", nom: "Binq", avatar_url: null },
     },
   });
