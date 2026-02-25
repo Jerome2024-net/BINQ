@@ -61,8 +61,27 @@ interface Transaction {
   created_at: string;
 }
 
-const ICONES = ["💰", "🏠", "✈️", "🎓", "🚗", "💍", "🏥", "📱", "👶", "🎯", "🌍", "⭐"];
-const COULEURS = ["#6366f1", "#8b5cf6", "#ec4899", "#f43f5e", "#f97316", "#eab308", "#22c55e", "#14b8a6", "#06b6d4", "#3b82f6"];
+// Thèmes premium pour les réserves
+const THEMES = [
+  { id: "midnight", label: "Midnight", bg: "bg-gradient-to-br from-slate-800 to-slate-900", accent: "#1e293b", text: "text-slate-300" },
+  { id: "indigo", label: "Indigo", bg: "bg-gradient-to-br from-indigo-600 to-indigo-800", accent: "#4f46e5", text: "text-indigo-200" },
+  { id: "emerald", label: "Emerald", bg: "bg-gradient-to-br from-emerald-600 to-emerald-800", accent: "#059669", text: "text-emerald-200" },
+];
+
+// Icône auto selon le nom
+function getAutoIcon(nom: string): string {
+  const n = nom.toLowerCase();
+  if (n.includes("vacance") || n.includes("voyage") || n.includes("trip")) return "✈️";
+  if (n.includes("maison") || n.includes("appart") || n.includes("loyer") || n.includes("immobil")) return "🏠";
+  if (n.includes("urgence") || n.includes("securite") || n.includes("reserve")) return "🛡️";
+  if (n.includes("voiture") || n.includes("auto") || n.includes("moto")) return "🚗";
+  if (n.includes("étude") || n.includes("ecole") || n.includes("formation")) return "🎓";
+  if (n.includes("mariage") || n.includes("noce")) return "💍";
+  if (n.includes("bébé") || n.includes("enfant") || n.includes("famille")) return "👶";
+  if (n.includes("tech") || n.includes("phone") || n.includes("ordi")) return "📱";
+  if (n.includes("santé") || n.includes("medical")) return "🏥";
+  return "💎";
+}
 
 function normalizeD(d?: string | null): "EUR" | "USD" {
   return d === "USD" ? "USD" : "EUR";
@@ -434,7 +453,7 @@ export default function EpargnePage() {
 }
 
 // ═══════════════════════════════════════════
-// COMPOSANT : Modal Création
+// COMPOSANT : Modal Création — Premium Fintech
 // ═══════════════════════════════════════════
 function CreateEpargneModal({ onClose, onSuccess }: { onClose: () => void; onSuccess: () => void }) {
   const [nom, setNom] = useState("");
@@ -445,11 +464,13 @@ function CreateEpargneModal({ onClose, onSuccess }: { onClose: () => void; onSuc
   const [frequenceAuto, setFrequenceAuto] = useState("mensuel");
   const [sourceAuto, setSourceAuto] = useState("wallet");
   const [bloqueJusqua, setBloqueJusqua] = useState("");
-  const [icone, setIcone] = useState("💰");
-  const [couleur, setCouleur] = useState("#6366f1");
+  const [theme, setTheme] = useState("indigo");
   const [devise, setDevise] = useState<"EUR" | "USD">("EUR");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+
+  const selectedTheme = THEMES.find(t => t.id === theme) || THEMES[1];
+  const autoIcon = getAutoIcon(nom);
 
   const handleSubmit = async () => {
     if (!nom.trim()) {
@@ -472,8 +493,8 @@ function CreateEpargneModal({ onClose, onSuccess }: { onClose: () => void; onSuc
           frequence_auto: type === "programmee" ? frequenceAuto : null,
           source_auto: type === "programmee" ? sourceAuto : null,
           bloque_jusqu_a: bloqueJusqua || null,
-          icone,
-          couleur,
+          icone: autoIcon,
+          couleur: selectedTheme.accent,
           devise,
         }),
       });
@@ -489,122 +510,150 @@ function CreateEpargneModal({ onClose, onSuccess }: { onClose: () => void; onSuc
   };
 
   return (
-    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-3 sm:p-4" onClick={onClose}>
-      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
-        <div className="flex items-center justify-between p-4 sm:p-6 border-b border-gray-100">
-          <h2 className="text-base sm:text-lg font-bold text-gray-900">Nouveau compte d&apos;épargne</h2>
-          <button onClick={onClose} className="p-2 rounded-lg hover:bg-gray-100">
-            <X className="w-5 h-5 text-gray-400" />
-          </button>
+    <div className="fixed inset-0 bg-black/60 backdrop-blur-md z-50 flex items-center justify-center p-3 sm:p-4" onClick={onClose}>
+      <div
+        className="bg-[#0F172A] rounded-3xl shadow-2xl w-full max-w-md max-h-[90vh] overflow-y-auto border border-white/10"
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* Header */}
+        <div className="p-6 pb-2">
+          <div className="flex items-center justify-between mb-1">
+            <h2 className="text-lg font-bold text-white tracking-tight">Créer une réserve</h2>
+            <button onClick={onClose} className="p-2 rounded-xl hover:bg-white/10 transition-colors">
+              <X className="w-5 h-5 text-slate-400" />
+            </button>
+          </div>
+          <p className="text-sm text-slate-500">Organisez votre argent intelligemment</p>
         </div>
 
-        <div className="p-6 space-y-5">
+        <div className="p-6 pt-4 space-y-5">
           {error && (
-            <div className="p-3 bg-red-50 border border-red-200 rounded-xl text-sm text-red-600">{error}</div>
+            <div className="p-3 bg-red-500/10 border border-red-500/20 rounded-xl text-sm text-red-400">{error}</div>
           )}
+
+          {/* Prévisualisation */}
+          <div className={`${selectedTheme.bg} rounded-2xl p-5 transition-all duration-300`}>
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 bg-white/10 backdrop-blur-sm rounded-xl flex items-center justify-center text-2xl">
+                {autoIcon}
+              </div>
+              <div>
+                <p className="text-white font-semibold text-base">{nom || "Nom de la réserve"}</p>
+                <p className={`text-sm ${selectedTheme.text} opacity-80`}>
+                  {type === "libre" ? "Flexible" : type === "objectif" ? "Objectif" : "Automatique"} · {devise}
+                </p>
+              </div>
+            </div>
+          </div>
 
           {/* Nom */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1.5">Nom du compte</label>
+            <label className="block text-xs font-medium text-slate-400 mb-2 uppercase tracking-wider">Nom de la réserve</label>
             <input
               type="text"
               value={nom}
               onChange={(e) => setNom(e.target.value)}
-              placeholder="Ex: Vacances, Maison, Urgences..."
-              className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 outline-none text-sm"
+              placeholder="Ex : Vacances, Urgences, Projet..."
+              className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-slate-600 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/30 outline-none text-sm transition-all"
             />
-          </div>
-
-          {/* Type */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1.5">Type d&apos;épargne</label>
-            <div className="grid grid-cols-3 gap-2">
-              {[
-                { value: "libre", label: "Libre", desc: "Sans contrainte" },
-                { value: "objectif", label: "Objectif", desc: "Avec but" },
-                { value: "programmee", label: "Programmée", desc: "Automatique" },
-              ].map((t) => (
-                <button
-                  key={t.value}
-                  onClick={() => setType(t.value as typeof type)}
-                  className={`p-3 rounded-xl border-2 text-left transition-all ${
-                    type === t.value ? "border-primary-500 bg-primary-50" : "border-gray-200 hover:border-gray-300"
-                  }`}
-                >
-                  <p className="text-sm font-semibold text-gray-900">{t.label}</p>
-                  <p className="text-xs text-gray-500">{t.desc}</p>
-                </button>
-              ))}
-            </div>
           </div>
 
           {/* Devise */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1.5">Devise</label>
+            <label className="block text-xs font-medium text-slate-400 mb-2 uppercase tracking-wider">Devise</label>
             <div className="grid grid-cols-2 gap-2">
               {[
-                { value: "EUR", label: "EUR €", desc: "Euro" },
-                { value: "USD", label: "USD $", desc: "Dollar" },
+                { value: "EUR", label: "EUR", symbol: "€" },
+                { value: "USD", label: "USD", symbol: "$" },
               ].map((d) => (
                 <button
                   key={d.value}
                   onClick={() => setDevise(d.value as "EUR" | "USD")}
-                  className={`p-3 rounded-xl border-2 text-left transition-all ${
-                    devise === d.value ? "border-primary-500 bg-primary-50" : "border-gray-200 hover:border-gray-300"
+                  className={`py-3 rounded-xl text-sm font-medium transition-all ${
+                    devise === d.value
+                      ? "bg-indigo-500/20 text-indigo-400 border border-indigo-500/40"
+                      : "bg-white/5 text-slate-400 border border-white/10 hover:bg-white/10"
                   }`}
                 >
-                  <p className="text-sm font-semibold text-gray-900">{d.label}</p>
-                  <p className="text-xs text-gray-500">{d.desc}</p>
+                  {d.symbol} {d.label}
                 </button>
               ))}
             </div>
           </div>
 
-          {/* Objectif */}
+          {/* Type */}
+          <div>
+            <label className="block text-xs font-medium text-slate-400 mb-2 uppercase tracking-wider">Type</label>
+            <div className="grid grid-cols-3 gap-2">
+              {[
+                { value: "libre", label: "Flexible", icon: Wallet },
+                { value: "objectif", label: "Objectif", icon: Lock },
+                { value: "programmee", label: "Auto", icon: Clock },
+              ].map((t) => {
+                const Icon = t.icon;
+                return (
+                  <button
+                    key={t.value}
+                    onClick={() => setType(t.value as typeof type)}
+                    className={`py-3 px-2 rounded-xl text-center transition-all ${
+                      type === t.value
+                        ? "bg-indigo-500/20 text-indigo-400 border border-indigo-500/40"
+                        : "bg-white/5 text-slate-400 border border-white/10 hover:bg-white/10"
+                    }`}
+                  >
+                    <Icon className="w-4 h-4 mx-auto mb-1" />
+                    <p className="text-xs font-medium">{t.label}</p>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Objectif — conditionnel */}
           {type === "objectif" && (
-            <div className="grid grid-cols-2 gap-3">
+            <div className="space-y-3">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5">Montant objectif ({devise})</label>
+                <label className="block text-xs font-medium text-slate-400 mb-2 uppercase tracking-wider">Montant cible ({devise})</label>
                 <input
                   type="number"
                   value={objectifMontant}
                   onChange={(e) => setObjectifMontant(e.target.value)}
-                  placeholder="500 000"
-                  className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 outline-none text-sm"
+                  placeholder="5 000"
+                  className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-slate-600 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/30 outline-none text-sm transition-all"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5">Date limite</label>
+                <label className="block text-xs font-medium text-slate-400 mb-2 uppercase tracking-wider">Date limite <span className="text-slate-600 normal-case">(optionnel)</span></label>
                 <input
                   type="date"
                   value={objectifDate}
                   onChange={(e) => setObjectifDate(e.target.value)}
-                  className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 outline-none text-sm"
+                  className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/30 outline-none text-sm transition-all [color-scheme:dark]"
                 />
               </div>
             </div>
           )}
 
-          {/* Programmée */}
+          {/* Programmée — conditionnel */}
           {type === "programmee" && (
             <div className="space-y-3">
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1.5">Montant auto ({devise})</label>
+                  <label className="block text-xs font-medium text-slate-400 mb-2 uppercase tracking-wider">Montant auto ({devise})</label>
                   <input
                     type="number"
                     value={montantAuto}
                     onChange={(e) => setMontantAuto(e.target.value)}
-                    placeholder="10 000"
-                    className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 outline-none text-sm"
+                    placeholder="100"
+                    className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-slate-600 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/30 outline-none text-sm transition-all"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1.5">Fréquence</label>
+                  <label className="block text-xs font-medium text-slate-400 mb-2 uppercase tracking-wider">Fréquence</label>
                   <select
                     value={frequenceAuto}
                     onChange={(e) => setFrequenceAuto(e.target.value)}
-                    className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 outline-none text-sm"
+                    className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/30 outline-none text-sm transition-all [color-scheme:dark]"
                   >
                     <option value="quotidien">Quotidien</option>
                     <option value="hebdomadaire">Hebdomadaire</option>
@@ -613,12 +662,14 @@ function CreateEpargneModal({ onClose, onSuccess }: { onClose: () => void; onSuc
                 </div>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5">Source</label>
+                <label className="block text-xs font-medium text-slate-400 mb-2 uppercase tracking-wider">Source</label>
                 <div className="grid grid-cols-2 gap-2">
                   <button
                     onClick={() => setSourceAuto("wallet")}
-                    className={`flex items-center gap-2 p-3 rounded-xl border-2 transition-all ${
-                      sourceAuto === "wallet" ? "border-primary-500 bg-primary-50" : "border-gray-200"
+                    className={`flex items-center justify-center gap-2 py-3 rounded-xl transition-all ${
+                      sourceAuto === "wallet"
+                        ? "bg-indigo-500/20 text-indigo-400 border border-indigo-500/40"
+                        : "bg-white/5 text-slate-400 border border-white/10 hover:bg-white/10"
                     }`}
                   >
                     <Wallet className="w-4 h-4" />
@@ -626,8 +677,10 @@ function CreateEpargneModal({ onClose, onSuccess }: { onClose: () => void; onSuc
                   </button>
                   <button
                     onClick={() => setSourceAuto("carte")}
-                    className={`flex items-center gap-2 p-3 rounded-xl border-2 transition-all ${
-                      sourceAuto === "carte" ? "border-primary-500 bg-primary-50" : "border-gray-200"
+                    className={`flex items-center justify-center gap-2 py-3 rounded-xl transition-all ${
+                      sourceAuto === "carte"
+                        ? "bg-indigo-500/20 text-indigo-400 border border-indigo-500/40"
+                        : "bg-white/5 text-slate-400 border border-white/10 hover:bg-white/10"
                     }`}
                   >
                     <CreditCard className="w-4 h-4" />
@@ -640,65 +693,53 @@ function CreateEpargneModal({ onClose, onSuccess }: { onClose: () => void; onSuc
 
           {/* Blocage */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1.5">
-              Bloquer jusqu&apos;au <span className="text-gray-400 font-normal">(optionnel)</span>
+            <label className="block text-xs font-medium text-slate-400 mb-2 uppercase tracking-wider">
+              Bloquer jusqu&apos;au <span className="text-slate-600 normal-case">(optionnel)</span>
             </label>
             <input
               type="date"
               value={bloqueJusqua}
               onChange={(e) => setBloqueJusqua(e.target.value)}
-              className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 outline-none text-sm"
+              className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/30 outline-none text-sm transition-all [color-scheme:dark]"
             />
           </div>
 
-          {/* Icône et Couleur */}
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1.5">Icône</label>
-              <div className="flex flex-wrap gap-1.5">
-                {ICONES.map((ic) => (
-                  <button
-                    key={ic}
-                    onClick={() => setIcone(ic)}
-                    className={`w-9 h-9 rounded-lg flex items-center justify-center text-lg transition-all ${
-                      icone === ic ? "bg-primary-100 ring-2 ring-primary-500" : "bg-gray-50 hover:bg-gray-100"
-                    }`}
-                  >
-                    {ic}
-                  </button>
-                ))}
-              </div>
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1.5">Couleur</label>
-              <div className="flex flex-wrap gap-1.5">
-                {COULEURS.map((c) => (
-                  <button
-                    key={c}
-                    onClick={() => setCouleur(c)}
-                    className={`w-9 h-9 rounded-lg transition-all ${
-                      couleur === c ? "ring-2 ring-offset-2 ring-primary-500" : ""
-                    }`}
-                    style={{ backgroundColor: c }}
-                  />
-                ))}
-              </div>
+          {/* Thème */}
+          <div>
+            <label className="block text-xs font-medium text-slate-400 mb-2 uppercase tracking-wider">Thème</label>
+            <div className="grid grid-cols-3 gap-2">
+              {THEMES.map((t) => (
+                <button
+                  key={t.id}
+                  onClick={() => setTheme(t.id)}
+                  className={`relative py-3 rounded-xl text-xs font-medium transition-all ${t.bg} ${
+                    theme === t.id
+                      ? "ring-2 ring-white/40 ring-offset-2 ring-offset-[#0F172A]"
+                      : "opacity-60 hover:opacity-80"
+                  }`}
+                >
+                  <span className="text-white">{t.label}</span>
+                </button>
+              ))}
             </div>
           </div>
         </div>
 
         {/* Footer */}
-        <div className="p-6 border-t border-gray-100 flex gap-3">
-          <button onClick={onClose} className="flex-1 py-3 rounded-xl border-2 border-gray-200 font-semibold text-gray-600 hover:bg-gray-50 transition-colors">
-            Annuler
-          </button>
+        <div className="p-6 pt-2">
           <button
             onClick={handleSubmit}
-            disabled={loading}
-            className="flex-1 py-3 rounded-xl bg-primary-600 text-white font-semibold hover:bg-primary-700 disabled:opacity-50 transition-colors flex items-center justify-center gap-2"
+            disabled={loading || !nom.trim()}
+            className="w-full py-3.5 rounded-xl bg-gradient-to-r from-indigo-600 to-indigo-500 text-white font-semibold text-sm hover:from-indigo-500 hover:to-indigo-400 disabled:opacity-40 disabled:cursor-not-allowed transition-all shadow-lg shadow-indigo-500/20 flex items-center justify-center gap-2"
           >
             {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Plus className="w-5 h-5" />}
-            Créer
+            Créer la réserve
+          </button>
+          <button
+            onClick={onClose}
+            className="w-full mt-2 py-3 rounded-xl text-slate-500 text-sm font-medium hover:text-slate-400 transition-colors"
+          >
+            Annuler
           </button>
         </div>
       </div>
