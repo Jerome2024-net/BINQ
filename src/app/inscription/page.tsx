@@ -108,7 +108,7 @@ function InscriptionForm() {
         
         <div className="relative max-w-md">
           <div className="flex items-center gap-2 mb-10">
-            <img src="https://res.cloudinary.com/dn8ed1doa/image/upload/FDB3AAEC-0502-4B2B-B6CD-495158D0673B_yl1ztk" alt="Binq" className="h-16 w-auto brightness-0 invert" />
+            <img src="https://res.cloudinary.com/dn8ed1doa/image/upload/B48C52E2-4F45-4BD6-9E28-570D27746459_jrqlgo" alt="Binq" className="h-16 w-auto brightness-0 invert" />
           </div>
           <h1 className="text-4xl font-bold mb-4 tracking-tight leading-tight">
             Rejoignez la communauté
@@ -137,7 +137,7 @@ function InscriptionForm() {
       <div className="w-full lg:w-1/2 flex items-center justify-center p-4 sm:p-8">
         <div className="w-full max-w-md">
           <div className="lg:hidden flex items-center gap-2 mb-8 justify-center">
-            <img src="https://res.cloudinary.com/dn8ed1doa/image/upload/FDB3AAEC-0502-4B2B-B6CD-495158D0673B_yl1ztk" alt="Binq" className="h-14 w-auto" />
+            <img src="https://res.cloudinary.com/dn8ed1doa/image/upload/B48C52E2-4F45-4BD6-9E28-570D27746459_jrqlgo" alt="Binq" className="h-14 w-auto" />
           </div>
 
           {/* Email confirmation screen */}

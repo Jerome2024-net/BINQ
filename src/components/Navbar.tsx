@@ -25,7 +25,7 @@ export default function Navbar() {
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2">
-            <img src="https://res.cloudinary.com/dn8ed1doa/image/upload/FDB3AAEC-0502-4B2B-B6CD-495158D0673B_yl1ztk" alt="Binq" className="h-14 w-auto" />
+            <img src="https://res.cloudinary.com/dn8ed1doa/image/upload/B48C52E2-4F45-4BD6-9E28-570D27746459_jrqlgo" alt="Binq" className="h-14 w-auto" />
           </Link>
 
           {/* Desktop Navigation */}
