@@ -110,24 +110,24 @@ function StripePaymentForm({
   return (
     <form onSubmit={handleSubmit} className="space-y-5">
       {/* Récapitulatif */}
-      <div className="bg-white/5 rounded-2xl p-5 text-center border border-white/10">
-        <p className="text-sm text-slate-400 mb-1">Montant crédité sur votre wallet</p>
-        <p className="text-3xl font-bold text-white">
+      <div className="bg-gray-50 rounded-xl p-4 text-center">
+        <p className="text-[11px] text-gray-400 uppercase tracking-wider mb-0.5">Montant crédité</p>
+        <p className="text-2xl font-bold text-gray-900">
           {montant.toLocaleString("fr-FR")} {deviseSymbol}
         </p>
-        <div className="mt-3 space-y-1">
-          <p className="text-xs text-slate-500">Frais Binq (1%) : +{(montant * 0.01).toFixed(2)} {deviseSymbol}</p>
-          <p className="text-sm font-semibold text-indigo-400">Total débité : {(montant * 1.01).toFixed(2)} {deviseSymbol}</p>
+        <div className="mt-2 space-y-0.5">
+          <p className="text-xs text-gray-400">Frais Binq (1%) : +{(montant * 0.01).toFixed(2)} {deviseSymbol}</p>
+          <p className="text-sm font-semibold text-primary-600">Total débité : {(montant * 1.01).toFixed(2)} {deviseSymbol}</p>
         </div>
       </div>
 
       {/* Stripe PaymentElement */}
-      <div className="border border-white/10 rounded-2xl p-4 bg-white">
+      <div className="border border-gray-200 rounded-xl p-4">
         <PaymentElement options={{ layout: "tabs" }} />
       </div>
 
       {errorMessage && (
-        <div className="bg-red-500/10 rounded-xl p-3 text-sm text-red-400 flex items-center gap-2 border border-red-500/20">
+        <div className="bg-red-50 rounded-lg p-3 text-sm text-red-600 flex items-center gap-2">
           <AlertTriangle className="w-4 h-4 flex-shrink-0" />
           {errorMessage}
         </div>
@@ -139,7 +139,7 @@ function StripePaymentForm({
           type="button"
           onClick={onCancel}
           disabled={isSubmitting}
-          className="flex-1 py-3.5 rounded-xl font-semibold text-slate-400 hover:text-white hover:bg-white/5 transition-all text-sm"
+          className="flex-1 py-3 rounded-xl font-semibold text-gray-500 hover:text-gray-700 hover:bg-gray-50 transition-all text-sm"
         >
           <ArrowLeft className="w-4 h-4 inline mr-1" />
           Retour
@@ -147,7 +147,7 @@ function StripePaymentForm({
         <button
           type="submit"
           disabled={!stripe || !elements || isSubmitting}
-          className="flex-1 py-3.5 rounded-xl font-semibold text-white bg-gradient-to-r from-indigo-600 to-indigo-500 hover:from-indigo-500 hover:to-indigo-400 transition-all flex items-center justify-center gap-2 disabled:opacity-40 disabled:cursor-not-allowed shadow-lg shadow-indigo-500/20 text-sm"
+          className="flex-1 py-3 rounded-xl font-semibold text-white bg-primary-600 hover:bg-primary-700 transition-colors flex items-center justify-center gap-2 disabled:opacity-40 disabled:cursor-not-allowed text-sm"
         >
           {isSubmitting ? (
             <>
@@ -164,10 +164,10 @@ function StripePaymentForm({
       </div>
 
       {/* Sécurité */}
-      <div className="flex items-center justify-center gap-2 text-xs text-slate-600">
-        <ShieldCheck className="w-3.5 h-3.5" />
-        <span>Paiement sécurisé · Chiffrement SSL 256 bits</span>
-      </div>
+      <p className="text-center text-[11px] text-gray-400 flex items-center justify-center gap-1.5">
+        <ShieldCheck className="w-3 h-3" />
+        Paiement sécurisé via Stripe · SSL 256 bits
+      </p>
     </form>
   );
 }
@@ -277,53 +277,53 @@ export default function DepositWithdrawModal({
   const icon = isDepot ? <ArrowDownToLine className="w-6 h-6" /> : <ArrowUpFromLine className="w-6 h-6" />;
 
   return (
-    <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-[60] flex items-end sm:items-center justify-center animate-in fade-in duration-200" onClick={handleClose}>
+    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[60] flex items-end sm:items-center justify-center p-0 sm:p-4" onClick={handleClose}>
       <div
-        className="bg-[#0F172A] rounded-t-3xl sm:rounded-3xl shadow-2xl w-full sm:max-w-md max-h-[92vh] overflow-y-auto border border-white/10 animate-in slide-in-from-bottom-4 duration-300"
+        className="bg-white rounded-t-3xl sm:rounded-2xl shadow-2xl w-full sm:max-w-[420px] max-h-[92vh] sm:max-h-[85vh] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="flex items-center gap-3 p-5 sm:p-6 border-b border-white/10">
-          <div className={`w-11 h-11 rounded-2xl flex items-center justify-center flex-shrink-0 ${isDepot ? 'bg-emerald-500/15 text-emerald-400' : 'bg-orange-500/15 text-orange-400'}`}>
+        <div className="flex items-center gap-3 px-5 py-4 sm:px-6 sm:py-5 border-b border-gray-100">
+          <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${isDepot ? 'bg-primary-50 text-primary-600' : 'bg-primary-50 text-primary-600'}`}>
             {icon}
           </div>
-          <div className="min-w-0">
-            <h2 className="text-lg font-bold text-white">{title}</h2>
-            <p className="text-xs text-slate-500 flex items-center gap-1">
-              <Lock className="w-3 h-3" />
+          <div className="min-w-0 flex-1">
+            <h2 className="text-base font-bold text-gray-900">{title}</h2>
+            <p className="text-[11px] text-gray-400 flex items-center gap-1">
+              <ShieldCheck className="w-3 h-3" />
               Transaction sécurisée
             </p>
           </div>
-          <button onClick={handleClose} className="ml-auto p-2 rounded-xl hover:bg-white/5 transition-colors flex-shrink-0">
-            <X className="w-5 h-5 text-slate-500" />
+          <button onClick={handleClose} className="p-2 -mr-1.5 rounded-lg hover:bg-gray-100 transition-colors flex-shrink-0">
+            <X className="w-5 h-5 text-gray-400" />
           </button>
         </div>
 
-        <div className="p-5 sm:p-6 pb-8">
+        <div className="px-5 py-5 sm:px-6 sm:py-6">
           {/* ============ NON CONFIGURÉ ============ */}
           {!isConfigured && step === "form" ? (
-            <div className="text-center py-8 space-y-5">
-              <div className="w-16 h-16 bg-amber-500/10 rounded-full flex items-center justify-center mx-auto ring-1 ring-amber-500/20">
-                <AlertTriangle className="w-8 h-8 text-amber-500" />
+            <div className="text-center py-6 space-y-5">
+              <div className="w-14 h-14 bg-amber-50 rounded-full flex items-center justify-center mx-auto">
+                <AlertTriangle className="w-7 h-7 text-amber-500" />
               </div>
               <div className="space-y-1">
-                <h3 className="text-lg font-bold text-white">Configuration requise</h3>
-                <p className="text-sm text-slate-400">
-                  Pour effectuer des transactions réelles, vous devez configurer Stripe.
+                <h3 className="text-base font-bold text-gray-900">Configuration requise</h3>
+                <p className="text-sm text-gray-500">
+                  Pour effectuer des transactions, configurez votre compte Stripe.
                 </p>
               </div>
 
-              <div className="bg-white/5 rounded-2xl p-4 text-left space-y-3 border border-white/10">
-                <p className="text-sm font-semibold text-white">Étapes de configuration :</p>
-                <ol className="text-xs sm:text-sm text-slate-400 space-y-2 list-decimal list-inside marker:text-slate-600">
-                  <li>Créez un compte sur <strong className="text-white">stripe.com</strong></li>
-                  <li>Récupérez vos clés <strong className="text-white">Publishable</strong> et <strong className="text-white">Secret</strong></li>
+              <div className="bg-gray-50 rounded-xl p-4 text-left space-y-3">
+                <p className="text-sm font-semibold text-gray-800">Étapes de configuration :</p>
+                <ol className="text-xs text-gray-500 space-y-2 list-decimal list-inside">
+                  <li>Créez un compte sur <strong className="text-gray-800">stripe.com</strong></li>
+                  <li>Récupérez vos clés <strong className="text-gray-800">Publishable</strong> et <strong className="text-gray-800">Secret</strong></li>
                   <li>
-                    Ajoutez-les dans <code className="bg-white/10 px-1.5 py-0.5 rounded text-xs">.env.local</code>
+                    Ajoutez-les dans <code className="bg-gray-200 px-1.5 py-0.5 rounded text-xs">.env.local</code>
                   </li>
                 </ol>
 
-                <div className="bg-black/50 rounded-xl p-3 font-mono text-xs text-emerald-400 overflow-x-auto border border-white/5">
+                <div className="bg-gray-900 rounded-lg p-3 font-mono text-xs text-green-400 overflow-x-auto">
                   <p className="whitespace-nowrap">NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_test_...</p>
                   <p className="whitespace-nowrap">STRIPE_SECRET_KEY=sk_test_...</p>
                 </div>
@@ -333,50 +333,50 @@ export default function DepositWithdrawModal({
                 href="https://dashboard.stripe.com/apikeys"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 text-indigo-400 hover:text-indigo-300 text-sm font-medium transition-colors"
+                className="inline-flex items-center gap-2 text-primary-600 hover:text-primary-700 text-sm font-medium transition-colors"
               >
                 Accéder au Dashboard Stripe <ExternalLink className="w-4 h-4" />
               </a>
             </div>
           ) : step === "done" ? (
             /* ============ SUCCÈS ============ */
-            <div className="text-center py-6 sm:py-8 animate-in zoom-in-50 duration-300">
-              <div className="w-20 h-20 bg-emerald-500/10 rounded-full flex items-center justify-center mx-auto mb-5 ring-1 ring-emerald-500/20">
-                <CheckCircle2 className="w-10 h-10 text-emerald-400" />
+            <div className="text-center py-6">
+              <div className="w-16 h-16 bg-green-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                <CheckCircle2 className="w-8 h-8 text-green-500" />
               </div>
-              <h3 className="text-xl font-bold text-white mb-2">
+              <h3 className="text-lg font-bold text-gray-900 mb-1">
                 {isDepot ? "Dépôt confirmé !" : "Retrait initié !"}
               </h3>
-              <p className="text-slate-400 mb-6">
-                <span className="text-white font-semibold">{montantNum.toLocaleString("fr-FR")} {deviseSymbol}</span>
-                {" "}{isDepot ? "ont été crédités sur votre compte." : "en cours de transfert vers votre compte."}
+              <p className="text-sm text-gray-500 mb-5">
+                <span className="text-gray-900 font-semibold">{montantNum.toLocaleString("fr-FR")} {deviseSymbol}</span>
+                {" "}{isDepot ? "crédités sur votre portefeuille." : "en cours de transfert."}
               </p>
               
               {reference && (
-                <div className="bg-white/5 rounded-xl py-2 px-4 inline-block mb-6 border border-white/10">
-                  <p className="text-xs text-slate-500 uppercase tracking-wider">Référence</p>
-                  <p className="font-mono text-slate-300">{reference}</p>
+                <div className="bg-gray-50 rounded-lg py-2 px-4 inline-block mb-5">
+                  <p className="text-[10px] text-gray-400 uppercase tracking-wider">Référence</p>
+                  <p className="font-mono text-sm text-gray-700">{reference}</p>
                 </div>
               )}
               
               <button 
                 onClick={handleClose} 
-                className="w-full py-3.5 rounded-xl font-semibold text-white bg-white/10 hover:bg-white/20 border border-white/10 transition-all"
+                className="w-full py-3 rounded-xl font-semibold text-white bg-primary-600 hover:bg-primary-700 transition-colors"
               >
                 Fermer
               </button>
             </div>
           ) : step === "error" ? (
             /* ============ ERREUR ============ */
-            <div className="text-center py-6 sm:py-8 animate-in zoom-in-50 duration-300">
-              <div className="w-20 h-20 bg-red-500/10 rounded-full flex items-center justify-center mx-auto mb-5 ring-1 ring-red-500/20">
-                <AlertTriangle className="w-10 h-10 text-red-400" />
+            <div className="text-center py-6">
+              <div className="w-14 h-14 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                <AlertTriangle className="w-7 h-7 text-red-500" />
               </div>
-              <h3 className="text-xl font-bold text-white mb-2">Une erreur est survenue</h3>
-              <p className="text-red-400/80 text-sm mb-6 max-w-[260px] mx-auto">{errorMsg}</p>
+              <h3 className="text-base font-bold text-gray-900 mb-1">Une erreur est survenue</h3>
+              <p className="text-red-500 text-sm mb-5 max-w-[280px] mx-auto">{errorMsg}</p>
               <button 
                 onClick={() => setStep("form")} 
-                className="w-full py-3.5 rounded-xl font-semibold text-white bg-white/10 hover:bg-white/20 border border-white/10 transition-all"
+                className="w-full py-3 rounded-xl font-semibold text-white bg-primary-600 hover:bg-primary-700 transition-colors"
               >
                 Réessayer
               </button>
@@ -388,16 +388,12 @@ export default function DepositWithdrawModal({
               options={{
                 clientSecret,
                 appearance: {
-                  theme: "night",
-                  labels: "floating",
+                  theme: "stripe",
                   variables: {
-                    colorPrimary: "#6366f1", // Indigo 500
-                    colorBackground: "#1e293b", // Slate 800
-                    colorText: "#f8fafc", // Slate 50
-                    colorDanger: "#ef4444", // Red 500
+                    colorPrimary: "#4f46e5",
                     fontFamily: 'ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
                     spacingUnit: "4px",
-                    borderRadius: "12px",
+                    borderRadius: "10px",
                   },
                 },
                 locale: "fr",
@@ -412,71 +408,63 @@ export default function DepositWithdrawModal({
             </Elements>
           ) : isDepot ? (
             /* ============ FORMULAIRE DÉPÔT ============ */
-            <div className="space-y-6">
+            <div className="space-y-5">
               {/* Solde actuel */}
-              <div className="bg-gradient-to-br from-white/5 to-white/[0.02] rounded-2xl p-5 text-center border border-white/10">
-                <p className="text-xs font-medium text-slate-400 uppercase tracking-wider mb-1">Solde disponible</p>
-                <p className="text-2xl font-bold text-white tracking-tight">
+              <div className="bg-gray-50 rounded-xl p-4 text-center">
+                <p className="text-[11px] font-medium text-gray-400 uppercase tracking-wider mb-0.5">Solde disponible</p>
+                <p className="text-xl font-bold text-gray-900">
                   {soldeActuel.toLocaleString("fr-FR")} {deviseSymbol}
                 </p>
               </div>
 
               {/* Montant */}
-              <div className="space-y-3">
-                <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider ml-1">
-                  Montant à déposer
+              <div className="space-y-2">
+                <label className="text-xs font-medium text-gray-500 ml-0.5">
+                  Montant à déposer ({deviseSymbol})
                 </label>
-                <div className="relative group">
-                  <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
-                    <span className="text-slate-400 font-medium group-focus-within:text-indigo-400 transition-colors">
-                      {deviseSymbol}
-                    </span>
-                  </div>
-                  <input
-                    type="number"
-                    value={montant}
-                    onChange={(e) => setMontant(e.target.value)}
-                    className="w-full bg-white/5 border border-white/10 rounded-xl py-3.5 pl-10 pr-4 text-white placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500/50 transition-all text-lg font-medium"
-                    placeholder="0.00"
-                    min="1"
-                    step="0.01"
-                    autoFocus
-                  />
-                </div>
+                <input
+                  type="number"
+                  value={montant}
+                  onChange={(e) => setMontant(e.target.value)}
+                  className="w-full border border-gray-200 rounded-xl py-3 px-4 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all text-lg font-semibold"
+                  placeholder="0.00"
+                  min="1"
+                  step="0.01"
+                  autoFocus
+                />
+              </div>
 
-                {/* Montants rapides */}
-                <div className="grid grid-cols-3 sm:grid-cols-6 gap-2">
-                  {montantsRapides.map((m) => (
-                    <button
-                      key={m}
-                      onClick={() => setMontant(String(m))}
-                      className={`py-2 rounded-lg text-xs font-medium border transition-all ${
-                        montantNum === m
-                          ? "bg-indigo-500/20 border-indigo-500/50 text-indigo-300"
-                          : "bg-white/5 border-white/5 text-slate-400 hover:bg-white/10 hover:text-white"
-                      }`}
-                    >
-                      {m}
-                    </button>
-                  ))}
-                </div>
+              {/* Montants rapides */}
+              <div className="flex flex-wrap gap-2">
+                {montantsRapides.map((m) => (
+                  <button
+                    key={m}
+                    onClick={() => setMontant(String(m))}
+                    className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors ${
+                      montantNum === m
+                        ? "border-primary-500 bg-primary-50 text-primary-700"
+                        : "border-gray-200 hover:border-gray-300 text-gray-500"
+                    }`}
+                  >
+                    {m} {deviseSymbol}
+                  </button>
+                ))}
               </div>
 
               {/* Résumé avec frais */}
               {montantNum >= 1 && (
-                <div className="bg-indigo-500/5 rounded-xl p-4 border border-indigo-500/10 space-y-2">
+                <div className="bg-gray-50 rounded-xl p-4 space-y-2">
                   <div className="flex justify-between items-center text-sm">
-                    <span className="text-slate-400">Montant crédité</span>
-                    <span className="text-white font-medium">{montantNum.toLocaleString("fr-FR")} {deviseSymbol}</span>
+                    <span className="text-gray-500">Crédité sur wallet</span>
+                    <span className="text-gray-900 font-medium">{montantNum.toLocaleString("fr-FR")} {deviseSymbol}</span>
                   </div>
                   <div className="flex justify-between items-center text-sm">
-                    <span className="text-slate-500">Frais Binq (1%)</span>
-                    <span className="text-slate-400">+{(montantNum * 0.01).toFixed(2)} {deviseSymbol}</span>
+                    <span className="text-gray-400">Frais Binq (1%)</span>
+                    <span className="text-amber-600 font-medium">+{(montantNum * 0.01).toFixed(2)} {deviseSymbol}</span>
                   </div>
-                  <div className="h-px bg-indigo-500/10 my-1" />
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm font-semibold text-indigo-300">Total payé</span>
-                    <span className="text-base font-bold text-white">{(montantNum * 1.01).toFixed(2)} {deviseSymbol}</span>
+                  <div className="border-t border-gray-200 pt-2 flex justify-between items-center">
+                    <span className="text-sm font-semibold text-gray-900">Total débité</span>
+                    <span className="text-base font-bold text-primary-600">{(montantNum * 1.01).toFixed(2)} {deviseSymbol}</span>
                   </div>
                 </div>
               )}
@@ -485,85 +473,83 @@ export default function DepositWithdrawModal({
               <button
                 onClick={handleProceedToPayment}
                 disabled={montantNum < 1 || isProcessing || isCreatingIntent}
-                className={`w-full py-4 rounded-xl font-bold text-white shadow-lg transition-all flex items-center justify-center gap-2 group ${
+                className={`w-full py-3.5 rounded-xl font-semibold text-white transition-colors flex items-center justify-center gap-2 ${
                   montantNum >= 1 && !isCreatingIntent
-                    ? "bg-gradient-to-r from-indigo-600 to-indigo-500 hover:from-indigo-500 hover:to-indigo-400 shadow-indigo-500/20 hover:shadow-indigo-500/30"
-                    : "bg-slate-700/50 text-slate-500 cursor-not-allowed"
+                    ? "bg-primary-600 hover:bg-primary-700"
+                    : "bg-gray-200 text-gray-400 cursor-not-allowed"
                 }`}
               >
                 {isCreatingIntent ? (
                   <>
                     <Loader2 className="w-5 h-5 animate-spin" />
-                    <span>Préparation du paiement...</span>
+                    <span>Préparation...</span>
                   </>
                 ) : (
                   <>
-                    <CreditCard className="w-5 h-5 group-hover:scale-110 transition-transform" />
+                    <CreditCard className="w-5 h-5" />
                     <span>Continuer vers le paiement</span>
                   </>
                 )}
               </button>
 
-              <p className="text-center text-xs text-slate-500 flex items-center justify-center gap-1.5 opacity-60">
-                <ShieldCheck className="w-3.5 h-3.5" />
-                Transactions sécurisées par Stripe
+              <p className="text-center text-[11px] text-gray-400 flex items-center justify-center gap-1.5">
+                <ShieldCheck className="w-3 h-3" />
+                Paiement sécurisé via Stripe · SSL 256 bits
               </p>
             </div>
           ) : (
             /* ============ FORMULAIRE RETRAIT ============ */
-            <div className="space-y-6">
+            <div className="space-y-5">
               {/* Solde */}
-              <div className="bg-gradient-to-br from-white/5 to-white/[0.02] rounded-2xl p-5 text-center border border-white/10">
-                <p className="text-xs font-medium text-slate-400 uppercase tracking-wider mb-1">Solde disponible</p>
-                <p className="text-2xl font-bold text-white tracking-tight">
+              <div className="bg-gray-50 rounded-xl p-4 text-center">
+                <p className="text-[11px] font-medium text-gray-400 uppercase tracking-wider mb-0.5">Solde disponible</p>
+                <p className="text-xl font-bold text-gray-900">
                   {soldeActuel.toLocaleString("fr-FR")} {deviseSymbol}
                 </p>
               </div>
 
               {/* Montant */}
-              <div className="space-y-3">
-                <label className="text-xs font-medium text-slate-400 uppercase tracking-wider ml-1">
-                  Montant à retirer
+              <div className="space-y-2">
+                <label className="text-xs font-medium text-gray-500 ml-0.5">
+                  Montant à retirer ({deviseSymbol})
                 </label>
-                <div className="relative group">
-                  <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
-                    <span className="text-slate-400 font-medium group-focus-within:text-orange-400 transition-colors">
-                      {deviseSymbol}
-                    </span>
-                  </div>
-                  <input
-                    type="number"
-                    value={montant}
-                    onChange={(e) => setMontant(e.target.value)}
-                    className="w-full bg-white/5 border border-white/10 rounded-xl py-3.5 pl-10 pr-4 text-white placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500/50 transition-all text-lg font-medium"
-                    placeholder="0.00"
-                    min="0"
-                    step="0.01"
-                    autoFocus
-                  />
-                </div>
+                <input
+                  type="number"
+                  value={montant}
+                  onChange={(e) => setMontant(e.target.value)}
+                  className="w-full border border-gray-200 rounded-xl py-3 px-4 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all text-lg font-semibold"
+                  placeholder="0.00"
+                  min="0"
+                  step="0.01"
+                  autoFocus
+                />
+                {isDepassement && (
+                  <p className="text-xs text-red-500 ml-0.5">
+                    Solde insuffisant (max : {soldeActuel.toLocaleString("fr-FR")} {deviseSymbol})
+                  </p>
+                )}
+              </div>
 
-                {/* Montants rapides */}
-                <div className="grid grid-cols-3 sm:grid-cols-6 gap-2">
-                  {montantsRapides.map((m) => (
-                    <button
-                      key={m}
-                      onClick={() => setMontant(String(m))}
-                      className={`py-2 rounded-lg text-xs font-medium border transition-all ${
-                        montantNum === m
-                          ? "bg-orange-500/20 border-orange-500/50 text-orange-300"
-                          : "bg-white/5 border-white/5 text-slate-400 hover:bg-white/10 hover:text-white"
-                      }`}
-                    >
-                      {m}
-                    </button>
-                  ))}
-                </div>
+              {/* Montants rapides */}
+              <div className="flex flex-wrap gap-2">
+                {montantsRapides.map((m) => (
+                  <button
+                    key={m}
+                    onClick={() => setMontant(String(m))}
+                    className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors ${
+                      montantNum === m
+                        ? "border-primary-500 bg-primary-50 text-primary-700"
+                        : "border-gray-200 hover:border-gray-300 text-gray-500"
+                    }`}
+                  >
+                    {m} {deviseSymbol}
+                  </button>
+                ))}
               </div>
 
               {/* Méthode de retrait */}
-              <div className="space-y-3">
-                <label className="text-xs font-medium text-slate-400 uppercase tracking-wider ml-1">
+              <div className="space-y-2">
+                <label className="text-xs font-medium text-gray-500 ml-0.5">
                   Mode de réception
                 </label>
                 <div className="space-y-2">
@@ -571,39 +557,38 @@ export default function DepositWithdrawModal({
                     <button
                       key={m.id}
                       onClick={() => setMethode(m.id)}
-                      className={`w-full flex items-center gap-3 p-3 rounded-xl border transition-all text-left ${
+                      className={`w-full flex items-center gap-3 p-3 rounded-xl border-2 transition-all text-left ${
                         methode === m.id
-                          ? "bg-orange-500/10 border-orange-500/30 ring-1 ring-orange-500/20"
-                          : "bg-white/5 border-white/5 hover:bg-white/10"
+                          ? "border-primary-500 bg-primary-50"
+                          : "border-gray-100 hover:border-gray-200"
                       }`}
                     >
                       <div
-                        className={`w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 ${
-                          methode === m.id ? "bg-orange-500 text-white shadow-lg shadow-orange-500/20" : "bg-white/5 text-slate-400"
+                        className={`w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 ${
+                          methode === m.id ? "bg-primary-600 text-white" : "bg-gray-100 text-gray-400"
                         }`}
                       >
-                        <m.icon className="w-5 h-5" />
+                        <m.icon className="w-4.5 h-4.5" />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className={`font-semibold text-sm ${methode === m.id ? "text-white" : "text-slate-300"}`}>{m.label}</p>
-                        <p className="text-xs text-slate-500 truncate mt-0.5">{m.desc}</p>
+                        <p className="font-medium text-sm text-gray-900">{m.label}</p>
+                        <p className="text-[11px] text-gray-400 truncate">{m.desc}</p>
                       </div>
-                      {methode === m.id && <div className="w-2 h-2 rounded-full bg-orange-500"></div>}
                     </button>
                   ))}
                 </div>
               </div>
 
               {/* Destination */}
-              <div className="space-y-3">
-                <label className="text-xs font-medium text-slate-400 uppercase tracking-wider ml-1">
+              <div className="space-y-2">
+                <label className="text-xs font-medium text-gray-500 ml-0.5">
                   IBAN / Numéro de compte
                 </label>
                 <input
                   type="text"
                   value={destination}
                   onChange={(e) => setDestination(e.target.value)}
-                  className="w-full bg-white/5 border border-white/10 rounded-xl py-3.5 px-4 text-white placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500/50 transition-all font-mono text-sm"
+                  className="w-full border border-gray-200 rounded-xl py-3 px-4 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all font-mono text-sm"
                   placeholder="FR76 XXXX XXXX XXXX XXXX XXXX XXX"
                 />
               </div>
@@ -612,13 +597,13 @@ export default function DepositWithdrawModal({
               <button
                 onClick={handleRetrait}
                 disabled={montantNum <= 0 || isDepassement || !destination.trim()}
-                className={`w-full py-4 rounded-xl font-bold text-white shadow-lg transition-all flex items-center justify-center gap-2 group ${
+                className={`w-full py-3.5 rounded-xl font-semibold text-white transition-colors flex items-center justify-center gap-2 ${
                   montantNum > 0 && !isDepassement && destination.trim()
-                    ? "bg-gradient-to-r from-orange-600 to-orange-500 hover:from-orange-500 hover:to-orange-400 shadow-orange-500/20 hover:shadow-orange-500/30"
-                    : "bg-slate-700/50 text-slate-500 cursor-not-allowed"
+                    ? "bg-primary-600 hover:bg-primary-700"
+                    : "bg-gray-200 text-gray-400 cursor-not-allowed"
                 }`}
               >
-                <ArrowUpFromLine className="w-5 h-5 group-hover:-translate-y-0.5 transition-transform" />
+                <ArrowUpFromLine className="w-5 h-5" />
                 Retirer {montantNum > 0 ? `${montantNum.toLocaleString("fr-FR")} ${deviseSymbol}` : ""}
               </button>
             </div>

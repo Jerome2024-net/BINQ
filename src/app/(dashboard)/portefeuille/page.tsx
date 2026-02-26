@@ -28,6 +28,7 @@ import {
   Minus,
   Lock,
   Info,
+  ShieldCheck,
 } from "lucide-react";
 
 interface SearchUser {
@@ -329,34 +330,42 @@ export default function PortefeuillePage() {
       </div>
 
       {/* ── Actions ── */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+      <div className="grid grid-cols-4 gap-2 sm:gap-3">
         <button
           onClick={handleDeposit}
-          className="flex flex-col items-center gap-2.5 py-5 rounded-2xl bg-primary-600 text-white hover:bg-primary-700 transition-colors"
+          className="flex flex-col items-center gap-2 py-4 sm:py-5 rounded-2xl bg-white border border-gray-200 hover:border-primary-200 hover:bg-primary-50/50 transition-all group"
         >
-          <Plus className="w-5 h-5" />
-          <span className="text-xs font-semibold">Déposer</span>
+          <div className="w-9 h-9 rounded-xl bg-primary-50 text-primary-600 flex items-center justify-center group-hover:bg-primary-100 transition-colors">
+            <Plus className="w-4.5 h-4.5" />
+          </div>
+          <span className="text-[11px] sm:text-xs font-semibold text-gray-700">Déposer</span>
         </button>
         <button
           onClick={openSendModal}
-          className="flex flex-col items-center gap-2.5 py-5 rounded-2xl bg-primary-600 text-white hover:bg-primary-700 transition-colors"
+          className="flex flex-col items-center gap-2 py-4 sm:py-5 rounded-2xl bg-white border border-gray-200 hover:border-primary-200 hover:bg-primary-50/50 transition-all group"
         >
-          <Send className="w-5 h-5" />
-          <span className="text-xs font-semibold">Envoyer</span>
+          <div className="w-9 h-9 rounded-xl bg-primary-50 text-primary-600 flex items-center justify-center group-hover:bg-primary-100 transition-colors">
+            <Send className="w-4.5 h-4.5" />
+          </div>
+          <span className="text-[11px] sm:text-xs font-semibold text-gray-700">Envoyer</span>
         </button>
         <button
           onClick={handleWithdraw}
-          className="flex flex-col items-center gap-2.5 py-5 rounded-2xl border border-gray-200 bg-white text-gray-900 hover:bg-gray-50 transition-colors"
+          className="flex flex-col items-center gap-2 py-4 sm:py-5 rounded-2xl bg-white border border-gray-200 hover:border-primary-200 hover:bg-primary-50/50 transition-all group"
         >
-          <Minus className="w-5 h-5" />
-          <span className="text-xs font-semibold">Retirer</span>
+          <div className="w-9 h-9 rounded-xl bg-primary-50 text-primary-600 flex items-center justify-center group-hover:bg-primary-100 transition-colors">
+            <Minus className="w-4.5 h-4.5" />
+          </div>
+          <span className="text-[11px] sm:text-xs font-semibold text-gray-700">Retirer</span>
         </button>
         <button
           onClick={() => setLinkModalOpen(true)}
-          className="flex flex-col items-center gap-2.5 py-5 rounded-2xl border border-gray-200 bg-white text-gray-900 hover:bg-gray-50 transition-colors"
+          className="flex flex-col items-center gap-2 py-4 sm:py-5 rounded-2xl bg-white border border-gray-200 hover:border-primary-200 hover:bg-primary-50/50 transition-all group"
         >
-          <ArrowDownLeft className="w-5 h-5" />
-          <span className="text-xs font-semibold">Recevoir</span>
+          <div className="w-9 h-9 rounded-xl bg-primary-50 text-primary-600 flex items-center justify-center group-hover:bg-primary-100 transition-colors">
+            <ArrowDownLeft className="w-4.5 h-4.5" />
+          </div>
+          <span className="text-[11px] sm:text-xs font-semibold text-gray-700">Recevoir</span>
         </button>
       </div>
 
@@ -529,132 +538,124 @@ export default function PortefeuillePage() {
 
       {/* ── Modal Envoyer de l'argent ── */}
       {sendModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center animate-in fade-in duration-200 bg-black/70 backdrop-blur-sm" onClick={() => setSendModalOpen(false)}>
+        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/60 backdrop-blur-sm" onClick={() => setSendModalOpen(false)}>
           <div 
-            className="bg-[#0F172A] rounded-t-3xl sm:rounded-3xl w-full sm:max-w-md shadow-2xl relative max-h-[92vh] overflow-y-auto border border-white/10 animate-in slide-in-from-bottom-4 duration-300"
+            className="bg-white rounded-t-3xl sm:rounded-2xl w-full sm:max-w-[420px] shadow-2xl relative max-h-[92vh] sm:max-h-[85vh] overflow-y-auto"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Header */}
-            <div className="flex items-center justify-between p-5 sm:p-6 border-b border-white/10">
-              <div className="flex items-center gap-3">
-                <div className="w-11 h-11 rounded-2xl flex items-center justify-center flex-shrink-0 bg-indigo-500/15 text-indigo-400">
-                  <Send className="w-5 h-5" />
-                </div>
-                <div>
-                  <h3 className="text-lg font-bold text-white">
-                    {sendMode === "link" ? (
-                      sendLinkStep === "success" ? "Lien prêt !" : "Envoyer via lien"
-                    ) : (
-                      <>
-                        {sendStep === "search" && "Envoyer de l'argent"}
-                        {sendStep === "amount" && "Montant à envoyer"}
-                        {sendStep === "confirm" && "Confirmer l'envoi"}
-                        {sendStep === "success" && "Envoyé avec succès !"}
-                      </>
-                    )}
-                  </h3>
-                  <p className="text-xs text-slate-500 flex items-center gap-1">
-                    <Lock className="w-3 h-3" />
-                    Transaction sécurisée
-                  </p>
-                </div>
+            <div className="flex items-center gap-3 px-5 py-4 sm:px-6 sm:py-5 border-b border-gray-100">
+              <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 bg-primary-50 text-primary-600">
+                <Send className="w-5 h-5" />
               </div>
-              <button onClick={() => setSendModalOpen(false)} className="p-2 rounded-xl hover:bg-white/5 transition-colors">
-                <X className="w-5 h-5 text-slate-500" />
+              <div className="min-w-0 flex-1">
+                <h3 className="text-base font-bold text-gray-900">
+                  {sendMode === "link" ? (
+                    sendLinkStep === "success" ? "Lien prêt !" : "Envoyer via lien"
+                  ) : (
+                    <>
+                      {sendStep === "search" && "Envoyer de l'argent"}
+                      {sendStep === "amount" && "Montant à envoyer"}
+                      {sendStep === "confirm" && "Confirmer l'envoi"}
+                      {sendStep === "success" && "Envoyé avec succès !"}
+                    </>
+                  )}
+                </h3>
+                <p className="text-[11px] text-gray-400 flex items-center gap-1">
+                  <ShieldCheck className="w-3 h-3" />
+                  Transaction sécurisée
+                </p>
+              </div>
+              <button onClick={() => setSendModalOpen(false)} className="p-2 -mr-1.5 rounded-lg hover:bg-gray-100 transition-colors flex-shrink-0">
+                <X className="w-5 h-5 text-gray-400" />
               </button>
             </div>
 
-            {/* Tabs: Direct / Via lien — visible only at initial steps */}
+            {/* Tabs: Direct / Via lien */}
             {((sendMode === "direct" && sendStep === "search") || (sendMode === "link" && sendLinkStep === "form")) && (
-              <div className="flex border-b border-white/10">
+              <div className="flex border-b border-gray-100">
                 <button
                   onClick={() => { setSendMode("direct"); setSendStep("search"); }}
-                  className={`flex-1 py-4 text-sm font-semibold text-center transition-all relative ${
-                    sendMode === "direct" 
-                      ? "text-white" 
-                      : "text-slate-500 hover:text-slate-300"
+                  className={`flex-1 py-3 text-sm font-semibold text-center transition-all relative ${
+                    sendMode === "direct" ? "text-primary-600" : "text-gray-400 hover:text-gray-600"
                   }`}
                 >
-                  <Search className="w-4 h-4 inline mr-2 -mt-0.5" />
+                  <Search className="w-4 h-4 inline mr-1.5 -mt-0.5" />
                   Rechercher
                   {sendMode === "direct" && (
-                    <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-indigo-500 shadow-[0_-2px_10px_rgba(99,102,241,0.5)]"></div>
+                    <div className="absolute bottom-0 left-4 right-4 h-0.5 bg-primary-600 rounded-full"></div>
                   )}
                 </button>
                 <button
                   onClick={() => { setSendMode("link"); setSendLinkStep("form"); }}
-                  className={`flex-1 py-4 text-sm font-semibold text-center transition-all relative ${
-                    sendMode === "link" 
-                      ? "text-white" 
-                      : "text-slate-500 hover:text-slate-300"
+                  className={`flex-1 py-3 text-sm font-semibold text-center transition-all relative ${
+                    sendMode === "link" ? "text-primary-600" : "text-gray-400 hover:text-gray-600"
                   }`}
                 >
-                  <LinkIcon className="w-4 h-4 inline mr-2 -mt-0.5" />
+                  <LinkIcon className="w-4 h-4 inline mr-1.5 -mt-0.5" />
                   Via lien
                   {sendMode === "link" && (
-                    <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-indigo-500 shadow-[0_-2px_10px_rgba(99,102,241,0.5)]"></div>
+                    <div className="absolute bottom-0 left-4 right-4 h-0.5 bg-primary-600 rounded-full"></div>
                   )}
                 </button>
               </div>
             )}
 
-            <div className="p-5 sm:p-6 pb-8">
+            <div className="px-5 py-5 sm:px-6 sm:py-6">
               {/* ═══ Mode Direct: rechercher un user ═══ */}
               {sendMode === "direct" && (
                 <>
               {/* Step 1: Search */}
               {sendStep === "search" && (
                 <div className="space-y-4">
-                  <div className="relative group">
-                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500 group-focus-within:text-indigo-400 transition-colors" />
+                  <div className="relative">
+                    <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-gray-400" />
                     <input
                       type="text"
                       placeholder="Rechercher par nom..."
                       value={searchQuery}
                       onChange={(e) => handleSearch(e.target.value)}
-                      className="w-full pl-12 pr-4 py-3.5 rounded-xl bg-white/5 border border-white/10 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500/50 text-white placeholder-slate-600 transition-all font-medium"
+                      className="w-full pl-11 pr-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent text-gray-900 placeholder-gray-400 transition-all text-sm"
                       autoFocus
                     />
                   </div>
 
                   {searchLoading && (
                     <div className="flex justify-center py-8">
-                      <Loader2 className="w-8 h-8 text-indigo-500 animate-spin" />
+                      <Loader2 className="w-7 h-7 text-primary-500 animate-spin" />
                     </div>
                   )}
 
                   {!searchLoading && searchResults.length === 0 && searchQuery.length >= 2 && (
                     <div className="text-center py-8">
-                      <div className="w-16 h-16 bg-white/5 rounded-full flex items-center justify-center mx-auto mb-3">
-                        <User className="w-8 h-8 text-slate-600" />
+                      <div className="w-14 h-14 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                        <User className="w-7 h-7 text-gray-300" />
                       </div>
-                      <p className="text-sm text-slate-500">Aucun utilisateur trouvé</p>
+                      <p className="text-sm text-gray-400">Aucun utilisateur trouvé</p>
                     </div>
                   )}
 
-                  <div className="space-y-2 max-h-64 overflow-y-auto pr-1 custom-scrollbar">
+                  <div className="space-y-1.5 max-h-64 overflow-y-auto">
                     {searchResults.map((u) => (
                       <button
                         key={u.id}
                         onClick={() => handleSelectUser(u)}
-                        className="w-full flex items-center gap-4 p-3 rounded-xl hover:bg-white/5 border border-transparent hover:border-white/5 transition-all text-left group"
+                        className="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-gray-50 transition-all text-left group"
                       >
                         {u.avatar_url ? (
-                          <img src={u.avatar_url} alt="" className="w-10 h-10 rounded-full object-cover ring-2 ring-white/10 group-hover:ring-indigo-500/50 transition-all" />
+                          <img src={u.avatar_url} alt="" className="w-10 h-10 rounded-full object-cover" />
                         ) : (
-                          <div className="w-10 h-10 rounded-full bg-indigo-500/20 flex items-center justify-center ring-2 ring-white/10 group-hover:ring-indigo-500/50 transition-all">
-                            <span className="text-sm font-bold text-indigo-400">
+                          <div className="w-10 h-10 rounded-full bg-primary-50 flex items-center justify-center">
+                            <span className="text-sm font-bold text-primary-600">
                               {(u.prenom?.[0] || "?")}{(u.nom?.[0] || "")}
                             </span>
                           </div>
                         )}
-                        <div>
-                          <p className="text-sm font-semibold text-white group-hover:text-indigo-300 transition-colors">{u.prenom} {u.nom}</p>
-                          {u.email_masked && <p className="text-xs text-slate-500">{u.email_masked}</p>}
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-semibold text-gray-900">{u.prenom} {u.nom}</p>
+                          {u.email_masked && <p className="text-xs text-gray-400">{u.email_masked}</p>}
                         </div>
-                        <div className="ml-auto opacity-0 group-hover:opacity-100 transition-opacity">
-                           <ArrowUpRight className="w-4 h-4 text-indigo-400" />
-                        </div>
+                        <ArrowUpRight className="w-4 h-4 text-gray-300 group-hover:text-primary-500 transition-colors" />
                       </button>
                     ))}
                   </div>
@@ -663,66 +664,61 @@ export default function PortefeuillePage() {
 
               {/* Step 2: Amount */}
               {sendStep === "amount" && selectedUser && (
-                <div className="space-y-6">
-                  <div className="flex items-center gap-4 p-4 bg-white/5 rounded-2xl border border-white/10">
+                <div className="space-y-5">
+                  <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-xl">
                     {selectedUser.avatar_url ? (
-                      <img src={selectedUser.avatar_url} alt="" className="w-12 h-12 rounded-full object-cover ring-2 ring-indigo-500/30" />
+                      <img src={selectedUser.avatar_url} alt="" className="w-10 h-10 rounded-full object-cover" />
                     ) : (
-                      <div className="w-12 h-12 rounded-full bg-indigo-500/20 flex items-center justify-center ring-2 ring-indigo-500/30">
-                        <span className="text-base font-bold text-indigo-400">
+                      <div className="w-10 h-10 rounded-full bg-primary-50 flex items-center justify-center">
+                        <span className="text-sm font-bold text-primary-600">
                           {(selectedUser.prenom?.[0] || "?")}{(selectedUser.nom?.[0] || "")}
                         </span>
                       </div>
                     )}
                     <div>
-                      <p className="text-base font-semibold text-white">{selectedUser.prenom} {selectedUser.nom}</p>
-                      <p className="text-xs text-indigo-400 uppercase tracking-wider font-medium">Destinataire</p>
+                      <p className="text-sm font-semibold text-gray-900">{selectedUser.prenom} {selectedUser.nom}</p>
+                      <p className="text-[11px] text-gray-400 uppercase tracking-wider font-medium">Destinataire</p>
                     </div>
                   </div>
 
-                  <div className="space-y-3">
-                    <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider ml-1">Montant à envoyer</label>
-                    <div className="relative group">
-                      <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
-                        <span className="text-slate-400 font-medium text-lg group-focus-within:text-indigo-400 transition-colors">€</span>
-                      </div>
-                      <input
-                        type="number"
-                        min="1"
-                        step="0.01"
-                        value={sendAmount}
-                        onChange={(e) => setSendAmount(e.target.value)}
-                        placeholder="0.00"
-                        className="w-full bg-white/5 border border-white/10 rounded-xl py-4 pl-10 pr-4 text-white placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500/50 transition-all text-2xl font-bold text-center [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                        autoFocus
-                      />
-                    </div>
-                    <p className="text-xs text-slate-500 text-center font-medium">Solde disponible : <span className="text-white">{formatMontant(soldeWallet)}</span></p>
+                  <div className="space-y-2">
+                    <label className="text-xs font-medium text-gray-500 ml-0.5">Montant à envoyer (€)</label>
+                    <input
+                      type="number"
+                      min="1"
+                      step="0.01"
+                      value={sendAmount}
+                      onChange={(e) => setSendAmount(e.target.value)}
+                      placeholder="0.00"
+                      className="w-full border border-gray-200 rounded-xl py-3 px-4 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all text-2xl font-bold text-center [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                      autoFocus
+                    />
+                    <p className="text-xs text-gray-400 text-center">Solde disponible : <span className="text-gray-900 font-medium">{formatMontant(soldeWallet)}</span></p>
                   </div>
 
-                  <div className="space-y-3">
-                    <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider ml-1">Message (optionnel)</label>
+                  <div className="space-y-2">
+                    <label className="text-xs font-medium text-gray-500 ml-0.5">Message (optionnel)</label>
                     <textarea
                       value={sendMessage}
                       onChange={(e) => setSendMessage(e.target.value)}
                       placeholder="Ex: Remboursement dîner..."
-                      className="w-full p-4 rounded-xl bg-white/5 border border-white/10 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500/50 text-white placeholder-slate-600 transition-all text-sm resize-none"
+                      className="w-full p-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent text-gray-900 placeholder-gray-400 transition-all text-sm resize-none"
                       rows={2}
                       maxLength={100}
                     />
                   </div>
 
-                  <div className="flex gap-3 pt-2">
+                  <div className="flex gap-2.5 pt-1">
                     <button
                       onClick={() => setSendStep("search")}
-                      className="flex-1 py-3.5 rounded-xl border border-white/10 text-slate-400 font-semibold hover:bg-white/5 hover:text-white transition-all text-sm"
+                      className="flex-1 py-3 rounded-xl border border-gray-200 text-gray-500 font-semibold hover:bg-gray-50 transition-colors text-sm"
                     >
                       Retour
                     </button>
                     <button
                       onClick={() => setSendStep("confirm")}
                       disabled={!sendAmount || parseFloat(sendAmount) <= 0}
-                      className="flex-1 py-3.5 rounded-xl bg-gradient-to-r from-indigo-600 to-indigo-500 text-white font-bold hover:from-indigo-500 hover:to-indigo-400 transition-all shadow-lg shadow-indigo-500/20 disabled:opacity-50 disabled:shadow-none text-sm"
+                      className="flex-1 py-3 rounded-xl bg-primary-600 text-white font-semibold hover:bg-primary-700 transition-colors disabled:opacity-40 disabled:cursor-not-allowed text-sm"
                     >
                       Suivant
                     </button>
@@ -732,40 +728,36 @@ export default function PortefeuillePage() {
 
               {/* Step 3: Confirm */}
               {sendStep === "confirm" && selectedUser && (
-                <div className="space-y-6 animate-in slide-in-from-right-8 duration-300">
-                  <div className="bg-gradient-to-b from-white/10 to-white/5 rounded-3xl p-6 text-center border border-white/10 relative overflow-hidden">
-                    <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
+                <div className="space-y-5">
+                  <div className="bg-gray-50 rounded-xl p-5 text-center">
+                    <p className="text-[11px] text-gray-400 font-medium uppercase tracking-wider mb-1">Vous envoyez</p>
+                    <p className="text-3xl font-bold text-gray-900 tracking-tight mb-3">{parseFloat(sendAmount).toFixed(2)} <span className="text-primary-600">€</span></p>
                     
-                    <p className="text-sm text-slate-400 font-medium mb-2 uppercase tracking-wide">Vous envoyez</p>
-                    <p className="text-4xl font-black text-white tracking-tight mb-4">{parseFloat(sendAmount).toFixed(2)} <span className="text-indigo-400">€</span></p>
-                    
-                    <div className="flex justify-center items-center gap-3">
-                       <div className="bg-white/10 px-4 py-2 rounded-full flex items-center gap-2 border border-white/5">
-                         <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
-                         <span className="text-sm font-semibold text-white">{selectedUser.prenom} {selectedUser.nom}</span>
-                       </div>
+                    <div className="inline-flex items-center gap-2 bg-white px-3 py-1.5 rounded-full border border-gray-200">
+                      <span className="w-2 h-2 rounded-full bg-green-500"></span>
+                      <span className="text-sm font-medium text-gray-700">{selectedUser.prenom} {selectedUser.nom}</span>
                     </div>
 
                     {sendMessage && (
-                      <div className="mt-6 bg-black/20 rounded-xl p-3 border border-white/5 mx-auto max-w-[80%]">
-                        <p className="text-sm text-slate-300 italic">&ldquo;{sendMessage}&rdquo;</p>
+                      <div className="mt-4 bg-white rounded-lg p-3 border border-gray-100 mx-auto max-w-[85%]">
+                        <p className="text-sm text-gray-500 italic">&ldquo;{sendMessage}&rdquo;</p>
                       </div>
                     )}
                   </div>
 
-                  <div className="flex gap-3">
+                  <div className="flex gap-2.5">
                     <button
                       onClick={() => setSendStep("amount")}
-                      className="flex-1 py-3.5 rounded-xl border border-white/10 text-slate-400 font-semibold hover:bg-white/5 hover:text-white transition-all text-sm"
+                      className="flex-1 py-3 rounded-xl border border-gray-200 text-gray-500 font-semibold hover:bg-gray-50 transition-colors text-sm"
                     >
                       Modifier
                     </button>
                     <button
                       onClick={handleSendConfirm}
                       disabled={sendLoading}
-                      className="flex-[2] py-3.5 rounded-xl bg-gradient-to-r from-indigo-600 to-indigo-500 text-white font-bold hover:from-indigo-500 hover:to-indigo-400 transition-all shadow-lg shadow-indigo-500/20 disabled:opacity-50 flex items-center justify-center gap-2 group text-sm"
+                      className="flex-[2] py-3 rounded-xl bg-primary-600 text-white font-semibold hover:bg-primary-700 transition-colors disabled:opacity-50 flex items-center justify-center gap-2 text-sm"
                     >
-                      {sendLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Send className="w-4 h-4 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 transition-transform" />}
+                      {sendLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Send className="w-4 h-4" />}
                       {sendLoading ? "Envoi en cours..." : "Confirmer l'envoi"}
                     </button>
                   </div>
@@ -774,25 +766,25 @@ export default function PortefeuillePage() {
 
               {/* Step 4: Success */}
               {sendStep === "success" && (
-                <div className="text-center py-6 animate-in zoom-in-50 duration-300">
-                  <div className="w-20 h-20 bg-emerald-500/10 rounded-full flex items-center justify-center mx-auto mb-5 ring-1 ring-emerald-500/20 shadow-[0_0_30px_rgba(16,185,129,0.2)]">
-                    <CheckCircle2 className="w-10 h-10 text-emerald-400" />
+                <div className="text-center py-6">
+                  <div className="w-16 h-16 bg-green-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <CheckCircle2 className="w-8 h-8 text-green-500" />
                   </div>
-                  <h3 className="text-2xl font-bold text-white mb-2">Transfert réussi !</h3>
-                  <p className="text-slate-400 mb-6">
-                    <span className="text-white font-bold">{parseFloat(sendAmount).toFixed(2)} €</span> envoyés à <span className="text-white font-semibold">{selectedUser?.prenom} {selectedUser?.nom}</span>
+                  <h3 className="text-lg font-bold text-gray-900 mb-1">Transfert réussi !</h3>
+                  <p className="text-sm text-gray-500 mb-5">
+                    <span className="text-gray-900 font-semibold">{parseFloat(sendAmount).toFixed(2)} €</span> envoyés à <span className="text-gray-900 font-semibold">{selectedUser?.prenom} {selectedUser?.nom}</span>
                   </p>
                   
                   {sendRef && (
-                    <div className="bg-white/5 rounded-xl py-2 px-4 inline-block mb-8 border border-white/10">
-                      <p className="text-[10px] text-slate-500 uppercase tracking-wider mb-0.5">Référence transaction</p>
-                      <p className="font-mono text-slate-300 text-sm">{sendRef}</p>
+                    <div className="bg-gray-50 rounded-lg py-2 px-4 inline-block mb-5">
+                      <p className="text-[10px] text-gray-400 uppercase tracking-wider">Référence</p>
+                      <p className="font-mono text-sm text-gray-700">{sendRef}</p>
                     </div>
                   )}
                   
                   <button
                     onClick={() => setSendModalOpen(false)}
-                    className="w-full py-4 rounded-xl bg-white/10 text-white font-semibold hover:bg-white/20 border border-white/10 transition-all"
+                    className="w-full py-3 rounded-xl font-semibold text-white bg-primary-600 hover:bg-primary-700 transition-colors"
                   >
                     Fermer
                   </button>
@@ -805,42 +797,37 @@ export default function PortefeuillePage() {
               {sendMode === "link" && (
                 <>
                   {sendLinkStep === "form" && (
-                    <div className="space-y-6">
-                      <div className="bg-indigo-500/10 border border-indigo-500/20 rounded-xl p-4 flex gap-3">
-                         <Info className="w-5 h-5 text-indigo-400 flex-shrink-0 mt-0.5" />
-                         <p className="text-sm text-indigo-300/90 leading-relaxed">
-                           Votre argent sera débité immédiatement. Partagez le lien généré — le destinataire cliquera simplement pour récupérer les fonds.
-                         </p>
+                    <div className="space-y-5">
+                      <div className="bg-primary-50 rounded-xl p-4 flex gap-3">
+                        <Info className="w-5 h-5 text-primary-600 flex-shrink-0 mt-0.5" />
+                        <p className="text-sm text-primary-700 leading-relaxed">
+                          Votre argent sera débité immédiatement. Partagez le lien généré — le destinataire cliquera simplement pour récupérer les fonds.
+                        </p>
                       </div>
 
-                      <div className="space-y-3">
-                        <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider ml-1">Montant à envoyer</label>
-                        <div className="relative group">
-                          <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
-                             <span className="text-slate-400 font-medium text-lg group-focus-within:text-indigo-400 transition-colors">€</span>
-                          </div>
-                          <input
-                            type="number"
-                            min="1"
-                            step="0.01"
-                            value={sendLinkAmount}
-                            onChange={(e) => setSendLinkAmount(e.target.value)}
-                            placeholder="0.00"
-                            className="w-full bg-white/5 border border-white/10 rounded-xl py-4 pl-10 pr-4 text-white placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500/50 transition-all text-2xl font-bold text-center [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                            autoFocus
-                          />
-                        </div>
-                        <p className="text-xs text-slate-500 text-center font-medium">Solde disponible : <span className="text-white">{formatMontant(soldeWallet)}</span></p>
+                      <div className="space-y-2">
+                        <label className="text-xs font-medium text-gray-500 ml-0.5">Montant à envoyer (€)</label>
+                        <input
+                          type="number"
+                          min="1"
+                          step="0.01"
+                          value={sendLinkAmount}
+                          onChange={(e) => setSendLinkAmount(e.target.value)}
+                          placeholder="0.00"
+                          className="w-full border border-gray-200 rounded-xl py-3 px-4 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all text-2xl font-bold text-center [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                          autoFocus
+                        />
+                        <p className="text-xs text-gray-400 text-center">Solde disponible : <span className="text-gray-900 font-medium">{formatMontant(soldeWallet)}</span></p>
                       </div>
 
-                      <div className="space-y-3">
-                        <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider ml-1">Message (optionnel)</label>
+                      <div className="space-y-2">
+                        <label className="text-xs font-medium text-gray-500 ml-0.5">Message (optionnel)</label>
                         <input
                           type="text"
                           value={sendLinkDesc}
                           onChange={(e) => setSendLinkDesc(e.target.value)}
                           placeholder="Ex: Cadeau d'anniversaire"
-                          className="w-full p-4 rounded-xl bg-white/5 border border-white/10 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500/50 text-white placeholder-slate-600 transition-all text-sm"
+                          className="w-full p-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent text-gray-900 placeholder-gray-400 transition-all text-sm"
                           maxLength={120}
                         />
                       </div>
@@ -848,51 +835,51 @@ export default function PortefeuillePage() {
                       <button
                         onClick={handleSendViaLink}
                         disabled={sendLinkCreating || !sendLinkAmount || parseFloat(sendLinkAmount) <= 0}
-                        className="w-full py-4 rounded-xl bg-gradient-to-r from-indigo-600 to-indigo-500 text-white font-bold hover:from-indigo-500 hover:to-indigo-400 transition-all shadow-lg shadow-indigo-500/20 disabled:opacity-50 flex items-center justify-center gap-2 group mt-2"
+                        className="w-full py-3.5 rounded-xl bg-primary-600 text-white font-semibold hover:bg-primary-700 transition-colors disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                       >
-                        {sendLinkCreating ? <Loader2 className="w-5 h-5 animate-spin" /> : <LinkIcon className="w-5 h-5 group-hover:scale-110 transition-transform" />}
+                        {sendLinkCreating ? <Loader2 className="w-5 h-5 animate-spin" /> : <LinkIcon className="w-5 h-5" />}
                         {sendLinkCreating ? "Création du lien..." : "Générer le lien de paiement"}
                       </button>
                     </div>
                   )}
 
                   {sendLinkStep === "success" && sendLinkCode && (
-                    <div className="text-center space-y-6 animate-in zoom-in-50 duration-300">
-                      <div className="w-20 h-20 bg-emerald-500/10 rounded-full flex items-center justify-center mx-auto ring-1 ring-emerald-500/20">
-                        <CheckCircle2 className="w-10 h-10 text-emerald-400" />
+                    <div className="text-center space-y-5">
+                      <div className="w-16 h-16 bg-green-50 rounded-full flex items-center justify-center mx-auto">
+                        <CheckCircle2 className="w-8 h-8 text-green-500" />
                       </div>
                       
-                      <div className="space-y-2">
-                        <h4 className="text-2xl font-bold text-white">Lien créé avec succès !</h4>
-                        <p className="text-slate-400 text-sm">
-                          <span className="text-white font-bold">{parseFloat(sendLinkAmount).toFixed(2)} €</span> ont été débités de votre portefeuille.
+                      <div>
+                        <h4 className="text-lg font-bold text-gray-900">Lien créé avec succès !</h4>
+                        <p className="text-sm text-gray-500 mt-1">
+                          <span className="text-gray-900 font-semibold">{parseFloat(sendLinkAmount).toFixed(2)} €</span> ont été débités de votre portefeuille.
                         </p>
                       </div>
 
-                      <div className="bg-white/5 rounded-2xl p-4 border border-white/10 shadow-inner">
-                        <p className="text-xs text-slate-500 uppercase tracking-wider mb-3 font-medium">Lien de récupération</p>
-                        <div className="bg-black/40 rounded-xl p-3 flex items-center gap-2 border border-white/5">
+                      <div className="bg-gray-50 rounded-xl p-4">
+                        <p className="text-[11px] text-gray-400 uppercase tracking-wider mb-2 font-medium">Lien de récupération</p>
+                        <div className="bg-white rounded-lg p-3 flex items-center gap-2 border border-gray-200">
                           <input
                             type="text"
                             readOnly
                             value={`${typeof window !== "undefined" ? window.location.origin : ""}/pay/${sendLinkCode}`}
-                            className="flex-1 bg-transparent text-sm text-indigo-300 outline-none font-mono truncate"
+                            className="flex-1 bg-transparent text-sm text-gray-700 outline-none font-mono truncate"
                           />
                         </div>
                         
-                        <div className="grid grid-cols-2 gap-3 mt-3">
+                        <div className="grid grid-cols-2 gap-2 mt-3">
                           <button
                             onClick={() => { const url = `${window.location.origin}/pay/${sendLinkCode}`; navigator.clipboard.writeText(url); }}
-                            className="flex items-center justify-center gap-2 py-3 rounded-lg bg-white/5 hover:bg-white/10 border border-white/5 transition-all text-sm font-medium text-white group"
+                            className="flex items-center justify-center gap-2 py-2.5 rounded-lg bg-white border border-gray-200 hover:bg-gray-50 transition-colors text-sm font-medium text-gray-700"
                           >
-                            <Copy className="w-4 h-4 text-slate-400 group-hover:text-white transition-colors" />
+                            <Copy className="w-4 h-4 text-gray-400" />
                             Copier
                           </button>
                           <button
                             onClick={() => shareLink(sendLinkCode, sendLinkDesc || null)}
-                            className="flex items-center justify-center gap-2 py-3 rounded-lg bg-white/5 hover:bg-white/10 border border-white/5 transition-all text-sm font-medium text-white group"
+                            className="flex items-center justify-center gap-2 py-2.5 rounded-lg bg-white border border-gray-200 hover:bg-gray-50 transition-colors text-sm font-medium text-gray-700"
                           >
-                            <Share2 className="w-4 h-4 text-slate-400 group-hover:text-white transition-colors" />
+                            <Share2 className="w-4 h-4 text-gray-400" />
                             Partager
                           </button>
                         </div>
@@ -900,7 +887,7 @@ export default function PortefeuillePage() {
 
                       <button
                         onClick={() => setSendModalOpen(false)}
-                        className="w-full py-4 rounded-xl border border-white/10 text-white font-semibold hover:bg-white/5 transition-all"
+                        className="w-full py-3 rounded-xl font-semibold text-white bg-primary-600 hover:bg-primary-700 transition-colors"
                       >
                         Fermer
                       </button>
@@ -915,69 +902,62 @@ export default function PortefeuillePage() {
 
       {/* ── Modal Recevoir de l'argent (Request Money) ── */}
       {linkModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center animate-in fade-in duration-200 bg-black/70 backdrop-blur-sm" onClick={() => { setLinkModalOpen(false); setCreatedLinkCode(null); }}>
+        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/60 backdrop-blur-sm" onClick={() => { setLinkModalOpen(false); setCreatedLinkCode(null); }}>
           <div 
-            className="bg-[#0F172A] rounded-t-3xl sm:rounded-3xl w-full sm:max-w-md shadow-2xl relative max-h-[92vh] overflow-y-auto border border-white/10 animate-in slide-in-from-bottom-4 duration-300"
+            className="bg-white rounded-t-3xl sm:rounded-2xl w-full sm:max-w-[420px] shadow-2xl relative max-h-[92vh] sm:max-h-[85vh] overflow-y-auto"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="flex items-center justify-between p-5 sm:p-6 border-b border-white/10">
-              <div className="flex items-center gap-3">
-                <div className="w-11 h-11 rounded-2xl flex items-center justify-center flex-shrink-0 bg-blue-500/15 text-blue-400">
-                  <ArrowDownLeft className="w-5 h-5" />
-                </div>
-                <div>
-                  <h3 className="text-lg font-bold text-white">Recevoir de l&apos;argent</h3>
-                  <p className="text-xs text-slate-500 flex items-center gap-1">
-                    <Lock className="w-3 h-3" />
-                    Lien de paiement sécurisé
-                  </p>
-                </div>
+            <div className="flex items-center gap-3 px-5 py-4 sm:px-6 sm:py-5 border-b border-gray-100">
+              <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 bg-primary-50 text-primary-600">
+                <ArrowDownLeft className="w-5 h-5" />
               </div>
-              <button onClick={() => { setLinkModalOpen(false); setCreatedLinkCode(null); }} className="p-2 rounded-xl hover:bg-white/5 transition-colors">
-                <X className="w-5 h-5 text-slate-500" />
+              <div className="min-w-0 flex-1">
+                <h3 className="text-base font-bold text-gray-900">Recevoir de l&apos;argent</h3>
+                <p className="text-[11px] text-gray-400 flex items-center gap-1">
+                  <ShieldCheck className="w-3 h-3" />
+                  Lien de paiement sécurisé
+                </p>
+              </div>
+              <button onClick={() => { setLinkModalOpen(false); setCreatedLinkCode(null); }} className="p-2 -mr-1.5 rounded-lg hover:bg-gray-100 transition-colors flex-shrink-0">
+                <X className="w-5 h-5 text-gray-400" />
               </button>
             </div>
 
-            <div className="p-5 sm:p-6 pb-8">
+            <div className="px-5 py-5 sm:px-6 sm:py-6">
               {!createdLinkCode ? (
                 <>
-                  <div className="bg-blue-500/10 border border-blue-500/20 rounded-xl p-4 flex gap-3 mb-6">
-                     <Info className="w-5 h-5 text-blue-400 flex-shrink-0 mt-0.5" />
-                     <p className="text-sm text-blue-300/90 leading-relaxed">
-                       Créez un lien de paiement unique et partagez-le. Vous recevrez les fonds instantanément sur votre portefeuille Binq.
-                     </p>
+                  <div className="bg-primary-50 rounded-xl p-4 flex gap-3 mb-5">
+                    <Info className="w-5 h-5 text-primary-600 flex-shrink-0 mt-0.5" />
+                    <p className="text-sm text-primary-700 leading-relaxed">
+                      Créez un lien de paiement unique et partagez-le. Vous recevrez les fonds instantanément sur votre portefeuille Binq.
+                    </p>
                   </div>
 
-                  <div className="space-y-6">
-                    <div className="space-y-3">
-                      <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider ml-1">
-                        Combien demandez-vous ? <span className="text-slate-500 font-normal normal-case opacity-60 ml-1">— vide = montant libre</span>
+                  <div className="space-y-5">
+                    <div className="space-y-2">
+                      <label className="text-xs font-medium text-gray-500 ml-0.5">
+                        Montant demandé (€) <span className="text-gray-400 font-normal ml-1">— vide = montant libre</span>
                       </label>
-                      <div className="relative group">
-                        <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
-                           <span className="text-slate-400 font-medium text-lg group-focus-within:text-blue-400 transition-colors">€</span>
-                        </div>
-                        <input
-                          type="number"
-                          min="1"
-                          step="0.01"
-                          value={linkAmount}
-                          onChange={(e) => setLinkAmount(e.target.value)}
-                          placeholder="Ex: 25.00"
-                          className="w-full bg-white/5 border border-white/10 rounded-xl py-4 pl-10 pr-4 text-white placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all text-2xl font-bold text-center [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                          autoFocus
-                        />
-                      </div>
+                      <input
+                        type="number"
+                        min="1"
+                        step="0.01"
+                        value={linkAmount}
+                        onChange={(e) => setLinkAmount(e.target.value)}
+                        placeholder="Ex: 25.00"
+                        className="w-full border border-gray-200 rounded-xl py-3 px-4 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all text-2xl font-bold text-center [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                        autoFocus
+                      />
                     </div>
 
-                    <div className="space-y-3">
-                      <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider ml-1">Motif (optionnel)</label>
+                    <div className="space-y-2">
+                      <label className="text-xs font-medium text-gray-500 ml-0.5">Motif (optionnel)</label>
                       <input
                         type="text"
                         value={linkDescription}
                         onChange={(e) => setLinkDescription(e.target.value)}
                         placeholder="Ex: Part du resto, loyer, cadeau..."
-                        className="w-full p-4 rounded-xl bg-white/5 border border-white/10 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 text-white placeholder-slate-600 transition-all text-sm"
+                        className="w-full p-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent text-gray-900 placeholder-gray-400 transition-all text-sm"
                         maxLength={120}
                       />
                     </div>
@@ -985,65 +965,65 @@ export default function PortefeuillePage() {
                     <button
                       onClick={handleCreateLinkWithCode}
                       disabled={linkCreating}
-                      className="w-full py-4 rounded-xl bg-gradient-to-r from-blue-600 to-blue-500 text-white font-bold hover:from-blue-500 hover:to-blue-400 transition-all shadow-lg shadow-blue-500/20 disabled:opacity-50 flex items-center justify-center gap-2 group mt-2"
+                      className="w-full py-3.5 rounded-xl bg-primary-600 text-white font-semibold hover:bg-primary-700 transition-colors disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                     >
-                      {linkCreating ? <Loader2 className="w-5 h-5 animate-spin" /> : <ArrowDownLeft className="w-5 h-5 group-hover:scale-110 transition-transform" />}
+                      {linkCreating ? <Loader2 className="w-5 h-5 animate-spin" /> : <ArrowDownLeft className="w-5 h-5" />}
                       {linkCreating ? "Création du lien..." : "Générer le lien de paiement"}
                     </button>
                   </div>
                 </>
               ) : (
-                <div className="text-center space-y-6 animate-in zoom-in-50 duration-300">
-                  <div className="w-20 h-20 bg-emerald-500/10 rounded-full flex items-center justify-center mx-auto ring-1 ring-emerald-500/20">
-                    <CheckCircle2 className="w-10 h-10 text-emerald-400" />
+                <div className="text-center space-y-5">
+                  <div className="w-16 h-16 bg-green-50 rounded-full flex items-center justify-center mx-auto">
+                    <CheckCircle2 className="w-8 h-8 text-green-500" />
                   </div>
                   
-                  <div className="space-y-2">
-                    <h4 className="text-2xl font-bold text-white">Lien de paiement prêt !</h4>
-                    <p className="text-slate-400 text-sm">
+                  <div>
+                    <h4 className="text-lg font-bold text-gray-900">Lien de paiement prêt !</h4>
+                    <p className="text-sm text-gray-500 mt-1">
                       Partagez ce lien pour recevoir des fonds sur votre portefeuille.
                     </p>
                   </div>
 
-                  <div className="bg-white/5 rounded-2xl p-4 border border-white/10 shadow-inner">
-                    <p className="text-xs text-slate-500 uppercase tracking-wider mb-3 font-medium">Lien à partager</p>
-                    <div className="bg-black/40 rounded-xl p-3 flex items-center gap-2 border border-white/5">
+                  <div className="bg-gray-50 rounded-xl p-4">
+                    <p className="text-[11px] text-gray-400 uppercase tracking-wider mb-2 font-medium">Lien à partager</p>
+                    <div className="bg-white rounded-lg p-3 flex items-center gap-2 border border-gray-200">
                       <input
                         type="text"
                         readOnly
                         value={`${typeof window !== 'undefined' ? window.location.origin : ''}/pay/${createdLinkCode}`}
-                        className="flex-1 bg-transparent text-sm text-blue-300 outline-none font-mono truncate"
+                        className="flex-1 bg-transparent text-sm text-gray-700 outline-none font-mono truncate"
                       />
                     </div>
                     
-                    <div className="grid grid-cols-2 gap-3 mt-3">
+                    <div className="grid grid-cols-2 gap-2 mt-3">
                       <button
                         onClick={() => copyLinkUrl(createdLinkCode)}
-                        className="flex items-center justify-center gap-2 py-3 rounded-lg bg-white/5 hover:bg-white/10 border border-white/5 transition-all text-sm font-medium text-white group"
+                        className="flex items-center justify-center gap-2 py-2.5 rounded-lg bg-white border border-gray-200 hover:bg-gray-50 transition-colors text-sm font-medium text-gray-700"
                       >
-                        <Copy className="w-4 h-4 text-slate-400 group-hover:text-white transition-colors" />
+                        <Copy className="w-4 h-4 text-gray-400" />
                         Copier
                       </button>
                       <button
                         onClick={() => shareLink(createdLinkCode, linkDescription || null)}
-                        className="flex items-center justify-center gap-2 py-3 rounded-lg bg-white/5 hover:bg-white/10 border border-white/5 transition-all text-sm font-medium text-white group"
+                        className="flex items-center justify-center gap-2 py-2.5 rounded-lg bg-white border border-gray-200 hover:bg-gray-50 transition-colors text-sm font-medium text-gray-700"
                       >
-                        <Share2 className="w-4 h-4 text-slate-400 group-hover:text-white transition-colors" />
+                        <Share2 className="w-4 h-4 text-gray-400" />
                         Partager
                       </button>
                     </div>
                   </div>
 
-                  <div className="flex gap-3">
+                  <div className="flex gap-2.5">
                     <button
                       onClick={() => { setCreatedLinkCode(null); setLinkAmount(''); setLinkDescription(''); }}
-                      className="flex-1 py-4 rounded-xl border border-white/10 text-slate-400 font-semibold hover:bg-white/5 hover:text-white transition-all text-sm"
+                      className="flex-1 py-3 rounded-xl border border-gray-200 text-gray-500 font-semibold hover:bg-gray-50 transition-colors text-sm"
                     >
                       Nouveau lien
                     </button>
                     <button
                       onClick={() => { setLinkModalOpen(false); setCreatedLinkCode(null); setLinkAmount(''); setLinkDescription(''); }}
-                      className="flex-1 py-4 rounded-xl bg-white/10 text-white font-semibold hover:bg-white/20 border border-white/10 transition-all"
+                      className="flex-1 py-3 rounded-xl bg-primary-600 text-white font-semibold hover:bg-primary-700 transition-colors"
                     >
                       Terminer
                     </button>
