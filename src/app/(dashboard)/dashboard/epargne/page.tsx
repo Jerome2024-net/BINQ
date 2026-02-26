@@ -489,16 +489,22 @@ function CreateEpargneModal({ onClose, onSuccess }: { onClose: () => void; onSuc
   };
 
   return (
-    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-3 sm:p-4" onClick={onClose}>
-      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
-        <div className="flex items-center justify-between p-4 sm:p-6 border-b border-gray-100">
-          <h2 className="text-base sm:text-lg font-bold text-gray-900">Nouveau compte d&apos;épargne</h2>
-          <button onClick={onClose} className="p-2 rounded-lg hover:bg-gray-100">
+    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-end sm:items-center justify-center p-0 sm:p-4" onClick={onClose}>
+      <div className="bg-white rounded-t-3xl sm:rounded-2xl shadow-2xl w-full sm:max-w-[420px] max-h-[92vh] sm:max-h-[85vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+        <div className="flex items-center gap-3 px-5 py-4 sm:px-6 sm:py-5 border-b border-gray-100">
+          <div className="w-10 h-10 rounded-xl bg-primary-50 text-primary-600 flex items-center justify-center flex-shrink-0">
+            <PiggyBank className="w-5 h-5" />
+          </div>
+          <div className="min-w-0 flex-1">
+            <h2 className="text-base font-bold text-gray-900">Nouveau compte d&apos;épargne</h2>
+            <p className="text-[11px] text-gray-400">Organisez votre argent intelligemment</p>
+          </div>
+          <button onClick={onClose} className="p-2 -mr-1.5 rounded-lg hover:bg-gray-100 transition-colors flex-shrink-0">
             <X className="w-5 h-5 text-gray-400" />
           </button>
         </div>
 
-        <div className="p-6 space-y-5">
+        <div className="px-5 py-5 sm:px-6 sm:py-6 space-y-5">
           {error && (
             <div className="p-3 bg-red-50 border border-red-200 rounded-xl text-sm text-red-600">{error}</div>
           )}
@@ -688,14 +694,14 @@ function CreateEpargneModal({ onClose, onSuccess }: { onClose: () => void; onSuc
         </div>
 
         {/* Footer */}
-        <div className="p-6 border-t border-gray-100 flex gap-3">
-          <button onClick={onClose} className="flex-1 py-3 rounded-xl border-2 border-gray-200 font-semibold text-gray-600 hover:bg-gray-50 transition-colors">
+        <div className="px-5 pb-5 sm:px-6 sm:pb-6 pt-1 flex gap-2.5">
+          <button onClick={onClose} className="flex-1 py-3 rounded-xl border border-gray-200 font-semibold text-gray-500 hover:bg-gray-50 transition-colors text-sm">
             Annuler
           </button>
           <button
             onClick={handleSubmit}
             disabled={loading}
-            className="flex-1 py-3 rounded-xl bg-primary-600 text-white font-semibold hover:bg-primary-700 disabled:opacity-50 transition-colors flex items-center justify-center gap-2"
+            className="flex-1 py-3 rounded-xl bg-primary-600 text-white font-semibold hover:bg-primary-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2 text-sm"
           >
             {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Plus className="w-5 h-5" />}
             Créer
@@ -897,16 +903,22 @@ function DepositModal({
   };
 
   return (
-    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-3 sm:p-4" onClick={onClose}>
-      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
-        <div className="flex items-center justify-between p-4 sm:p-6 border-b border-gray-100">
-          <h2 className="text-base sm:text-lg font-bold text-gray-900">Déposer sur {epargne.nom}</h2>
-          <button onClick={onClose} className="p-2 rounded-lg hover:bg-gray-100">
+    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-end sm:items-center justify-center p-0 sm:p-4" onClick={onClose}>
+      <div className="bg-white rounded-t-3xl sm:rounded-2xl shadow-2xl w-full sm:max-w-[420px] max-h-[92vh] sm:max-h-[85vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+        <div className="flex items-center gap-3 px-5 py-4 sm:px-6 sm:py-5 border-b border-gray-100">
+          <div className="w-10 h-10 rounded-xl bg-primary-50 text-primary-600 flex items-center justify-center flex-shrink-0">
+            <ArrowDownCircle className="w-5 h-5" />
+          </div>
+          <div className="min-w-0 flex-1">
+            <h2 className="text-base font-bold text-gray-900">Déposer sur {epargne.nom}</h2>
+            <p className="text-[11px] text-gray-400 flex items-center gap-1"><ShieldCheck className="w-3 h-3" />Transaction sécurisée</p>
+          </div>
+          <button onClick={onClose} className="p-2 -mr-1.5 rounded-lg hover:bg-gray-100 transition-colors flex-shrink-0">
             <X className="w-5 h-5 text-gray-400" />
           </button>
         </div>
 
-        <div className="p-6 space-y-4">
+        <div className="px-5 py-5 sm:px-6 sm:py-6 space-y-4">
           {error && <div className="p-3 bg-red-50 border border-red-200 rounded-xl text-sm text-red-600">{error}</div>}
 
           {/* Mode ajout de carte via Stripe Elements */}
@@ -1045,14 +1057,14 @@ function DepositModal({
 
         {/* Footer — caché pendant l'ajout de carte */}
         {!showAddCard && (
-          <div className="p-6 border-t border-gray-100 flex gap-3">
-            <button onClick={onClose} className="flex-1 py-3 rounded-xl border-2 border-gray-200 font-semibold text-gray-600 hover:bg-gray-50">
+          <div className="px-5 pb-5 sm:px-6 sm:pb-6 pt-1 flex gap-2.5">
+            <button onClick={onClose} className="flex-1 py-3 rounded-xl border border-gray-200 font-semibold text-gray-500 hover:bg-gray-50 transition-colors text-sm">
               Annuler
             </button>
             <button
               onClick={handleDeposit}
               disabled={actionLoading || (source === "depot_carte" && !selectedCardId)}
-              className="flex-1 py-3 rounded-xl bg-primary-600 text-white font-semibold hover:bg-primary-700 disabled:opacity-50 flex items-center justify-center gap-2"
+              className="flex-1 py-3 rounded-xl bg-primary-600 text-white font-semibold hover:bg-primary-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2 text-sm"
             >
               {actionLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : <ArrowDownCircle className="w-5 h-5" />}
               {Number(montant) > 0
@@ -1125,16 +1137,22 @@ function WithdrawModal({
   };
 
   return (
-    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-3 sm:p-4" onClick={onClose}>
-      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
-        <div className="flex items-center justify-between p-4 sm:p-6 border-b border-gray-100">
-          <h2 className="text-base sm:text-lg font-bold text-gray-900">Retirer de {epargne.nom}</h2>
-          <button onClick={onClose} className="p-2 rounded-lg hover:bg-gray-100">
+    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-end sm:items-center justify-center p-0 sm:p-4" onClick={onClose}>
+      <div className="bg-white rounded-t-3xl sm:rounded-2xl shadow-2xl w-full sm:max-w-[420px] max-h-[92vh] sm:max-h-[85vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+        <div className="flex items-center gap-3 px-5 py-4 sm:px-6 sm:py-5 border-b border-gray-100">
+          <div className="w-10 h-10 rounded-xl bg-primary-50 text-primary-600 flex items-center justify-center flex-shrink-0">
+            <ArrowUpCircle className="w-5 h-5" />
+          </div>
+          <div className="min-w-0 flex-1">
+            <h2 className="text-base font-bold text-gray-900">Retirer de {epargne.nom}</h2>
+            <p className="text-[11px] text-gray-400 flex items-center gap-1"><ShieldCheck className="w-3 h-3" />Transaction sécurisée</p>
+          </div>
+          <button onClick={onClose} className="p-2 -mr-1.5 rounded-lg hover:bg-gray-100 transition-colors flex-shrink-0">
             <X className="w-5 h-5 text-gray-400" />
           </button>
         </div>
 
-        <div className="p-6 space-y-4">
+        <div className="px-5 py-5 sm:px-6 sm:py-6 space-y-4">
           {error && <div className="p-3 bg-red-50 border border-red-200 rounded-xl text-sm text-red-600">{error}</div>}
 
           {isBloque ? (
@@ -1207,14 +1225,14 @@ function WithdrawModal({
           )}
         </div>
 
-        <div className="p-6 border-t border-gray-100 flex gap-3">
-          <button onClick={onClose} className="flex-1 py-3 rounded-xl border-2 border-gray-200 font-semibold text-gray-600 hover:bg-gray-50">
+        <div className="px-5 pb-5 sm:px-6 sm:pb-6 pt-1 flex gap-2.5">
+          <button onClick={onClose} className="flex-1 py-3 rounded-xl border border-gray-200 font-semibold text-gray-500 hover:bg-gray-50 transition-colors text-sm">
             Annuler
           </button>
           <button
             onClick={handleWithdraw}
             disabled={actionLoading || !!isBloque}
-            className="flex-1 py-3 rounded-xl bg-red-500 text-white font-semibold hover:bg-red-600 disabled:opacity-50 flex items-center justify-center gap-2"
+            className="flex-1 py-3 rounded-xl bg-primary-600 text-white font-semibold hover:bg-primary-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2 text-sm"
           >
             {actionLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : <ArrowUpCircle className="w-5 h-5" />}
             Retirer

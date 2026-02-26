@@ -510,36 +510,39 @@ function CreateEpargneModal({ onClose, onSuccess }: { onClose: () => void; onSuc
   };
 
   return (
-    <div className="fixed inset-0 bg-black/60 backdrop-blur-md z-50 flex items-center justify-center p-3 sm:p-4" onClick={onClose}>
+    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-end sm:items-center justify-center p-0 sm:p-4" onClick={onClose}>
       <div
-        className="bg-[#0F172A] rounded-3xl shadow-2xl w-full max-w-md max-h-[90vh] overflow-y-auto border border-white/10"
+        className="bg-white rounded-t-3xl sm:rounded-2xl shadow-2xl w-full sm:max-w-[420px] max-h-[92vh] sm:max-h-[85vh] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="p-6 pb-2">
-          <div className="flex items-center justify-between mb-1">
-            <h2 className="text-lg font-bold text-white tracking-tight">Créer une réserve</h2>
-            <button onClick={onClose} className="p-2 rounded-xl hover:bg-white/10 transition-colors">
-              <X className="w-5 h-5 text-slate-400" />
-            </button>
+        <div className="flex items-center gap-3 px-5 py-4 sm:px-6 sm:py-5 border-b border-gray-100">
+          <div className="w-10 h-10 rounded-xl bg-primary-50 text-primary-600 flex items-center justify-center flex-shrink-0">
+            <PiggyBank className="w-5 h-5" />
           </div>
-          <p className="text-sm text-slate-500">Organisez votre argent intelligemment</p>
+          <div className="min-w-0 flex-1">
+            <h2 className="text-base font-bold text-gray-900">Créer une réserve</h2>
+            <p className="text-[11px] text-gray-400">Organisez votre argent intelligemment</p>
+          </div>
+          <button onClick={onClose} className="p-2 -mr-1.5 rounded-lg hover:bg-gray-100 transition-colors flex-shrink-0">
+            <X className="w-5 h-5 text-gray-400" />
+          </button>
         </div>
 
-        <div className="p-6 pt-4 space-y-5">
+        <div className="px-5 py-5 sm:px-6 sm:py-6 space-y-5">
           {error && (
-            <div className="p-3 bg-red-500/10 border border-red-500/20 rounded-xl text-sm text-red-400">{error}</div>
+            <div className="p-3 bg-red-50 border border-red-200 rounded-xl text-sm text-red-600">{error}</div>
           )}
 
           {/* Prévisualisation */}
-          <div className={`${selectedTheme.bg} rounded-2xl p-5 transition-all duration-300`}>
+          <div className={`${selectedTheme.bg} rounded-xl p-4 transition-all duration-300`}>
             <div className="flex items-center gap-3">
-              <div className="w-12 h-12 bg-white/10 backdrop-blur-sm rounded-xl flex items-center justify-center text-2xl">
+              <div className="w-11 h-11 bg-white/15 backdrop-blur-sm rounded-xl flex items-center justify-center text-xl">
                 {autoIcon}
               </div>
               <div>
-                <p className="text-white font-semibold text-base">{nom || "Nom de la réserve"}</p>
-                <p className={`text-sm ${selectedTheme.text} opacity-80`}>
+                <p className="text-white font-semibold text-sm">{nom || "Nom de la réserve"}</p>
+                <p className={`text-xs ${selectedTheme.text} opacity-80`}>
                   {type === "libre" ? "Flexible" : type === "objectif" ? "Objectif" : "Automatique"} · {devise}
                 </p>
               </div>
@@ -548,19 +551,19 @@ function CreateEpargneModal({ onClose, onSuccess }: { onClose: () => void; onSuc
 
           {/* Nom */}
           <div>
-            <label className="block text-xs font-medium text-slate-400 mb-2 uppercase tracking-wider">Nom de la réserve</label>
+            <label className="block text-xs font-medium text-gray-500 mb-1.5 ml-0.5">Nom de la réserve</label>
             <input
               type="text"
               value={nom}
               onChange={(e) => setNom(e.target.value)}
               placeholder="Ex : Vacances, Urgences, Projet..."
-              className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-slate-600 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/30 outline-none text-sm transition-all"
+              className="w-full px-4 py-3 rounded-xl border border-gray-200 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent text-sm transition-all"
             />
           </div>
 
           {/* Devise */}
           <div>
-            <label className="block text-xs font-medium text-slate-400 mb-2 uppercase tracking-wider">Devise</label>
+            <label className="block text-xs font-medium text-gray-500 mb-1.5 ml-0.5">Devise</label>
             <div className="grid grid-cols-2 gap-2">
               {[
                 { value: "EUR", label: "EUR", symbol: "€" },
@@ -569,10 +572,10 @@ function CreateEpargneModal({ onClose, onSuccess }: { onClose: () => void; onSuc
                 <button
                   key={d.value}
                   onClick={() => setDevise(d.value as "EUR" | "USD")}
-                  className={`py-3 rounded-xl text-sm font-medium transition-all ${
+                  className={`py-2.5 rounded-xl text-sm font-medium border-2 transition-all ${
                     devise === d.value
-                      ? "bg-indigo-500/20 text-indigo-400 border border-indigo-500/40"
-                      : "bg-white/5 text-slate-400 border border-white/10 hover:bg-white/10"
+                      ? "border-primary-500 bg-primary-50 text-primary-700"
+                      : "border-gray-200 text-gray-500 hover:border-gray-300"
                   }`}
                 >
                   {d.symbol} {d.label}
@@ -583,7 +586,7 @@ function CreateEpargneModal({ onClose, onSuccess }: { onClose: () => void; onSuc
 
           {/* Type */}
           <div>
-            <label className="block text-xs font-medium text-slate-400 mb-2 uppercase tracking-wider">Type</label>
+            <label className="block text-xs font-medium text-gray-500 mb-1.5 ml-0.5">Type</label>
             <div className="grid grid-cols-3 gap-2">
               {[
                 { value: "libre", label: "Flexible", icon: Wallet },
@@ -595,10 +598,10 @@ function CreateEpargneModal({ onClose, onSuccess }: { onClose: () => void; onSuc
                   <button
                     key={t.value}
                     onClick={() => setType(t.value as typeof type)}
-                    className={`py-3 px-2 rounded-xl text-center transition-all ${
+                    className={`py-2.5 px-2 rounded-xl text-center border-2 transition-all ${
                       type === t.value
-                        ? "bg-indigo-500/20 text-indigo-400 border border-indigo-500/40"
-                        : "bg-white/5 text-slate-400 border border-white/10 hover:bg-white/10"
+                        ? "border-primary-500 bg-primary-50 text-primary-700"
+                        : "border-gray-200 text-gray-500 hover:border-gray-300"
                     }`}
                   >
                     <Icon className="w-4 h-4 mx-auto mb-1" />
@@ -613,22 +616,22 @@ function CreateEpargneModal({ onClose, onSuccess }: { onClose: () => void; onSuc
           {type === "objectif" && (
             <div className="space-y-3">
               <div>
-                <label className="block text-xs font-medium text-slate-400 mb-2 uppercase tracking-wider">Montant cible ({devise})</label>
+                <label className="block text-xs font-medium text-gray-500 mb-1.5 ml-0.5">Montant cible ({devise})</label>
                 <input
                   type="number"
                   value={objectifMontant}
                   onChange={(e) => setObjectifMontant(e.target.value)}
                   placeholder="5 000"
-                  className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-slate-600 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/30 outline-none text-sm transition-all"
+                  className="w-full px-4 py-3 rounded-xl border border-gray-200 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent text-sm transition-all"
                 />
               </div>
               <div>
-                <label className="block text-xs font-medium text-slate-400 mb-2 uppercase tracking-wider">Date limite <span className="text-slate-600 normal-case">(optionnel)</span></label>
+                <label className="block text-xs font-medium text-gray-500 mb-1.5 ml-0.5">Date limite <span className="text-gray-400 font-normal">(optionnel)</span></label>
                 <input
                   type="date"
                   value={objectifDate}
                   onChange={(e) => setObjectifDate(e.target.value)}
-                  className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/30 outline-none text-sm transition-all [color-scheme:dark]"
+                  className="w-full px-4 py-3 rounded-xl border border-gray-200 text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent text-sm transition-all"
                 />
               </div>
             </div>
@@ -639,21 +642,21 @@ function CreateEpargneModal({ onClose, onSuccess }: { onClose: () => void; onSuc
             <div className="space-y-3">
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-medium text-slate-400 mb-2 uppercase tracking-wider">Montant auto ({devise})</label>
+                  <label className="block text-xs font-medium text-gray-500 mb-1.5 ml-0.5">Montant auto ({devise})</label>
                   <input
                     type="number"
                     value={montantAuto}
                     onChange={(e) => setMontantAuto(e.target.value)}
                     placeholder="100"
-                    className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-slate-600 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/30 outline-none text-sm transition-all"
+                    className="w-full px-4 py-3 rounded-xl border border-gray-200 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent text-sm transition-all"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-medium text-slate-400 mb-2 uppercase tracking-wider">Fréquence</label>
+                  <label className="block text-xs font-medium text-gray-500 mb-1.5 ml-0.5">Fréquence</label>
                   <select
                     value={frequenceAuto}
                     onChange={(e) => setFrequenceAuto(e.target.value)}
-                    className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/30 outline-none text-sm transition-all [color-scheme:dark]"
+                    className="w-full px-4 py-3 rounded-xl border border-gray-200 text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent text-sm transition-all"
                   >
                     <option value="quotidien">Quotidien</option>
                     <option value="hebdomadaire">Hebdomadaire</option>
@@ -662,14 +665,14 @@ function CreateEpargneModal({ onClose, onSuccess }: { onClose: () => void; onSuc
                 </div>
               </div>
               <div>
-                <label className="block text-xs font-medium text-slate-400 mb-2 uppercase tracking-wider">Source</label>
+                <label className="block text-xs font-medium text-gray-500 mb-1.5 ml-0.5">Source</label>
                 <div className="grid grid-cols-2 gap-2">
                   <button
                     onClick={() => setSourceAuto("wallet")}
-                    className={`flex items-center justify-center gap-2 py-3 rounded-xl transition-all ${
+                    className={`flex items-center justify-center gap-2 py-2.5 rounded-xl border-2 transition-all ${
                       sourceAuto === "wallet"
-                        ? "bg-indigo-500/20 text-indigo-400 border border-indigo-500/40"
-                        : "bg-white/5 text-slate-400 border border-white/10 hover:bg-white/10"
+                        ? "border-primary-500 bg-primary-50 text-primary-700"
+                        : "border-gray-200 text-gray-500 hover:border-gray-300"
                     }`}
                   >
                     <Wallet className="w-4 h-4" />
@@ -677,10 +680,10 @@ function CreateEpargneModal({ onClose, onSuccess }: { onClose: () => void; onSuc
                   </button>
                   <button
                     onClick={() => setSourceAuto("carte")}
-                    className={`flex items-center justify-center gap-2 py-3 rounded-xl transition-all ${
+                    className={`flex items-center justify-center gap-2 py-2.5 rounded-xl border-2 transition-all ${
                       sourceAuto === "carte"
-                        ? "bg-indigo-500/20 text-indigo-400 border border-indigo-500/40"
-                        : "bg-white/5 text-slate-400 border border-white/10 hover:bg-white/10"
+                        ? "border-primary-500 bg-primary-50 text-primary-700"
+                        : "border-gray-200 text-gray-500 hover:border-gray-300"
                     }`}
                   >
                     <CreditCard className="w-4 h-4" />
@@ -693,28 +696,28 @@ function CreateEpargneModal({ onClose, onSuccess }: { onClose: () => void; onSuc
 
           {/* Blocage */}
           <div>
-            <label className="block text-xs font-medium text-slate-400 mb-2 uppercase tracking-wider">
-              Bloquer jusqu&apos;au <span className="text-slate-600 normal-case">(optionnel)</span>
+            <label className="block text-xs font-medium text-gray-500 mb-1.5 ml-0.5">
+              Bloquer jusqu&apos;au <span className="text-gray-400 font-normal">(optionnel)</span>
             </label>
             <input
               type="date"
               value={bloqueJusqua}
               onChange={(e) => setBloqueJusqua(e.target.value)}
-              className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/30 outline-none text-sm transition-all [color-scheme:dark]"
+              className="w-full px-4 py-3 rounded-xl border border-gray-200 text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent text-sm transition-all"
             />
           </div>
 
           {/* Thème */}
           <div>
-            <label className="block text-xs font-medium text-slate-400 mb-2 uppercase tracking-wider">Thème</label>
+            <label className="block text-xs font-medium text-gray-500 mb-1.5 ml-0.5">Thème</label>
             <div className="grid grid-cols-3 gap-2">
               {THEMES.map((t) => (
                 <button
                   key={t.id}
                   onClick={() => setTheme(t.id)}
-                  className={`relative py-3 rounded-xl text-xs font-medium transition-all ${t.bg} ${
+                  className={`relative py-2.5 rounded-xl text-xs font-medium transition-all ${t.bg} ${
                     theme === t.id
-                      ? "ring-2 ring-white/40 ring-offset-2 ring-offset-[#0F172A]"
+                      ? "ring-2 ring-primary-500 ring-offset-2 ring-offset-white"
                       : "opacity-60 hover:opacity-80"
                   }`}
                 >
@@ -726,20 +729,20 @@ function CreateEpargneModal({ onClose, onSuccess }: { onClose: () => void; onSuc
         </div>
 
         {/* Footer */}
-        <div className="p-6 pt-2">
+        <div className="px-5 pb-5 sm:px-6 sm:pb-6 pt-1 flex gap-2.5">
+          <button
+            onClick={onClose}
+            className="flex-1 py-3 rounded-xl border border-gray-200 font-semibold text-gray-500 hover:bg-gray-50 transition-colors text-sm"
+          >
+            Annuler
+          </button>
           <button
             onClick={handleSubmit}
             disabled={loading || !nom.trim()}
-            className="w-full py-3.5 rounded-xl bg-gradient-to-r from-indigo-600 to-indigo-500 text-white font-semibold text-sm hover:from-indigo-500 hover:to-indigo-400 disabled:opacity-40 disabled:cursor-not-allowed transition-all shadow-lg shadow-indigo-500/20 flex items-center justify-center gap-2"
+            className="flex-1 py-3 rounded-xl bg-primary-600 text-white font-semibold hover:bg-primary-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2 text-sm"
           >
             {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Plus className="w-5 h-5" />}
             Créer la réserve
-          </button>
-          <button
-            onClick={onClose}
-            className="w-full mt-2 py-3 rounded-xl text-slate-500 text-sm font-medium hover:text-slate-400 transition-colors"
-          >
-            Annuler
           </button>
         </div>
       </div>
@@ -938,16 +941,22 @@ function DepositModal({
   };
 
   return (
-    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-3 sm:p-4" onClick={onClose}>
-      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
-        <div className="flex items-center justify-between p-4 sm:p-6 border-b border-gray-100">
-          <h2 className="text-base sm:text-lg font-bold text-gray-900">Déposer sur {epargne.nom}</h2>
-          <button onClick={onClose} className="p-2 rounded-lg hover:bg-gray-100">
+    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-end sm:items-center justify-center p-0 sm:p-4" onClick={onClose}>
+      <div className="bg-white rounded-t-3xl sm:rounded-2xl shadow-2xl w-full sm:max-w-[420px] max-h-[92vh] sm:max-h-[85vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+        <div className="flex items-center gap-3 px-5 py-4 sm:px-6 sm:py-5 border-b border-gray-100">
+          <div className="w-10 h-10 rounded-xl bg-primary-50 text-primary-600 flex items-center justify-center flex-shrink-0">
+            <ArrowDownCircle className="w-5 h-5" />
+          </div>
+          <div className="min-w-0 flex-1">
+            <h2 className="text-base font-bold text-gray-900">Déposer sur {epargne.nom}</h2>
+            <p className="text-[11px] text-gray-400 flex items-center gap-1"><ShieldCheck className="w-3 h-3" />Transaction sécurisée</p>
+          </div>
+          <button onClick={onClose} className="p-2 -mr-1.5 rounded-lg hover:bg-gray-100 transition-colors flex-shrink-0">
             <X className="w-5 h-5 text-gray-400" />
           </button>
         </div>
 
-        <div className="p-6 space-y-4">
+        <div className="px-5 py-5 sm:px-6 sm:py-6 space-y-4">
           {error && <div className="p-3 bg-red-50 border border-red-200 rounded-xl text-sm text-red-600">{error}</div>}
 
           {/* Mode ajout de carte via Stripe Elements */}
@@ -1086,14 +1095,14 @@ function DepositModal({
 
         {/* Footer — caché pendant l'ajout de carte */}
         {!showAddCard && (
-          <div className="p-6 border-t border-gray-100 flex gap-3">
-            <button onClick={onClose} className="flex-1 py-3 rounded-xl border-2 border-gray-200 font-semibold text-gray-600 hover:bg-gray-50">
+          <div className="px-5 pb-5 sm:px-6 sm:pb-6 pt-1 flex gap-2.5">
+            <button onClick={onClose} className="flex-1 py-3 rounded-xl border border-gray-200 font-semibold text-gray-500 hover:bg-gray-50 transition-colors text-sm">
               Annuler
             </button>
             <button
               onClick={handleDeposit}
               disabled={actionLoading || (source === "depot_carte" && !selectedCardId)}
-              className="flex-1 py-3 rounded-xl bg-primary-600 text-white font-semibold hover:bg-primary-700 disabled:opacity-50 flex items-center justify-center gap-2"
+              className="flex-1 py-3 rounded-xl bg-primary-600 text-white font-semibold hover:bg-primary-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2 text-sm"
             >
               {actionLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : <ArrowDownCircle className="w-5 h-5" />}
               {Number(montant) > 0
@@ -1166,16 +1175,22 @@ function WithdrawModal({
   };
 
   return (
-    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-3 sm:p-4" onClick={onClose}>
-      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
-        <div className="flex items-center justify-between p-4 sm:p-6 border-b border-gray-100">
-          <h2 className="text-base sm:text-lg font-bold text-gray-900">Retirer de {epargne.nom}</h2>
-          <button onClick={onClose} className="p-2 rounded-lg hover:bg-gray-100">
+    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-end sm:items-center justify-center p-0 sm:p-4" onClick={onClose}>
+      <div className="bg-white rounded-t-3xl sm:rounded-2xl shadow-2xl w-full sm:max-w-[420px] max-h-[92vh] sm:max-h-[85vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+        <div className="flex items-center gap-3 px-5 py-4 sm:px-6 sm:py-5 border-b border-gray-100">
+          <div className="w-10 h-10 rounded-xl bg-primary-50 text-primary-600 flex items-center justify-center flex-shrink-0">
+            <ArrowUpCircle className="w-5 h-5" />
+          </div>
+          <div className="min-w-0 flex-1">
+            <h2 className="text-base font-bold text-gray-900">Retirer de {epargne.nom}</h2>
+            <p className="text-[11px] text-gray-400 flex items-center gap-1"><ShieldCheck className="w-3 h-3" />Transaction sécurisée</p>
+          </div>
+          <button onClick={onClose} className="p-2 -mr-1.5 rounded-lg hover:bg-gray-100 transition-colors flex-shrink-0">
             <X className="w-5 h-5 text-gray-400" />
           </button>
         </div>
 
-        <div className="p-6 space-y-4">
+        <div className="px-5 py-5 sm:px-6 sm:py-6 space-y-4">
           {error && <div className="p-3 bg-red-50 border border-red-200 rounded-xl text-sm text-red-600">{error}</div>}
 
           {isBloque ? (
@@ -1248,14 +1263,14 @@ function WithdrawModal({
           )}
         </div>
 
-        <div className="p-6 border-t border-gray-100 flex gap-3">
-          <button onClick={onClose} className="flex-1 py-3 rounded-xl border-2 border-gray-200 font-semibold text-gray-600 hover:bg-gray-50">
+        <div className="px-5 pb-5 sm:px-6 sm:pb-6 pt-1 flex gap-2.5">
+          <button onClick={onClose} className="flex-1 py-3 rounded-xl border border-gray-200 font-semibold text-gray-500 hover:bg-gray-50 transition-colors text-sm">
             Annuler
           </button>
           <button
             onClick={handleWithdraw}
             disabled={actionLoading || !!isBloque}
-            className="flex-1 py-3 rounded-xl bg-red-500 text-white font-semibold hover:bg-red-600 disabled:opacity-50 flex items-center justify-center gap-2"
+            className="flex-1 py-3 rounded-xl bg-primary-600 text-white font-semibold hover:bg-primary-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2 text-sm"
           >
             {actionLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : <ArrowUpCircle className="w-5 h-5" />}
             Retirer
