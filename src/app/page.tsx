@@ -11,6 +11,7 @@ import {
   Zap,
   CreditCard,
   PiggyBank,
+  Bitcoin,
 } from "lucide-react";
 
 export default function HomePage() {
@@ -39,7 +40,7 @@ export default function HomePage() {
               .
             </h1>
             <p className="text-lg md:text-xl text-gray-400 mb-10 max-w-2xl mx-auto leading-relaxed">
-              Un portefeuille sécurisé pour envoyer, recevoir et piloter votre argent en temps réel.
+              Un portefeuille sécurisé pour envoyer, recevoir, épargner et investir en Bitcoin — le tout en temps réel.
             </p>
             <Link
               href="/inscription"
@@ -79,7 +80,7 @@ export default function HomePage() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {[
               {
                 icon: Wallet,
@@ -112,6 +113,22 @@ export default function HomePage() {
                   "Organisez votre argent dans des coffres dédiés. Objectif, libre ou programmé.",
                 bg: "bg-amber-50",
                 color: "text-amber-600",
+              },
+              {
+                icon: Bitcoin,
+                title: "Bitcoin intégré",
+                description:
+                  "Achetez et vendez du Bitcoin directement depuis votre portefeuille, au prix du marché en temps réel.",
+                bg: "bg-amber-50",
+                color: "text-amber-600",
+              },
+              {
+                icon: Shield,
+                title: "Sécurité maximale",
+                description:
+                  "Chiffrement bancaire, transactions sécurisées par Stripe. Votre argent est protégé.",
+                bg: "bg-emerald-50",
+                color: "text-emerald-600",
               },
             ].map((item, i) => (
               <div
@@ -257,6 +274,7 @@ export default function HomePage() {
                   "Transferts instantanés illimités",
                   "Liens de paiement partageables",
                   "Jusqu'à 10 coffres",
+                  "Achat & vente de Bitcoin",
                   "Dépôts & retraits par carte",
                   "Historique complet en temps réel",
                 ].map((text, i) => (

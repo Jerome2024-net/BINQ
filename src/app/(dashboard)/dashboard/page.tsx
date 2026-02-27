@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useFinance } from "@/contexts/FinanceContext";
 import { DashboardSkeleton } from "@/components/Skeleton";
@@ -17,6 +17,9 @@ import {
   Send,
   Lock,
   Bitcoin,
+  TrendingUp,
+  TrendingDown,
+  Loader2,
 } from "lucide-react";
 
 interface Coffre {
@@ -46,6 +49,13 @@ export default function DashboardPage() {
   const [coffresLoading, setCoffresLoading] = useState(true);
   const [showSolde, setShowSolde] = useState(true);
 
+  // ── Bitcoin ──
+  const [btcWallet, setBtcWallet] = useState<{ solde: number }>({ solde: 0 });
+  const [btcPrice, setBtcPrice] = useState<number | null>(null);
+  const [btcChange24h, setBtcChange24h] = useState<number>(0);
+  const [btcTransactions, setBtcTransactions] = useState<Array<{ id: string; type: string; montant_crypto: number; montant_eur: number; created_at: string }>>([]);
+  const [btcLoading, setBtcLoading] = useState(true);
+
   useEffect(() => {
     if (user) getOrCreateWallet();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -66,6 +76,29 @@ export default function DashboardPage() {
     };
     charger();
   }, []);
+
+  // Charger Bitcoin
+  const fetchBtcData = useCallback(async () => {
+    setBtcLoading(true);
+    try {
+      const [priceRes, tradeRes] = await Promise.all([
+        fetch("/api/crypto/price"),
+        fetch("/api/crypto/trade"),
+      ]);
+      const priceData = await priceRes.json();
+      const tradeData = await tradeRes.json();
+      if (priceData.price) {
+        setBtcPrice(priceData.price);
+        setBtcChange24h(priceData.change24h || 0);
+      }
+      if (tradeData.wallet) setBtcWallet(tradeData.wallet);
+      if (tradeData.transactions) setBtcTransactions(tradeData.transactions);
+    } catch { /* ignore */ } finally { setBtcLoading(false); }
+  }, []);
+
+  useEffect(() => {
+    if (user) fetchBtcData();
+  }, [user, fetchBtcData]);
 
   const soldeWallet = wallet?.solde ?? 0;
   const recentTx = getTransactions({ limit: 5 });
@@ -89,6 +122,8 @@ export default function DashboardPage() {
       remboursement: "Remboursement",
       transfert_entrant: "Reçu",
       transfert_sortant: "Envoyé",
+      achat_crypto: "Achat BTC",
+      vente_crypto: "Vente BTC",
     };
     return labels[type] || type;
   };
@@ -124,7 +159,7 @@ export default function DashboardPage() {
       </div>
 
       {/* ── Actions rapides ── */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+      <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
         <Link
           href="/portefeuille"
           className="flex flex-col items-center gap-2.5 py-5 rounded-2xl bg-primary-600 text-white hover:bg-primary-700 transition-colors"
@@ -152,6 +187,13 @@ export default function DashboardPage() {
         >
           <Minus className="w-5 h-5" />
           <span className="text-xs font-semibold">Retirer</span>
+        </Link>
+        <Link
+          href="/portefeuille"
+          className="flex flex-col items-center gap-2.5 py-5 rounded-2xl border border-amber-200 bg-amber-50 text-amber-700 hover:bg-amber-100 transition-colors col-span-2 sm:col-span-1"
+        >
+          <Bitcoin className="w-5 h-5" />
+          <span className="text-xs font-semibold">Bitcoin</span>
         </Link>
       </div>
 
@@ -248,6 +290,20 @@ export default function DashboardPage() {
               <p className="text-sm font-medium text-gray-900">Bitcoin</p>
               <p className="text-xs text-gray-400">Achat et vente de BTC</p>
             </div>
+            <div className="text-right">
+              {btcLoading ? (
+                <Loader2 className="w-4 h-4 text-gray-300 animate-spin" />
+              ) : btcWallet.solde > 0 ? (
+                <>
+                  <p className="text-sm font-semibold text-gray-900 tabular-nums">{btcWallet.solde.toFixed(8)} BTC</p>
+                  {btcPrice && (
+                    <p className="text-[10px] text-gray-400 tabular-nums">≈ {(btcWallet.solde * btcPrice).toLocaleString("fr-FR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} €</p>
+                  )}
+                </>
+              ) : (
+                <p className="text-xs text-gray-400">0 BTC</p>
+              )}
+            </div>
             <ArrowRight className="w-4 h-4 text-gray-300 flex-shrink-0" />
           </Link>
 
@@ -291,6 +347,88 @@ export default function DashboardPage() {
           </div>
         </div>
       )}
+
+      {/* ── Bitcoin (aperçu) ── */}
+      <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden">
+        <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100">
+          <h2 className="text-sm font-semibold text-gray-900 uppercase tracking-wide">Bitcoin</h2>
+          <Link href="/portefeuille" className="text-xs font-medium text-gray-400 hover:text-gray-600 flex items-center gap-1 transition-colors">
+            Trader <ArrowRight className="w-3.5 h-3.5" />
+          </Link>
+        </div>
+        <div className="px-5 py-4">
+          {btcLoading ? (
+            <div className="flex justify-center py-6">
+              <Loader2 className="w-5 h-5 text-gray-300 animate-spin" />
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {/* Prix + Variation */}
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-amber-50 flex items-center justify-center">
+                    <Bitcoin className="w-5 h-5 text-amber-600" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-semibold text-gray-900">Bitcoin</p>
+                    <p className="text-xs text-gray-400">BTC</p>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <p className="text-sm font-bold text-gray-900 tabular-nums">
+                    {btcPrice ? `${btcPrice.toLocaleString("fr-FR")} €` : "—"}
+                  </p>
+                  <span className={`text-[10px] font-semibold flex items-center justify-end gap-0.5 ${btcChange24h >= 0 ? "text-green-600" : "text-red-500"}`}>
+                    {btcChange24h >= 0 ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
+                    {btcChange24h >= 0 ? "+" : ""}{btcChange24h}% (24h)
+                  </span>
+                </div>
+              </div>
+
+              {/* Solde BTC */}
+              {btcWallet.solde > 0 && (
+                <div className="bg-amber-50/50 rounded-xl p-3.5 flex items-center justify-between">
+                  <span className="text-xs text-gray-500 font-medium">Votre solde</span>
+                  <div className="text-right">
+                    <p className="text-sm font-bold text-gray-900 tabular-nums">{btcWallet.solde.toFixed(8)} BTC</p>
+                    {btcPrice && (
+                      <p className="text-[10px] text-gray-400 tabular-nums">≈ {(btcWallet.solde * btcPrice).toLocaleString("fr-FR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} €</p>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {/* Dernières transactions BTC */}
+              {btcTransactions.length > 0 && (
+                <div className="space-y-1.5">
+                  <p className="text-[10px] text-gray-400 uppercase tracking-wider font-medium">Dernières opérations</p>
+                  {btcTransactions.slice(0, 3).map((tx) => (
+                    <div key={tx.id} className="flex items-center justify-between py-1.5">
+                      <div className="flex items-center gap-2">
+                        <div className={`w-6 h-6 rounded-full flex items-center justify-center ${tx.type === "achat" ? "bg-green-50" : "bg-red-50"}`}>
+                          {tx.type === "achat" ? <TrendingUp className="w-3 h-3 text-green-600" /> : <TrendingDown className="w-3 h-3 text-red-500" />}
+                        </div>
+                        <span className="text-xs text-gray-700 font-medium">{tx.type === "achat" ? "Achat" : "Vente"}</span>
+                      </div>
+                      <span className={`text-xs font-semibold tabular-nums ${tx.type === "achat" ? "text-green-600" : "text-red-500"}`}>
+                        {tx.type === "achat" ? "+" : "-"}{tx.montant_crypto.toFixed(8)} BTC
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {/* CTA */}
+              <Link
+                href="/portefeuille"
+                className="block w-full text-center py-2.5 rounded-xl bg-amber-50 text-amber-700 font-semibold text-xs hover:bg-amber-100 transition-colors"
+              >
+                Acheter / Vendre du Bitcoin
+              </Link>
+            </div>
+          )}
+        </div>
+      </div>
 
       {/* ── 5. Résumé global ── */}
       <div className="bg-white rounded-2xl border border-gray-200">
