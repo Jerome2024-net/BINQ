@@ -8,6 +8,8 @@ import { useToast } from "@/contexts/ToastContext";
 import DepositWithdrawModal from "@/components/DepositWithdrawModal";
 import { PortefeuilleSkeleton } from "@/components/Skeleton";
 import { formatMontant, formatDate } from "@/lib/data";
+import { getStripe } from "@/lib/stripe-client";
+import { Elements, PaymentElement, useStripe, useElements } from "@stripe/react-stripe-js";
 import {
   Eye,
   EyeOff,
@@ -32,6 +34,8 @@ import {
   Bitcoin,
   TrendingUp,
   TrendingDown,
+  CreditCard,
+  Wallet,
 } from "lucide-react";
 
 interface SearchUser {
@@ -93,11 +97,14 @@ export default function PortefeuillePage() {
   const [btcChange24h, setBtcChange24h] = useState<number>(0);
   const [btcAmount, setBtcAmount] = useState("");
   const [btcLoading, setBtcLoading] = useState(false);
-  const [btcStep, setBtcStep] = useState<"form" | "confirm" | "success">("form");
+  const [btcStep, setBtcStep] = useState<"form" | "confirm" | "payment" | "success">("form");
   const [btcResult, setBtcResult] = useState<{ montant_crypto: number; montant_eur: number; frais: number; reference: string } | null>(null);
   const [btcWallet, setBtcWallet] = useState<{ solde: number }>({ solde: 0 });
   const [btcTransactions, setBtcTransactions] = useState<Array<{ id: string; type: string; montant_crypto: number; montant_eur: number; prix_unitaire: number; frais_eur: number; reference: string; created_at: string }>>([]);
   const [btcPriceLoading, setBtcPriceLoading] = useState(false);
+  const [btcPayMethod, setBtcPayMethod] = useState<"wallet" | "carte">("wallet");
+  const [btcClientSecret, setBtcClientSecret] = useState<string | null>(null);
+  const [btcPaymentIntentId, setBtcPaymentIntentId] = useState<string | null>(null);
 
   // ── Payment Links ──
   const [linkModalOpen, setLinkModalOpen] = useState(false);
@@ -179,6 +186,9 @@ export default function PortefeuillePage() {
     setBtcStep("form");
     setBtcAmount("");
     setBtcResult(null);
+    setBtcPayMethod("wallet");
+    setBtcClientSecret(null);
+    setBtcPaymentIntentId(null);
     fetchBtcPrice();
     fetchBtcData();
   };
@@ -187,34 +197,88 @@ export default function PortefeuillePage() {
     const montant = parseFloat(btcAmount);
     if (!montant || montant <= 0 || !btcPrice) return;
 
-    if (btcMode === "achat" && montant > soldeWallet) {
-      showToast("error", "Erreur", "Solde EUR insuffisant");
-      return;
-    }
+    // Pour vente → toujours via wallet
+    // Pour achat via wallet → vérifier solde EUR
+    if (btcMode === "vente" || btcPayMethod === "wallet") {
+      if (btcMode === "achat" && montant > soldeWallet) {
+        showToast("error", "Erreur", "Solde EUR insuffisant");
+        return;
+      }
 
+      setBtcLoading(true);
+      try {
+        const res = await fetch("/api/crypto/trade", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            type: btcMode,
+            montant_eur: montant,
+            prix_btc: btcPrice,
+            methode: "wallet",
+          }),
+        });
+        const data = await res.json();
+        if (!res.ok) {
+          showToast("error", "Erreur", data.error || "Transaction échouée");
+          return;
+        }
+        setBtcResult(data.transaction);
+        setBtcStep("success");
+        getOrCreateWallet();
+        fetchBtcData();
+        showToast("success", btcMode === "achat" ? "Achat confirmé" : "Vente confirmée", `Transaction ${data.transaction.reference} effectuée`);
+      } catch {
+        showToast("error", "Erreur", "Erreur lors de la transaction");
+      } finally { setBtcLoading(false); }
+
+    } else {
+      // ── ACHAT PAR CARTE → Créer PaymentIntent puis afficher Stripe Elements ──
+      setBtcLoading(true);
+      try {
+        const res = await fetch("/api/crypto/trade", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            type: "achat",
+            montant_eur: montant,
+            prix_btc: btcPrice,
+            methode: "carte",
+          }),
+        });
+        const data = await res.json();
+        if (!res.ok) {
+          showToast("error", "Erreur", data.error || "Erreur création paiement");
+          return;
+        }
+        setBtcClientSecret(data.clientSecret);
+        setBtcPaymentIntentId(data.paymentIntentId);
+        setBtcStep("payment");
+      } catch {
+        showToast("error", "Erreur", "Erreur lors de la création du paiement");
+      } finally { setBtcLoading(false); }
+    }
+  };
+
+  const handleBtcCardSuccess = async () => {
+    if (!btcPaymentIntentId) return;
     setBtcLoading(true);
     try {
-      const res = await fetch("/api/crypto/trade", {
+      const res = await fetch("/api/crypto/confirm", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          type: btcMode,
-          montant_eur: montant,
-          prix_btc: btcPrice,
-        }),
+        body: JSON.stringify({ paymentIntentId: btcPaymentIntentId }),
       });
       const data = await res.json();
       if (!res.ok) {
-        showToast("error", "Erreur", data.error || "Transaction échouée");
+        showToast("error", "Erreur", data.error || "Erreur confirmation");
         return;
       }
       setBtcResult(data.transaction);
       setBtcStep("success");
-      getOrCreateWallet();
       fetchBtcData();
-      showToast("success", btcMode === "achat" ? "Achat confirmé" : "Vente confirmée", `Transaction ${data.transaction.reference} effectuée`);
+      showToast("success", "Achat confirmé", `Transaction ${data.transaction.reference} effectuée`);
     } catch {
-      showToast("error", "Erreur", "Erreur lors de la transaction");
+      showToast("error", "Erreur", "Erreur lors de la confirmation");
     } finally { setBtcLoading(false); }
   };
 
@@ -1193,7 +1257,7 @@ export default function PortefeuillePage() {
               </div>
               <div className="min-w-0 flex-1">
                 <h3 className="text-base font-bold text-gray-900">
-                  {btcStep === "success" ? "Transaction confirmée !" : btcStep === "confirm" ? "Confirmation" : "Bitcoin"}
+                  {btcStep === "success" ? "Transaction confirmée !" : btcStep === "confirm" ? "Confirmation" : btcStep === "payment" ? "Paiement par carte" : "Bitcoin"}
                 </h3>
                 <div className="flex items-center gap-2">
                   <p className="text-[11px] text-gray-400 flex items-center gap-1">
@@ -1288,6 +1352,43 @@ export default function PortefeuillePage() {
                     )}
                   </div>
 
+                  {/* Payment Method Selector — only for achat */}
+                  {btcMode === "achat" && (
+                    <div className="space-y-2">
+                      <label className="text-xs font-medium text-gray-500 ml-0.5">Moyen de paiement</label>
+                      <div className="grid grid-cols-2 gap-2">
+                        <button
+                          onClick={() => setBtcPayMethod("wallet")}
+                          className={`flex items-center gap-2.5 px-3.5 py-3 rounded-xl border transition-all text-left ${
+                            btcPayMethod === "wallet"
+                              ? "border-primary-300 bg-primary-50 ring-1 ring-primary-200"
+                              : "border-gray-200 hover:bg-gray-50"
+                          }`}
+                        >
+                          <Wallet className={`w-4.5 h-4.5 ${btcPayMethod === "wallet" ? "text-primary-600" : "text-gray-400"}`} />
+                          <div>
+                            <p className={`text-xs font-semibold ${btcPayMethod === "wallet" ? "text-primary-700" : "text-gray-700"}`}>Portefeuille</p>
+                            <p className="text-[10px] text-gray-400">Solde EUR</p>
+                          </div>
+                        </button>
+                        <button
+                          onClick={() => setBtcPayMethod("carte")}
+                          className={`flex items-center gap-2.5 px-3.5 py-3 rounded-xl border transition-all text-left ${
+                            btcPayMethod === "carte"
+                              ? "border-primary-300 bg-primary-50 ring-1 ring-primary-200"
+                              : "border-gray-200 hover:bg-gray-50"
+                          }`}
+                        >
+                          <CreditCard className={`w-4.5 h-4.5 ${btcPayMethod === "carte" ? "text-primary-600" : "text-gray-400"}`} />
+                          <div>
+                            <p className={`text-xs font-semibold ${btcPayMethod === "carte" ? "text-primary-700" : "text-gray-700"}`}>Carte bancaire</p>
+                            <p className="text-[10px] text-gray-400">Visa, Mastercard</p>
+                          </div>
+                        </button>
+                      </div>
+                    </div>
+                  )}
+
                   {/* Quick amounts */}
                   <div className="grid grid-cols-4 gap-2">
                     {[10, 25, 50, 100].map((amt) => (
@@ -1346,6 +1447,15 @@ export default function PortefeuillePage() {
                         <span className="text-gray-400">Prix BTC</span>
                         <span className="text-gray-900 font-medium">{btcPrice.toLocaleString("fr-FR")} €</span>
                       </div>
+                      {btcMode === "achat" && (
+                        <div className="flex justify-between text-sm">
+                          <span className="text-gray-400">Paiement</span>
+                          <span className="text-gray-900 font-medium flex items-center gap-1.5">
+                            {btcPayMethod === "carte" ? <CreditCard className="w-3.5 h-3.5" /> : <Wallet className="w-3.5 h-3.5" />}
+                            {btcPayMethod === "carte" ? "Carte bancaire" : "Portefeuille EUR"}
+                          </span>
+                        </div>
+                      )}
                     </div>
                   </div>
 
@@ -1363,10 +1473,42 @@ export default function PortefeuillePage() {
                         btcMode === "achat" ? "bg-green-600 hover:bg-green-700" : "bg-red-500 hover:bg-red-600"
                       }`}
                     >
-                      {btcLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Bitcoin className="w-4 h-4" />}
-                      {btcLoading ? "En cours..." : "Confirmer"}
+                      {btcLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : btcPayMethod === "carte" && btcMode === "achat" ? <CreditCard className="w-4 h-4" /> : <Bitcoin className="w-4 h-4" />}
+                      {btcLoading ? "En cours..." : btcPayMethod === "carte" && btcMode === "achat" ? "Payer par carte" : "Confirmer"}
                     </button>
                   </div>
+                </div>
+              )}
+
+              {/* Stripe Card Payment */}
+              {btcStep === "payment" && btcClientSecret && (
+                <div className="space-y-4">
+                  <div className="bg-amber-50 rounded-xl p-3 text-center">
+                    <p className="text-xs text-amber-700 font-medium">
+                      Achat de {btcPrice ? ((parseFloat(btcAmount) * (1 - 0.015)) / btcPrice).toFixed(8) : "..."} BTC pour {parseFloat(btcAmount).toFixed(2)} €
+                    </p>
+                  </div>
+                  <Elements
+                    stripe={getStripe()}
+                    options={{
+                      clientSecret: btcClientSecret,
+                      appearance: {
+                        theme: "stripe",
+                        variables: {
+                          colorPrimary: "#4f46e5",
+                          fontFamily: 'ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+                          spacingUnit: "4px",
+                          borderRadius: "10px",
+                        },
+                      },
+                      locale: "fr",
+                    }}
+                  >
+                    <BtcCardPaymentForm
+                      onSuccess={handleBtcCardSuccess}
+                      onCancel={() => { setBtcStep("confirm"); setBtcClientSecret(null); }}
+                    />
+                  </Elements>
                 </div>
               )}
 
@@ -1431,5 +1573,88 @@ export default function PortefeuillePage() {
         </div>
       )}
     </div>
+  );
+}
+
+// ========================
+// Composant : Formulaire Stripe Elements pour achat BTC par carte
+// ========================
+function BtcCardPaymentForm({
+  onSuccess,
+  onCancel,
+}: {
+  onSuccess: () => void;
+  onCancel: () => void;
+}) {
+  const stripe = useStripe();
+  const elements = useElements();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!stripe || !elements) return;
+
+    setIsSubmitting(true);
+    setErrorMessage("");
+
+    try {
+      const { error } = await stripe.confirmPayment({
+        elements,
+        confirmParams: {
+          return_url: `${window.location.origin}/portefeuille?btc_payment=success`,
+        },
+        redirect: "if_required",
+      });
+
+      if (error) {
+        setErrorMessage(error.message || "Le paiement a échoué");
+      } else {
+        onSuccess();
+      }
+    } catch {
+      setErrorMessage("Erreur lors du paiement");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-4">
+      <PaymentElement options={{ layout: "tabs" }} />
+
+      {errorMessage && (
+        <div className="bg-red-50 border border-red-100 rounded-lg p-3">
+          <p className="text-xs text-red-600">{errorMessage}</p>
+        </div>
+      )}
+
+      <div className="flex gap-2.5">
+        <button
+          type="button"
+          onClick={onCancel}
+          className="flex-1 py-3 rounded-xl border border-gray-200 text-gray-500 font-semibold hover:bg-gray-50 transition-colors text-sm"
+        >
+          Retour
+        </button>
+        <button
+          type="submit"
+          disabled={!stripe || !elements || isSubmitting}
+          className="flex-[2] py-3 rounded-xl font-semibold transition-colors disabled:opacity-50 flex items-center justify-center gap-2 text-sm text-white bg-green-600 hover:bg-green-700"
+        >
+          {isSubmitting ? (
+            <Loader2 className="w-5 h-5 animate-spin" />
+          ) : (
+            <CreditCard className="w-4 h-4" />
+          )}
+          {isSubmitting ? "Paiement en cours..." : "Payer"}
+        </button>
+      </div>
+
+      <p className="text-[10px] text-center text-gray-400 flex items-center justify-center gap-1">
+        <Lock className="w-3 h-3" />
+        Paiement sécurisé via Stripe
+      </p>
+    </form>
   );
 }

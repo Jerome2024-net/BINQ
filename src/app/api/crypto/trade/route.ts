@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getAuthenticatedUser } from "@/lib/api-auth";
 import { createClient } from "@supabase/supabase-js";
+import { getStripe } from "@/lib/stripe";
+import { recordFee } from "@/lib/admin-fees";
 
 function getServiceClient() {
   return createClient(
@@ -56,7 +58,7 @@ export async function POST(req: NextRequest) {
 
     const supabase = getServiceClient();
     const body = await req.json();
-    const { type, montant_eur, prix_btc } = body;
+    const { type, montant_eur, prix_btc, methode = "wallet" } = body;
 
     if (!type || !["achat", "vente"].includes(type)) {
       return NextResponse.json({ error: "Type invalide" }, { status: 400 });
@@ -74,6 +76,50 @@ export async function POST(req: NextRequest) {
     const frais = Math.round(montant_eur * FRAIS_TAUX * 100) / 100;
     const montantNet = montant_eur - frais;
     const montantCrypto = montantNet / prix_btc;
+    const reference = generateRef();
+
+    // ═══════════════════════════════════════════
+    // ACHAT PAR CARTE — créer PaymentIntent Stripe
+    // ═══════════════════════════════════════════
+    if (type === "achat" && methode === "carte") {
+      const stripe = getStripe();
+      const amountCents = Math.round(montant_eur * 100);
+
+      const paymentIntent = await stripe.paymentIntents.create({
+        amount: amountCents,
+        currency: "eur",
+        description: `Achat Bitcoin – ${montantCrypto.toFixed(8)} BTC`,
+        automatic_payment_methods: { enabled: true },
+        metadata: {
+          type: "crypto_achat",
+          userId: user.id,
+          montant_eur: String(montant_eur),
+          prix_btc: String(prix_btc),
+          frais: String(frais),
+          montant_crypto: String(montantCrypto),
+          reference,
+          app: "binq",
+        },
+      });
+
+      return NextResponse.json({
+        success: true,
+        methode: "carte",
+        clientSecret: paymentIntent.client_secret,
+        paymentIntentId: paymentIntent.id,
+        reference,
+        preview: {
+          montant_crypto: montantCrypto,
+          montant_eur,
+          frais,
+          prix_unitaire: prix_btc,
+        },
+      });
+    }
+
+    // ═══════════════════════════════════════════
+    // ACHAT / VENTE VIA WALLET (existant)
+    // ═══════════════════════════════════════════
 
     // Get EUR wallet
     const { data: wallet } = await supabase
@@ -104,8 +150,6 @@ export async function POST(req: NextRequest) {
       if (cwErr) return NextResponse.json({ error: "Erreur création wallet crypto" }, { status: 500 });
       cryptoWallet = newCW;
     }
-
-    const reference = generateRef();
 
     if (type === "achat") {
       // Check EUR balance
@@ -164,6 +208,16 @@ export async function POST(req: NextRequest) {
           message: `Vous avez acheté ${montantCrypto.toFixed(8)} BTC pour ${montant_eur.toFixed(2)} €`,
         });
       } catch { /* ignore */ }
+
+      // Record fee for admin
+      try {
+        await recordFee({
+          userId: user.id,
+          source: "crypto_achat",
+          montant: frais,
+          transactionRef: reference,
+        });
+      } catch { /* ignore fee errors */ }
 
       return NextResponse.json({
         success: true,
@@ -238,6 +292,16 @@ export async function POST(req: NextRequest) {
           message: `Vous avez vendu ${montantCryptoVente.toFixed(8)} BTC pour ${montantNet.toFixed(2)} €`,
         });
       } catch { /* ignore */ }
+
+      // Record fee for admin
+      try {
+        await recordFee({
+          userId: user.id,
+          source: "crypto_vente",
+          montant: frais,
+          transactionRef: reference,
+        });
+      } catch { /* ignore fee errors */ }
 
       return NextResponse.json({
         success: true,
