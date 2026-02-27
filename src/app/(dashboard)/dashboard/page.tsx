@@ -16,6 +16,7 @@ import {
   Minus,
   Send,
   Lock,
+  Bitcoin,
 } from "lucide-react";
 
 interface Coffre {
@@ -239,6 +240,16 @@ export default function DashboardPage() {
             <ArrowRight className="w-4 h-4 text-gray-300 flex-shrink-0" />
           </Link>
 
+          <Link href="/portefeuille" className="flex items-center gap-4 px-5 py-4 hover:bg-gray-50 transition-colors">
+            <div className="w-10 h-10 rounded-full bg-amber-50 flex items-center justify-center flex-shrink-0">
+              <Bitcoin className="w-5 h-5 text-amber-600" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-medium text-gray-900">Bitcoin</p>
+              <p className="text-xs text-gray-400">Achat et vente de BTC</p>
+            </div>
+            <ArrowRight className="w-4 h-4 text-gray-300 flex-shrink-0" />
+          </Link>
 
         </div>
       </div>

@@ -29,6 +29,9 @@ import {
   Lock,
   Info,
   ShieldCheck,
+  Bitcoin,
+  TrendingUp,
+  TrendingDown,
 } from "lucide-react";
 
 interface SearchUser {
@@ -83,6 +86,19 @@ export default function PortefeuillePage() {
   const [sendLinkCreating, setSendLinkCreating] = useState(false);
   const [sendLinkCode, setSendLinkCode] = useState<string | null>(null);
 
+  // ── Bitcoin ──
+  const [btcModalOpen, setBtcModalOpen] = useState(false);
+  const [btcMode, setBtcMode] = useState<"achat" | "vente">("achat");
+  const [btcPrice, setBtcPrice] = useState<number | null>(null);
+  const [btcChange24h, setBtcChange24h] = useState<number>(0);
+  const [btcAmount, setBtcAmount] = useState("");
+  const [btcLoading, setBtcLoading] = useState(false);
+  const [btcStep, setBtcStep] = useState<"form" | "confirm" | "success">("form");
+  const [btcResult, setBtcResult] = useState<{ montant_crypto: number; montant_eur: number; frais: number; reference: string } | null>(null);
+  const [btcWallet, setBtcWallet] = useState<{ solde: number }>({ solde: 0 });
+  const [btcTransactions, setBtcTransactions] = useState<Array<{ id: string; type: string; montant_crypto: number; montant_eur: number; prix_unitaire: number; frais_eur: number; reference: string; created_at: string }>>([]);
+  const [btcPriceLoading, setBtcPriceLoading] = useState(false);
+
   // ── Payment Links ──
   const [linkModalOpen, setLinkModalOpen] = useState(false);
   const [linkAmount, setLinkAmount] = useState("");
@@ -127,6 +143,81 @@ export default function PortefeuillePage() {
     if (user) fetchMyLinks();
   }, [user, fetchMyLinks]);
 
+  // ── BTC price fetch ──
+  const fetchBtcPrice = useCallback(async () => {
+    setBtcPriceLoading(true);
+    try {
+      const res = await fetch("/api/crypto/price");
+      const data = await res.json();
+      if (data.price) {
+        setBtcPrice(data.price);
+        setBtcChange24h(data.change24h || 0);
+      }
+    } catch { /* ignore */ } finally { setBtcPriceLoading(false); }
+  }, []);
+
+  // ── BTC wallet & transactions ──
+  const fetchBtcData = useCallback(async () => {
+    try {
+      const res = await fetch("/api/crypto/trade");
+      const data = await res.json();
+      if (data.wallet) setBtcWallet(data.wallet);
+      if (data.transactions) setBtcTransactions(data.transactions);
+    } catch { /* ignore */ }
+  }, []);
+
+  useEffect(() => {
+    if (user) {
+      fetchBtcPrice();
+      fetchBtcData();
+    }
+  }, [user, fetchBtcPrice, fetchBtcData]);
+
+  const openBtcModal = () => {
+    setBtcModalOpen(true);
+    setBtcMode("achat");
+    setBtcStep("form");
+    setBtcAmount("");
+    setBtcResult(null);
+    fetchBtcPrice();
+    fetchBtcData();
+  };
+
+  const handleBtcTrade = async () => {
+    const montant = parseFloat(btcAmount);
+    if (!montant || montant <= 0 || !btcPrice) return;
+
+    if (btcMode === "achat" && montant > soldeWallet) {
+      showToast("error", "Erreur", "Solde EUR insuffisant");
+      return;
+    }
+
+    setBtcLoading(true);
+    try {
+      const res = await fetch("/api/crypto/trade", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          type: btcMode,
+          montant_eur: montant,
+          prix_btc: btcPrice,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        showToast("error", "Erreur", data.error || "Transaction échouée");
+        return;
+      }
+      setBtcResult(data.transaction);
+      setBtcStep("success");
+      getOrCreateWallet();
+      fetchBtcData();
+      showToast("success", btcMode === "achat" ? "Achat confirmé" : "Vente confirmée", `Transaction ${data.transaction.reference} effectuée`);
+    } catch {
+      showToast("error", "Erreur", "Erreur lors de la transaction");
+    } finally { setBtcLoading(false); }
+  };
+
   if (financeLoading) {
     return <PortefeuilleSkeleton />;
   }
@@ -159,6 +250,8 @@ export default function PortefeuillePage() {
       remboursement: "Remboursement",
       transfert_entrant: "Transfert reçu",
       transfert_sortant: "Transfert envoyé",
+      achat_crypto: "Achat Bitcoin",
+      vente_crypto: "Vente Bitcoin",
     };
     return labels[type] || type;
   };
@@ -330,7 +423,7 @@ export default function PortefeuillePage() {
       </div>
 
       {/* ── Actions ── */}
-      <div className="grid grid-cols-4 gap-2 sm:gap-3">
+      <div className="grid grid-cols-5 gap-2 sm:gap-3">
         <button
           onClick={handleDeposit}
           className="flex flex-col items-center gap-2 py-4 sm:py-5 rounded-2xl bg-white border border-gray-200 hover:border-primary-200 hover:bg-primary-50/50 transition-all group"
@@ -338,7 +431,7 @@ export default function PortefeuillePage() {
           <div className="w-9 h-9 rounded-xl bg-primary-50 text-primary-600 flex items-center justify-center group-hover:bg-primary-100 transition-colors">
             <Plus className="w-4.5 h-4.5" />
           </div>
-          <span className="text-[11px] sm:text-xs font-semibold text-gray-700">Déposer</span>
+          <span className="text-[10px] sm:text-xs font-semibold text-gray-700">Déposer</span>
         </button>
         <button
           onClick={openSendModal}
@@ -347,7 +440,7 @@ export default function PortefeuillePage() {
           <div className="w-9 h-9 rounded-xl bg-primary-50 text-primary-600 flex items-center justify-center group-hover:bg-primary-100 transition-colors">
             <Send className="w-4.5 h-4.5" />
           </div>
-          <span className="text-[11px] sm:text-xs font-semibold text-gray-700">Envoyer</span>
+          <span className="text-[10px] sm:text-xs font-semibold text-gray-700">Envoyer</span>
         </button>
         <button
           onClick={handleWithdraw}
@@ -356,7 +449,7 @@ export default function PortefeuillePage() {
           <div className="w-9 h-9 rounded-xl bg-primary-50 text-primary-600 flex items-center justify-center group-hover:bg-primary-100 transition-colors">
             <Minus className="w-4.5 h-4.5" />
           </div>
-          <span className="text-[11px] sm:text-xs font-semibold text-gray-700">Retirer</span>
+          <span className="text-[10px] sm:text-xs font-semibold text-gray-700">Retirer</span>
         </button>
         <button
           onClick={() => setLinkModalOpen(true)}
@@ -365,9 +458,53 @@ export default function PortefeuillePage() {
           <div className="w-9 h-9 rounded-xl bg-primary-50 text-primary-600 flex items-center justify-center group-hover:bg-primary-100 transition-colors">
             <ArrowDownLeft className="w-4.5 h-4.5" />
           </div>
-          <span className="text-[11px] sm:text-xs font-semibold text-gray-700">Recevoir</span>
+          <span className="text-[10px] sm:text-xs font-semibold text-gray-700">Recevoir</span>
+        </button>
+        <button
+          onClick={openBtcModal}
+          className="flex flex-col items-center gap-2 py-4 sm:py-5 rounded-2xl bg-white border border-gray-200 hover:border-amber-200 hover:bg-amber-50/50 transition-all group"
+        >
+          <div className="w-9 h-9 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center group-hover:bg-amber-100 transition-colors">
+            <Bitcoin className="w-4.5 h-4.5" />
+          </div>
+          <span className="text-[10px] sm:text-xs font-semibold text-gray-700">Bitcoin</span>
         </button>
       </div>
+
+      {/* ── Bitcoin Overview Card ── */}
+      {(btcWallet.solde > 0 || btcTransactions.length > 0) && (
+        <button onClick={openBtcModal} className="w-full bg-white rounded-2xl border border-gray-200 overflow-hidden hover:border-amber-200 transition-colors text-left">
+          <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100">
+            <div className="flex items-center gap-3">
+              <div className="w-9 h-9 rounded-full bg-amber-50 flex items-center justify-center">
+                <Bitcoin className="w-5 h-5 text-amber-600" />
+              </div>
+              <div>
+                <p className="text-sm font-semibold text-gray-900">Bitcoin</p>
+                <p className="text-xs text-gray-400">BTC</p>
+              </div>
+            </div>
+            <div className="text-right">
+              <p className="text-sm font-bold text-gray-900 tabular-nums">{btcWallet.solde.toFixed(8)} BTC</p>
+              {btcPrice && (
+                <p className="text-xs text-gray-400 tabular-nums">≈ {(btcWallet.solde * btcPrice).toLocaleString("fr-FR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} €</p>
+              )}
+            </div>
+          </div>
+          {btcPrice && (
+            <div className="flex items-center justify-between px-5 py-3 bg-gray-50/50">
+              <span className="text-xs text-gray-400">Prix BTC</span>
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-semibold text-gray-700 tabular-nums">{btcPrice.toLocaleString("fr-FR")} €</span>
+                <span className={`text-[10px] font-semibold flex items-center gap-0.5 ${btcChange24h >= 0 ? "text-green-600" : "text-red-500"}`}>
+                  {btcChange24h >= 0 ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
+                  {btcChange24h >= 0 ? "+" : ""}{btcChange24h}%
+                </span>
+              </div>
+            </div>
+          )}
+        </button>
+      )}
 
       {/* ── Résumé financier ── */}
       <div className="bg-white rounded-2xl border border-gray-200">
@@ -460,6 +597,13 @@ export default function PortefeuillePage() {
               <p className="text-xs text-gray-400">Frais de gestion</p>
             </div>
             <span className="text-sm font-semibold text-gray-900">2 %</span>
+          </div>
+          <div className="flex items-center justify-between px-5 py-4">
+            <div>
+              <p className="text-sm font-medium text-gray-900">Achat / Vente Bitcoin</p>
+              <p className="text-xs text-gray-400">Par transaction</p>
+            </div>
+            <span className="text-sm font-semibold text-gray-900">1.5 %</span>
           </div>
         </div>
       </div>
@@ -1027,6 +1171,258 @@ export default function PortefeuillePage() {
                     >
                       Terminer
                     </button>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── Modal Bitcoin ── */}
+      {btcModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/60 backdrop-blur-sm" onClick={() => setBtcModalOpen(false)}>
+          <div
+            className="bg-white rounded-t-3xl sm:rounded-2xl w-full sm:max-w-[420px] shadow-2xl relative max-h-[92vh] sm:max-h-[85vh] overflow-y-auto"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Header */}
+            <div className="flex items-center gap-3 px-5 py-4 sm:px-6 sm:py-5 border-b border-gray-100">
+              <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 bg-amber-50 text-amber-600">
+                <Bitcoin className="w-5 h-5" />
+              </div>
+              <div className="min-w-0 flex-1">
+                <h3 className="text-base font-bold text-gray-900">
+                  {btcStep === "success" ? "Transaction confirmée !" : btcStep === "confirm" ? "Confirmation" : "Bitcoin"}
+                </h3>
+                <div className="flex items-center gap-2">
+                  <p className="text-[11px] text-gray-400 flex items-center gap-1">
+                    <ShieldCheck className="w-3 h-3" />
+                    Transaction sécurisée
+                  </p>
+                  {btcPrice && btcStep === "form" && (
+                    <span className={`text-[10px] font-semibold flex items-center gap-0.5 ${btcChange24h >= 0 ? "text-green-600" : "text-red-500"}`}>
+                      {btcChange24h >= 0 ? "+" : ""}{btcChange24h}%
+                    </span>
+                  )}
+                </div>
+              </div>
+              <button onClick={() => setBtcModalOpen(false)} className="p-2 -mr-1.5 rounded-lg hover:bg-gray-100 transition-colors flex-shrink-0">
+                <X className="w-5 h-5 text-gray-400" />
+              </button>
+            </div>
+
+            {/* Tabs Achat / Vente */}
+            {btcStep === "form" && (
+              <div className="flex border-b border-gray-100">
+                <button
+                  onClick={() => { setBtcMode("achat"); setBtcAmount(""); }}
+                  className={`flex-1 py-3 text-sm font-semibold text-center transition-all relative ${btcMode === "achat" ? "text-green-600" : "text-gray-400 hover:text-gray-600"}`}
+                >
+                  Acheter
+                  {btcMode === "achat" && <div className="absolute bottom-0 left-4 right-4 h-0.5 bg-green-600 rounded-full" />}
+                </button>
+                <button
+                  onClick={() => { setBtcMode("vente"); setBtcAmount(""); }}
+                  className={`flex-1 py-3 text-sm font-semibold text-center transition-all relative ${btcMode === "vente" ? "text-red-500" : "text-gray-400 hover:text-gray-600"}`}
+                >
+                  Vendre
+                  {btcMode === "vente" && <div className="absolute bottom-0 left-4 right-4 h-0.5 bg-red-500 rounded-full" />}
+                </button>
+              </div>
+            )}
+
+            <div className="px-5 py-5 sm:px-6 sm:py-6">
+              {/* Form */}
+              {btcStep === "form" && (
+                <div className="space-y-5">
+                  {/* BTC Price */}
+                  <div className="bg-gray-50 rounded-xl p-4 flex items-center justify-between">
+                    <div>
+                      <p className="text-[11px] text-gray-400 uppercase tracking-wider font-medium">Prix Bitcoin</p>
+                      {btcPriceLoading ? (
+                        <Loader2 className="w-5 h-5 text-gray-300 animate-spin mt-1" />
+                      ) : (
+                        <p className="text-lg font-bold text-gray-900 tabular-nums">{btcPrice ? `${btcPrice.toLocaleString("fr-FR")} €` : "—"}</p>
+                      )}
+                    </div>
+                    <button onClick={fetchBtcPrice} className="text-xs text-gray-400 hover:text-gray-600 transition-colors">
+                      Actualiser
+                    </button>
+                  </div>
+
+                  {/* Soldes */}
+                  <div className="flex gap-3">
+                    <div className="flex-1 bg-gray-50 rounded-xl p-3 text-center">
+                      <p className="text-[10px] text-gray-400 uppercase tracking-wider font-medium">Solde EUR</p>
+                      <p className="text-sm font-bold text-gray-900 tabular-nums mt-0.5">{formatMontant(soldeWallet)}</p>
+                    </div>
+                    <div className="flex-1 bg-gray-50 rounded-xl p-3 text-center">
+                      <p className="text-[10px] text-gray-400 uppercase tracking-wider font-medium">Solde BTC</p>
+                      <p className="text-sm font-bold text-gray-900 tabular-nums mt-0.5">{btcWallet.solde.toFixed(8)}</p>
+                    </div>
+                  </div>
+
+                  {/* Amount */}
+                  <div className="space-y-2">
+                    <label className="text-xs font-medium text-gray-500 ml-0.5">
+                      Montant en EUR
+                    </label>
+                    <input
+                      type="number"
+                      min="1"
+                      step="0.01"
+                      value={btcAmount}
+                      onChange={(e) => setBtcAmount(e.target.value)}
+                      placeholder="0.00"
+                      className="w-full border border-gray-200 rounded-xl py-3 px-4 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all text-2xl font-bold text-center [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                      autoFocus
+                    />
+                    {btcAmount && btcPrice && parseFloat(btcAmount) > 0 && (
+                      <div className="text-center space-y-1">
+                        <p className="text-sm text-gray-500">
+                          ≈ <span className="font-semibold text-gray-900">{((parseFloat(btcAmount) * (1 - 0.015)) / btcPrice).toFixed(8)} BTC</span>
+                        </p>
+                        <p className="text-xs text-gray-400">Frais : {(parseFloat(btcAmount) * 0.015).toFixed(2)} € (1.5%)</p>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Quick amounts */}
+                  <div className="grid grid-cols-4 gap-2">
+                    {[10, 25, 50, 100].map((amt) => (
+                      <button
+                        key={amt}
+                        onClick={() => setBtcAmount(amt.toString())}
+                        className={`py-2 rounded-lg border text-sm font-semibold transition-all ${
+                          btcAmount === amt.toString()
+                            ? "border-primary-300 bg-primary-50 text-primary-700"
+                            : "border-gray-200 text-gray-500 hover:bg-gray-50"
+                        }`}
+                      >
+                        {amt} €
+                      </button>
+                    ))}
+                  </div>
+
+                  <button
+                    onClick={() => setBtcStep("confirm")}
+                    disabled={!btcAmount || parseFloat(btcAmount) <= 0 || !btcPrice}
+                    className={`w-full py-3.5 rounded-xl font-semibold transition-colors disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-white ${
+                      btcMode === "achat"
+                        ? "bg-green-600 hover:bg-green-700"
+                        : "bg-red-500 hover:bg-red-600"
+                    }`}
+                  >
+                    <Bitcoin className="w-5 h-5" />
+                    {btcMode === "achat" ? "Acheter du Bitcoin" : "Vendre du Bitcoin"}
+                  </button>
+                </div>
+              )}
+
+              {/* Confirm */}
+              {btcStep === "confirm" && btcPrice && (
+                <div className="space-y-5">
+                  <div className="bg-gray-50 rounded-xl p-5 text-center space-y-3">
+                    <p className="text-[11px] text-gray-400 font-medium uppercase tracking-wider">
+                      {btcMode === "achat" ? "Vous achetez" : "Vous vendez"}
+                    </p>
+                    <p className="text-3xl font-bold text-gray-900 tracking-tight">
+                      {btcMode === "achat"
+                        ? ((parseFloat(btcAmount) * (1 - 0.015)) / btcPrice).toFixed(8)
+                        : (parseFloat(btcAmount) / btcPrice).toFixed(8)
+                      } <span className="text-amber-600">BTC</span>
+                    </p>
+                    <div className="space-y-2 pt-2">
+                      <div className="flex justify-between text-sm">
+                        <span className="text-gray-400">Montant</span>
+                        <span className="text-gray-900 font-medium">{parseFloat(btcAmount).toFixed(2)} €</span>
+                      </div>
+                      <div className="flex justify-between text-sm">
+                        <span className="text-gray-400">Frais (1.5%)</span>
+                        <span className="text-gray-900 font-medium">{(parseFloat(btcAmount) * 0.015).toFixed(2)} €</span>
+                      </div>
+                      <div className="flex justify-between text-sm">
+                        <span className="text-gray-400">Prix BTC</span>
+                        <span className="text-gray-900 font-medium">{btcPrice.toLocaleString("fr-FR")} €</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="flex gap-2.5">
+                    <button
+                      onClick={() => setBtcStep("form")}
+                      className="flex-1 py-3 rounded-xl border border-gray-200 text-gray-500 font-semibold hover:bg-gray-50 transition-colors text-sm"
+                    >
+                      Modifier
+                    </button>
+                    <button
+                      onClick={handleBtcTrade}
+                      disabled={btcLoading}
+                      className={`flex-[2] py-3 rounded-xl font-semibold transition-colors disabled:opacity-50 flex items-center justify-center gap-2 text-sm text-white ${
+                        btcMode === "achat" ? "bg-green-600 hover:bg-green-700" : "bg-red-500 hover:bg-red-600"
+                      }`}
+                    >
+                      {btcLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Bitcoin className="w-4 h-4" />}
+                      {btcLoading ? "En cours..." : "Confirmer"}
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* Success */}
+              {btcStep === "success" && btcResult && (
+                <div className="text-center py-4">
+                  <div className="w-16 h-16 bg-green-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <CheckCircle2 className="w-8 h-8 text-green-500" />
+                  </div>
+                  <h3 className="text-lg font-bold text-gray-900 mb-1">
+                    {btcResult.montant_crypto > 0 && btcMode === "achat" ? "Achat confirmé !" : "Vente confirmée !"}
+                  </h3>
+                  <p className="text-sm text-gray-500 mb-5">
+                    <span className="text-gray-900 font-semibold">{btcResult.montant_crypto.toFixed(8)} BTC</span>
+                    {btcMode === "achat" ? " achetés" : " vendus"} pour{" "}
+                    <span className="text-gray-900 font-semibold">{btcResult.montant_eur.toFixed(2)} €</span>
+                  </p>
+
+                  <div className="bg-gray-50 rounded-lg py-2 px-4 inline-block mb-5">
+                    <p className="text-[10px] text-gray-400 uppercase tracking-wider">Référence</p>
+                    <p className="font-mono text-sm text-gray-700">{btcResult.reference}</p>
+                  </div>
+
+                  <button
+                    onClick={() => setBtcModalOpen(false)}
+                    className="w-full py-3 rounded-xl font-semibold text-white bg-primary-600 hover:bg-primary-700 transition-colors"
+                  >
+                    Fermer
+                  </button>
+                </div>
+              )}
+
+              {/* Recent BTC Transactions */}
+              {btcStep === "form" && btcTransactions.length > 0 && (
+                <div className="mt-6 pt-5 border-t border-gray-100">
+                  <h4 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">Historique BTC</h4>
+                  <div className="space-y-2 max-h-40 overflow-y-auto">
+                    {btcTransactions.slice(0, 5).map((tx) => (
+                      <div key={tx.id} className="flex items-center justify-between py-2">
+                        <div className="flex items-center gap-2.5">
+                          <div className={`w-7 h-7 rounded-full flex items-center justify-center ${tx.type === "achat" ? "bg-green-50" : "bg-red-50"}`}>
+                            {tx.type === "achat" ? <TrendingUp className="w-3.5 h-3.5 text-green-600" /> : <TrendingDown className="w-3.5 h-3.5 text-red-500" />}
+                          </div>
+                          <div>
+                            <p className="text-xs font-medium text-gray-900">{tx.type === "achat" ? "Achat" : "Vente"}</p>
+                            <p className="text-[10px] text-gray-400">{new Date(tx.created_at).toLocaleDateString("fr-FR")}</p>
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <p className={`text-xs font-semibold tabular-nums ${tx.type === "achat" ? "text-green-600" : "text-red-500"}`}>
+                            {tx.type === "achat" ? "+" : "-"}{tx.montant_crypto.toFixed(8)} BTC
+                          </p>
+                          <p className="text-[10px] text-gray-400 tabular-nums">{tx.montant_eur.toFixed(2)} €</p>
+                        </div>
+                      </div>
+                    ))}
                   </div>
                 </div>
               )}
