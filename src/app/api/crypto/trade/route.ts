@@ -58,7 +58,7 @@ export async function POST(req: NextRequest) {
 
     const supabase = getServiceClient();
     const body = await req.json();
-    const { type, montant_eur, prix_btc, methode = "wallet" } = body;
+    const { type, montant_eur, prix_btc } = body;
 
     if (!type || !["achat", "vente"].includes(type)) {
       return NextResponse.json({ error: "Type invalide" }, { status: 400 });
@@ -79,16 +79,16 @@ export async function POST(req: NextRequest) {
     const reference = generateRef();
 
     // ═══════════════════════════════════════════
-    // ACHAT PAR CARTE — créer PaymentIntent Stripe
+    // ACHAT — toujours par carte bancaire (Stripe)
     // ═══════════════════════════════════════════
-    if (type === "achat" && methode === "carte") {
+    if (type === "achat") {
       const stripe = getStripe();
       const amountCents = Math.round(montant_eur * 100);
 
       const paymentIntent = await stripe.paymentIntents.create({
         amount: amountCents,
         currency: "eur",
-        description: `Achat Bitcoin – ${montantCrypto.toFixed(8)} BTC`,
+        description: `Achat Bitcoin – ${montantCrypto.toFixed(8)} BTC (frais ${frais.toFixed(2)} €)`,
         automatic_payment_methods: { enabled: true },
         metadata: {
           type: "crypto_achat",
@@ -118,7 +118,7 @@ export async function POST(req: NextRequest) {
     }
 
     // ═══════════════════════════════════════════
-    // ACHAT / VENTE VIA WALLET (existant)
+    // VENTE — crédit sur portefeuille EUR
     // ═══════════════════════════════════════════
 
     // Get EUR wallet
@@ -151,90 +151,8 @@ export async function POST(req: NextRequest) {
       cryptoWallet = newCW;
     }
 
-    if (type === "achat") {
-      // Check EUR balance
-      if (Number(wallet.solde) < montant_eur) {
-        return NextResponse.json({ error: "Solde EUR insuffisant" }, { status: 400 });
-      }
-
-      // Debit EUR wallet
-      const newSoldeEur = Number(wallet.solde) - montant_eur;
-      const { error: debitErr } = await supabase
-        .from("wallets")
-        .update({ solde: newSoldeEur, updated_at: new Date().toISOString() })
-        .eq("id", wallet.id);
-      if (debitErr) return NextResponse.json({ error: "Erreur débit EUR" }, { status: 500 });
-
-      // Credit crypto wallet
-      const newSoldeBtc = Number(cryptoWallet!.solde) + montantCrypto;
-      const { error: creditErr } = await supabase
-        .from("crypto_wallets")
-        .update({ solde: newSoldeBtc, updated_at: new Date().toISOString() })
-        .eq("id", cryptoWallet!.id);
-      if (creditErr) return NextResponse.json({ error: "Erreur crédit BTC" }, { status: 500 });
-
-      // Record crypto transaction
-      await supabase.from("crypto_transactions").insert({
-        user_id: user.id,
-        type: "achat",
-        crypto_devise: "BTC",
-        montant_crypto: montantCrypto,
-        montant_eur,
-        prix_unitaire: prix_btc,
-        frais_eur: frais,
-        reference,
-      });
-
-      // Record in main transactions table
-      await supabase.from("transactions").insert({
-        user_id: user.id,
-        wallet_id: wallet.id,
-        type: "achat_crypto",
-        montant: montant_eur,
-        devise: "EUR",
-        description: `Achat ${montantCrypto.toFixed(8)} BTC`,
-        statut: "confirme",
-        reference,
-        solde_avant: Number(wallet.solde),
-        solde_apres: newSoldeEur,
-        frais: frais,
-      });
-
-      // Notification
-      try {
-        await supabase.from("notifications").insert({
-          user_id: user.id,
-          titre: "Achat Bitcoin confirmé",
-          message: `Vous avez acheté ${montantCrypto.toFixed(8)} BTC pour ${montant_eur.toFixed(2)} €`,
-        });
-      } catch { /* ignore */ }
-
-      // Record fee for admin
-      try {
-        await recordFee({
-          userId: user.id,
-          source: "crypto_achat",
-          montant: frais,
-          transactionRef: reference,
-        });
-      } catch { /* ignore fee errors */ }
-
-      return NextResponse.json({
-        success: true,
-        transaction: {
-          type: "achat",
-          montant_crypto: montantCrypto,
-          montant_eur,
-          frais,
-          prix_unitaire: prix_btc,
-          reference,
-        },
-        nouveau_solde_eur: newSoldeEur,
-        nouveau_solde_btc: newSoldeBtc,
-      });
-
-    } else {
-      // ── VENTE ──
+    // ── VENTE ── (le seul type qui arrive ici, l'achat retourne plus haut)
+    {
       const montantCryptoVente = montant_eur / prix_btc;
 
       if (Number(cryptoWallet!.solde) < montantCryptoVente) {

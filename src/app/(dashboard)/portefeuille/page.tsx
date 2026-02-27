@@ -35,7 +35,6 @@ import {
   TrendingUp,
   TrendingDown,
   CreditCard,
-  Wallet,
 } from "lucide-react";
 
 interface SearchUser {
@@ -102,7 +101,6 @@ export default function PortefeuillePage() {
   const [btcWallet, setBtcWallet] = useState<{ solde: number }>({ solde: 0 });
   const [btcTransactions, setBtcTransactions] = useState<Array<{ id: string; type: string; montant_crypto: number; montant_eur: number; prix_unitaire: number; frais_eur: number; reference: string; created_at: string }>>([]);
   const [btcPriceLoading, setBtcPriceLoading] = useState(false);
-  const [btcPayMethod, setBtcPayMethod] = useState<"wallet" | "carte">("wallet");
   const [btcClientSecret, setBtcClientSecret] = useState<string | null>(null);
   const [btcPaymentIntentId, setBtcPaymentIntentId] = useState<string | null>(null);
 
@@ -186,7 +184,6 @@ export default function PortefeuillePage() {
     setBtcStep("form");
     setBtcAmount("");
     setBtcResult(null);
-    setBtcPayMethod("wallet");
     setBtcClientSecret(null);
     setBtcPaymentIntentId(null);
     fetchBtcPrice();
@@ -197,24 +194,18 @@ export default function PortefeuillePage() {
     const montant = parseFloat(btcAmount);
     if (!montant || montant <= 0 || !btcPrice) return;
 
-    // Pour vente → toujours via wallet
-    // Pour achat via wallet → vérifier solde EUR
-    if (btcMode === "vente" || btcPayMethod === "wallet") {
-      if (btcMode === "achat" && montant > soldeWallet) {
-        showToast("error", "Erreur", "Solde EUR insuffisant");
-        return;
-      }
+    setBtcLoading(true);
 
-      setBtcLoading(true);
+    if (btcMode === "vente") {
+      // ── VENTE → via wallet EUR ──
       try {
         const res = await fetch("/api/crypto/trade", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            type: btcMode,
+            type: "vente",
             montant_eur: montant,
             prix_btc: btcPrice,
-            methode: "wallet",
           }),
         });
         const data = await res.json();
@@ -226,14 +217,12 @@ export default function PortefeuillePage() {
         setBtcStep("success");
         getOrCreateWallet();
         fetchBtcData();
-        showToast("success", btcMode === "achat" ? "Achat confirmé" : "Vente confirmée", `Transaction ${data.transaction.reference} effectuée`);
+        showToast("success", "Vente confirmée", `Transaction ${data.transaction.reference} effectuée`);
       } catch {
         showToast("error", "Erreur", "Erreur lors de la transaction");
       } finally { setBtcLoading(false); }
-
     } else {
-      // ── ACHAT PAR CARTE → Créer PaymentIntent puis afficher Stripe Elements ──
-      setBtcLoading(true);
+      // ── ACHAT → toujours par carte bancaire ──
       try {
         const res = await fetch("/api/crypto/trade", {
           method: "POST",
@@ -242,7 +231,6 @@ export default function PortefeuillePage() {
             type: "achat",
             montant_eur: montant,
             prix_btc: btcPrice,
-            methode: "carte",
           }),
         });
         const data = await res.json();
@@ -1352,39 +1340,13 @@ export default function PortefeuillePage() {
                     )}
                   </div>
 
-                  {/* Payment Method Selector — only for achat */}
+                  {/* Indication moyen de paiement pour achat */}
                   {btcMode === "achat" && (
-                    <div className="space-y-2">
-                      <label className="text-xs font-medium text-gray-500 ml-0.5">Moyen de paiement</label>
-                      <div className="grid grid-cols-2 gap-2">
-                        <button
-                          onClick={() => setBtcPayMethod("wallet")}
-                          className={`flex items-center gap-2.5 px-3.5 py-3 rounded-xl border transition-all text-left ${
-                            btcPayMethod === "wallet"
-                              ? "border-primary-300 bg-primary-50 ring-1 ring-primary-200"
-                              : "border-gray-200 hover:bg-gray-50"
-                          }`}
-                        >
-                          <Wallet className={`w-4.5 h-4.5 ${btcPayMethod === "wallet" ? "text-primary-600" : "text-gray-400"}`} />
-                          <div>
-                            <p className={`text-xs font-semibold ${btcPayMethod === "wallet" ? "text-primary-700" : "text-gray-700"}`}>Portefeuille</p>
-                            <p className="text-[10px] text-gray-400">Solde EUR</p>
-                          </div>
-                        </button>
-                        <button
-                          onClick={() => setBtcPayMethod("carte")}
-                          className={`flex items-center gap-2.5 px-3.5 py-3 rounded-xl border transition-all text-left ${
-                            btcPayMethod === "carte"
-                              ? "border-primary-300 bg-primary-50 ring-1 ring-primary-200"
-                              : "border-gray-200 hover:bg-gray-50"
-                          }`}
-                        >
-                          <CreditCard className={`w-4.5 h-4.5 ${btcPayMethod === "carte" ? "text-primary-600" : "text-gray-400"}`} />
-                          <div>
-                            <p className={`text-xs font-semibold ${btcPayMethod === "carte" ? "text-primary-700" : "text-gray-700"}`}>Carte bancaire</p>
-                            <p className="text-[10px] text-gray-400">Visa, Mastercard</p>
-                          </div>
-                        </button>
+                    <div className="flex items-center gap-2.5 px-3.5 py-3 rounded-xl border border-primary-200 bg-primary-50/50">
+                      <CreditCard className="w-4.5 h-4.5 text-primary-600" />
+                      <div>
+                        <p className="text-xs font-semibold text-primary-700">Paiement par carte bancaire</p>
+                        <p className="text-[10px] text-gray-400">Visa, Mastercard — frais 1.5%</p>
                       </div>
                     </div>
                   )}
@@ -1451,8 +1413,8 @@ export default function PortefeuillePage() {
                         <div className="flex justify-between text-sm">
                           <span className="text-gray-400">Paiement</span>
                           <span className="text-gray-900 font-medium flex items-center gap-1.5">
-                            {btcPayMethod === "carte" ? <CreditCard className="w-3.5 h-3.5" /> : <Wallet className="w-3.5 h-3.5" />}
-                            {btcPayMethod === "carte" ? "Carte bancaire" : "Portefeuille EUR"}
+                            <CreditCard className="w-3.5 h-3.5" />
+                            Carte bancaire
                           </span>
                         </div>
                       )}
@@ -1473,8 +1435,8 @@ export default function PortefeuillePage() {
                         btcMode === "achat" ? "bg-green-600 hover:bg-green-700" : "bg-red-500 hover:bg-red-600"
                       }`}
                     >
-                      {btcLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : btcPayMethod === "carte" && btcMode === "achat" ? <CreditCard className="w-4 h-4" /> : <Bitcoin className="w-4 h-4" />}
-                      {btcLoading ? "En cours..." : btcPayMethod === "carte" && btcMode === "achat" ? "Payer par carte" : "Confirmer"}
+                      {btcLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : btcMode === "achat" ? <CreditCard className="w-4 h-4" /> : <Bitcoin className="w-4 h-4" />}
+                      {btcLoading ? "En cours..." : btcMode === "achat" ? "Payer par carte" : "Confirmer"}
                     </button>
                   </div>
                 </div>
