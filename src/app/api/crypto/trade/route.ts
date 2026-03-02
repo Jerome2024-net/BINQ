@@ -73,27 +73,52 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Prix BTC invalide" }, { status: 400 });
     }
 
-    const frais = Math.round(montant_eur * FRAIS_TAUX * 100) / 100;
-    const montantNet = montant_eur - frais;
-    const montantCrypto = montantNet / prix_btc;
+    const isAchat = type === "achat";
+    
+    // Calcul des frais
+    // Achat : frais ADDITIONNELS (montant_eur est le net investi)
+    // Vente : frais DÉDUITS (montant_eur est le brut vendu)
+    
+    let montantNet: number;
+    let frais: number;
+    let montantTotal: number; // Ce qui est payé (achat) ou débité (vente valeur)
+
+    if (isAchat) {
+        // Le montant_eur est ce que l'utilisateur veut investit en BTC
+        montantNet = montant_eur;
+        frais = Math.round(montant_eur * FRAIS_TAUX * 100) / 100;
+        montantTotal = montant_eur + frais; // Total à payer par carte
+    } else {
+        // Vente : montant_eur est la valeur BTC qu'il vend
+        // On déduit les frais du payout en EUR
+        frais = Math.round(montant_eur * FRAIS_TAUX * 100) / 100;
+        montantNet = montant_eur - frais; // Ce qu'il reçoit sur son wallet EUR
+        montantTotal = montant_eur;
+    }
+
+    const montantCrypto = isAchat 
+      ? montantNet / prix_btc  // Achat : on convertit le montant net (investi)
+      : montantTotal / prix_btc; // Vente : on vend la valeur brute en BTC
+
     const reference = generateRef();
 
     // ═══════════════════════════════════════════
     // ACHAT — toujours par carte bancaire (Stripe)
     // ═══════════════════════════════════════════
-    if (type === "achat") {
+    if (isAchat) {
       const stripe = getStripe();
-      const amountCents = Math.round(montant_eur * 100);
+      const amountCents = Math.round(montantTotal * 100); // On charge montant + frais
 
       const paymentIntent = await stripe.paymentIntents.create({
         amount: amountCents,
         currency: "eur",
-        description: `Achat Bitcoin – ${montantCrypto.toFixed(8)} BTC (frais ${frais.toFixed(2)} €)`,
+        description: `Achat Bitcoin – ${montantCrypto.toFixed(8)} BTC (net ${montantNet} € + frais ${frais} €)`,
         automatic_payment_methods: { enabled: true },
         metadata: {
           type: "crypto_achat",
           userId: user.id,
-          montant_eur: String(montant_eur),
+          montant_eur: String(montantTotal), // Total payé pour compatibilité
+          montant_investi: String(montantNet), // Nouveau champ pour clarté
           prix_btc: String(prix_btc),
           frais: String(frais),
           montant_crypto: String(montantCrypto),
@@ -110,7 +135,8 @@ export async function POST(req: NextRequest) {
         reference,
         preview: {
           montant_crypto: montantCrypto,
-          montant_eur,
+          montant_eur: montantNet, // Montant investi
+          montant_total: montantTotal, // Montant payé
           frais,
           prix_unitaire: prix_btc,
         },
@@ -153,7 +179,7 @@ export async function POST(req: NextRequest) {
 
     // ── VENTE ── (le seul type qui arrive ici, l'achat retourne plus haut)
     {
-      const montantCryptoVente = montant_eur / prix_btc;
+      const montantCryptoVente = montantCrypto; // Utiilser la valeur calculée plus haut
 
       if (Number(cryptoWallet!.solde) < montantCryptoVente) {
         return NextResponse.json({ error: "Solde BTC insuffisant" }, { status: 400 });

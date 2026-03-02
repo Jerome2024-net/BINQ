@@ -454,9 +454,25 @@ export default function PortefeuillePage() {
                     {btcAmount && btcPrice && parseFloat(btcAmount) > 0 && (
                       <div className="text-center space-y-1">
                         <p className="text-sm text-gray-500">
-                          ≈ <span className="font-semibold text-gray-900">{((parseFloat(btcAmount) * (1 - 0.015)) / btcPrice).toFixed(8)} BTC</span>
+                          {btcMode === "achat" ? (
+                            // Achat : Montant entré = Montant investi (frais en SUS)
+                            <>
+                              ≈ <span className="font-semibold text-gray-900">{(parseFloat(btcAmount) / btcPrice).toFixed(8)} BTC</span>
+                            </>
+                          ) : (
+                            // Vente : Montant entré = Montant vendu (frais DÉDUITS)
+                            <>
+                              ≈ <span className="font-semibold text-gray-900">{(parseFloat(btcAmount) / btcPrice).toFixed(8)} BTC</span>
+                              <span className="text-xs text-gray-400 block">Net reçu : {(parseFloat(btcAmount) * (1 - 0.015)).toFixed(2)} €</span>
+                            </>
+                          )}
                         </p>
-                        <p className="text-xs text-gray-400">Frais : {(parseFloat(btcAmount) * 0.015).toFixed(2)} € (1.5%)</p>
+                        <p className="text-xs text-gray-400">
+                          {btcMode === "achat" 
+                            ? `Total à payer : ${(parseFloat(btcAmount) * 1.015).toFixed(2)} € (dont ${(parseFloat(btcAmount) * 0.015).toFixed(2)} € frais)`
+                            : `Frais : ${(parseFloat(btcAmount) * 0.015).toFixed(2)} € (1.5%)`
+                          }
+                        </p>
                       </div>
                     )}
                   </div>
@@ -511,20 +527,27 @@ export default function PortefeuillePage() {
                     </p>
                     <p className="text-3xl font-bold text-gray-900 tracking-tight">
                       {btcMode === "achat"
-                        ? ((parseFloat(btcAmount) * (1 - 0.015)) / btcPrice).toFixed(8)
+                        ? (parseFloat(btcAmount) / btcPrice).toFixed(8)
                         : (parseFloat(btcAmount) / btcPrice).toFixed(8)
                       } <span className="text-amber-600">BTC</span>
                     </p>
                     <div className="space-y-2 pt-2">
                       <div className="flex justify-between text-sm">
-                        <span className="text-gray-400">Montant</span>
+                        <span className="text-gray-400">Montant investi</span>
                         <span className="text-gray-900 font-medium">{parseFloat(btcAmount).toFixed(2)} €</span>
                       </div>
                       <div className="flex justify-between text-sm">
                         <span className="text-gray-400">Frais (1.5%)</span>
                         <span className="text-gray-900 font-medium">{(parseFloat(btcAmount) * 0.015).toFixed(2)} €</span>
                       </div>
-                      <div className="flex justify-between text-sm">
+                      {btcMode === "achat" && (
+                        <div className="flex justify-between text-sm font-bold border-t border-gray-100 pt-2 mt-2">
+                          <span className="text-gray-900">Total à payer</span>
+                          <span className="text-primary-600">{(parseFloat(btcAmount) * 1.015).toFixed(2)} €</span>
+                        </div>
+                      )}
+                      
+                      <div className="flex justify-between text-sm pt-2">
                         <span className="text-gray-400">Prix BTC</span>
                         <span className="text-gray-900 font-medium">{btcPrice.toLocaleString("fr-FR")} €</span>
                       </div>
@@ -566,7 +589,8 @@ export default function PortefeuillePage() {
                 <div className="space-y-4">
                   <div className="bg-amber-50 rounded-xl p-3 text-center">
                     <p className="text-xs text-amber-700 font-medium">
-                      Achat de {btcPrice ? ((parseFloat(btcAmount) * (1 - 0.015)) / btcPrice).toFixed(8) : "..."} BTC pour {parseFloat(btcAmount).toFixed(2)} €
+                      Achat de {btcPrice ? (parseFloat(btcAmount) / btcPrice).toFixed(8) : "..."} BTC <br/>
+                      Total à payer : {(parseFloat(btcAmount) * 1.015).toFixed(2)} €
                     </p>
                   </div>
                   <Elements
