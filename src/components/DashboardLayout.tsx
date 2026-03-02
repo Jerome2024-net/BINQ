@@ -23,6 +23,7 @@ import {
   CreditCard,
   Check,
   CheckCheck,
+  Bitcoin,
 } from "lucide-react";
 
 interface Notification {
@@ -35,10 +36,7 @@ interface Notification {
 
 const mainLinks = [
   { href: "/dashboard", label: "Tableau de bord", icon: LayoutDashboard },
-  { href: "/portefeuille", label: "Portefeuille", icon: Wallet },
-  { href: "/transactions", label: "Transactions", icon: ArrowLeftRight },
-  { href: "/paiements", label: "Paiements", icon: CreditCard },
-  { href: "/dashboard/coffres", label: "Coffres", icon: Lock },
+  { href: "/portefeuille", label: "Portefeuille Bitcoin", icon: Bitcoin },
 ];
 
 export default function DashboardLayout({

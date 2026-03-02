@@ -31,13 +31,13 @@ export default function HomePage() {
           </Link>
           <div className="flex items-center gap-3">
             <Link
-              href="/auth/login"
+              href="/connexion"
               className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors px-3 py-2"
             >
               Connexion
             </Link>
             <Link
-              href="/auth/register"
+              href="/inscription"
               className="text-sm font-semibold bg-gray-900 text-white px-5 py-2.5 rounded-xl hover:bg-gray-800 transition-colors"
             >
               Commencer
@@ -75,14 +75,14 @@ export default function HomePage() {
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
             <Link
-              href="/auth/register"
+              href="/inscription"
               className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-8 py-4 rounded-xl bg-green-600 text-white font-semibold hover:bg-green-700 transition-colors shadow-lg shadow-green-500/20"
             >
               <TrendingUp className="w-5 h-5" />
               Acheter du Bitcoin
             </Link>
             <Link
-              href="/auth/login"
+              href="/connexion"
               className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-8 py-4 rounded-xl border border-gray-200 bg-white text-gray-700 font-semibold hover:bg-gray-50 transition-colors"
             >
               Se connecter
@@ -259,7 +259,7 @@ export default function HomePage() {
             </div>
 
             <Link
-              href="/auth/register"
+              href="/inscription"
               className="block w-full text-center py-3.5 rounded-xl bg-gray-900 text-white font-semibold hover:bg-gray-800 transition-colors"
             >
               Créer mon compte gratuitement
@@ -288,7 +288,7 @@ export default function HomePage() {
                 Rejoignez Binq et achetez votre premier Bitcoin en moins de 2 minutes.
               </p>
               <Link
-                href="/auth/register"
+                href="/inscription"
                 className="inline-flex items-center gap-2.5 px-8 py-4 bg-green-600 text-white font-semibold rounded-xl hover:bg-green-700 transition-colors shadow-lg shadow-green-500/20"
               >
                 <TrendingUp className="w-5 h-5" />
