@@ -2,10 +2,9 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useState, useEffect, useRef, useCallback, Suspense } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import AuthGuard from "@/components/AuthGuard";
-import Avatar from "@/components/Avatar";
 import {
   LayoutDashboard,
   Settings,
@@ -13,16 +12,6 @@ import {
   LogOut,
   Menu,
   X,
-  Plus,
-  ChevronDown,
-  User,
-  Wallet,
-  Search,
-  Lock,
-  ArrowLeftRight,
-  CreditCard,
-  Check,
-  CheckCheck,
   Bitcoin,
 } from "lucide-react";
 
@@ -39,11 +28,7 @@ const mainLinks = [
   { href: "/portefeuille", label: "Portefeuille Bitcoin", icon: Bitcoin },
 ];
 
-export default function DashboardLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
   const { user, logout } = useAuth();
@@ -56,16 +41,14 @@ export default function DashboardLayout({
   const notifRef = useRef<HTMLDivElement>(null);
   const prevUnreadRef = useRef<number | null>(null);
 
-  // Play notification sound
   const playNotifSound = useCallback(() => {
     try {
-      const ctx = new AudioContext();
+      const ctx = new window.AudioContext();
       const osc = ctx.createOscillator();
       const gain = ctx.createGain();
       osc.connect(gain);
       gain.connect(ctx.destination);
       osc.type = "sine";
-      // Two-tone chime
       osc.frequency.setValueAtTime(880, ctx.currentTime);
       osc.frequency.setValueAtTime(1174.66, ctx.currentTime + 0.12);
       gain.gain.setValueAtTime(0.15, ctx.currentTime);
@@ -73,36 +56,30 @@ export default function DashboardLayout({
       osc.start(ctx.currentTime);
       osc.stop(ctx.currentTime + 0.3);
       setTimeout(() => ctx.close(), 500);
-    } catch { /* ignore if audio blocked */ }
+    } catch { /* ignore */ }
   }, []);
 
-  // Fetch notifications
   const fetchNotifications = useCallback(async () => {
     try {
       const res = await fetch("/api/notifications");
       if (!res.ok) return;
       const data = await res.json();
       const newUnread = data.unreadCount || 0;
-
-      // Play sound if new notifications arrived (not on first load)
       if (prevUnreadRef.current !== null && newUnread > prevUnreadRef.current) {
         playNotifSound();
       }
       prevUnreadRef.current = newUnread;
-
       setNotifications(data.notifications || []);
       setUnreadCount(newUnread);
     } catch { /* ignore */ }
   }, [playNotifSound]);
 
-  // Initial fetch + poll every 30s
   useEffect(() => {
     fetchNotifications();
     const interval = setInterval(fetchNotifications, 30000);
     return () => clearInterval(interval);
   }, [fetchNotifications]);
 
-  // Mark all as read
   const markAllRead = async () => {
     try {
       await fetch("/api/notifications", {
@@ -115,285 +92,214 @@ export default function DashboardLayout({
     } catch { /* ignore */ }
   };
 
-  // Close dropdowns on outside click
   useEffect(() => {
     const handler = (e: MouseEvent) => {
-      if (profileRef.current && !profileRef.current.contains(e.target as Node)) {
-        setProfileOpen(false);
-      }
-      if (notifRef.current && !notifRef.current.contains(e.target as Node)) {
-        setNotifOpen(false);
-      }
+      if (profileRef.current && !profileRef.current.contains(e.target as Node)) setProfileOpen(false);
+      if (notifRef.current && !notifRef.current.contains(e.target as Node)) setNotifOpen(false);
     };
     document.addEventListener("mousedown", handler);
     return () => document.removeEventListener("mousedown", handler);
   }, []);
 
-  // Close sidebar on route change (mobile)
-  useEffect(() => {
-    setSidebarOpen(false);
-  }, [pathname]);
+  useEffect(() => setSidebarOpen(false), [pathname]);
 
   const handleLogout = async () => {
     await logout();
     router.push("/");
   };
 
-  // Format relative time
   const formatTimeAgo = (dateStr: string) => {
-    const now = Date.now();
-    const diff = now - new Date(dateStr).getTime();
-    const mins = Math.floor(diff / 60000);
-    if (mins < 1) return "À l'instant";
-    if (mins < 60) return `Il y a ${mins} min`;
-    const hours = Math.floor(mins / 60);
-    if (hours < 24) return `Il y a ${hours}h`;
-    const days = Math.floor(hours / 24);
-    if (days < 7) return `Il y a ${days}j`;
+    const min = Math.floor((Date.now() - new Date(dateStr).getTime()) / 60000);
+    if (min < 1) return "À l'instant";
+    if (min < 60) return `Il y a ${min} min`;
+    const h = Math.floor(min / 60);
+    if (h < 24) return `Il y a ${h}h`;
+    const d = Math.floor(h / 24);
+    if (d < 7) return `Il y a ${d}j`;
     return new Date(dateStr).toLocaleDateString("fr-FR", { day: "numeric", month: "short" });
   };
 
   return (
     <AuthGuard>
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-zinc-950 text-zinc-50 font-sans selection:bg-amber-500/30 selection:text-amber-200">
+        
         {/* Mobile sidebar overlay */}
         {sidebarOpen && (
           <div
-            className="fixed inset-0 bg-black/40 backdrop-blur-sm z-40 lg:hidden animate-fade-in"
+            className="fixed inset-0 bg-zinc-950/80 backdrop-blur-sm z-40 lg:hidden"
             onClick={() => setSidebarOpen(false)}
           />
         )}
 
-        {/* ─── Sidebar ─── */}
+        {/* Sidebar (Dark Premium) */}
         <aside
-          className={`fixed top-0 left-0 h-full w-[260px] bg-white border-r border-gray-200/80 z-50 transform transition-transform duration-300 ease-out ${
+          className={`fixed top-0 left-0 h-full w-[280px] bg-zinc-950/50 backdrop-blur-xl border-r border-white/5 z-50 transform transition-transform duration-300 ease-out flex flex-col ${
             sidebarOpen ? "translate-x-0" : "-translate-x-full"
-          } lg:translate-x-0 flex flex-col`}
+          } lg:translate-x-0`}
         >
-          {/* Logo */}
-          <div className="flex items-center justify-between px-5 h-16 shrink-0 border-b border-gray-100">
-            <Link href="/" className="flex items-center">
-              <img src="https://res.cloudinary.com/dn8ed1doa/image/upload/82D516A1-AEEB-4D11-B7F0-C0DB72341613_gz12tn" alt="Binq" className="h-10 w-auto lg:hidden" />
-              <img src="https://res.cloudinary.com/dn8ed1doa/image/upload/82D516A1-AEEB-4D11-B7F0-C0DB72341613_gz12tn" alt="Binq" className="h-10 w-auto hidden lg:block" />
+          {/* Logo Section */}
+          <div className="flex items-center justify-between px-6 h-20 shrink-0 border-b border-white/5 bg-zinc-950/50">
+            <Link href="/" className="flex items-center gap-3 group">
+              <div className="w-9 h-9 bg-gradient-to-br from-amber-400 to-orange-600 rounded-xl flex items-center justify-center shadow-lg shadow-amber-500/20 group-hover:shadow-amber-500/40 transition-all duration-300">
+                <Bitcoin className="w-5 h-5 text-zinc-950" />
+              </div>
+              <span className="font-bold text-xl tracking-tight text-white group-hover:text-amber-400 transition-colors">Binq</span>
             </Link>
             <button
               onClick={() => setSidebarOpen(false)}
-              className="lg:hidden p-1.5 rounded-lg hover:bg-gray-100 text-gray-400 transition-colors"
+              className="lg:hidden p-2 rounded-xl hover:bg-white/5 text-zinc-400 transition-colors"
             >
               <X className="w-5 h-5" />
             </button>
           </div>
 
-          {/* Nav */}
-          <nav className="flex-1 px-3 py-5 overflow-y-auto">
-            <div className="mb-2 px-3 text-[10px] font-semibold text-gray-400 uppercase tracking-widest">
+          {/* Navigation */}
+          <nav className="flex-1 px-4 py-8 overflow-y-auto">
+            <div className="mb-4 px-2 text-[10px] font-bold text-zinc-500 uppercase tracking-widest flex items-center gap-2">
+              <div className="w-1 h-1 rounded-full bg-zinc-700"></div>
               Menu
             </div>
-            <div className="space-y-0.5">
+            <div className="space-y-1.5">
               {mainLinks.map((link) => {
                 const isActive = pathname === link.href || (link.href !== "/dashboard" && pathname.startsWith(link.href));
                 return (
                   <Link
                     key={link.href}
                     href={link.href}
-                    className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13px] font-medium transition-all duration-150 group ${
+                    className={`flex items-center gap-3 px-4 py-3.5 rounded-2xl text-sm font-semibold transition-all duration-300 group relative overflow-hidden ${
                       isActive
-                        ? "bg-primary-50 text-primary-700 border border-primary-100"
-                        : "text-gray-600 hover:bg-gray-50 hover:text-gray-900 border border-transparent"
+                        ? "text-amber-400 bg-amber-500/10 border border-amber-500/20 shadow-[inset_0_0_20px_rgba(245,158,11,0.05)]"
+                        : "text-zinc-400 hover:text-white hover:bg-zinc-900 border border-transparent"
                     }`}
                   >
-                    <link.icon className={`w-[18px] h-[18px] shrink-0 transition-colors ${
-                      isActive ? "text-primary-600" : "text-gray-400 group-hover:text-gray-600"
-                    }`} />
-                    <span className="truncate">{link.label}</span>
+                    <div className={`relative z-10 transition-transform duration-300 ${isActive ? "scale-110" : "group-hover:scale-110"}`}>
+                      <link.icon className="w-5 h-5" />
+                    </div>
+                    <span className="relative z-10">{link.label}</span>
+                    {isActive && (
+                      <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-amber-500 rounded-r-full shadow-[0_0_10px_rgba(245,158,11,0.5)]" />
+                    )}
                   </Link>
                 );
               })}
             </div>
-
-            <div className="my-5 mx-3 border-t border-gray-100" />
-
-            <div className="mb-2 px-3 text-[10px] font-semibold text-gray-400 uppercase tracking-widest">
-              Raccourcis
-            </div>
-            <Link
-              href="/dashboard/coffres"
-              className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13px] font-medium text-gray-600 hover:bg-gray-50 hover:text-gray-900 transition-all duration-150 group border border-transparent"
-            >
-              <div className="w-[18px] h-[18px] rounded flex items-center justify-center border border-gray-300 group-hover:border-primary-400 group-hover:bg-primary-50 transition-all">
-                <Plus className="w-3 h-3 text-gray-400 group-hover:text-primary-600 transition-colors" />
-              </div>
-              <span className="truncate">Nouveau Coffre</span>
-            </Link>
           </nav>
+
+          {/* User Profile Footer */}
+          <div className="p-4 border-t border-white/5 bg-zinc-950/80 relative" ref={profileRef}>
+            <button
+              onClick={() => setProfileOpen(!profileOpen)}
+              className="flex items-center gap-3 w-full p-2.5 rounded-2xl hover:bg-white/5 transition-all duration-300 group border border-transparent hover:border-white/5"
+            >
+              <div className="w-10 h-10 rounded-full bg-zinc-900 border border-white/10 flex items-center justify-center shrink-0 group-hover:border-amber-500/30 transition-colors shadow-lg">
+                <span className="text-zinc-300 font-bold uppercase text-sm">
+                  {user?.prenom?.[0] || ""}{user?.nom?.[0] || ""}
+                </span>
+              </div>
+              <div className="flex-1 min-w-0 text-left">
+                <p className="text-sm font-bold text-white truncate group-hover:text-amber-400 transition-colors">
+                  {user?.prenom} {user?.nom}
+                </p>
+                <p className="text-xs text-zinc-500 truncate">Membre Binq</p>
+              </div>
+            </button>
+
+            {/* Profile Dropdown */}
+            {profileOpen && (
+              <div className="absolute bottom-20 left-4 w-[248px] bg-zinc-900/90 border border-white/10 rounded-2xl shadow-2xl p-2 z-50 backdrop-blur-xl">
+                <Link href="/parametres" className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-zinc-300 hover:bg-white/5 hover:text-white transition-colors">
+                  <Settings className="w-4 h-4 text-zinc-400" />
+                  Paramètres
+                </Link>
+                <div className="h-px bg-white/5 my-1" />
+                <button onClick={handleLogout} className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-red-400 hover:bg-red-500/10 hover:text-red-300 transition-colors w-full text-left">
+                  <LogOut className="w-4 h-4" />
+                  Déconnexion
+                </button>
+              </div>
+            )}
+          </div>
         </aside>
 
-        {/* ─── Main Content ─── */}
-        <div className="lg:ml-[260px] min-h-screen flex flex-col">
-          {/* Top bar */}
-          <header className="bg-white/80 backdrop-blur-xl border-b border-gray-100 sticky top-0 z-30">
-            <div className="flex items-center justify-between px-4 sm:px-6 h-16">
-              <div className="flex items-center gap-3">
+        {/* Main Content Area */}
+        <div className="lg:ml-[280px] flex flex-col min-h-screen relative">
+          
+          {/* Header */}
+          <header className="sticky top-0 z-30 h-20 bg-zinc-950/80 backdrop-blur-xl border-b border-white/5 flex items-center justify-between px-4 sm:px-8">
+            <div className="flex items-center gap-4">
+              <button
+                onClick={() => setSidebarOpen(true)}
+                className="lg:hidden p-2.5 rounded-xl hover:bg-white/5 text-zinc-400 transition-colors"
+              >
+                <Menu className="w-5 h-5" />
+              </button>
+              
+              {/* Contextual Title based on route */}
+              <h1 className="text-lg font-bold text-white hidden sm:block">
+                {pathname === "/dashboard" ? "Tableau de bord" : pathname.startsWith("/portefeuille") ? "Portefeuille Bitcoin" : ""}
+              </h1>
+            </div>
+
+            <div className="flex items-center gap-4">
+              {/* Notification Bell */}
+              <div className="relative" ref={notifRef}>
                 <button
-                  onClick={() => setSidebarOpen(true)}
-                  className="lg:hidden p-2 rounded-xl hover:bg-gray-100 text-gray-500 transition-colors"
+                  onClick={() => setNotifOpen(!notifOpen)}
+                  className="relative p-2.5 rounded-full bg-zinc-900 border border-white/10 hover:border-amber-500/30 transition-colors group"
                 >
-                  <Menu className="w-5 h-5" />
-                </button>
-                <h1 className="text-base sm:text-lg font-semibold text-gray-900">
-                  {mainLinks.find((l) => l.href === pathname)?.label || "Binq"}
-                </h1>
-              </div>
-
-              <div className="flex items-center gap-1.5 sm:gap-2">
-                {/* Search */}
-                <button className="p-2 rounded-xl hover:bg-gray-100 transition-colors hidden sm:flex">
-                  <Search className="w-[18px] h-[18px] text-gray-400" />
-                </button>
-
-                {/* Notifications */}
-                <div className="relative" ref={notifRef}>
-                  <button
-                    onClick={() => { setNotifOpen(!notifOpen); setProfileOpen(false); }}
-                    className="relative p-2 rounded-xl hover:bg-gray-100 transition-colors"
-                  >
-                    <Bell className="w-[18px] h-[18px] text-gray-400" />
-                    {unreadCount > 0 && (
-                      <span className="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] flex items-center justify-center bg-red-500 text-white text-[10px] font-bold rounded-full px-1 ring-2 ring-white">
-                        {unreadCount > 99 ? "99+" : unreadCount}
-                      </span>
-                    )}
-                  </button>
-
-                  {notifOpen && (
-                    <div className="absolute right-0 top-full mt-2 w-80 sm:w-96 bg-white rounded-2xl shadow-xl shadow-gray-200/60 border border-gray-100 z-20 animate-fade-up overflow-hidden">
-                      {/* Header */}
-                      <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100">
-                        <h3 className="text-sm font-semibold text-gray-900">Notifications</h3>
-                        {unreadCount > 0 && (
-                          <button
-                            onClick={markAllRead}
-                            className="flex items-center gap-1 text-xs text-primary-600 hover:text-primary-700 font-medium transition-colors"
-                          >
-                            <CheckCheck className="w-3.5 h-3.5" />
-                            Tout marquer lu
-                          </button>
-                        )}
-                      </div>
-
-                      {/* List */}
-                      <div className="max-h-80 overflow-y-auto">
-                        {notifications.length === 0 ? (
-                          <div className="py-10 text-center">
-                            <Bell className="w-8 h-8 text-gray-200 mx-auto mb-2" />
-                            <p className="text-sm text-gray-400">Aucune notification</p>
-                          </div>
-                        ) : (
-                          notifications.map((n) => (
-                            <div
-                              key={n.id}
-                              className={`px-4 py-3 border-b border-gray-50 last:border-0 transition-colors ${
-                                n.lu ? "bg-white" : "bg-primary-50/40"
-                              }`}
-                            >
-                              <div className="flex items-start gap-3">
-                                <div className={`mt-0.5 w-2 h-2 rounded-full shrink-0 ${n.lu ? "bg-transparent" : "bg-primary-500"}`} />
-                                <div className="min-w-0 flex-1">
-                                  <p className="text-[13px] font-semibold text-gray-900">{n.titre}</p>
-                                  <p className="text-[12px] text-gray-500 mt-0.5 line-clamp-2">{n.message}</p>
-                                  <p className="text-[10px] text-gray-300 mt-1">
-                                    {formatTimeAgo(n.created_at)}
-                                  </p>
-                                </div>
-                              </div>
-                            </div>
-                          ))
-                        )}
-                      </div>
-                    </div>
-                  )}
-                </div>
-
-                {/* Divider */}
-                <div className="w-px h-7 bg-gray-200 mx-1 hidden sm:block" />
-
-                {/* Profile */}
-                <div className="relative" ref={profileRef}>
-                  <button
-                    onClick={() => setProfileOpen(!profileOpen)}
-                    className="flex items-center gap-2 p-1.5 rounded-xl hover:bg-gray-100 transition-colors"
-                  >
-                    <Avatar user={user!} size="sm" />
-                    <span className="hidden sm:block text-sm font-medium text-gray-700 max-w-[120px] truncate">
-                      {user?.prenom} {user?.nom?.[0]}.
+                  <Bell className="w-5 h-5 text-zinc-400 group-hover:text-amber-400 transition-colors" />
+                  {unreadCount > 0 && (
+                    <span className="absolute top-0 right-0 -translate-y-1/4 translate-x-1/4 flex h-3 w-3">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
+                      <span className="relative inline-flex rounded-full h-3 w-3 bg-amber-500 border-2 border-zinc-950"></span>
                     </span>
-                    <ChevronDown className={`w-3.5 h-3.5 text-gray-400 hidden sm:block transition-transform ${profileOpen ? "rotate-180" : ""}`} />
-                  </button>
-
-                  {profileOpen && (
-                    <div className="absolute right-0 top-full mt-2 w-56 bg-white rounded-2xl shadow-xl shadow-gray-200/60 border border-gray-100 py-1 z-20 animate-fade-up">
-                      <div className="px-4 py-3 border-b border-gray-100 flex items-center gap-3">
-                        <Avatar user={user!} size="sm" />
-                        <div className="min-w-0">
-                          <p className="text-sm font-semibold text-gray-900 truncate">{user?.prenom} {user?.nom}</p>
-                          <p className="text-[11px] text-gray-500 truncate">{user?.email}</p>
-                        </div>
-                      </div>
-                      <div className="py-1">
-                        <Link
-                          href="/dashboard/profil"
-                          className="block px-4 py-2 text-sm text-gray-600 hover:bg-gray-50 hover:text-gray-900 transition-colors"
-                          onClick={() => setProfileOpen(false)}
-                        >
-                          Mon profil
-                        </Link>
-                        <Link
-                          href={`/membres/${user?.id}`}
-                          className="block px-4 py-2 text-sm text-gray-600 hover:bg-gray-50 hover:text-gray-900 transition-colors"
-                          onClick={() => setProfileOpen(false)}
-                        >
-                          Profil public
-                        </Link>
-                        <Link
-                          href="/dashboard/parametres"
-                          className="block px-4 py-2 text-sm text-gray-600 hover:bg-gray-50 hover:text-gray-900 transition-colors"
-                          onClick={() => setProfileOpen(false)}
-                        >
-                          Paramètres
-                        </Link>
-                      </div>
-                      <div className="border-t border-gray-100 py-1">
-                        <button
-                          onClick={() => { setProfileOpen(false); handleLogout(); }}
-                          className="block w-full text-left px-4 py-2 text-sm text-red-500 hover:bg-red-50 transition-colors"
-                        >
-                          Déconnexion
-                        </button>
-                      </div>
-                    </div>
                   )}
-                </div>
+                </button>
+
+                {notifOpen && (
+                  <div className="absolute right-0 mt-3 w-80 sm:w-96 bg-zinc-900/95 border border-white/10 rounded-3xl shadow-2xl overflow-hidden z-50 backdrop-blur-xl">
+                    <div className="flex items-center justify-between px-6 py-4 border-b border-white/5">
+                      <h3 className="text-sm font-bold text-white">Notifications</h3>
+                      {unreadCount > 0 && (
+                        <button onClick={markAllRead} className="text-xs font-semibold text-amber-500 hover:text-amber-400 transition-colors">
+                          Tout marquer comme lu
+                        </button>
+                      )}
+                    </div>
+                    <div className="max-h-[350px] overflow-y-auto p-2">
+                      {notifications.length === 0 ? (
+                        <div className="p-8 text-center text-zinc-500 text-sm font-medium">
+                          Aucune notification pour le moment.
+                        </div>
+                      ) : (
+                        <div className="space-y-1">
+                          {notifications.map((notif) => (
+                            <div key={notif.id} className={`p-4 rounded-2xl flex flex-col gap-1.5 transition-all ${notif.lu ? "hover:bg-zinc-800/50 opacity-70" : "bg-amber-500/5 border border-amber-500/10"}`}>
+                              <div className="flex justify-between items-start gap-4">
+                                <span className={`text-sm font-bold ${notif.lu ? "text-zinc-300" : "text-amber-400"}`}>{notif.titre}</span>
+                                {!notif.lu && <span className="w-2 h-2 rounded-full bg-amber-500 shrink-0 shadow-[0_0_8px_rgba(245,158,11,0.6)] mt-1.5" />}
+                              </div>
+                              <p className="text-xs text-zinc-400 leading-relaxed">{notif.message}</p>
+                              <span className="text-[10px] text-zinc-500 font-medium">{formatTimeAgo(notif.created_at)}</span>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           </header>
 
-          {/* Page Content */}
-          <main className="flex-1 p-4 sm:p-6 lg:p-8">
-            <Suspense fallback={
-              <div className="space-y-6 animate-pulse">
-                <div className="h-7 w-48 bg-gray-200 rounded-lg" />
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                  {[...Array(4)].map((_, i) => (
-                    <div key={i} className="bg-white rounded-2xl p-5 border border-gray-100">
-                      <div className="h-4 w-20 bg-gray-100 rounded mb-3" />
-                      <div className="h-8 w-28 bg-gray-200 rounded-lg" />
-                    </div>
-                  ))}
-                </div>
-              </div>
-            }>
+          {/* Main Content Background Effects & Container */}
+          <main className="flex-1 p-4 sm:p-8 overflow-x-hidden relative">
+            <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-amber-500/10 rounded-full blur-[120px] pointer-events-none -z-10" />
+            <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-orange-600/5 rounded-full blur-[100px] pointer-events-none -z-10" />
+            
+            <div className="max-w-5xl mx-auto">
               {children}
-            </Suspense>
+            </div>
           </main>
         </div>
       </div>

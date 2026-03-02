@@ -1,383 +1,275 @@
 "use client";
 
 import Link from "next/link";
-import { useState, Suspense } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/contexts/ToastContext";
 import {
   Mail,
   Lock,
-  User,
-  Phone,
   ArrowRight,
   Eye,
   EyeOff,
+  User,
+  Phone,
   Loader2,
-  CheckCircle2,
-  MailCheck,
+  Bitcoin,
+  Globe,
+  Wallet,
 } from "lucide-react";
 
-// Password strength calculator
-function getPasswordStrength(password: string): { score: number; label: string; color: string } {
-  let score = 0;
-  if (password.length >= 6) score++;
-  if (password.length >= 8) score++;
-  if (/[A-Z]/.test(password)) score++;
-  if (/[0-9]/.test(password)) score++;
-  if (/[^A-Za-z0-9]/.test(password)) score++;
-
-  if (score <= 1) return { score, label: "Faible", color: "bg-red-500" };
-  if (score <= 2) return { score, label: "Moyen", color: "bg-amber-500" };
-  if (score <= 3) return { score, label: "Bon", color: "bg-blue-500" };
-  return { score, label: "Excellent", color: "bg-green-500" };
-}
-
 export default function InscriptionPage() {
-  return (
-    <Suspense fallback={<div className="min-h-screen flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-primary-600" /></div>}>
-      <InscriptionForm />
-    </Suspense>
-  );
-}
-
-function InscriptionForm() {
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const redirect = searchParams.get("redirect");
   const { register } = useAuth();
   const { showToast } = useToast();
+  
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [emailSent, setEmailSent] = useState(false);
-  const [registeredEmail, setRegisteredEmail] = useState("");
+
   const [formData, setFormData] = useState({
-    nom: "",
     prenom: "",
+    nom: "",
     email: "",
     telephone: "",
     password: "",
-    confirmPassword: "",
   });
-
-  const passwordStrength = getPasswordStrength(formData.password);
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-    setError("");
-  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
-
-    if (formData.password !== formData.confirmPassword) {
-      setError("Les mots de passe ne correspondent pas");
-      return;
-    }
-    if (formData.password.length < 6) {
-      setError("Le mot de passe doit contenir au moins 6 caractères");
-      return;
-    }
-
     setLoading(true);
+
     try {
-      const result = await register(formData);
+      const result = await register(
+        formData.email,
+        formData.password,
+        formData.prenom,
+        formData.nom,
+        formData.telephone
+      );
+
       if (result.success) {
-        setRegisteredEmail(formData.email);
-        setEmailSent(true);
-        showToast("success", "Compte créé !", "Vérifiez votre email pour confirmer votre inscription");
+        showToast("success", "Bienvenue !", "Votre compte a été créé avec succès.");
+        router.push("/dashboard");
       } else {
-        setError(result.error || "Erreur lors de l'inscription");
+        setError(result.error || "Une erreur est survenue lors de l'inscription");
       }
     } catch {
-      setError("Une erreur est survenue");
+      setError("Une erreur inattendue s'est produite");
     } finally {
       setLoading(false);
     }
   };
 
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
   return (
-    <div className="min-h-screen bg-surface-50 flex">
-      {/* Left side - Branding */}
-      <div className="hidden lg:flex lg:w-1/2 bg-gray-950 text-white p-12 items-center justify-center relative overflow-hidden">
-        {/* Gradient orbs */}
-        <div className="absolute top-1/4 left-1/4 w-[400px] h-[400px] bg-primary-600/20 rounded-full blur-[100px]" />
-        <div className="absolute bottom-1/4 right-1/4 w-[300px] h-[300px] bg-accent-500/10 rounded-full blur-[80px]" />
+    <div className="min-h-screen bg-zinc-950 text-zinc-50 font-sans flex selection:bg-amber-500/30 selection:text-amber-200">
+      
+      {/* ══════════════════════════════════════════
+          GAUCHE - Branding (Dark Premium)
+          ══════════════════════════════════════════ */}
+      <div className="hidden lg:flex lg:w-1/2 bg-[#0a0a0a] p-12 items-center justify-center relative overflow-hidden border-r border-white/5">
+        <div className="absolute top-0 right-1/4 w-[500px] h-[500px] bg-amber-500/10 rounded-full blur-[120px] pointer-events-none" />
+        <div className="absolute bottom-1/4 left-1/4 w-[400px] h-[400px] bg-orange-600/10 rounded-full blur-[100px] pointer-events-none" />
         
-        <div className="relative max-w-md">
-          <div className="flex items-center gap-2 mb-10">
-            <img src="https://res.cloudinary.com/dn8ed1doa/image/upload/82D516A1-AEEB-4D11-B7F0-C0DB72341613_gz12tn" alt="Binq" className="h-16 w-auto brightness-0 invert" />
+        <div className="relative max-w-md z-10 w-full">
+          <Link href="/" className="inline-flex items-center gap-3 group mb-12">
+            <div className="w-10 h-10 bg-gradient-to-br from-amber-400 to-orange-600 rounded-xl flex items-center justify-center shadow-lg shadow-amber-500/20 group-hover:shadow-amber-500/40 transition-all duration-300">
+              <Bitcoin className="w-6 h-6 text-zinc-950" />
+            </div>
+            <span className="font-bold text-2xl tracking-tight text-white group-hover:text-amber-400 transition-colors">Binq</span>
+          </Link>
+          
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 text-amber-500 text-xs font-bold mb-6">
+            L'avenir de la monnaie
           </div>
-          <h1 className="text-4xl font-bold mb-4 tracking-tight leading-tight">
-            Rejoignez la communauté
+
+          <h1 className="text-4xl font-black mb-6 tracking-tight leading-[1.1] text-white">
+            Rejoignez la <br/>révolution <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-orange-500">Bitcoin.</span>
           </h1>
-          <p className="text-gray-400 text-lg mb-10 leading-relaxed">
-            Créez votre compte et commencez à gérer vos tontines de manière
-            digitale, transparente et sécurisée.
+          <p className="text-zinc-400 text-lg leading-relaxed font-medium">
+            Créez votre compte en moins d'une minute et accédez à la plateforme d'achat la plus simple et sécurisée.
           </p>
-          <div className="grid grid-cols-2 gap-3">
+          
+          <div className="mt-12 space-y-6 border-t border-white/5 pt-10">
             {[
-              { value: "100%", label: "Gratuit" },
-              { value: "2 min", label: "Inscription" },
-              { value: "24/7", label: "Disponible" },
-              { value: "SSL", label: "Sécurisé" },
-            ].map((stat, i) => (
-              <div key={i} className="bg-white/[0.06] backdrop-blur-sm rounded-xl p-4 text-center border border-white/[0.06]">
-                <div className="text-xl font-bold text-accent-400">{stat.value}</div>
-                <div className="text-[13px] text-gray-500">{stat.label}</div>
+              { title: "Achat instantané", desc: "Achetez du BTC par carte bancaire en 2 clics.", icon: Bitcoin },
+              { title: "Transparence totale", desc: "1.5% de frais uniques sur les achats.", icon: Globe },
+              { title: "Autonomie financière", desc: "Gérez votre portefeuille sans intermédiaire.", icon: Wallet },
+            ].map((item, i) => (
+              <div key={i} className="flex items-start gap-4">
+                <div className="w-12 h-12 bg-zinc-900 border border-white/10 rounded-xl flex items-center justify-center flex-shrink-0 mt-1">
+                  <item.icon className="w-6 h-6 text-zinc-400" />
+                </div>
+                <div>
+                  <h3 className="text-white font-bold text-base mb-1">{item.title}</h3>
+                  <p className="text-zinc-500 text-sm leading-relaxed">{item.desc}</p>
+                </div>
               </div>
             ))}
           </div>
         </div>
       </div>
 
-      {/* Right side - Form */}
-      <div className="w-full lg:w-1/2 flex items-center justify-center p-4 sm:p-8">
-        <div className="w-full max-w-md">
-          <div className="lg:hidden flex items-center gap-2 mb-8 justify-center">
-            <img src="https://res.cloudinary.com/dn8ed1doa/image/upload/82D516A1-AEEB-4D11-B7F0-C0DB72341613_gz12tn" alt="Binq" className="h-14 w-auto" />
+      {/* ══════════════════════════════════════════
+          DROITE - Formulaire Inscription
+          ══════════════════════════════════════════ */}
+      <div className="w-full lg:w-1/2 flex items-center justify-center p-6 sm:p-12 relative overflow-y-auto">
+        <div className="w-full max-w-[440px] my-auto">
+          
+          {/* Mobile Logo */}
+          <Link href="/" className="lg:hidden flex items-center justify-center gap-3 group mb-10 mt-6">
+            <div className="w-10 h-10 bg-gradient-to-br from-amber-400 to-orange-600 rounded-xl flex items-center justify-center shadow-lg shadow-amber-500/20">
+              <Bitcoin className="w-6 h-6 text-zinc-950" />
+            </div>
+            <span className="font-bold text-2xl tracking-tight text-white">Binq</span>
+          </Link>
+
+          <div className="mb-10 text-center lg:text-left">
+            <h2 className="text-3xl font-black text-white mb-2">Créer un compte</h2>
+            <p className="text-zinc-400 text-[15px]">
+              Remplissez vos informations pour commencer.
+            </p>
           </div>
 
-          {/* Email confirmation screen */}
-          {emailSent ? (
-            <div className="text-center py-8">
-              <div className="w-20 h-20 bg-accent-50 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                <MailCheck className="w-10 h-10 text-accent-600" />
-              </div>
-              <h2 className="text-2xl font-bold text-gray-900 mb-3">Vérifiez votre email</h2>
-              <p className="text-gray-500 mb-2 text-[15px]">
-                Un email de confirmation a été envoyé à
-              </p>
-              <p className="font-semibold text-primary-600 mb-6">{registeredEmail}</p>
-              <div className="bg-primary-50 border border-primary-100 rounded-xl p-4 text-sm text-primary-700 mb-6">
-                <p className="font-medium mb-1">Étapes suivantes :</p>
-                <ol className="list-decimal list-inside space-y-1 text-left">
-                  <li>Ouvrez votre boîte mail</li>
-                  <li>Cliquez sur le lien de confirmation</li>
-                  <li>Connectez-vous à votre compte</li>
-                </ol>
-              </div>
-              <div className="space-y-3">
-                <Link href={redirect ? `/connexion?redirect=${encodeURIComponent(redirect)}` : "/connexion"} className="btn-primary w-full flex items-center justify-center gap-2">
-                  <ArrowRight className="w-5 h-5" />
-                  Aller à la connexion
-                </Link>
-                {redirect && redirect.startsWith("/rejoindre/") && (
-                  <p className="text-xs text-gray-400 text-center">
-                    Après confirmation, connectez-vous pour rejoindre la tontine automatiquement.
-                  </p>
-                )}
-                <button
-                  onClick={() => { setEmailSent(false); setFormData({ nom: "", prenom: "", email: "", telephone: "", password: "", confirmPassword: "" }); }}
-                  className="text-sm text-gray-400 hover:text-gray-600 w-full transition-colors"
-                >
-                  Utiliser un autre email
-                </button>
-              </div>
-            </div>
-          ) : (
-          <>
-          <h2 className="text-2xl font-bold text-gray-900 mb-1.5">Inscription</h2>
-          <p className="text-gray-500 mb-8 text-[15px]">
-            Créez votre compte pour commencer
-          </p>
-
           {error && (
-            <div className="mb-6 p-4 bg-red-50 border border-red-100 rounded-xl text-red-600 text-sm">
-              {error}
-            </div>
+             <div className="mb-8 p-4 bg-red-500/10 border border-red-500/20 rounded-2xl flex items-center gap-3 text-red-400 text-sm font-medium animate-fade-in">
+               <div className="w-2 h-2 rounded-full bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.6)] shrink-0" />
+               {error}
+             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="grid grid-cols-2 gap-3">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5">
-                  Nom
-                </label>
-                <div className="relative">
-                  <User className="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-gray-400" />
-                  <input
-                    type="text"
-                    name="nom"
-                    value={formData.nom}
-                    onChange={handleChange}
-                    className="input-field pl-12"
-                    placeholder="Nom"
-                    required
-                  />
-                </div>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5">
-                  Prénom
-                </label>
-                <div className="relative">
-                  <User className="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-gray-400" />
+          <form onSubmit={handleSubmit} className="space-y-5">
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-1.5">
+                <label className="block text-sm font-bold text-zinc-300 ml-1">Prénom</label>
+                <div className="relative group">
+                  <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-zinc-500 group-focus-within:text-amber-500 transition-colors" />
                   <input
                     type="text"
                     name="prenom"
                     value={formData.prenom}
                     onChange={handleChange}
-                    className="input-field pl-12"
-                    placeholder="Prénom"
+                    className="w-full bg-zinc-900 border border-white/10 rounded-2xl py-3.5 pl-12 pr-4 text-white placeholder-zinc-600 focus:outline-none focus:ring-2 focus:ring-amber-500/50 focus:border-amber-500 transition-all"
+                    placeholder="Jean"
+                    required
+                  />
+                </div>
+              </div>
+              <div className="space-y-1.5">
+                <label className="block text-sm font-bold text-zinc-300 ml-1">Nom</label>
+                <div className="relative group">
+                  <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-zinc-500 group-focus-within:text-amber-500 transition-colors" />
+                  <input
+                    type="text"
+                    name="nom"
+                    value={formData.nom}
+                    onChange={handleChange}
+                    className="w-full bg-zinc-900 border border-white/10 rounded-2xl py-3.5 pl-12 pr-4 text-white placeholder-zinc-600 focus:outline-none focus:ring-2 focus:ring-amber-500/50 focus:border-amber-500 transition-all"
+                    placeholder="Dupont"
                     required
                   />
                 </div>
               </div>
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1.5">
-                Adresse email
-              </label>
-              <div className="relative">
-                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-gray-400" />
+            <div className="space-y-1.5">
+              <label className="block text-sm font-bold text-zinc-300 ml-1">Email</label>
+              <div className="relative group">
+                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-zinc-500 group-focus-within:text-amber-500 transition-colors" />
                 <input
                   type="email"
                   name="email"
                   value={formData.email}
                   onChange={handleChange}
-                  className="input-field pl-12"
-                  placeholder="votre@email.com"
+                  className="w-full bg-zinc-900 border border-white/10 rounded-2xl py-3.5 pl-12 pr-4 text-white placeholder-zinc-600 focus:outline-none focus:ring-2 focus:ring-amber-500/50 focus:border-amber-500 transition-all"
+                  placeholder="jean.dupont@email.com"
                   required
                 />
               </div>
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1.5">
-                Téléphone
-              </label>
-              <div className="relative">
-                <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-gray-400" />
+            <div className="space-y-1.5">
+              <label className="block text-sm font-bold text-zinc-300 ml-1">Téléphone</label>
+              <div className="relative group">
+                <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-zinc-500 group-focus-within:text-amber-500 transition-colors" />
                 <input
                   type="tel"
                   name="telephone"
                   value={formData.telephone}
                   onChange={handleChange}
-                  className="input-field pl-12"
+                  className="w-full bg-zinc-900 border border-white/10 rounded-2xl py-3.5 pl-12 pr-4 text-white placeholder-zinc-600 focus:outline-none focus:ring-2 focus:ring-amber-500/50 focus:border-amber-500 transition-all font-mono"
                   placeholder="+33 6 12 34 56 78"
                   required
                 />
               </div>
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1.5">
-                Mot de passe
-              </label>
-              <div className="relative">
-                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-gray-400" />
+            <div className="space-y-1.5">
+              <label className="block text-sm font-bold text-zinc-300 ml-1">Mot de passe</label>
+              <div className="relative group">
+                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-zinc-500 group-focus-within:text-amber-500 transition-colors" />
                 <input
                   type={showPassword ? "text" : "password"}
                   name="password"
                   value={formData.password}
                   onChange={handleChange}
-                  className="input-field pl-12 pr-12"
+                  className="w-full bg-zinc-900 border border-white/10 rounded-2xl py-3.5 pl-12 pr-12 text-white placeholder-zinc-600 focus:outline-none focus:ring-2 focus:ring-amber-500/50 focus:border-amber-500 transition-all font-mono"
                   placeholder="••••••••"
                   required
+                  minLength={8}
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-white transition-colors p-1"
                 >
-                  {showPassword ? <EyeOff className="w-[18px] h-[18px]" /> : <Eye className="w-[18px] h-[18px]" />}
+                  {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                 </button>
               </div>
-              {formData.password && (
-                <div className="mt-2">
-                  <div className="flex items-center gap-2">
-                    <div className="flex-1 h-1 bg-gray-200 rounded-full overflow-hidden">
-                      <div
-                        className={`h-full rounded-full transition-all duration-300 ${passwordStrength.color}`}
-                        style={{ width: `${(passwordStrength.score / 5) * 100}%` }}
-                      ></div>
-                    </div>
-                    <span className={`text-xs font-medium ${
-                      passwordStrength.score <= 1 ? "text-red-500" :
-                      passwordStrength.score <= 2 ? "text-amber-500" :
-                      passwordStrength.score <= 3 ? "text-blue-500" : "text-green-500"
-                    }`}>
-                      {passwordStrength.label}
-                    </span>
-                  </div>
-                </div>
-              )}
+              <p className="text-[11px] text-zinc-500 mt-2 px-1">Au moins 8 caractères</p>
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1.5">
-                Confirmer le mot de passe
-              </label>
-              <div className="relative">
-                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-gray-400" />
-                <input
-                  type="password"
-                  name="confirmPassword"
-                  value={formData.confirmPassword}
-                  onChange={handleChange}
-                  className="input-field pl-12"
-                  placeholder="••••••••"
-                  required
-                />
-              </div>
-            </div>
-
-            <div className="flex items-start gap-2">
-              <input
-                type="checkbox"
-                className="w-4 h-4 rounded border-gray-300 text-primary-600 focus:ring-primary-500 mt-0.5"
-                required
-              />
-              <span className="text-[13px] text-gray-500">
-                J&apos;accepte les{" "}
-                <Link href="#" className="text-primary-600 hover:underline">
-                  conditions d&apos;utilisation
-                </Link>{" "}
-                et la{" "}
-                <Link href="#" className="text-primary-600 hover:underline">
-                  politique de confidentialité
-                </Link>
-              </span>
-            </div>
-
-            <button type="submit" disabled={loading} className="btn-primary w-full flex items-center justify-center gap-2 disabled:opacity-50">
+            <button 
+              type="submit" 
+              disabled={loading} 
+              className="w-full py-4 rounded-2xl bg-amber-500 text-zinc-950 font-bold hover:bg-amber-400 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 mt-6 shadow-[0_0_20px_rgba(245,158,11,0.2)]"
+            >
               {loading ? (
                 <>
                   <Loader2 className="w-5 h-5 animate-spin" />
-                  Création...
+                  Création en cours...
                 </>
               ) : (
                 <>
                   Créer mon compte
-                  <ArrowRight className="w-4 h-4" />
+                  <ArrowRight className="w-5 h-5" />
                 </>
               )}
             </button>
           </form>
 
-          <div className="mt-6 text-center">
-            <p className="text-gray-500 text-[15px]">
-              Déjà un compte ?{" "}
+          <p className="text-xs text-zinc-500 text-center mt-6">
+            En m'inscrivant, j'accepte les <Link href="#" className="underline hover:text-white transition-colors">Conditions d'Utilisation</Link> et la <Link href="#" className="underline hover:text-white transition-colors">Politique de Confidentialité</Link>.
+          </p>
+
+          <div className="mt-10 pt-8 border-t border-white/5 text-center font-medium">
+            <p className="text-zinc-500 text-[15px]">
+              Vous avez déjà un compte ?{" "}
               <Link
-                href={redirect ? `/connexion?redirect=${encodeURIComponent(redirect)}` : "/connexion"}
-                className="text-primary-600 hover:text-primary-700 font-semibold"
+                href="/connexion"
+                className="text-white hover:text-amber-400 hover:underline transition-colors"
               >
                 Se connecter
               </Link>
             </p>
           </div>
-
-          <div className="mt-4">
-            <Link href="/" className="text-sm text-gray-400 hover:text-gray-600 flex items-center justify-center gap-1 transition-colors">
-              ← Retour à l&apos;accueil
-            </Link>
-          </div>
-          </>
-          )}
         </div>
       </div>
     </div>
