@@ -1,325 +1,323 @@
+"use client";
+
 import Link from "next/link";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
 import {
-  Shield,
-  CheckCircle2,
+  Bitcoin,
+  TrendingUp,
+  CreditCard,
+  ShieldCheck,
+  Clock,
+  BarChart3,
   ArrowRight,
   Lock,
-  Sparkles,
-  Wallet,
   Zap,
-  CreditCard,
-  PiggyBank,
-  Bitcoin,
+  CheckCircle2,
 } from "lucide-react";
 
 export default function HomePage() {
   return (
     <div className="min-h-screen bg-white">
-      <Navbar />
 
-      {/* Hero */}
-      <section className="relative overflow-hidden bg-gray-950 text-white">
-        <div className="absolute top-0 left-1/4 w-[600px] h-[600px] bg-primary-600/20 rounded-full blur-[120px]" />
-        <div className="absolute bottom-0 right-1/4 w-[400px] h-[400px] bg-primary-400/10 rounded-full blur-[100px]" />
-
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 sm:py-28 md:py-40 relative">
-          <div className="text-center max-w-3xl mx-auto">
-            <div className="inline-flex items-center gap-2 bg-white/[0.08] backdrop-blur-sm border border-white/[0.12] rounded-full px-4 py-2 mb-8">
-              <Sparkles className="w-3.5 h-3.5 text-accent-400" />
-              <span className="text-[13px] font-medium text-gray-300">
-                Intelligent Wallet
-              </span>
+      {/* ══════════════════════════════════════════
+          HEADER
+          ══════════════════════════════════════════ */}
+      <header className="border-b border-gray-100 bg-white/80 backdrop-blur-lg sticky top-0 z-50">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 flex items-center justify-between h-16">
+          <Link href="/" className="flex items-center gap-2">
+            <div className="w-8 h-8 bg-gradient-to-br from-amber-500 to-orange-600 rounded-lg flex items-center justify-center">
+              <Bitcoin className="w-5 h-5 text-white" />
             </div>
-            <h1 className="text-4xl md:text-6xl lg:text-[68px] font-bold leading-[1.08] mb-6 tracking-tight">
-              Contrôlez votre argent.{" "}
-              <span className="bg-gradient-to-r from-primary-400 to-primary-400 bg-clip-text text-transparent">
-                Simplement
-              </span>
-              .
-            </h1>
-            <p className="text-lg md:text-xl text-gray-400 mb-10 max-w-2xl mx-auto leading-relaxed">
-              Un portefeuille sécurisé pour envoyer, recevoir, épargner et investir en Bitcoin — le tout en temps réel.
-            </p>
+            <span className="font-bold text-lg text-gray-900 tracking-tight">Binq</span>
+          </Link>
+          <div className="flex items-center gap-3">
             <Link
-              href="/inscription"
-              className="inline-flex items-center gap-2 bg-white text-gray-900 px-8 py-4 rounded-2xl font-semibold text-[15px] transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-0.5"
+              href="/auth/login"
+              className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors px-3 py-2"
             >
-              Ouvrir un compte gratuitement
+              Connexion
+            </Link>
+            <Link
+              href="/auth/register"
+              className="text-sm font-semibold bg-gray-900 text-white px-5 py-2.5 rounded-xl hover:bg-gray-800 transition-colors"
+            >
+              Commencer
+            </Link>
+          </div>
+        </div>
+      </header>
+
+      {/* ══════════════════════════════════════════
+          HERO
+          ══════════════════════════════════════════ */}
+      <section className="relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-b from-amber-50/50 to-white" />
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[600px] bg-gradient-to-br from-amber-300/20 to-orange-200/10 rounded-full blur-3xl -translate-y-1/2" />
+
+        <div className="relative max-w-3xl mx-auto px-4 sm:px-6 pt-20 sm:pt-28 pb-16 sm:pb-24 text-center">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-50 border border-amber-200 text-amber-700 text-xs font-semibold mb-6">
+            <Bitcoin className="w-3.5 h-3.5" />
+            Plateforme d&apos;achat et vente de Bitcoin
+          </div>
+
+          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-gray-900 tracking-tight leading-[1.1] mb-5">
+            Achetez et vendez du{" "}
+            <span className="bg-gradient-to-r from-amber-500 to-orange-600 bg-clip-text text-transparent">
+              Bitcoin
+            </span>
+            <br />
+            en toute simplicité
+          </h1>
+
+          <p className="text-lg sm:text-xl text-gray-500 max-w-xl mx-auto mb-8 leading-relaxed">
+            Achetez du BTC par carte bancaire en quelques secondes.
+            Prix en temps réel, frais transparents, paiement sécurisé via Stripe.
+          </p>
+
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+            <Link
+              href="/auth/register"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-8 py-4 rounded-xl bg-green-600 text-white font-semibold hover:bg-green-700 transition-colors shadow-lg shadow-green-500/20"
+            >
+              <TrendingUp className="w-5 h-5" />
+              Acheter du Bitcoin
+            </Link>
+            <Link
+              href="/auth/login"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-8 py-4 rounded-xl border border-gray-200 bg-white text-gray-700 font-semibold hover:bg-gray-50 transition-colors"
+            >
+              Se connecter
               <ArrowRight className="w-4 h-4" />
             </Link>
-            <div className="mt-12 sm:mt-16 flex flex-wrap items-center justify-center gap-6 sm:gap-10 text-gray-500">
-              <div className="flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-accent-500" />
-                <span className="text-[13px]">Inscription en 30 secondes</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-accent-500" />
-                <span className="text-[13px]">Sécurisé par Stripe</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-accent-500" />
-                <span className="text-[13px]">0 € / mois</span>
-              </div>
+          </div>
+
+          {/* Trust badges */}
+          <div className="flex items-center justify-center gap-6 mt-10">
+            <div className="flex items-center gap-1.5 text-xs text-gray-400">
+              <ShieldCheck className="w-4 h-4 text-green-500" />
+              Paiement Stripe
+            </div>
+            <div className="flex items-center gap-1.5 text-xs text-gray-400">
+              <Lock className="w-4 h-4 text-blue-500" />
+              Données chiffrées
+            </div>
+            <div className="flex items-center gap-1.5 text-xs text-gray-400">
+              <Zap className="w-4 h-4 text-amber-500" />
+              Instantané
             </div>
           </div>
         </div>
       </section>
 
-      {/* Avantages — benefit-oriented */}
-      <section className="py-16 sm:py-24 bg-surface-50" id="fonctionnalites">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <span className="section-label">Pourquoi Binq</span>
-            <h2 className="text-3xl md:text-[42px] font-bold text-gray-900 mt-3 mb-4 tracking-tight">
-              Un seul compte, zéro limite
+      {/* ══════════════════════════════════════════
+          FEATURES
+          ══════════════════════════════════════════ */}
+      <section className="py-16 sm:py-24 bg-gray-50/50">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6">
+          <div className="text-center mb-14">
+            <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 tracking-tight">
+              Pourquoi choisir Binq ?
             </h2>
-            <p className="text-gray-500 max-w-xl mx-auto text-lg">
-              Tout ce dont vous avez besoin pour maîtriser votre argent.
+            <p className="text-gray-500 mt-3 max-w-lg mx-auto">
+              La façon la plus simple d&apos;acheter et vendre du Bitcoin en Europe.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {[
               {
-                icon: Wallet,
-                title: "Un wallet puissant",
-                description:
-                  "Déposez, retirez et suivez votre solde en temps réel. EUR et USD supportés.",
-                bg: "bg-primary-50",
-                color: "text-primary-600",
+                icon: CreditCard,
+                title: "Achat par carte bancaire",
+                desc: "Visa ou Mastercard, achetez du Bitcoin en quelques clics. Paiement 100% sécurisé via Stripe.",
+                color: "bg-blue-50 text-blue-600",
+              },
+              {
+                icon: TrendingUp,
+                title: "Prix en temps réel",
+                desc: "Cours Bitcoin actualisé en direct. Vous achetez au meilleur prix du marché avec une transparence totale.",
+                color: "bg-green-50 text-green-600",
+              },
+              {
+                icon: ShieldCheck,
+                title: "Sécurité maximale",
+                desc: "Infrastructure Stripe PCI-DSS, données chiffrées, authentification multi-facteurs.",
+                color: "bg-purple-50 text-purple-600",
               },
               {
                 icon: Zap,
-                title: "Des transferts instantanés",
-                description:
-                  "Envoyez de l'argent à n'importe qui en quelques secondes, sans intermédiaire.",
-                bg: "bg-primary-50",
-                color: "text-primary-600",
+                title: "Transactions instantanées",
+                desc: "Votre Bitcoin est crédité immédiatement après confirmation du paiement. Pas d'attente.",
+                color: "bg-amber-50 text-amber-600",
               },
               {
-                icon: CreditCard,
-                title: "Des paiements simplifiés",
-                description:
-                  "Créez un lien, partagez-le. Le destinataire reçoit le paiement instantanément.",
-                bg: "bg-emerald-50",
-                color: "text-emerald-600",
+                icon: BarChart3,
+                title: "Suivi de portefeuille",
+                desc: "Suivez la valeur de votre portefeuille Bitcoin en euros en temps réel avec historique complet.",
+                color: "bg-indigo-50 text-indigo-600",
               },
               {
-                icon: PiggyBank,
-                title: "Une épargne intelligente",
-                description:
-                  "Organisez votre argent dans des coffres dédiés. Objectif, libre ou programmé.",
-                bg: "bg-amber-50",
-                color: "text-amber-600",
+                icon: Clock,
+                title: "Frais transparents",
+                desc: "1.5% de frais par transaction. Pas de frais cachés, pas d'abonnement. Vous savez ce que vous payez.",
+                color: "bg-pink-50 text-pink-600",
               },
-              {
-                icon: Bitcoin,
-                title: "Bitcoin intégré",
-                description:
-                  "Achetez et vendez du Bitcoin directement depuis votre portefeuille, au prix du marché en temps réel.",
-                bg: "bg-amber-50",
-                color: "text-amber-600",
-              },
-              {
-                icon: Shield,
-                title: "Sécurité maximale",
-                description:
-                  "Chiffrement bancaire, transactions sécurisées par Stripe. Votre argent est protégé.",
-                bg: "bg-emerald-50",
-                color: "text-emerald-600",
-              },
-            ].map((item, i) => (
+            ].map((feature, i) => (
               <div
                 key={i}
-                className="group bg-white rounded-2xl border border-gray-100/80 p-7 hover:shadow-lg hover:shadow-gray-200/50 hover:-translate-y-1 transition-all duration-300"
+                className="bg-white rounded-2xl p-6 border border-gray-100 hover:shadow-md hover:border-gray-200 transition-all"
               >
-                <div
-                  className={`w-12 h-12 ${item.bg} rounded-2xl flex items-center justify-center mb-5 group-hover:scale-110 transition-transform duration-300`}
-                >
-                  <item.icon className={`w-6 h-6 ${item.color}`} />
+                <div className={`w-11 h-11 rounded-xl flex items-center justify-center mb-4 ${feature.color}`}>
+                  <feature.icon className="w-5 h-5" />
                 </div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                  {item.title}
-                </h3>
-                <p className="text-gray-500 text-[15px] leading-relaxed">
-                  {item.description}
-                </p>
+                <h3 className="text-sm font-bold text-gray-900 mb-2">{feature.title}</h3>
+                <p className="text-xs text-gray-500 leading-relaxed">{feature.desc}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Comment ça marche */}
-      <section className="py-16 sm:py-24 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12 sm:mb-16">
-            <span className="section-label">Comment ça marche</span>
-            <h2 className="text-3xl md:text-[42px] font-bold text-gray-900 mt-3 mb-4 tracking-tight">
-              Prêt en 3&nbsp;étapes
+      {/* ══════════════════════════════════════════
+          HOW IT WORKS
+          ══════════════════════════════════════════ */}
+      <section className="py-16 sm:py-24">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6">
+          <div className="text-center mb-14">
+            <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 tracking-tight">
+              Comment ça marche ?
             </h2>
+            <p className="text-gray-500 mt-3">3 étapes pour acheter votre premier Bitcoin</p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 relative">
-            <div className="hidden md:block absolute top-16 left-[16.67%] right-[16.67%] h-px bg-gradient-to-r from-primary-200 via-primary-300 to-primary-200" />
-
+          <div className="space-y-8">
             {[
               {
-                step: "01",
+                step: "1",
                 title: "Créez votre compte",
-                description: "Sans papiers, sans attente. Juste un email.",
+                desc: "Inscription gratuite en 30 secondes avec email et mot de passe.",
+                color: "bg-blue-600",
               },
               {
-                step: "02",
-                title: "Déposez de l'argent",
-                description: "Par carte bancaire, en un clic.",
+                step: "2",
+                title: "Choisissez votre montant",
+                desc: "Entrez le montant en euros que vous souhaitez investir en Bitcoin. À partir de 1 €.",
+                color: "bg-amber-500",
               },
               {
-                step: "03",
-                title: "Utilisez Binq",
-                description: "Envoyez, recevez, épargnez. Tout est prêt.",
-              },
-            ].map((step, i) => (
-              <div key={i} className="relative text-center">
-                <div className="w-14 h-14 bg-gradient-to-br from-primary-600 to-primary-700 rounded-2xl flex items-center justify-center mx-auto mb-5 shadow-glow relative z-10">
-                  <span className="text-white text-lg font-bold">{step.step}</span>
-                </div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-2">
-                  {step.title}
-                </h3>
-                <p className="text-gray-500 text-[15px] leading-relaxed max-w-xs mx-auto">
-                  {step.description}
-                </p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Sécurité — compact */}
-      <section className="py-16 sm:py-24 bg-surface-50">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <span className="section-label">Sécurité</span>
-            <h2 className="text-3xl md:text-[42px] font-bold text-gray-900 mt-3 mb-4 tracking-tight">
-              Votre argent est entre de bonnes mains
-            </h2>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {[
-              {
-                icon: Lock,
-                title: "Transactions sécurisées",
-                desc: "Chiffrement bancaire sur chaque opération.",
-              },
-              {
-                icon: Shield,
-                title: "Protection Stripe",
-                desc: "Le standard de sécurité utilisé par les plus grandes fintechs.",
-              },
-              {
-                icon: CheckCircle2,
-                title: "Historique transparent",
-                desc: "Chaque mouvement est traçable, en temps réel.",
+                step: "3",
+                title: "Payez par carte bancaire",
+                desc: "Réglez par Visa ou Mastercard via Stripe. Votre Bitcoin est crédité instantanément.",
+                color: "bg-green-600",
               },
             ].map((item, i) => (
-              <div
-                key={i}
-                className="bg-white rounded-2xl border border-gray-100/80 p-6 text-center"
-              >
-                <div className="w-12 h-12 bg-primary-50 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                  <item.icon className="w-6 h-6 text-primary-600" />
+              <div key={i} className="flex items-start gap-5">
+                <div className={`w-10 h-10 rounded-full ${item.color} text-white flex items-center justify-center font-bold text-sm flex-shrink-0`}>
+                  {item.step}
                 </div>
-                <h3 className="font-semibold text-gray-900 mb-1">{item.title}</h3>
-                <p className="text-gray-500 text-[15px]">{item.desc}</p>
+                <div>
+                  <h3 className="text-base font-bold text-gray-900 mb-1">{item.title}</h3>
+                  <p className="text-sm text-gray-500">{item.desc}</p>
+                </div>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Tarifs */}
-      <section className="py-16 sm:py-24 bg-white" id="tarifs">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <span className="section-label">Tarifs</span>
-            <h2 className="text-3xl md:text-[42px] font-bold text-gray-900 mt-3 mb-4 tracking-tight">
-              Gratuit. Point final.
+      {/* ══════════════════════════════════════════
+          PRICING
+          ══════════════════════════════════════════ */}
+      <section className="py-16 sm:py-24 bg-gray-50/50">
+        <div className="max-w-lg mx-auto px-4 sm:px-6">
+          <div className="text-center mb-10">
+            <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 tracking-tight">
+              Tarification simple
             </h2>
-            <p className="text-gray-500 max-w-xl mx-auto text-lg">
-              Pas de forfait, pas de frais cachés. Vous payez uniquement 2&nbsp;% sur les dépôts par carte.
-            </p>
+            <p className="text-gray-500 mt-3">Pas d&apos;abonnement. Payez uniquement quand vous tradez.</p>
           </div>
 
-          <div className="max-w-lg mx-auto">
-            <div className="bg-gray-950 rounded-3xl p-6 sm:p-8 relative shadow-2xl">
-              <div className="absolute -top-3 right-6 bg-gradient-to-r from-accent-500 to-accent-600 text-white px-4 py-1 rounded-full text-xs font-semibold shadow-glow-accent">
-                100 % Gratuit
-              </div>
-              <h3 className="text-xl font-bold text-white mb-1">Binq</h3>
-              <p className="text-gray-400 text-[15px] mb-6">
-                Votre compte digital complet
-              </p>
+          <div className="bg-white rounded-2xl border border-gray-200 p-6 sm:p-8">
+            <div className="text-center mb-6">
+              <p className="text-4xl font-extrabold text-gray-900">1.5%</p>
+              <p className="text-sm text-gray-500 mt-1">par transaction</p>
+            </div>
 
-              <div className="mb-6">
-                <span className="text-4xl font-bold text-white">0 €</span>
-                <span className="text-lg text-gray-400"> /mois</span>
+            <div className="space-y-3 mb-8">
+              {[
+                "Achat de Bitcoin par carte bancaire",
+                "Vente de Bitcoin",
+                "Prix en temps réel",
+                "Portefeuille Bitcoin sécurisé",
+                "Historique complet des transactions",
+                "Pas de limite d'achat",
+                "Pas de frais cachés",
+              ].map((item, i) => (
+                <div key={i} className="flex items-center gap-3">
+                  <CheckCircle2 className="w-4 h-4 text-green-500 flex-shrink-0" />
+                  <span className="text-sm text-gray-700">{item}</span>
+                </div>
+              ))}
+            </div>
+
+            <Link
+              href="/auth/register"
+              className="block w-full text-center py-3.5 rounded-xl bg-gray-900 text-white font-semibold hover:bg-gray-800 transition-colors"
+            >
+              Créer mon compte gratuitement
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* ══════════════════════════════════════════
+          CTA
+          ══════════════════════════════════════════ */}
+      <section className="py-16 sm:py-24">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 text-center">
+          <div className="bg-gradient-to-br from-gray-900 via-gray-900 to-amber-950 rounded-3xl p-8 sm:p-12 text-white relative overflow-hidden">
+            <div className="absolute -top-20 -right-20 w-60 h-60 bg-amber-500/10 rounded-full blur-3xl" />
+            <div className="absolute -bottom-10 -left-10 w-40 h-40 bg-amber-500/5 rounded-full blur-2xl" />
+
+            <div className="relative">
+              <div className="w-14 h-14 rounded-2xl bg-amber-500/20 flex items-center justify-center mx-auto mb-6">
+                <Bitcoin className="w-7 h-7 text-amber-400" />
               </div>
-              <ul className="space-y-3 mb-8">
-                {[
-                  "Wallet EUR & USD",
-                  "Transferts instantanés illimités",
-                  "Liens de paiement partageables",
-                  "Jusqu'à 10 coffres",
-                  "Achat & vente de Bitcoin",
-                  "Dépôts & retraits par carte",
-                  "Historique complet en temps réel",
-                ].map((text, i) => (
-                  <li
-                    key={i}
-                    className="flex items-center gap-3 text-gray-300 text-[15px]"
-                  >
-                    <CheckCircle2 className="w-4 h-4 text-primary-400 flex-shrink-0" />
-                    {text}
-                  </li>
-                ))}
-              </ul>
+              <h2 className="text-2xl sm:text-3xl font-bold mb-3">
+                Prêt à investir dans le Bitcoin ?
+              </h2>
+              <p className="text-gray-400 mb-8 max-w-md mx-auto">
+                Rejoignez Binq et achetez votre premier Bitcoin en moins de 2 minutes.
+              </p>
               <Link
-                href="/inscription"
-                className="block w-full text-center bg-white text-gray-900 px-6 py-3.5 rounded-xl font-semibold transition-all hover:bg-gray-100 shadow-lg"
+                href="/auth/register"
+                className="inline-flex items-center gap-2.5 px-8 py-4 bg-green-600 text-white font-semibold rounded-xl hover:bg-green-700 transition-colors shadow-lg shadow-green-500/20"
               >
-                Ouvrir mon compte
+                <TrendingUp className="w-5 h-5" />
+                Acheter du Bitcoin maintenant
               </Link>
             </div>
           </div>
         </div>
       </section>
 
-      {/* CTA */}
-      <section className="py-16 sm:py-24 bg-gray-950 text-white relative overflow-hidden">
-        <div className="absolute top-0 left-1/3 w-[500px] h-[500px] bg-primary-600/15 rounded-full blur-[120px]" />
-        <div className="absolute bottom-0 right-1/3 w-[300px] h-[300px] bg-primary-500/10 rounded-full blur-[80px]" />
-        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative">
-          <h2 className="text-3xl md:text-5xl font-bold mb-5 tracking-tight">
-            Prenez le contrôle de votre argent.
-          </h2>
-          <p className="text-gray-400 text-lg mb-10 max-w-xl mx-auto">
-            Créez votre compte Binq en 30 secondes. Gratuit, sécurisé, sans engagement.
-          </p>
-          <Link
-            href="/inscription"
-            className="inline-flex items-center gap-2 bg-white text-gray-900 px-8 py-4 rounded-2xl font-semibold text-[15px] transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5"
-          >
-            Commencer maintenant
-            <ArrowRight className="w-4 h-4" />
-          </Link>
+      {/* ══════════════════════════════════════════
+          FOOTER
+          ══════════════════════════════════════════ */}
+      <footer className="border-t border-gray-100 py-8 sm:py-12">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div className="flex items-center gap-2">
+              <div className="w-7 h-7 bg-gradient-to-br from-amber-500 to-orange-600 rounded-lg flex items-center justify-center">
+                <Bitcoin className="w-4 h-4 text-white" />
+              </div>
+              <span className="font-bold text-sm text-gray-900">Binq</span>
+              <span className="text-xs text-gray-400">— Achat & Vente de Bitcoin</span>
+            </div>
+            <p className="text-xs text-gray-400">
+              © {new Date().getFullYear()} Binq. Tous droits réservés.
+            </p>
+          </div>
         </div>
-      </section>
-
-      <Footer />
+      </footer>
     </div>
   );
 }

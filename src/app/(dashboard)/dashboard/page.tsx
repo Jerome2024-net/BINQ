@@ -3,81 +3,30 @@
 import Link from "next/link";
 import { useState, useEffect, useCallback } from "react";
 import { useAuth } from "@/contexts/AuthContext";
-import { useFinance } from "@/contexts/FinanceContext";
-import { DashboardSkeleton } from "@/components/Skeleton";
-import { formatMontant, formatDate } from "@/lib/data";
 import {
   Eye,
   EyeOff,
   ArrowRight,
-  ArrowUpRight,
-  ArrowDownLeft,
-  Plus,
-  Minus,
-  Send,
-  Lock,
   Bitcoin,
   TrendingUp,
   TrendingDown,
   Loader2,
+  CreditCard,
+  RefreshCw,
 } from "lucide-react";
-
-interface Coffre {
-  id: string;
-  nom: string;
-  type: string;
-  solde: number;
-  devise: string;
-  objectif_montant: number | null;
-  statut: string;
-  couleur: string;
-  icone: string;
-  created_at: string;
-}
 
 export default function DashboardPage() {
   const { user } = useAuth();
-  const {
-    wallet,
-    getOrCreateWallet,
-    getTransactions,
-    getFinancialSummary,
-    isLoading: financeLoading,
-  } = useFinance();
 
-  const [coffres, setCoffres] = useState<Coffre[]>([]);
-  const [coffresLoading, setCoffresLoading] = useState(true);
   const [showSolde, setShowSolde] = useState(true);
 
   // ── Bitcoin ──
   const [btcWallet, setBtcWallet] = useState<{ solde: number }>({ solde: 0 });
   const [btcPrice, setBtcPrice] = useState<number | null>(null);
   const [btcChange24h, setBtcChange24h] = useState<number>(0);
-  const [btcTransactions, setBtcTransactions] = useState<Array<{ id: string; type: string; montant_crypto: number; montant_eur: number; created_at: string }>>([]);
+  const [btcTransactions, setBtcTransactions] = useState<Array<{ id: string; type: string; montant_crypto: number; montant_eur: number; frais_eur: number; reference: string; created_at: string }>>([]);
   const [btcLoading, setBtcLoading] = useState(true);
 
-  useEffect(() => {
-    if (user) getOrCreateWallet();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user]);
-
-  // Charger les coffres
-  useEffect(() => {
-    const charger = async () => {
-      try {
-        const res = await fetch("/api/coffres");
-        const data = await res.json();
-        if (res.ok) setCoffres(data.epargnes || []);
-      } catch {
-        /* ignore */
-      } finally {
-        setCoffresLoading(false);
-      }
-    };
-    charger();
-  }, []);
-
-  // Charger Bitcoin
   const fetchBtcData = useCallback(async () => {
     setBtcLoading(true);
     try {
@@ -100,353 +49,211 @@ export default function DashboardPage() {
     if (user) fetchBtcData();
   }, [user, fetchBtcData]);
 
-  const soldeWallet = wallet?.solde ?? 0;
-  const recentTx = getTransactions({ limit: 5 });
-  const summary = getFinancialSummary();
+  // Auto-refresh price every 30s
+  useEffect(() => {
+    const interval = setInterval(async () => {
+      try {
+        const res = await fetch("/api/crypto/price");
+        const data = await res.json();
+        if (data.price) { setBtcPrice(data.price); setBtcChange24h(data.change24h || 0); }
+      } catch { /* ignore */ }
+    }, 30000);
+    return () => clearInterval(interval);
+  }, []);
 
-  const totalCoffresEUR = coffres
-    .filter((e) => e.devise !== "USD")
-    .reduce((acc, e) => acc + Number(e.solde), 0);
-  const totalCoffresUSD = coffres
-    .filter((e) => e.devise === "USD")
-    .reduce((acc, e) => acc + Number(e.solde), 0);
-  const coffresActifs = coffres.filter((e) => e.statut === "active");
+  const valeurEur = btcPrice ? btcWallet.solde * btcPrice : 0;
 
-  const isCredit = (type: string) =>
-    ["depot", "remboursement", "transfert_entrant"].includes(type);
-
-  const getTransactionLabel = (type: string) => {
-    const labels: Record<string, string> = {
-      depot: "Dépôt",
-      retrait: "Retrait",
-      remboursement: "Remboursement",
-      transfert_entrant: "Reçu",
-      transfert_sortant: "Envoyé",
-      achat_crypto: "Achat BTC",
-      vente_crypto: "Vente BTC",
-    };
-    return labels[type] || type;
-  };
-
-  if (financeLoading || coffresLoading) {
-    return <DashboardSkeleton />;
+  if (btcLoading) {
+    return (
+      <div className="max-w-2xl mx-auto pt-20 flex flex-col items-center gap-4">
+        <div className="w-12 h-12 rounded-full bg-amber-50 flex items-center justify-center">
+          <Bitcoin className="w-6 h-6 text-amber-600 animate-pulse" />
+        </div>
+        <p className="text-sm text-gray-400">Chargement...</p>
+      </div>
+    );
   }
 
   return (
-    <div className="max-w-2xl mx-auto space-y-8 pb-12">
+    <div className="max-w-2xl mx-auto space-y-6 pb-12">
 
-      {/* ── 1. Wallet Hero ── */}
-      <div className="pt-8 pb-2 text-center">
-        <p className="text-xs font-medium uppercase tracking-widest text-gray-400 mb-1">
-          Bonjour, {user?.prenom || "là"}
+      {/* ══════════════════════════════════════════
+          1. HERO — Bienvenue + Solde BTC
+          ══════════════════════════════════════════ */}
+      <div className="pt-8 pb-2">
+        <p className="text-xs font-medium uppercase tracking-widest text-gray-400 mb-1 text-center">
+          Bonjour, {user?.prenom || "là"} 👋
         </p>
-        <p className="text-xs text-gray-400 mb-5">Solde disponible</p>
-        <div className="flex items-center justify-center gap-3">
-          <p className="text-5xl sm:text-6xl font-extrabold text-gray-900 tracking-tight tabular-nums">
-            {showSolde ? formatMontant(soldeWallet) : "••••••"}
-          </p>
-          <button
-            onClick={() => setShowSolde(!showSolde)}
-            className="p-2 rounded-full hover:bg-gray-100 transition"
-          >
-            {showSolde ? (
-              <EyeOff className="w-5 h-5 text-gray-400" />
-            ) : (
-              <Eye className="w-5 h-5 text-gray-400" />
-            )}
-          </button>
+
+        <div className="bg-gradient-to-br from-gray-900 via-gray-900 to-amber-950 rounded-3xl p-6 sm:p-8 text-white relative overflow-hidden mt-4">
+          <div className="absolute -top-20 -right-20 w-60 h-60 bg-amber-500/10 rounded-full blur-3xl" />
+          <div className="absolute -bottom-10 -left-10 w-40 h-40 bg-amber-500/5 rounded-full blur-2xl" />
+
+          <div className="relative">
+            <div className="flex items-center justify-between mb-5">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-amber-500/20 flex items-center justify-center">
+                  <Bitcoin className="w-5 h-5 text-amber-400" />
+                </div>
+                <div>
+                  <p className="text-xs text-gray-400 font-medium uppercase tracking-wider">Portefeuille Bitcoin</p>
+                </div>
+              </div>
+              <button onClick={() => setShowSolde(!showSolde)} className="p-2 rounded-lg hover:bg-white/5 transition">
+                {showSolde ? <EyeOff className="w-4 h-4 text-gray-500" /> : <Eye className="w-4 h-4 text-gray-500" />}
+              </button>
+            </div>
+
+            <p className="text-3xl sm:text-4xl font-bold tracking-tight tabular-nums">
+              {showSolde ? `${btcWallet.solde.toFixed(8)} BTC` : "••••••••"}
+            </p>
+            <p className="text-sm text-gray-400 tabular-nums mt-1 mb-5">
+              {showSolde
+                ? `≈ ${valeurEur.toLocaleString("fr-FR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} €`
+                : "•••••"
+              }
+            </p>
+
+            <div className="flex items-center gap-4 bg-white/5 rounded-xl px-4 py-3">
+              <div className="flex-1">
+                <p className="text-[10px] text-gray-500 uppercase tracking-wider font-medium mb-0.5">Prix BTC</p>
+                <p className="text-sm font-bold text-white tabular-nums">
+                  {btcPrice ? `${btcPrice.toLocaleString("fr-FR")} €` : "—"}
+                </p>
+              </div>
+              <div className="flex-1 text-right">
+                <p className="text-[10px] text-gray-500 uppercase tracking-wider font-medium mb-0.5">24h</p>
+                <span className={`text-sm font-bold flex items-center justify-end gap-1 ${btcChange24h >= 0 ? "text-green-400" : "text-red-400"}`}>
+                  {btcChange24h >= 0 ? <TrendingUp className="w-3.5 h-3.5" /> : <TrendingDown className="w-3.5 h-3.5" />}
+                  {btcChange24h >= 0 ? "+" : ""}{btcChange24h.toFixed(2)}%
+                </span>
+              </div>
+              <button onClick={fetchBtcData} className="p-2 rounded-lg hover:bg-white/5 transition" title="Actualiser">
+                <RefreshCw className={`w-3.5 h-3.5 text-gray-500 ${btcLoading ? "animate-spin" : ""}`} />
+              </button>
+            </div>
+          </div>
         </div>
       </div>
 
-      {/* ── Actions rapides ── */}
-      <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
+      {/* ══════════════════════════════════════════
+          2. ACTIONS — Acheter / Vendre
+          ══════════════════════════════════════════ */}
+      <div className="grid grid-cols-2 gap-3">
         <Link
           href="/portefeuille"
-          className="flex flex-col items-center gap-2.5 py-5 rounded-2xl bg-primary-600 text-white hover:bg-primary-700 transition-colors"
+          className="flex items-center justify-center gap-3 py-4 sm:py-5 rounded-2xl bg-green-600 text-white font-semibold hover:bg-green-700 transition-colors shadow-sm"
         >
-          <Send className="w-5 h-5" />
-          <span className="text-xs font-semibold">Envoyer</span>
+          <TrendingUp className="w-5 h-5" />
+          <span>Acheter du BTC</span>
         </Link>
         <Link
           href="/portefeuille"
-          className="flex flex-col items-center gap-2.5 py-5 rounded-2xl bg-primary-600 text-white hover:bg-primary-700 transition-colors"
+          className="flex items-center justify-center gap-3 py-4 sm:py-5 rounded-2xl bg-red-500 text-white font-semibold hover:bg-red-600 transition-colors shadow-sm"
         >
-          <ArrowDownLeft className="w-5 h-5" />
-          <span className="text-xs font-semibold">Recevoir</span>
-        </Link>
-        <Link
-          href="/portefeuille"
-          className="flex flex-col items-center gap-2.5 py-5 rounded-2xl border border-gray-200 bg-white text-gray-900 hover:bg-gray-50 transition-colors"
-        >
-          <Plus className="w-5 h-5" />
-          <span className="text-xs font-semibold">Déposer</span>
-        </Link>
-        <Link
-          href="/portefeuille"
-          className="flex flex-col items-center gap-2.5 py-5 rounded-2xl border border-gray-200 bg-white text-gray-900 hover:bg-gray-50 transition-colors"
-        >
-          <Minus className="w-5 h-5" />
-          <span className="text-xs font-semibold">Retirer</span>
-        </Link>
-        <Link
-          href="/portefeuille"
-          className="flex flex-col items-center gap-2.5 py-5 rounded-2xl border border-amber-200 bg-amber-50 text-amber-700 hover:bg-amber-100 transition-colors col-span-2 sm:col-span-1"
-        >
-          <Bitcoin className="w-5 h-5" />
-          <span className="text-xs font-semibold">Bitcoin</span>
+          <TrendingDown className="w-5 h-5" />
+          <span>Vendre du BTC</span>
         </Link>
       </div>
 
-      {/* ── 2. Activité récente ── */}
+      <div className="flex items-center gap-2.5 px-4 py-3 rounded-xl bg-primary-50/60 border border-primary-100">
+        <CreditCard className="w-4 h-4 text-primary-500 flex-shrink-0" />
+        <p className="text-xs text-primary-700">
+          Achat par carte bancaire sécurisé via Stripe — <span className="font-semibold">frais 1.5%</span>
+        </p>
+      </div>
+
+      {/* ══════════════════════════════════════════
+          3. DERNIÈRES TRANSACTIONS
+          ══════════════════════════════════════════ */}
       <div className="bg-white rounded-2xl border border-gray-200">
         <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100">
           <h2 className="text-sm font-semibold text-gray-900 uppercase tracking-wide">
-            Activité récente
+            Dernières transactions
           </h2>
           <Link
-            href="/transactions"
+            href="/portefeuille"
             className="text-xs font-medium text-gray-400 hover:text-gray-600 flex items-center gap-1 transition-colors"
           >
             Tout voir <ArrowRight className="w-3.5 h-3.5" />
           </Link>
         </div>
 
-        {recentTx.length === 0 ? (
+        {btcTransactions.length === 0 ? (
           <div className="text-center py-14 px-5">
-            <p className="text-sm font-medium text-gray-900 mb-1">Aucune activité</p>
-            <p className="text-xs text-gray-400">Vos transactions apparaîtront ici</p>
+            <div className="w-14 h-14 bg-amber-50 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Bitcoin className="w-7 h-7 text-amber-400" />
+            </div>
+            <p className="text-sm font-medium text-gray-900 mb-1">Aucune transaction</p>
+            <p className="text-xs text-gray-400 mb-5">Commencez par acheter du Bitcoin</p>
+            <Link
+              href="/portefeuille"
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-green-600 text-white text-sm font-semibold hover:bg-green-700 transition-colors"
+            >
+              <TrendingUp className="w-4 h-4" />
+              Acheter du BTC
+            </Link>
           </div>
         ) : (
           <div className="divide-y divide-gray-50">
-            {recentTx.map((tx) => (
+            {btcTransactions.slice(0, 5).map((tx) => (
               <div key={tx.id} className="flex items-center gap-4 px-5 py-3.5">
                 <div className={`w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 ${
-                  isCredit(tx.type) ? "bg-green-50" : "bg-gray-100"
+                  tx.type === "achat" ? "bg-green-50" : "bg-red-50"
                 }`}>
-                  {isCredit(tx.type)
-                    ? <ArrowDownLeft className="w-4 h-4 text-green-600" />
-                    : <ArrowUpRight className="w-4 h-4 text-gray-500" />
+                  {tx.type === "achat"
+                    ? <TrendingUp className="w-4 h-4 text-green-600" />
+                    : <TrendingDown className="w-4 h-4 text-red-500" />
                   }
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-gray-900 truncate">{tx.description}</p>
+                  <p className="text-sm font-medium text-gray-900">
+                    {tx.type === "achat" ? "Achat Bitcoin" : "Vente Bitcoin"}
+                  </p>
                   <p className="text-xs text-gray-400 mt-0.5">
-                    {getTransactionLabel(tx.type)} · {formatDate(tx.dateCreation)}
+                    {new Date(tx.created_at).toLocaleDateString("fr-FR", { day: "numeric", month: "short", year: "numeric" })}
+                    {" · "}
+                    <span className="font-mono">{tx.reference}</span>
                   </p>
                 </div>
-                <p className={`text-sm font-semibold tabular-nums whitespace-nowrap ${
-                  isCredit(tx.type) ? "text-green-600" : "text-gray-900"
-                }`}>
-                  {isCredit(tx.type) ? "+" : "-"}{tx.montant.toLocaleString("fr-FR")} €
-                </p>
+                <div className="text-right">
+                  <p className={`text-sm font-semibold tabular-nums ${tx.type === "achat" ? "text-green-600" : "text-red-500"}`}>
+                    {tx.type === "achat" ? "+" : "-"}{tx.montant_crypto.toFixed(8)} BTC
+                  </p>
+                  <p className="text-[10px] text-gray-400 tabular-nums">{tx.montant_eur.toFixed(2)} €</p>
+                </div>
               </div>
             ))}
           </div>
         )}
       </div>
 
-      {/* ── 3. Produits financiers ── */}
+      {/* ══════════════════════════════════════════
+          4. INFOS MARCHÉ
+          ══════════════════════════════════════════ */}
       <div className="bg-white rounded-2xl border border-gray-200">
         <div className="px-5 py-4 border-b border-gray-100">
-          <h2 className="text-sm font-semibold text-gray-900 uppercase tracking-wide">Vos produits</h2>
-        </div>
-        <div className="divide-y divide-gray-100">
-          <Link href="/portefeuille" className="flex items-center gap-4 px-5 py-4 hover:bg-gray-50 transition-colors">
-            <div className="w-10 h-10 rounded-full bg-primary-600 flex items-center justify-center flex-shrink-0">
-              <Send className="w-4 h-4 text-white" />
-            </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-gray-900">Portefeuille</p>
-              <p className="text-xs text-gray-400">Transferts, paiements, liens</p>
-            </div>
-            <p className="text-sm font-semibold text-gray-900 tabular-nums">{formatMontant(soldeWallet)}</p>
-            <ArrowRight className="w-4 h-4 text-gray-300 flex-shrink-0" />
-          </Link>
-
-          <Link href="/dashboard/coffres" className="flex items-center gap-4 px-5 py-4 hover:bg-gray-50 transition-colors">
-            <div className="w-10 h-10 rounded-full bg-primary-600 flex items-center justify-center flex-shrink-0">
-              <Lock className="w-4 h-4 text-white" />
-            </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-gray-900">Coffres</p>
-              <p className="text-xs text-gray-400">{coffresActifs.length} coffre{coffresActifs.length !== 1 ? "s" : ""} actif{coffresActifs.length !== 1 ? "s" : ""}</p>
-            </div>
-            <div className="text-right">
-              {(totalCoffresEUR > 0 || totalCoffresUSD === 0) && (
-                <p className="text-sm font-semibold text-gray-900 tabular-nums">{formatMontant(totalCoffresEUR, "EUR")}</p>
-              )}
-              {totalCoffresUSD > 0 && (
-                <p className="text-sm font-semibold text-gray-900 tabular-nums">{formatMontant(totalCoffresUSD, "USD")}</p>
-              )}
-            </div>
-            <ArrowRight className="w-4 h-4 text-gray-300 flex-shrink-0" />
-          </Link>
-
-          <Link href="/portefeuille" className="flex items-center gap-4 px-5 py-4 hover:bg-gray-50 transition-colors">
-            <div className="w-10 h-10 rounded-full bg-amber-50 flex items-center justify-center flex-shrink-0">
-              <Bitcoin className="w-5 h-5 text-amber-600" />
-            </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-gray-900">Bitcoin</p>
-              <p className="text-xs text-gray-400">Achat et vente de BTC</p>
-            </div>
-            <div className="text-right">
-              {btcLoading ? (
-                <Loader2 className="w-4 h-4 text-gray-300 animate-spin" />
-              ) : btcWallet.solde > 0 ? (
-                <>
-                  <p className="text-sm font-semibold text-gray-900 tabular-nums">{btcWallet.solde.toFixed(8)} BTC</p>
-                  {btcPrice && (
-                    <p className="text-[10px] text-gray-400 tabular-nums">≈ {(btcWallet.solde * btcPrice).toLocaleString("fr-FR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} €</p>
-                  )}
-                </>
-              ) : (
-                <p className="text-xs text-gray-400">0 BTC</p>
-              )}
-            </div>
-            <ArrowRight className="w-4 h-4 text-gray-300 flex-shrink-0" />
-          </Link>
-
-        </div>
-      </div>
-
-      {/* ── 4. Coffres (aperçu compact) ── */}
-      {coffresActifs.length > 0 && (
-        <div className="bg-white rounded-2xl border border-gray-200">
-          <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100">
-            <h2 className="text-sm font-semibold text-gray-900 uppercase tracking-wide">Coffres</h2>
-            <Link href="/dashboard/coffres" className="text-xs font-medium text-gray-400 hover:text-gray-600 flex items-center gap-1 transition-colors">
-              Gérer <ArrowRight className="w-3.5 h-3.5" />
-            </Link>
-          </div>
-          <div className="divide-y divide-gray-50">
-            {coffresActifs.slice(0, 3).map((ep) => {
-              const progression = ep.objectif_montant
-                ? Math.min(100, Math.round((Number(ep.solde) / ep.objectif_montant) * 100))
-                : null;
-
-              return (
-                <Link key={ep.id} href="/dashboard/coffres" className="flex items-center gap-4 px-5 py-3.5 hover:bg-gray-50 transition-colors">
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-gray-900 truncate">{ep.nom}</p>
-                    {progression !== null ? (
-                      <div className="flex items-center gap-2 mt-1.5">
-                        <div className="flex-1 h-1.5 bg-gray-100 rounded-full overflow-hidden">
-                          <div className="h-full rounded-full bg-primary-600" style={{ width: `${progression}%` }} />
-                        </div>
-                        <span className="text-xs text-gray-400 tabular-nums">{progression}%</span>
-                      </div>
-                    ) : (
-                      <p className="text-xs text-gray-400 mt-0.5">Coffre libre</p>
-                    )}
-                  </div>
-                  <p className="text-sm font-semibold text-gray-900 tabular-nums whitespace-nowrap">{formatMontant(ep.solde, ep.devise)}</p>
-                </Link>
-              );
-            })}
-          </div>
-        </div>
-      )}
-
-      {/* ── Bitcoin (aperçu) ── */}
-      <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden">
-        <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100">
-          <h2 className="text-sm font-semibold text-gray-900 uppercase tracking-wide">Bitcoin</h2>
-          <Link href="/portefeuille" className="text-xs font-medium text-gray-400 hover:text-gray-600 flex items-center gap-1 transition-colors">
-            Trader <ArrowRight className="w-3.5 h-3.5" />
-          </Link>
-        </div>
-        <div className="px-5 py-4">
-          {btcLoading ? (
-            <div className="flex justify-center py-6">
-              <Loader2 className="w-5 h-5 text-gray-300 animate-spin" />
-            </div>
-          ) : (
-            <div className="space-y-4">
-              {/* Prix + Variation */}
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-amber-50 flex items-center justify-center">
-                    <Bitcoin className="w-5 h-5 text-amber-600" />
-                  </div>
-                  <div>
-                    <p className="text-sm font-semibold text-gray-900">Bitcoin</p>
-                    <p className="text-xs text-gray-400">BTC</p>
-                  </div>
-                </div>
-                <div className="text-right">
-                  <p className="text-sm font-bold text-gray-900 tabular-nums">
-                    {btcPrice ? `${btcPrice.toLocaleString("fr-FR")} €` : "—"}
-                  </p>
-                  <span className={`text-[10px] font-semibold flex items-center justify-end gap-0.5 ${btcChange24h >= 0 ? "text-green-600" : "text-red-500"}`}>
-                    {btcChange24h >= 0 ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
-                    {btcChange24h >= 0 ? "+" : ""}{btcChange24h}% (24h)
-                  </span>
-                </div>
-              </div>
-
-              {/* Solde BTC */}
-              {btcWallet.solde > 0 && (
-                <div className="bg-amber-50/50 rounded-xl p-3.5 flex items-center justify-between">
-                  <span className="text-xs text-gray-500 font-medium">Votre solde</span>
-                  <div className="text-right">
-                    <p className="text-sm font-bold text-gray-900 tabular-nums">{btcWallet.solde.toFixed(8)} BTC</p>
-                    {btcPrice && (
-                      <p className="text-[10px] text-gray-400 tabular-nums">≈ {(btcWallet.solde * btcPrice).toLocaleString("fr-FR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} €</p>
-                    )}
-                  </div>
-                </div>
-              )}
-
-              {/* Dernières transactions BTC */}
-              {btcTransactions.length > 0 && (
-                <div className="space-y-1.5">
-                  <p className="text-[10px] text-gray-400 uppercase tracking-wider font-medium">Dernières opérations</p>
-                  {btcTransactions.slice(0, 3).map((tx) => (
-                    <div key={tx.id} className="flex items-center justify-between py-1.5">
-                      <div className="flex items-center gap-2">
-                        <div className={`w-6 h-6 rounded-full flex items-center justify-center ${tx.type === "achat" ? "bg-green-50" : "bg-red-50"}`}>
-                          {tx.type === "achat" ? <TrendingUp className="w-3 h-3 text-green-600" /> : <TrendingDown className="w-3 h-3 text-red-500" />}
-                        </div>
-                        <span className="text-xs text-gray-700 font-medium">{tx.type === "achat" ? "Achat" : "Vente"}</span>
-                      </div>
-                      <span className={`text-xs font-semibold tabular-nums ${tx.type === "achat" ? "text-green-600" : "text-red-500"}`}>
-                        {tx.type === "achat" ? "+" : "-"}{tx.montant_crypto.toFixed(8)} BTC
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              )}
-
-              {/* CTA */}
-              <Link
-                href="/portefeuille"
-                className="block w-full text-center py-2.5 rounded-xl bg-amber-50 text-amber-700 font-semibold text-xs hover:bg-amber-100 transition-colors"
-              >
-                Acheter / Vendre du Bitcoin
-              </Link>
-            </div>
-          )}
-        </div>
-      </div>
-
-      {/* ── 5. Résumé global ── */}
-      <div className="bg-white rounded-2xl border border-gray-200">
-        <div className="px-5 py-4 border-b border-gray-100">
-          <h2 className="text-sm font-semibold text-gray-900 uppercase tracking-wide">Résumé</h2>
+          <h2 className="text-sm font-semibold text-gray-900 uppercase tracking-wide">Marché Bitcoin</h2>
         </div>
         <div className="divide-y divide-gray-100">
           <div className="flex items-center justify-between px-5 py-4">
-            <span className="text-sm text-gray-500">Total déposé</span>
-            <span className="text-sm font-semibold text-gray-900">{formatMontant(summary.totalDepose)}</span>
+            <span className="text-sm text-gray-500">Prix actuel</span>
+            <span className="text-sm font-semibold text-gray-900 tabular-nums">{btcPrice ? `${btcPrice.toLocaleString("fr-FR")} €` : "—"}</span>
           </div>
           <div className="flex items-center justify-between px-5 py-4">
-            <span className="text-sm text-gray-500">Total retiré</span>
-            <span className="text-sm font-semibold text-gray-900">{formatMontant(summary.totalRetire)}</span>
+            <span className="text-sm text-gray-500">Variation 24h</span>
+            <span className={`text-sm font-semibold flex items-center gap-1 ${btcChange24h >= 0 ? "text-green-600" : "text-red-500"}`}>
+              {btcChange24h >= 0 ? <TrendingUp className="w-3.5 h-3.5" /> : <TrendingDown className="w-3.5 h-3.5" />}
+              {btcChange24h >= 0 ? "+" : ""}{btcChange24h.toFixed(2)}%
+            </span>
           </div>
           <div className="flex items-center justify-between px-5 py-4">
-            <span className="text-sm text-gray-500">Transactions</span>
-            <span className="text-sm font-semibold text-gray-900">{summary.nombreTransactions}</span>
+            <span className="text-sm text-gray-500">Votre solde</span>
+            <span className="text-sm font-semibold text-gray-900 tabular-nums">{btcWallet.solde.toFixed(8)} BTC</span>
+          </div>
+          <div className="flex items-center justify-between px-5 py-4">
+            <span className="text-sm text-gray-500">Valeur estimée</span>
+            <span className="text-sm font-semibold text-gray-900 tabular-nums">{valeurEur.toLocaleString("fr-FR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} €</span>
           </div>
         </div>
       </div>
