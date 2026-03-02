@@ -42,13 +42,7 @@ export default function InscriptionPage() {
     setLoading(true);
 
     try {
-      const result = await register(
-        formData.email,
-        formData.password,
-        formData.prenom,
-        formData.nom,
-        formData.telephone
-      );
+      const result = await register(formData);
 
       if (result.success) {
         showToast("success", "Bienvenue !", "Votre compte a été créé avec succès.");
@@ -87,14 +81,14 @@ export default function InscriptionPage() {
           </Link>
           
           <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 text-amber-500 text-xs font-bold mb-6">
-            L'avenir de la monnaie
+            L&apos;avenir de la monnaie
           </div>
 
           <h1 className="text-4xl font-black mb-6 tracking-tight leading-[1.1] text-white">
             Rejoignez la <br/>révolution <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-orange-500">Bitcoin.</span>
           </h1>
           <p className="text-zinc-400 text-lg leading-relaxed font-medium">
-            Créez votre compte en moins d'une minute et accédez à la plateforme d'achat la plus simple et sécurisée.
+            Créez votre compte en moins d&apos;une minute et accédez à la plateforme d&apos;achat la plus simple et sécurisée.
           </p>
           
           <div className="mt-12 space-y-6 border-t border-white/5 pt-10">
@@ -256,7 +250,7 @@ export default function InscriptionPage() {
           </form>
 
           <p className="text-xs text-zinc-500 text-center mt-6">
-            En m'inscrivant, j'accepte les <Link href="#" className="underline hover:text-white transition-colors">Conditions d'Utilisation</Link> et la <Link href="#" className="underline hover:text-white transition-colors">Politique de Confidentialité</Link>.
+            En m&apos;inscrivant, j&apos;accepte les <Link href="#" className="underline hover:text-white transition-colors">Conditions d&apos;Utilisation</Link> et la <Link href="#" className="underline hover:text-white transition-colors">Politique de Confidentialité</Link>.
           </p>
 
           <div className="mt-10 pt-8 border-t border-white/5 text-center font-medium">

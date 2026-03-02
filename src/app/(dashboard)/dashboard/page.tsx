@@ -184,7 +184,7 @@ export default function DashboardPage() {
              <div className="flex items-start gap-3 p-4 rounded-2xl bg-amber-500/5 border border-amber-500/10">
                <CreditCard className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" />
                <p className="text-xs text-zinc-400 leading-relaxed">
-                 Achat instantané par carte bancaire. Fonds garantis par l'infrastructure <span className="text-zinc-200 font-semibold">Stripe</span>. Frais uniques de 1.5%.
+                 Achat instantané par carte bancaire. Fonds garantis par l&apos;infrastructure <span className="text-zinc-200 font-semibold">Stripe</span>. Frais uniques de 1.5%.
                </p>
              </div>
           </div>
@@ -214,7 +214,7 @@ export default function DashboardPage() {
               <Bitcoin className="w-8 h-8 text-zinc-600" />
             </div>
             <p className="text-zinc-300 font-bold mb-2">Aucune transaction</p>
-            <p className="text-zinc-500 text-sm max-w-sm">Votre historique s'affichera ici une fois que vous aurez effectué votre premier achat de Bitcoin.</p>
+            <p className="text-zinc-500 text-sm max-w-sm">Votre historique s&apos;affichera ici une fois que vous aurez effectué votre premier achat de Bitcoin.</p>
           </div>
         ) : (
           <div className="divide-y divide-white/5">

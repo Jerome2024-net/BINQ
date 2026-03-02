@@ -59,7 +59,7 @@ function ConnexionForm() {
           </Link>
           
           <h1 className="text-4xl font-black mb-6 tracking-tight leading-[1.1] text-white">
-            Votre porte d'entrée vers l'économie de <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-orange-500">demain.</span>
+            Votre porte d&apos;entrée vers l&apos;économie de <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-orange-500">demain.</span>
           </h1>
           <p className="text-zinc-400 text-lg leading-relaxed font-medium">
             Connectez-vous pour accéder à votre portefeuille Bitcoin et gérer vos investissements en toute sécurité.
@@ -184,7 +184,7 @@ function ConnexionForm() {
 
           <div className="mt-10 text-center font-medium">
             <p className="text-zinc-500 text-[15px]">
-              Nouveau sur l'application ?{" "}
+              Nouveau sur l&apos;application ?{" "}
               <Link
                 href="/inscription"
                 className="text-amber-500 hover:text-amber-400 hover:underline transition-colors"
@@ -196,7 +196,7 @@ function ConnexionForm() {
 
           <div className="mt-8">
             <Link href="/" className="inline-flex items-center justify-center w-full gap-2 py-3 text-sm font-bold text-zinc-400 hover:text-white bg-white/5 hover:bg-white/10 rounded-xl transition-colors">
-              ← Retour à l'accueil
+              ← Retour à l&apos;accueil
             </Link>
           </div>
         </div>

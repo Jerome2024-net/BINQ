@@ -284,7 +284,7 @@ export default function HomePage() {
             </div>
             
             <div className="text-xs text-zinc-500 font-medium">
-              © {new Date().getFullYear()} Binq. Tous droits réservés. L'investissement en crypto-actifs comporte des risques.
+              © {new Date().getFullYear()} Binq. Tous droits réservés. L&apos;investissement en crypto-actifs comporte des risques.
             </div>
           </div>
         </div>

@@ -19,6 +19,7 @@ import {
   CreditCard,
   RefreshCw,
   Info,
+  ArrowRight,
 } from "lucide-react";
 
 export default function PortefeuillePage() {
@@ -257,7 +258,7 @@ export default function PortefeuillePage() {
       <div className="flex items-center gap-3 px-4 py-3 rounded-2xl bg-amber-500/5 border border-amber-500/10">
         <CreditCard className="w-5 h-5 text-amber-500 flex-shrink-0" />
         <p className="text-xs text-zinc-400">
-          L'achat s'effectue par carte bancaire (Visa, Mastercard). Des frais de réseau fixes de <span className="font-semibold text-white">1.5%</span> s'appliquent sur chaque transaction entrante.
+          L&apos;achat s&apos;effectue par carte bancaire (Visa, Mastercard). Des frais de réseau fixes de <span className="font-semibold text-white">1.5%</span> s&apos;appliquent sur chaque transaction entrante.
         </p>
       </div>
 
@@ -266,7 +267,7 @@ export default function PortefeuillePage() {
           ══════════════════════════════════════════ */}
       <div className="bg-zinc-900/50 backdrop-blur-xl rounded-[2rem] border border-white/10 overflow-hidden">
         <div className="flex items-center justify-between px-6 sm:px-8 py-6 border-b border-white/5">
-          <h2 className="text-lg font-bold text-white">Historique d'activité</h2>
+          <h2 className="text-lg font-bold text-white">Historique d&apos;activité</h2>
           <span className="px-3 py-1 bg-white/5 rounded-full text-xs font-bold text-zinc-400">{btcTransactions.length}</span>
         </div>
 
