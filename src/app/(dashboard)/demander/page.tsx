@@ -77,7 +77,7 @@ export default function DemanderPage() {
     try {
       const res = await fetch("/api/payment-links");
       const data = await res.json();
-      setLinks((data.links || []).filter((l: PaymentLink) => l.type === "request"));
+      setLinks((data.links || []).filter((l: PaymentLink) => !l.type || l.type === "request"));
     } catch {
       /* ignore */
     } finally {

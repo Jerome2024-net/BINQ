@@ -12,9 +12,9 @@ function getServiceClient() {
 // ── GET : profil public d'un utilisateur (pour QR Code / paiement direct) ──
 export async function GET(
   _request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
-  const { id } = params;
+  const { id } = await context.params;
 
   if (!id) {
     return NextResponse.json({ error: "ID requis" }, { status: 400 });

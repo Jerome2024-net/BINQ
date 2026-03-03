@@ -64,6 +64,7 @@ export async function POST(request: NextRequest) {
       devise,
       description: description || null,
       statut: "actif",
+      type: "request",
       usage_unique: true,
     })
     .select()

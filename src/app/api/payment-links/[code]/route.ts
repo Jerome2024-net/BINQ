@@ -12,9 +12,9 @@ function getServiceClient() {
 // ── GET : infos publiques d'un payment link (par code) ──
 export async function GET(
   _request: NextRequest,
-  { params }: { params: { code: string } }
+  context: { params: Promise<{ code: string }> }
 ) {
-  const { code } = params;
+  const { code } = await context.params;
 
   if (!code) {
     return NextResponse.json({ error: "Code requis" }, { status: 400 });
