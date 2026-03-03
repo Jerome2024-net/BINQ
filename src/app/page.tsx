@@ -106,7 +106,7 @@ export default function HomePage() {
               {/* Balance */}
               <div className="text-center mb-4 sm:mb-6">
                 <p className="text-[9px] sm:text-[10px] font-bold text-white/30 uppercase tracking-widest mb-1.5 sm:mb-2">Solde disponible</p>
-                <p className="text-2xl sm:text-4xl font-black tracking-tight">1 250,00 <span className="text-sm sm:text-lg text-white/30">&euro;</span></p>
+                <p className="text-2xl sm:text-4xl font-black tracking-tight">819 672 <span className="text-sm sm:text-lg text-white/30">FCFA</span></p>
               </div>
 
               {/* Action Buttons */}
@@ -214,7 +214,7 @@ export default function HomePage() {
               {
                 icon: Globe2,
                 title: "Multi-devises",
-                desc: "EUR, XOF, USD — g\u00e9rez plusieurs devises dans un seul portefeuille.",
+                desc: "FCFA et EUR — g\u00e9rez vos devises dans un seul portefeuille.",
                 gradient: "from-orange-500/20 to-orange-500/5",
                 iconColor: "text-orange-400",
                 border: "border-orange-500/20",
@@ -301,7 +301,7 @@ export default function HomePage() {
                 <SendHorizonal className="w-4 h-4 sm:w-6 sm:h-6 text-cyan-400" />
               </div>
               <h3 className="text-base sm:text-lg font-bold text-white mb-1.5 sm:mb-2">Transferts</h3>
-              <p className="text-2xl sm:text-4xl font-black text-cyan-400 mb-1.5 sm:mb-2">0&euro;</p>
+              <p className="text-2xl sm:text-4xl font-black text-cyan-400 mb-1.5 sm:mb-2">0 FCFA</p>
               <p className="text-sm text-white/40">entre utilisateurs Binq</p>
             </div>
           </div>
