@@ -24,7 +24,7 @@ export async function GET(
 
   const { data: profile, error } = await supabase
     .from("profiles")
-    .select("id, prenom, nom, avatar_url, avatar")
+    .select("id, prenom, nom, avatar")
     .eq("id", id)
     .single();
 
@@ -37,7 +37,7 @@ export async function GET(
       id: profile.id,
       prenom: profile.prenom || "",
       nom: profile.nom || "",
-      avatar_url: profile.avatar_url || profile.avatar || null,
+      avatar_url: profile.avatar || null,
     },
   });
 }
