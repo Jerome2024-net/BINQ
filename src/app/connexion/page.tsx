@@ -5,7 +5,7 @@ import { useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/contexts/ToastContext";
-import { Mail, Lock, ArrowRight, Eye, EyeOff, Loader2, Bitcoin, ShieldCheck, Zap } from "lucide-react";
+import { Mail, Lock, ArrowRight, Eye, EyeOff, Loader2, Wallet, ShieldCheck, Zap } from "lucide-react";
 
 function ConnexionForm() {
   const router = useRouter();
@@ -53,21 +53,21 @@ function ConnexionForm() {
         <div className="relative max-w-md z-10 w-full">
           <Link href="/" className="inline-flex items-center gap-3 group mb-12">
             <div className="w-10 h-10 bg-gradient-to-br from-amber-400 to-orange-500 rounded-xl flex items-center justify-center shadow-md shadow-amber-200/50 group-hover:shadow-amber-300/60 transition-all duration-300">
-              <Bitcoin className="w-6 h-6 text-white" />
+              <Wallet className="w-6 h-6 text-white" />
             </div>
             <span className="font-bold text-2xl tracking-tight text-gray-900 group-hover:text-amber-600 transition-colors">Binq</span>
           </Link>
           
           <h1 className="text-4xl font-black mb-6 tracking-tight leading-[1.1] text-gray-900">
-            Votre porte d&apos;entrée vers l&apos;économie de <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-500 to-orange-500">demain.</span>
+            Votre portefeuille <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-500 to-orange-500">intelligent.</span>
           </h1>
           <p className="text-gray-500 text-lg leading-relaxed font-medium">
-            Connectez-vous pour accéder à votre portefeuille Bitcoin et gérer vos investissements en toute sécurité.
+            Connectez-vous pour accéder à votre portefeuille et gérer votre argent en toute sécurité.
           </p>
           
           <div className="mt-12 space-y-4 border-t border-gray-100 pt-10">
             {[
-              { text: "Accès instantané à votre portefeuille", icon: Zap },
+              { text: "Accès instantané à votre solde", icon: Zap },
               { text: "Chiffrement de bout en bout AES-256", icon: Lock },
               { text: "Infrastructure certifiée et sécurisée", icon: ShieldCheck },
             ].map((item, i) => (
@@ -91,7 +91,7 @@ function ConnexionForm() {
           {/* Mobile Logo */}
           <Link href="/" className="lg:hidden flex items-center justify-center gap-3 group mb-10">
             <div className="w-10 h-10 bg-gradient-to-br from-amber-400 to-orange-500 rounded-xl flex items-center justify-center shadow-md shadow-amber-200/50">
-              <Bitcoin className="w-6 h-6 text-white" />
+              <Wallet className="w-6 h-6 text-white" />
             </div>
             <span className="font-bold text-2xl tracking-tight text-gray-900">Binq</span>
           </Link>

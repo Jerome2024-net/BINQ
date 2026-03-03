@@ -14,9 +14,9 @@ import {
   User,
   Phone,
   Loader2,
-  Bitcoin,
-  Globe,
   Wallet,
+  SendHorizonal,
+  ShieldCheck,
 } from "lucide-react";
 
 export default function InscriptionPage() {
@@ -75,27 +75,27 @@ export default function InscriptionPage() {
         <div className="relative max-w-md z-10 w-full">
           <Link href="/" className="inline-flex items-center gap-3 group mb-12">
             <div className="w-10 h-10 bg-gradient-to-br from-amber-400 to-orange-500 rounded-xl flex items-center justify-center shadow-md shadow-amber-200/50 group-hover:shadow-amber-300/60 transition-all duration-300">
-              <Bitcoin className="w-6 h-6 text-white" />
+              <Wallet className="w-6 h-6 text-white" />
             </div>
             <span className="font-bold text-2xl tracking-tight text-gray-900 group-hover:text-amber-600 transition-colors">Binq</span>
           </Link>
           
           <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-amber-50 border border-amber-100 text-amber-600 text-xs font-bold mb-6">
-            L&apos;avenir de la monnaie
+            Votre portefeuille intelligent
           </div>
 
           <h1 className="text-4xl font-black mb-6 tracking-tight leading-[1.1] text-gray-900">
-            Rejoignez la <br/>révolution <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-500 to-orange-500">Bitcoin.</span>
+            Gérez votre <br/>argent <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-500 to-orange-500">simplement.</span>
           </h1>
           <p className="text-gray-500 text-lg leading-relaxed font-medium">
-            Créez votre compte en moins d&apos;une minute et accédez à la plateforme d&apos;achat la plus simple et sécurisée.
+            Créez votre compte en moins d&apos;une minute et accédez à votre portefeuille numérique sécurisé.
           </p>
           
           <div className="mt-12 space-y-5 border-t border-gray-100 pt-10">
             {[
-              { title: "Achat instantané", desc: "Achetez du BTC par carte bancaire en 2 clics.", icon: Bitcoin },
-              { title: "Transparence totale", desc: "1.5% de frais uniques sur les achats.", icon: Globe },
-              { title: "Autonomie financière", desc: "Gérez votre portefeuille sans intermédiaire.", icon: Wallet },
+              { title: "Dépôt par carte", desc: "Alimentez votre portefeuille par Visa ou Mastercard.", icon: Wallet },
+              { title: "Transferts gratuits", desc: "Envoyez de l'argent entre utilisateurs Binq, sans frais.", icon: SendHorizonal },
+              { title: "Sécurité maximale", desc: "Chiffrement AES-256 et infrastructure certifiée.", icon: ShieldCheck },
             ].map((item, i) => (
               <div key={i} className="flex items-start gap-4">
                 <div className="w-12 h-12 bg-gray-50 border border-gray-100 rounded-xl flex items-center justify-center flex-shrink-0 mt-1">
@@ -120,7 +120,7 @@ export default function InscriptionPage() {
           {/* Mobile Logo */}
           <Link href="/" className="lg:hidden flex items-center justify-center gap-3 group mb-10 mt-6">
             <div className="w-10 h-10 bg-gradient-to-br from-amber-400 to-orange-500 rounded-xl flex items-center justify-center shadow-md shadow-amber-200/50">
-              <Bitcoin className="w-6 h-6 text-white" />
+              <Wallet className="w-6 h-6 text-white" />
             </div>
             <span className="font-bold text-2xl tracking-tight text-gray-900">Binq</span>
           </Link>

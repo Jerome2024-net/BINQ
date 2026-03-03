@@ -12,7 +12,9 @@ import {
   LogOut,
   Menu,
   X,
-  Bitcoin,
+  Wallet,
+  SendHorizonal,
+  ArrowDownToLine,
   ChevronDown,
 } from "lucide-react";
 
@@ -26,7 +28,9 @@ interface Notification {
 
 const mainLinks = [
   { href: "/dashboard", label: "Tableau de bord", icon: LayoutDashboard },
-  { href: "/portefeuille", label: "Portefeuille Bitcoin", icon: Bitcoin },
+  { href: "/portefeuille", label: "Mon Portefeuille", icon: Wallet },
+  { href: "/envoyer", label: "Envoyer", icon: SendHorizonal },
+  { href: "/deposer", label: "Ajouter de l'argent", icon: ArrowDownToLine },
 ];
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
@@ -135,7 +139,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           <div className="flex items-center justify-between px-5 h-16 shrink-0 border-b border-gray-100">
             <Link href="/" className="flex items-center gap-2.5 group">
               <div className="w-9 h-9 bg-gradient-to-br from-amber-400 to-orange-500 rounded-xl flex items-center justify-center shadow-md shadow-amber-200/40">
-                <Bitcoin className="w-5 h-5 text-white" />
+                <Wallet className="w-5 h-5 text-white" />
               </div>
               <span className="font-extrabold text-xl tracking-tight text-gray-900">Binq</span>
             </Link>
@@ -212,7 +216,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 <Menu className="w-5 h-5" />
               </button>
               <h1 className="text-base sm:text-lg font-bold text-gray-900 hidden sm:block">
-                {pathname === "/dashboard" ? "Tableau de bord" : pathname.startsWith("/portefeuille") ? "Portefeuille Bitcoin" : "Binq"}
+                {pathname === "/dashboard" ? "Tableau de bord" : pathname.startsWith("/portefeuille") ? "Mon Portefeuille" : pathname.startsWith("/envoyer") ? "Envoyer de l'argent" : pathname.startsWith("/deposer") ? "Ajouter de l'argent" : "Binq"}
               </h1>
             </div>
 
