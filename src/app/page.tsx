@@ -70,15 +70,11 @@ export default function HomePage() {
           {/* Headline */}
           <div className="text-center">
             <h1 className="text-[2.5rem] sm:text-6xl lg:text-[5rem] font-black tracking-tight leading-[1.05] mb-5 sm:mb-7">
-              L&apos;argent mobile.{" "}<br className="hidden sm:block" />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-cyan-400 to-emerald-400">
-                R&eacute;invent&eacute;.
-              </span>
+              Votre{" "}<span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-cyan-400 to-emerald-400">mobile money.</span>
             </h1>
 
             <p className="text-base sm:text-xl text-white/50 max-w-2xl mx-auto mb-8 sm:mb-10 leading-relaxed px-2">
-              Envoyez, recevez et d&eacute;posez de l&apos;argent en un instant.
-              Binq, votre portefeuille mobile intelligent.
+              Envoyez et recevez de l&apos;argent instantan&eacute;ment, partout en Afrique.
             </p>
 
             {/* CTA */}
