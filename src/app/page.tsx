@@ -74,7 +74,8 @@ export default function HomePage() {
             </h1>
 
             <p className="text-base sm:text-xl text-white/50 max-w-2xl mx-auto mb-8 sm:mb-10 leading-relaxed px-2">
-              Envoyez et recevez de l&apos;argent instantan&eacute;ment, partout en Afrique.
+              Envoyez, recevez et d&eacute;posez de l&apos;argent en un instant.
+              Binq, votre portefeuille mobile.
             </p>
 
             {/* CTA */}
