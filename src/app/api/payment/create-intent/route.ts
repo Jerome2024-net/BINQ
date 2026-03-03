@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { getStripe } from "@/lib/stripe";
 import { getAuthenticatedUser } from "@/lib/api-auth";
 import { createIntentSchema, validateBody } from "@/lib/validations";
+import { type DeviseCode, DEVISES, calcDepositStripeAmount, formatMontant } from "@/lib/currencies";
 
 export async function POST(request: Request) {
   try {
@@ -16,28 +17,35 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: validation.error }, { status: 400 });
     }
 
-    const { amount, currency, description } = validation.data;
-    const cur = currency;
-    const amountInCents = Math.round(amount * 100);
+    const { amount, devise: walletDevise, description } = validation.data;
+    const devise = (walletDevise && DEVISES[walletDevise as DeviseCode]) ? walletDevise as DeviseCode : "XOF";
+    const deviseConfig = DEVISES[devise];
 
-    if (amountInCents < 50) {
+    // Vérifier montant minimum pour la devise
+    if (amount < deviseConfig.minDeposit) {
       return NextResponse.json(
-        { error: "Le montant minimum est de 0,50 €/$" },
+        { error: `Montant minimum : ${formatMontant(deviseConfig.minDeposit, devise)}` },
         { status: 400 }
       );
     }
 
-    // === FRAIS BINQ 1% ADDITIONNELS ===
-    const TAUX_FRAIS_DEPOT = 0.01; // 1%
-    const fraisInCents = Math.round(amountInCents * TAUX_FRAIS_DEPOT);
-    const totalInCents = amountInCents + fraisInCents;
+    // Calculer montants : Stripe facture toujours en EUR
+    const calc = calcDepositStripeAmount(amount, devise);
+    const totalInCents = Math.round(calc.totalEur * 100);
 
-    // Créer le PaymentIntent avec userId pour traçabilité webhook
+    if (totalInCents < 50) {
+      return NextResponse.json(
+        { error: "Le montant est trop faible pour être traité" },
+        { status: 400 }
+      );
+    }
+
+    // Créer le PaymentIntent (toujours en EUR pour Stripe)
     const stripe = getStripe();
     const paymentIntent = await stripe.paymentIntents.create({
-      amount: totalInCents, // Montant demandé + 1% de frais
-      currency: cur,
-      description: description || "Dépôt portefeuille Binq",
+      amount: totalInCents,
+      currency: "eur", // Stripe facture toujours en EUR
+      description: description || `Dépôt portefeuille Binq (${devise})`,
       automatic_payment_methods: {
         enabled: true,
       },
@@ -45,18 +53,22 @@ export async function POST(request: Request) {
         type: "depot",
         userId: user.id,
         app: "binq",
-        montant_demande: String(amountInCents), // Ce qui sera crédité (centimes)
-        frais_binq: String(fraisInCents),        // Frais Binq (centimes)
-        taux_frais: String(TAUX_FRAIS_DEPOT),
+        devise, // Devise du wallet à créditer
+        montant_demande: String(Math.round(calc.montantCredite * 100)), // Montant à créditer en centimes de la devise
+        montant_eur_cents: String(Math.round(calc.montantEur * 100)), // Montant EUR avant frais
+        frais_binq: String(Math.round(calc.fraisEur * 100)), // Frais en centimes EUR
+        taux_frais: "0.01",
       },
     });
 
     return NextResponse.json({
       clientSecret: paymentIntent.client_secret,
       paymentIntentId: paymentIntent.id,
-      montantDemande: amount,
-      fraisBinq: fraisInCents / 100,
-      totalFacture: totalInCents / 100,
+      devise,
+      montantCredite: calc.montantCredite,
+      montantEur: calc.montantEur,
+      fraisBinq: calc.fraisEur,
+      totalFacture: calc.totalEur,
     });
   } catch (error) {
     console.error("Erreur Stripe PaymentIntent:", error);

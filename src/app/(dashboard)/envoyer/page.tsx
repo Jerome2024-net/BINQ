@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/contexts/ToastContext";
+import { type DeviseCode, DEVISE_LIST, DEVISES, DEFAULT_DEVISE, formatMontant } from "@/lib/currencies";
 import {
   SendHorizonal,
   Search,
@@ -27,6 +28,12 @@ export default function EnvoyerPage() {
   const { showToast } = useToast();
 
   const [step, setStep] = useState<"search" | "amount" | "confirm" | "success">("search");
+  const [devise, setDevise] = useState<DeviseCode>(() => {
+    if (typeof window !== "undefined") {
+      return (localStorage.getItem("binq_devise") as DeviseCode) || DEFAULT_DEVISE;
+    }
+    return DEFAULT_DEVISE;
+  });
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState<UserResult[]>([]);
   const [searching, setSearching] = useState(false);
@@ -37,14 +44,16 @@ export default function EnvoyerPage() {
   const [sending, setSending] = useState(false);
   const [result, setResult] = useState<{ reference: string; montant: number; destinataire: string } | null>(null);
 
+  const deviseConfig = DEVISES[devise];
+
   useEffect(() => {
     if (user) {
-      fetch("/api/wallet")
+      fetch(`/api/wallet?devise=${devise}`)
         .then((r) => r.json())
         .then((data) => { if (data.wallet) setSolde(data.wallet.solde || 0); })
         .catch(() => {});
     }
-  }, [user]);
+  }, [user, devise]);
 
   const searchUsers = useCallback(async (q: string) => {
     if (q.length < 2) { setSearchResults([]); return; }
@@ -71,7 +80,7 @@ export default function EnvoyerPage() {
     const montant = parseFloat(amount);
     if (!montant || montant <= 0) return;
     if (montant > solde) {
-      showToast("error", "Solde insuffisant", `Votre solde est de ${solde.toFixed(2)} €`);
+      showToast("error", "Solde insuffisant", `Votre solde est de ${formatMontant(solde, devise)}`);
       return;
     }
     setStep("confirm");
@@ -88,6 +97,7 @@ export default function EnvoyerPage() {
           destinataire_id: selectedUser.id,
           montant: parseFloat(amount),
           message: message || null,
+          devise,
         }),
       });
       const data = await res.json();
@@ -98,7 +108,7 @@ export default function EnvoyerPage() {
       setResult(data.transfert);
       setSolde((prev) => prev - parseFloat(amount));
       setStep("success");
-      showToast("success", "Envoyé !", `${parseFloat(amount).toFixed(2)} € envoyé à ${selectedUser.prenom}`);
+      showToast("success", "Envoyé !", `${formatMontant(parseFloat(amount), devise)} envoyé à ${selectedUser.prenom}`);
     } catch {
       showToast("error", "Erreur", "Erreur lors du transfert");
     } finally { setSending(false); }
@@ -128,8 +138,21 @@ export default function EnvoyerPage() {
       <div className="flex items-center gap-3 px-4 py-3 rounded-xl bg-white/[0.03] border border-white/[0.05]">
         <Wallet className="w-4 h-4 text-white/20 shrink-0" />
         <p className="text-sm text-white/40">
-          Solde : <span className="font-bold text-white">{solde.toLocaleString("fr-FR", { minimumFractionDigits: 2 })} €</span>
+          Solde : <span className="font-bold text-white">{formatMontant(solde, devise)}</span>
         </p>
+        <div className="ml-auto flex items-center bg-white/[0.05] rounded-lg overflow-hidden">
+          {DEVISE_LIST.map((d) => (
+            <button
+              key={d}
+              onClick={() => { setDevise(d); localStorage.setItem("binq_devise", d); setAmount(""); }}
+              className={`px-2 py-1.5 text-[10px] font-bold transition-all ${
+                devise === d ? "bg-emerald-500/20 text-emerald-400" : "text-white/30 hover:text-white/50"
+              }`}
+            >
+              {DEVISES[d].flag} {d}
+            </button>
+          ))}
+        </div>
       </div>
 
       {/* ── Step 1: Search ── */}
@@ -223,12 +246,12 @@ export default function EnvoyerPage() {
               className="w-full bg-transparent text-3xl sm:text-5xl font-black text-white placeholder-white/10 focus:outline-none text-center tabular-nums [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
               autoFocus
             />
-            <p className="text-center text-[11px] text-white/20 mt-2">EUR</p>
+            <p className="text-center text-[11px] text-white/20 mt-2">{deviseConfig.symbol}</p>
           </div>
 
           {/* Quick amounts */}
           <div className="grid grid-cols-4 gap-2">
-            {[5, 10, 25, 50].map((amt) => (
+            {(devise === "XOF" ? [500, 1000, 5000, 10000] : [5, 10, 25, 50]).map((amt) => (
               <button
                 key={amt}
                 onClick={() => setAmount(amt.toString())}
@@ -238,7 +261,7 @@ export default function EnvoyerPage() {
                     : "border-white/[0.06] text-white/30 bg-white/[0.02] hover:bg-white/[0.04]"
                 }`}
               >
-                {amt} €
+                {devise === "XOF" ? amt.toLocaleString("fr-FR") : `${amt} €`}
               </button>
             ))}
           </div>
@@ -272,7 +295,7 @@ export default function EnvoyerPage() {
           <div className="rounded-2xl bg-white/[0.03] border border-white/[0.05] p-4 sm:p-6 text-center">
             <p className="text-[10px] font-bold text-white/20 uppercase tracking-wider mb-2">Vous envoyez</p>
             <p className="text-2xl sm:text-4xl font-black text-white tracking-tight mb-3 sm:mb-4">
-              {parseFloat(amount).toFixed(2)} <span className="text-base sm:text-xl text-white/20">€</span>
+              {formatMontant(parseFloat(amount), devise)}
             </p>
             <div className="flex items-center justify-center gap-2">
               <span className="text-sm text-white/30">à</span>
@@ -293,7 +316,7 @@ export default function EnvoyerPage() {
               </div>
               <div className="flex justify-between text-sm font-bold">
                 <span className="text-white/60">Total débité</span>
-                <span className="text-white">{parseFloat(amount).toFixed(2)} €</span>
+                <span className="text-white">{formatMontant(parseFloat(amount), devise)}</span>
               </div>
             </div>
           </div>
@@ -322,7 +345,7 @@ export default function EnvoyerPage() {
           </div>
           <h3 className="text-xl sm:text-2xl font-black text-white mb-2">Envoyé !</h3>
           <p className="text-base text-white/40 mb-2">
-            <span className="text-white font-bold">{result.montant.toFixed(2)} €</span> envoyé à <span className="text-white font-bold">{result.destinataire}</span>
+            <span className="text-white font-bold">{formatMontant(result.montant, devise)}</span> envoyé à <span className="text-white font-bold">{result.destinataire}</span>
           </p>
           <div className="bg-white/[0.03] border border-white/[0.05] rounded-2xl py-3 px-5 inline-block mt-4 mb-8">
             <p className="text-[10px] text-white/20 uppercase tracking-wider font-bold">Référence</p>

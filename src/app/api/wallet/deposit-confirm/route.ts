@@ -3,6 +3,7 @@ import { getAuthenticatedUser } from "@/lib/api-auth";
 import { createClient } from "@supabase/supabase-js";
 import { getStripe } from "@/lib/stripe";
 import { recordFee } from "@/lib/admin-fees";
+import { type DeviseCode, DEVISES, DEFAULT_DEVISE, formatMontant, eurToXof } from "@/lib/currencies";
 
 function getServiceClient() {
   return createClient(
@@ -14,8 +15,8 @@ function getServiceClient() {
 
 /**
  * POST /api/wallet/deposit-confirm
- * Appelé après paiement carte réussi pour créditer le wallet EUR.
- * Fonctionne en complément du webhook Stripe (double sécurité).
+ * Appelé après paiement carte réussi pour créditer le wallet (EUR ou XOF).
+ * Stripe facture en EUR. Si la devise cible est XOF, on convertit.
  */
 export async function POST(req: NextRequest) {
   try {
@@ -41,6 +42,9 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "PaymentIntent invalide" }, { status: 400 });
     }
 
+    // Déterminer la devise cible
+    const devise: DeviseCode = (meta.devise && DEVISES[meta.devise as DeviseCode]) ? (meta.devise as DeviseCode) : DEFAULT_DEVISE;
+
     const supabase = getServiceClient();
 
     // Vérifier si déjà traité
@@ -52,37 +56,62 @@ export async function POST(req: NextRequest) {
       .single();
 
     if (existing) {
-      // Déjà traité par le webhook — retourner le solde actuel
       const { data: wallet } = await supabase
         .from("wallets")
-        .select("solde")
+        .select("solde, devise")
         .eq("user_id", user.id)
+        .eq("devise", devise)
         .single();
 
       return NextResponse.json({
         success: true,
         alreadyProcessed: true,
         nouveau_solde: wallet?.solde || 0,
+        devise,
       });
     }
 
     // Calculer les montants
-    const montantDemandeCents = meta.montant_demande ? parseInt(meta.montant_demande) : null;
+    const montantEurCents = meta.montant_eur_cents ? parseInt(meta.montant_eur_cents) : (meta.montant_demande ? parseInt(meta.montant_demande) : null);
     const fraisBinqCents = meta.frais_binq ? parseInt(meta.frais_binq) : null;
-    const montantCredite = montantDemandeCents ? montantDemandeCents / 100 : pi.amount / 100;
+    const montantEur = montantEurCents ? montantEurCents / 100 : pi.amount / 100;
     const fraisBinq = fraisBinqCents ? fraisBinqCents / 100 : 0;
     const totalPaye = pi.amount / 100;
 
+    // Montant à créditer dans la devise du wallet
+    const montantCredite = devise === "XOF" ? eurToXof(montantEur) : montantEur;
+
     const reference = `DEP-${pi.id.slice(-8).toUpperCase()}`;
 
-    // Créditer le wallet
-    const { error: rpcError } = await supabase.rpc("update_wallet_balance", {
-      p_user_id: user.id,
-      p_delta: montantCredite,
-    });
+    // Récupérer ou créer le wallet pour cette devise
+    let { data: wallet } = await supabase
+      .from("wallets")
+      .select("*")
+      .eq("user_id", user.id)
+      .eq("devise", devise)
+      .single();
 
-    if (rpcError) {
-      console.error("Erreur RPC update_wallet_balance:", rpcError);
+    if (!wallet) {
+      const { data: newWallet, error: createErr } = await supabase
+        .from("wallets")
+        .insert({ user_id: user.id, solde: 0, solde_bloque: 0, devise })
+        .select()
+        .single();
+      if (createErr || !newWallet) {
+        return NextResponse.json({ error: "Erreur création wallet" }, { status: 500 });
+      }
+      wallet = newWallet;
+    }
+
+    // Créditer le wallet directement (au lieu de RPC qui ne gère pas multi-wallet)
+    const nouveauSolde = (wallet.solde || 0) + montantCredite;
+    const { error: updateErr } = await supabase
+      .from("wallets")
+      .update({ solde: nouveauSolde })
+      .eq("id", wallet.id);
+
+    if (updateErr) {
+      console.error("Erreur update wallet:", updateErr);
       return NextResponse.json({ error: "Erreur crédit wallet" }, { status: 500 });
     }
 
@@ -90,9 +119,10 @@ export async function POST(req: NextRequest) {
     await supabase.from("transactions").upsert(
       {
         user_id: user.id,
+        wallet_id: wallet.id,
         type: "depot",
         montant: montantCredite,
-        devise: "EUR",
+        devise,
         statut: "confirme",
         reference,
         description: `Dépôt par carte bancaire`,
@@ -121,24 +151,18 @@ export async function POST(req: NextRequest) {
       await supabase.from("notifications").insert({
         user_id: user.id,
         titre: "Dépôt confirmé",
-        message: `${montantCredite.toFixed(2)} € ont été ajoutés à votre portefeuille.`,
+        message: `${formatMontant(montantCredite, devise)} ont été ajoutés à votre portefeuille.`,
       });
     } catch { /* ignore */ }
 
-    // Récupérer le nouveau solde
-    const { data: wallet } = await supabase
-      .from("wallets")
-      .select("solde")
-      .eq("user_id", user.id)
-      .single();
-
     return NextResponse.json({
       success: true,
+      devise,
       montant_credite: montantCredite,
       frais: fraisBinq,
       total_paye: totalPaye,
       reference,
-      nouveau_solde: wallet?.solde || montantCredite,
+      nouveau_solde: nouveauSolde,
     });
   } catch (err) {
     console.error("[wallet/deposit-confirm] Erreur:", err);

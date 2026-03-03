@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getAuthenticatedUser } from "@/lib/api-auth";
 import { createClient } from "@supabase/supabase-js";
+import { type DeviseCode, DEVISES, DEFAULT_DEVISE, formatMontant } from "@/lib/currencies";
 
 function getServiceClient() {
   return createClient(
@@ -16,7 +17,11 @@ export async function POST(request: NextRequest) {
   if (!user) return NextResponse.json({ error: "Non authentifié" }, { status: 401 });
 
   const body = await request.json();
-  const { destinataire_id, montant, message } = body;
+  const { destinataire_id, montant, message, devise: rawDevise } = body;
+
+  // Devise validation
+  const devise: DeviseCode = (rawDevise && DEVISES[rawDevise as DeviseCode]) ? (rawDevise as DeviseCode) : DEFAULT_DEVISE;
+  const deviseConfig = DEVISES[devise];
 
   // Validation
   if (!destinataire_id || typeof destinataire_id !== "string") {
@@ -25,8 +30,8 @@ export async function POST(request: NextRequest) {
   if (!montant || typeof montant !== "number" || montant <= 0) {
     return NextResponse.json({ error: "Montant invalide" }, { status: 400 });
   }
-  if (montant < 1) {
-    return NextResponse.json({ error: "Montant minimum : 1 €" }, { status: 400 });
+  if (montant < deviseConfig.minTransfer) {
+    return NextResponse.json({ error: `Montant minimum : ${formatMontant(deviseConfig.minTransfer, devise)}` }, { status: 400 });
   }
   if (destinataire_id === user.id) {
     return NextResponse.json({ error: "Vous ne pouvez pas vous envoyer de l'argent" }, { status: 400 });
@@ -45,32 +50,34 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Destinataire introuvable" }, { status: 404 });
   }
 
-  // 2. Récupérer le wallet de l'expéditeur
+  // 2. Récupérer le wallet de l'expéditeur pour cette devise
   const { data: senderWallet } = await supabase
     .from("wallets")
     .select("*")
     .eq("user_id", user.id)
+    .eq("devise", devise)
     .single();
 
   if (!senderWallet) {
-    return NextResponse.json({ error: "Portefeuille non trouvé" }, { status: 404 });
+    return NextResponse.json({ error: `Portefeuille ${devise} non trouvé` }, { status: 404 });
   }
 
   if (senderWallet.solde < montant) {
     return NextResponse.json({ error: "Solde insuffisant" }, { status: 400 });
   }
 
-  // 3. Récupérer ou créer le wallet du destinataire
+  // 3. Récupérer ou créer le wallet du destinataire (même devise)
   let { data: receiverWallet } = await supabase
     .from("wallets")
     .select("*")
     .eq("user_id", destinataire_id)
+    .eq("devise", devise)
     .single();
 
   if (!receiverWallet) {
     const { data: created, error: createErr } = await supabase
       .from("wallets")
-      .insert({ user_id: destinataire_id, solde: 0, solde_bloque: 0, devise: "EUR" })
+      .insert({ user_id: destinataire_id, solde: 0, solde_bloque: 0, devise })
       .select()
       .single();
 
@@ -125,7 +132,7 @@ export async function POST(request: NextRequest) {
     expediteur_id: user.id,
     destinataire_id,
     montant,
-    devise: "EUR",
+    devise,
     message: message || null,
     statut: "confirme",
     reference,
@@ -136,6 +143,8 @@ export async function POST(request: NextRequest) {
   }
 
   // 8. Enregistrer les transactions dans l'historique
+  const montantFormatted = formatMontant(montant, devise);
+
   await Promise.all([
     supabase.from("transactions").insert({
       user_id: user.id,
@@ -144,7 +153,7 @@ export async function POST(request: NextRequest) {
       montant,
       solde_avant: senderWallet.solde,
       solde_apres: newSenderSolde,
-      devise: "EUR",
+      devise,
       statut: "confirme",
       reference,
       description: `Envoi à ${destName}${message ? ` — ${message}` : ""}`,
@@ -158,7 +167,7 @@ export async function POST(request: NextRequest) {
       montant,
       solde_avant: receiverWallet.solde,
       solde_apres: newReceiverSolde,
-      devise: "EUR",
+      devise,
       statut: "confirme",
       reference,
       description: `Reçu de ${senderName}${message ? ` — ${message}` : ""}`,
@@ -172,13 +181,13 @@ export async function POST(request: NextRequest) {
     supabase.from("notifications").insert({
       user_id: destinataire_id,
       titre: "Argent reçu",
-      message: `${senderName} vous a envoyé ${montant.toFixed(2)} €${message ? ` — ${message}` : ""}`,
+      message: `${senderName} vous a envoyé ${montantFormatted}${message ? ` — ${message}` : ""}`,
       lu: false,
     }),
     supabase.from("notifications").insert({
       user_id: user.id,
       titre: "Transfert envoyé",
-      message: `Vous avez envoyé ${montant.toFixed(2)} € à ${destName}`,
+      message: `Vous avez envoyé ${montantFormatted} à ${destName}`,
       lu: false,
     }),
   ]);

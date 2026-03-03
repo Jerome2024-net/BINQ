@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useState, useEffect, useCallback } from "react";
 import { useAuth } from "@/contexts/AuthContext";
+import { type DeviseCode, DEVISE_LIST, DEVISES, DEFAULT_DEVISE, formatMontant } from "@/lib/currencies";
 import {
   Wallet,
   ArrowDownToLine,
@@ -44,6 +45,12 @@ type FilterType = "all" | "depot" | "envoi" | "recu";
 export default function PortefeuillePage() {
   const { user } = useAuth();
   const [showSolde, setShowSolde] = useState(true);
+  const [devise, setDevise] = useState<DeviseCode>(() => {
+    if (typeof window !== "undefined") {
+      return (localStorage.getItem("binq_devise") as DeviseCode) || DEFAULT_DEVISE;
+    }
+    return DEFAULT_DEVISE;
+  });
   const [solde, setSolde] = useState(0);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [transferts, setTransferts] = useState<Transfer[]>([]);
@@ -51,17 +58,22 @@ export default function PortefeuillePage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [filter, setFilter] = useState<FilterType>("all");
 
+  const switchDevise = (d: DeviseCode) => {
+    setDevise(d);
+    localStorage.setItem("binq_devise", d);
+  };
+
   const fetchData = useCallback(async () => {
     setLoading(true);
     try {
-      const res = await fetch("/api/wallet");
+      const res = await fetch(`/api/wallet?devise=${devise}`);
       const data = await res.json();
       if (data.wallet) setSolde(data.wallet.solde || 0);
       if (data.transactions) setTransactions(data.transactions);
       if (data.transferts) setTransferts(data.transferts);
     } catch { /* ignore */ }
     finally { setLoading(false); }
-  }, []);
+  }, [devise]);
 
   useEffect(() => {
     if (user) fetchData();
@@ -136,14 +148,20 @@ export default function PortefeuillePage() {
       {/* Balance */}
       <div className="rounded-2xl bg-white/[0.03] border border-white/[0.06] p-4 sm:p-5">
         <div className="flex items-center justify-between mb-3">
-          <span className="text-xs font-bold text-white/20 uppercase tracking-wider">Solde disponible</span>
+          <div className="flex items-center gap-2">
+            <span className="text-xs font-bold text-white/20 uppercase tracking-wider">Solde disponible</span>
+            <div className="flex items-center bg-white/[0.05] rounded-lg overflow-hidden">
+              {DEVISE_LIST.map((d) => (
+                <button key={d} onClick={() => switchDevise(d)} className={`px-2 py-1 text-[9px] font-bold transition-all ${devise === d ? "bg-emerald-500/20 text-emerald-400" : "text-white/25 hover:text-white/40"}`}>{DEVISES[d].flag} {d}</button>
+              ))}
+            </div>
+          </div>
           <button onClick={() => setShowSolde(!showSolde)} className="p-1.5 rounded-lg bg-white/[0.05] hover:bg-white/[0.08] transition-colors">
             {showSolde ? <EyeOff className="w-3.5 h-3.5 text-white/30" /> : <Eye className="w-3.5 h-3.5 text-white/30" />}
           </button>
         </div>
         <p className="text-2xl sm:text-3xl font-black tracking-tight text-white mb-4">
-          {showSolde ? solde.toLocaleString("fr-FR", { minimumFractionDigits: 2 }) : "••••••"}
-          <span className="text-lg text-white/30 ml-1.5">€</span>
+          {showSolde ? formatMontant(solde, devise) : "••••••"}
         </p>
         <div className="flex gap-2">
           <Link href="/deposer" className="flex-1 flex items-center justify-center gap-1.5 sm:gap-2 py-2.5 rounded-xl bg-emerald-500 text-white text-xs sm:text-sm font-bold hover:bg-emerald-400 transition-all active:scale-95">
@@ -165,7 +183,7 @@ export default function PortefeuillePage() {
           { label: "Reçu", value: totalReceived, color: "text-cyan-400" },
         ].map((s, i) => (
           <div key={i} className="rounded-xl bg-white/[0.02] border border-white/[0.05] p-2.5 sm:p-3 text-center">
-            <p className={`text-sm sm:text-base font-black tabular-nums ${s.color}`}>{s.value.toLocaleString("fr-FR", { minimumFractionDigits: 0 })} €</p>
+            <p className={`text-sm sm:text-base font-black tabular-nums ${s.color}`}>{formatMontant(s.value, devise)}</p>
             <p className="text-[9px] sm:text-[10px] text-white/20 font-semibold mt-0.5">{s.label}</p>
           </div>
         ))}
@@ -226,7 +244,7 @@ export default function PortefeuillePage() {
                 </p>
               </div>
               <p className={`text-sm font-bold tabular-nums ${item.isCredit ? "text-emerald-400" : "text-white/50"}`}>
-                {item.isCredit ? "+" : "-"}{item.montant.toLocaleString("fr-FR", { minimumFractionDigits: 2 })} €
+                {item.isCredit ? "+" : "-"}{formatMontant(item.montant, devise)}
               </p>
             </div>
           ))}

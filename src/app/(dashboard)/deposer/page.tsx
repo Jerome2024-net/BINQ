@@ -5,6 +5,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/contexts/ToastContext";
 import { getStripe } from "@/lib/stripe-client";
 import { Elements, PaymentElement, useStripe, useElements } from "@stripe/react-stripe-js";
+import { type DeviseCode, DEVISE_LIST, DEVISES, DEFAULT_DEVISE, formatMontant, calcDepositStripeAmount } from "@/lib/currencies";
 import {
   ArrowDownToLine,
   CreditCard,
@@ -18,18 +19,20 @@ import {
 const stripePromise = getStripe();
 
 function PaymentForm({
-  montant,
-  frais,
-  total,
+  montantCredite,
+  devise,
+  fraisEur,
+  totalEur,
   paymentIntentId,
   onSuccess,
   onBack,
 }: {
-  montant: number;
-  frais: number;
-  total: number;
+  montantCredite: number;
+  devise: DeviseCode;
+  fraisEur: number;
+  totalEur: number;
   paymentIntentId: string;
-  onSuccess: (data: { montant: number; reference: string; solde: number }) => void;
+  onSuccess: (data: { montant: number; reference: string; solde: number; devise: DeviseCode }) => void;
   onBack: () => void;
 }) {
   const stripe = useStripe();
@@ -63,10 +66,10 @@ function PaymentForm({
         });
         const data = await res.json();
         if (data.success) {
-          onSuccess({ montant: data.montant_credite, reference: data.reference, solde: data.nouveau_solde });
+          onSuccess({ montant: data.montant_credite, reference: data.reference, solde: data.nouveau_solde, devise: data.devise || devise });
         } else {
           showToast("success", "Paiement reçu", "Votre dépôt sera crédité sous peu.");
-          onSuccess({ montant, reference: paymentIntent.id, solde: 0 });
+          onSuccess({ montant: montantCredite, reference: paymentIntent.id, solde: 0, devise });
         }
       }
     } catch {
@@ -81,15 +84,15 @@ function PaymentForm({
       <div className="rounded-2xl bg-white/[0.03] border border-white/[0.05] p-5 space-y-2.5">
         <div className="flex justify-between text-sm">
           <span className="text-white/30">Montant crédité</span>
-          <span className="text-white font-bold">{montant.toFixed(2)} €</span>
+          <span className="text-white font-bold">{formatMontant(montantCredite, devise)}</span>
         </div>
         <div className="flex justify-between text-sm">
           <span className="text-white/30">Frais (1%)</span>
-          <span className="text-white/50">{frais.toFixed(2)} €</span>
+          <span className="text-white/50">{fraisEur.toFixed(2)} €</span>
         </div>
         <div className="border-t border-white/[0.05] pt-2 flex justify-between text-sm font-bold">
           <span className="text-white/60">Total facturé</span>
-          <span className="text-white">{total.toFixed(2)} €</span>
+          <span className="text-white">{totalEur.toFixed(2)} €</span>
         </div>
       </div>
 
@@ -116,7 +119,7 @@ function PaymentForm({
           className="flex-[2] py-4 rounded-xl bg-emerald-500 text-white font-bold hover:bg-emerald-400 transition-all disabled:opacity-50 flex items-center justify-center gap-2 text-sm active:scale-[0.98]"
         >
           {paying ? <Loader2 className="w-5 h-5 animate-spin" /> : <CreditCard className="w-4 h-4" />}
-          {paying ? "Paiement..." : `Payer ${total.toFixed(2)} €`}
+          {paying ? "Paiement..." : `Payer ${totalEur.toFixed(2)} €`}
         </button>
       </div>
     </form>
@@ -128,31 +131,44 @@ export default function DeposerPage() {
   const { showToast } = useToast();
 
   const [step, setStep] = useState<"amount" | "payment" | "success">("amount");
+  const [devise, setDevise] = useState<DeviseCode>(() => {
+    if (typeof window !== "undefined") {
+      return (localStorage.getItem("binq_devise") as DeviseCode) || DEFAULT_DEVISE;
+    }
+    return DEFAULT_DEVISE;
+  });
   const [amount, setAmount] = useState("");
   const [solde, setSolde] = useState(0);
   const [loading, setLoading] = useState(false);
   const [clientSecret, setClientSecret] = useState<string | null>(null);
   const [paymentIntentId, setPaymentIntentId] = useState<string | null>(null);
-  const [frais, setFrais] = useState(0);
-  const [total, setTotal] = useState(0);
-  const [result, setResult] = useState<{ montant: number; reference: string; solde: number } | null>(null);
+  const [depositInfo, setDepositInfo] = useState<{ montantCredite: number; fraisEur: number; totalEur: number } | null>(null);
+  const [result, setResult] = useState<{ montant: number; reference: string; solde: number; devise: DeviseCode } | null>(null);
+
+  const switchDevise = (d: DeviseCode) => {
+    setDevise(d);
+    setAmount("");
+    localStorage.setItem("binq_devise", d);
+  };
 
   useEffect(() => {
     if (user) {
-      fetch("/api/wallet")
+      fetch(`/api/wallet?devise=${devise}`)
         .then((r) => r.json())
         .then((data) => { if (data.wallet) setSolde(data.wallet.solde || 0); })
         .catch(() => {});
     }
-  }, [user]);
+  }, [user, devise]);
 
   const montant = parseFloat(amount) || 0;
-  const fraisCalc = Math.round(montant * 100 * 0.01) / 100;
-  const totalCalc = montant + fraisCalc;
+  const deviseConfig = DEVISES[devise];
+  const calc = montant > 0 ? calcDepositStripeAmount(montant, devise) : null;
+
+  const quickAmounts = devise === "XOF" ? [1000, 5000, 10000, 50000] : [10, 50, 100, 500];
 
   const handleContinue = async () => {
-    if (montant < 1) {
-      showToast("error", "Montant minimum", "Le montant minimum est de 1,00 €");
+    if (montant < deviseConfig.minDeposit) {
+      showToast("error", "Montant minimum", `Le montant minimum est de ${formatMontant(deviseConfig.minDeposit, devise)}`);
       return;
     }
     setLoading(true);
@@ -160,7 +176,7 @@ export default function DeposerPage() {
       const res = await fetch("/api/payment/create-intent", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ amount: montant, currency: "eur", description: "Dépôt portefeuille Binq" }),
+        body: JSON.stringify({ amount: montant, devise, description: `Dépôt portefeuille Binq (${devise})` }),
       });
       const data = await res.json();
       if (!res.ok) {
@@ -169,8 +185,7 @@ export default function DeposerPage() {
       }
       setClientSecret(data.clientSecret);
       setPaymentIntentId(data.paymentIntentId);
-      setFrais(data.fraisBinq);
-      setTotal(data.totalFacture);
+      setDepositInfo({ montantCredite: data.montantCredite, fraisEur: data.fraisBinq, totalEur: data.totalFacture });
       setStep("payment");
     } catch {
       showToast("error", "Erreur", "Erreur serveur");
@@ -179,7 +194,7 @@ export default function DeposerPage() {
     }
   };
 
-  const handleSuccess = (data: { montant: number; reference: string; solde: number }) => {
+  const handleSuccess = (data: { montant: number; reference: string; solde: number; devise: DeviseCode }) => {
     setResult(data);
     if (data.solde) setSolde(data.solde);
     else setSolde((prev) => prev + data.montant);
@@ -191,6 +206,7 @@ export default function DeposerPage() {
     setAmount("");
     setClientSecret(null);
     setPaymentIntentId(null);
+    setDepositInfo(null);
     setResult(null);
   };
 
@@ -204,12 +220,27 @@ export default function DeposerPage() {
         <p className="text-white/30 text-sm mt-0.5">Alimentez votre portefeuille par carte.</p>
       </div>
 
-      {/* Solde banner */}
+      {/* Currency Switcher */}
       <div className="flex items-center gap-3 px-4 py-3 rounded-xl bg-white/[0.03] border border-white/[0.05]">
         <Wallet className="w-4 h-4 text-white/20 shrink-0" />
         <p className="text-sm text-white/40">
-          Solde actuel : <span className="font-bold text-white">{solde.toLocaleString("fr-FR", { minimumFractionDigits: 2 })} €</span>
+          Solde : <span className="font-bold text-white">{formatMontant(solde, devise)}</span>
         </p>
+        <div className="ml-auto flex items-center bg-white/[0.05] rounded-lg overflow-hidden">
+          {DEVISE_LIST.map((d) => (
+            <button
+              key={d}
+              onClick={() => switchDevise(d)}
+              className={`px-2.5 py-1.5 text-[10px] sm:text-xs font-bold transition-all ${
+                devise === d
+                  ? "bg-emerald-500/20 text-emerald-400"
+                  : "text-white/30 hover:text-white/50"
+              }`}
+            >
+              {DEVISES[d].flag} {d}
+            </button>
+          ))}
+        </div>
       </div>
 
       {/* ── Step 1: Amount ── */}
@@ -221,7 +252,7 @@ export default function DeposerPage() {
             </div>
             <div>
               <h3 className="text-sm font-bold text-white">Montant du dépôt</h3>
-              <p className="text-[11px] text-white/25">Choisissez combien ajouter</p>
+              <p className="text-[11px] text-white/25">Choisissez combien ajouter en {deviseConfig.label}</p>
             </div>
           </div>
 
@@ -229,20 +260,20 @@ export default function DeposerPage() {
             <p className="text-[10px] font-bold text-white/20 uppercase tracking-wider text-center mb-3 sm:mb-4">Montant à créditer</p>
             <input
               type="number"
-              min="1"
-              step="0.01"
+              min={deviseConfig.minDeposit}
+              step={devise === "XOF" ? "1" : "0.01"}
               value={amount}
               onChange={(e) => setAmount(e.target.value)}
               placeholder="0"
               className="w-full bg-transparent text-3xl sm:text-5xl font-black text-white placeholder-white/10 focus:outline-none text-center tabular-nums [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
               autoFocus
             />
-            <p className="text-center text-[11px] text-white/20 mt-2">EUR</p>
+            <p className="text-center text-[11px] text-white/20 mt-2">{deviseConfig.symbol}</p>
           </div>
 
           {/* Quick amounts */}
           <div className="grid grid-cols-4 gap-2">
-            {[10, 50, 100, 500].map((amt) => (
+            {quickAmounts.map((amt) => (
               <button
                 key={amt}
                 onClick={() => setAmount(amt.toString())}
@@ -252,32 +283,38 @@ export default function DeposerPage() {
                     : "border-white/[0.06] text-white/30 bg-white/[0.02] hover:bg-white/[0.04]"
                 }`}
               >
-                {amt} €
+                {devise === "XOF" ? `${amt.toLocaleString("fr-FR")}` : `${amt} €`}
               </button>
             ))}
           </div>
 
           {/* Fee breakdown */}
-          {montant > 0 && (
+          {calc && montant >= deviseConfig.minDeposit && (
             <div className="rounded-xl bg-emerald-500/5 border border-emerald-500/10 p-4 space-y-1.5 text-sm">
               <div className="flex justify-between">
                 <span className="text-white/40">Crédité</span>
-                <span className="font-bold text-white">{montant.toFixed(2)} €</span>
+                <span className="font-bold text-white">{formatMontant(calc.montantCredite, devise)}</span>
               </div>
+              {devise === "XOF" && (
+                <div className="flex justify-between">
+                  <span className="text-white/40">Équivalent EUR</span>
+                  <span className="text-white/50">{calc.montantEur.toFixed(2)} €</span>
+                </div>
+              )}
               <div className="flex justify-between">
                 <span className="text-white/40">Frais (1%)</span>
-                <span className="text-white/50">{fraisCalc.toFixed(2)} €</span>
+                <span className="text-white/50">{calc.fraisEur.toFixed(2)} €</span>
               </div>
               <div className="border-t border-emerald-500/10 pt-1.5 flex justify-between font-bold">
-                <span className="text-white/60">Total facturé</span>
-                <span className="text-white">{totalCalc.toFixed(2)} €</span>
+                <span className="text-white/60">Total facturé (carte)</span>
+                <span className="text-white">{calc.totalEur.toFixed(2)} €</span>
               </div>
             </div>
           )}
 
           <button
             onClick={handleContinue}
-            disabled={montant < 1 || loading}
+            disabled={montant < deviseConfig.minDeposit || loading}
             className="w-full py-4 rounded-xl bg-emerald-500 text-white font-bold hover:bg-emerald-400 transition-all disabled:opacity-30 disabled:cursor-not-allowed flex items-center justify-center gap-2 active:scale-[0.98]"
           >
             {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <CreditCard className="w-4 h-4" />}
@@ -286,13 +323,17 @@ export default function DeposerPage() {
 
           <div className="flex items-start gap-2.5 text-[11px] text-white/20 px-1">
             <Info className="w-3.5 h-3.5 shrink-0 mt-0.5" />
-            <span>Frais de 1% par dépôt. Transferts entre utilisateurs Binq gratuits.</span>
+            <span>
+              {devise === "XOF"
+                ? "Votre carte est débitée en EUR au taux fixe 1 € = 655,957 FCFA. Frais 1%."
+                : "Frais de 1% par dépôt. Transferts entre utilisateurs Binq gratuits."}
+            </span>
           </div>
         </div>
       )}
 
       {/* ── Step 2: Stripe Payment ── */}
-      {step === "payment" && clientSecret && paymentIntentId && (
+      {step === "payment" && clientSecret && paymentIntentId && depositInfo && (
         <div className="rounded-2xl bg-white/[0.02] border border-white/[0.05] p-5">
           <Elements
             stripe={stripePromise}
@@ -312,9 +353,10 @@ export default function DeposerPage() {
             }}
           >
             <PaymentForm
-              montant={montant}
-              frais={frais}
-              total={total}
+              montantCredite={depositInfo.montantCredite}
+              devise={devise}
+              fraisEur={depositInfo.fraisEur}
+              totalEur={depositInfo.totalEur}
               paymentIntentId={paymentIntentId}
               onSuccess={handleSuccess}
               onBack={() => setStep("amount")}
@@ -331,11 +373,11 @@ export default function DeposerPage() {
           </div>
           <h3 className="text-xl sm:text-2xl font-black text-white mb-2">Dépôt confirmé !</h3>
           <p className="text-base text-white/40 mb-2">
-            <span className="text-white font-bold">{result.montant.toFixed(2)} €</span> crédités
+            <span className="text-white font-bold">{formatMontant(result.montant, result.devise)}</span> crédités
           </p>
           {result.solde > 0 && (
             <p className="text-sm text-white/25">
-              Nouveau solde : <span className="font-bold text-emerald-400">{result.solde.toFixed(2)} €</span>
+              Nouveau solde : <span className="font-bold text-emerald-400">{formatMontant(result.solde, result.devise)}</span>
             </p>
           )}
           <div className="bg-white/[0.03] border border-white/[0.05] rounded-2xl py-3 px-5 inline-block mt-4 mb-8">

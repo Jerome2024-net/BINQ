@@ -4,6 +4,7 @@ import { z } from "zod";
 export const createIntentSchema = z.object({
   amount: z.number().positive("Montant doit être positif").min(0.5, "Montant minimum: 0,50€"),
   currency: z.enum(["eur", "usd"]).default("eur"),
+  devise: z.enum(["EUR", "XOF"]).default("XOF"), // Devise du wallet à créditer
   description: z.string().optional(),
 });
 

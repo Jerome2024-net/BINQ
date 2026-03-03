@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useState, useEffect, useCallback } from "react";
 import { useAuth } from "@/contexts/AuthContext";
+import { type DeviseCode, DEVISE_LIST, DEVISES, DEFAULT_DEVISE, formatMontant } from "@/lib/currencies";
 import {
   Eye,
   EyeOff,
@@ -19,6 +20,7 @@ import {
   TrendingUp,
   Copy,
   Check,
+  ChevronDown,
 } from "lucide-react";
 
 interface Transaction {
@@ -46,23 +48,36 @@ interface Transfer {
 export default function DashboardPage() {
   const { user } = useAuth();
   const [showSolde, setShowSolde] = useState(true);
+  const [devise, setDevise] = useState<DeviseCode>(() => {
+    if (typeof window !== "undefined") {
+      return (localStorage.getItem("binq_devise") as DeviseCode) || DEFAULT_DEVISE;
+    }
+    return DEFAULT_DEVISE;
+  });
   const [solde, setSolde] = useState(0);
+  const [allWallets, setAllWallets] = useState<{ id: string; solde: number; devise: string }[]>([]);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [transferts, setTransferts] = useState<Transfer[]>([]);
   const [loading, setLoading] = useState(true);
   const [copied, setCopied] = useState(false);
 
+  const switchDevise = (d: DeviseCode) => {
+    setDevise(d);
+    localStorage.setItem("binq_devise", d);
+  };
+
   const fetchData = useCallback(async () => {
     setLoading(true);
     try {
-      const res = await fetch("/api/wallet");
+      const res = await fetch(`/api/wallet?devise=${devise}`);
       const data = await res.json();
       if (data.wallet) setSolde(data.wallet.solde || 0);
+      if (data.allWallets) setAllWallets(data.allWallets);
       if (data.transactions) setTransactions(data.transactions);
       if (data.transferts) setTransferts(data.transferts);
     } catch { /* ignore */ }
     finally { setLoading(false); }
-  }, []);
+  }, [devise]);
 
   useEffect(() => {
     if (user) fetchData();
@@ -142,7 +157,22 @@ export default function DashboardPage() {
               <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg sm:rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center">
                 <Wallet className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-white" />
               </div>
-              <span className="text-xs font-bold text-white/60 uppercase tracking-wider">Solde</span>
+              {/* Currency Switcher */}
+              <div className="flex items-center bg-white/10 rounded-lg overflow-hidden">
+                {DEVISE_LIST.map((d) => (
+                  <button
+                    key={d}
+                    onClick={() => switchDevise(d)}
+                    className={`px-2.5 py-1 text-[10px] sm:text-xs font-bold transition-all ${
+                      devise === d
+                        ? "bg-white/30 text-white"
+                        : "text-white/40 hover:text-white/60"
+                    }`}
+                  >
+                    {DEVISES[d].flag} {d}
+                  </button>
+                ))}
+              </div>
             </div>
             <button onClick={() => setShowSolde(!showSolde)} className="p-2 rounded-xl bg-white/10 hover:bg-white/20 transition-colors">
               {showSolde ? <EyeOff className="w-4 h-4 text-white/60" /> : <Eye className="w-4 h-4 text-white/60" />}
@@ -151,8 +181,7 @@ export default function DashboardPage() {
 
           <div className="mb-4 sm:mb-6">
             <p className="text-3xl sm:text-5xl font-black tracking-tight text-white">
-              {showSolde ? solde.toLocaleString("fr-FR", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : "••••••"}
-              <span className="text-xl text-white/40 ml-2">€</span>
+              {showSolde ? formatMontant(solde, devise) : "••••••"}
             </p>
           </div>
 
@@ -254,7 +283,7 @@ export default function DashboardPage() {
                   </p>
                 </div>
                 <p className={`text-sm font-bold tabular-nums ${item.isCredit ? "text-emerald-400" : "text-white/60"}`}>
-                  {item.isCredit ? "+" : "-"}{item.montant.toLocaleString("fr-FR", { minimumFractionDigits: 2 })} €
+                  {item.isCredit ? "+" : "-"}{formatMontant(item.montant, devise)}
                 </p>
               </div>
             ))}
