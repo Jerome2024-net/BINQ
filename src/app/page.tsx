@@ -40,7 +40,7 @@ export default function HomePage() {
             </Link>
             <Link href="/inscription" className="text-[11px] sm:text-sm font-bold bg-emerald-500 text-white px-3 sm:px-5 py-1.5 sm:py-2.5 rounded-lg sm:rounded-2xl hover:bg-emerald-400 transition-all flex items-center gap-1 sm:gap-1.5 shadow-lg shadow-emerald-500/25">
               <span className="hidden sm:inline">Ouvrir un compte</span>
-              <span className="sm:hidden">S'inscrire</span>
+              <span className="sm:hidden">S&apos;inscrire</span>
               <ArrowRight className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
             </Link>
           </div>
@@ -86,7 +86,7 @@ export default function HomePage() {
               <Link href="/inscription" className="flex-1 sm:flex-none flex items-center justify-center gap-2 sm:gap-2.5 px-3 sm:px-8 py-3 sm:py-4 bg-emerald-500 text-white font-bold rounded-xl sm:rounded-2xl hover:bg-emerald-400 transition-all shadow-lg sm:shadow-xl shadow-emerald-500/25 text-[13px] sm:text-base whitespace-nowrap">
                 <Smartphone className="w-4 h-4 sm:w-5 sm:h-5 hidden sm:block" />
                 <span className="hidden sm:inline">Ouvrir mon compte gratuit</span>
-                <span className="sm:hidden">S'inscrire</span>
+                <span className="sm:hidden">S&apos;inscrire</span>
               </Link>
               <Link href="/connexion" className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-3 sm:px-8 py-3 sm:py-4 bg-white/[0.06] text-white/80 font-semibold rounded-xl sm:rounded-2xl border border-white/[0.08] hover:bg-white/[0.1] transition-all backdrop-blur-sm text-[13px] sm:text-base whitespace-nowrap">
                  <span className="hidden sm:inline">D&eacute;j&agrave; inscrit ? Connexion</span>
