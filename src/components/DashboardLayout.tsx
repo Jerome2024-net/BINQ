@@ -14,6 +14,7 @@ import {
   SendHorizonal,
   ArrowDownToLine,
   History,
+  HandCoins,
   User,
   X,
   ChevronDown,
@@ -31,6 +32,7 @@ const bottomTabs = [
   { href: "/dashboard", label: "Accueil", icon: LayoutDashboard },
   { href: "/deposer", label: "Déposer", icon: ArrowDownToLine },
   { href: "/envoyer", label: "Envoyer", icon: SendHorizonal },
+  { href: "/demander", label: "Demander", icon: HandCoins },
   { href: "/portefeuille", label: "Historique", icon: History },
 ];
 

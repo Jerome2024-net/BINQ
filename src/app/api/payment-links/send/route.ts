@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getAuthenticatedUser } from "@/lib/api-auth";
 import { createClient } from "@supabase/supabase-js";
+import { type DeviseCode, DEVISES, DEFAULT_DEVISE, formatMontant } from "@/lib/currencies";
 import crypto from "crypto";
 
 function getServiceClient() {
@@ -18,13 +19,16 @@ export async function POST(request: NextRequest) {
   if (!user) return NextResponse.json({ error: "Non authentifié" }, { status: 401 });
 
   const body = await request.json();
-  const { montant, description } = body;
+  const { montant, description, devise: rawDevise } = body;
+
+  const devise: DeviseCode = (rawDevise && DEVISES[rawDevise as DeviseCode]) ? (rawDevise as DeviseCode) : DEFAULT_DEVISE;
+  const deviseConfig = DEVISES[devise];
 
   if (!montant || typeof montant !== "number" || montant <= 0) {
     return NextResponse.json({ error: "Montant requis et doit être > 0" }, { status: 400 });
   }
-  if (montant < 1) {
-    return NextResponse.json({ error: "Montant minimum : 1 €" }, { status: 400 });
+  if (montant < deviseConfig.minTransfer) {
+    return NextResponse.json({ error: `Montant minimum : ${formatMontant(deviseConfig.minTransfer, devise)}` }, { status: 400 });
   }
 
   const supabase = getServiceClient();
@@ -34,6 +38,7 @@ export async function POST(request: NextRequest) {
     .from("wallets")
     .select("*")
     .eq("user_id", user.id)
+    .eq("devise", devise)
     .single();
 
   if (!senderWallet) {
@@ -66,7 +71,7 @@ export async function POST(request: NextRequest) {
       createur_id: user.id,
       code,
       montant,
-      devise: "EUR",
+      devise,
       description: description || null,
       statut: "actif",
       type: "send",
@@ -92,7 +97,7 @@ export async function POST(request: NextRequest) {
     montant,
     solde_avant: senderWallet.solde,
     solde_apres: newSolde,
-    devise: "EUR",
+    devise,
     statut: "confirme",
     reference,
     description: `Envoi via lien${description ? ` — ${description}` : ""}`,
@@ -105,7 +110,7 @@ export async function POST(request: NextRequest) {
     await supabase.from("notifications").insert({
       user_id: user.id,
       titre: "Lien d'envoi créé",
-      message: `Vous avez créé un lien d'envoi de ${montant.toFixed(2)} €${description ? ` — ${description}` : ""}`,
+      message: `Vous avez créé un lien d'envoi de ${formatMontant(montant, devise)}${description ? ` — ${description}` : ""}`,
       lu: false,
     });
   } catch { /* ignore */ }

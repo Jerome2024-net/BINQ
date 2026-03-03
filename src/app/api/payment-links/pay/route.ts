@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getAuthenticatedUser } from "@/lib/api-auth";
 import { createClient } from "@supabase/supabase-js";
+import { type DeviseCode, formatMontant } from "@/lib/currencies";
 
 function getServiceClient() {
   return createClient(
@@ -59,16 +60,19 @@ export async function POST(request: NextRequest) {
     }
 
     // Récupérer ou créer le wallet du claimant
+    const linkDevise: DeviseCode = (link.devise && (link.devise === "EUR" || link.devise === "XOF")) ? link.devise : "XOF";
+
     let { data: claimantWallet } = await supabase
       .from("wallets")
       .select("*")
       .eq("user_id", user.id)
+      .eq("devise", linkDevise)
       .single();
 
     if (!claimantWallet) {
       const { data: created } = await supabase
         .from("wallets")
-        .insert({ user_id: user.id, solde: 0, solde_bloque: 0, devise: "EUR" })
+        .insert({ user_id: user.id, solde: 0, solde_bloque: 0, devise: linkDevise })
         .select()
         .single();
       claimantWallet = created;
@@ -113,7 +117,7 @@ export async function POST(request: NextRequest) {
       expediteur_id: link.createur_id,
       destinataire_id: user.id,
       montant,
-      devise: "EUR",
+      devise: linkDevise,
       message: link.description || "Envoi via lien",
       statut: "confirme",
       payment_link_id: link.id,
@@ -129,7 +133,7 @@ export async function POST(request: NextRequest) {
       montant,
       solde_avant: claimantWallet.solde,
       solde_apres: newClaimantSolde,
-      devise: "EUR",
+      devise: linkDevise,
       statut: "confirme",
       reference,
       description: `Reçu de ${senderName}${linkDesc}`,
@@ -150,13 +154,13 @@ export async function POST(request: NextRequest) {
       supabase.from("notifications").insert({
         user_id: user.id,
         titre: "Argent récupéré",
-        message: `Vous avez récupéré ${montant.toFixed(2)} € envoyés par ${senderName}`,
+        message: `Vous avez récupéré ${formatMontant(montant, linkDevise)} envoyés par ${senderName}`,
         lu: false,
       }),
       supabase.from("notifications").insert({
         user_id: link.createur_id,
         titre: "Envoi récupéré",
-        message: `${claimantName} a récupéré vos ${montant.toFixed(2)} €`,
+        message: `${claimantName} a récupéré vos ${formatMontant(montant, linkDevise)}`,
         lu: false,
       }),
     ]);
@@ -169,12 +173,10 @@ export async function POST(request: NextRequest) {
 
   // ── Type 'request': flow normal — débit payeur + crédit créateur ──
   const montant = link.montant ? Number(link.montant) : Number(montantLibre);
+  const linkDeviseReq: DeviseCode = (link.devise && (link.devise === "EUR" || link.devise === "XOF")) ? link.devise : "XOF";
 
   if (!montant || montant <= 0) {
     return NextResponse.json({ error: "Montant invalide" }, { status: 400 });
-  }
-  if (montant < 1) {
-    return NextResponse.json({ error: "Montant minimum : 1 €" }, { status: 400 });
   }
 
   // 2. Récupérer le wallet du payeur
@@ -182,6 +184,7 @@ export async function POST(request: NextRequest) {
     .from("wallets")
     .select("*")
     .eq("user_id", user.id)
+    .eq("devise", linkDeviseReq)
     .single();
 
   if (!payerWallet) {
@@ -197,12 +200,13 @@ export async function POST(request: NextRequest) {
     .from("wallets")
     .select("*")
     .eq("user_id", link.createur_id)
+    .eq("devise", linkDeviseReq)
     .single();
 
   if (!creatorWallet) {
     const { data: created } = await supabase
       .from("wallets")
-      .insert({ user_id: link.createur_id, solde: 0, solde_bloque: 0, devise: "EUR" })
+      .insert({ user_id: link.createur_id, solde: 0, solde_bloque: 0, devise: linkDeviseReq })
       .select()
       .single();
     creatorWallet = created;
@@ -263,7 +267,7 @@ export async function POST(request: NextRequest) {
     expediteur_id: user.id,
     destinataire_id: link.createur_id,
     montant,
-    devise: "EUR",
+    devise: linkDeviseReq,
     message: link.description || "Paiement par lien",
     statut: "confirme",
     payment_link_id: link.id,
@@ -280,7 +284,7 @@ export async function POST(request: NextRequest) {
       montant,
       solde_avant: payerWallet.solde,
       solde_apres: newPayerSolde,
-      devise: "EUR",
+      devise: linkDeviseReq,
       statut: "confirme",
       reference,
       description: `Paiement à ${creatorName}${linkDesc}`,
@@ -294,7 +298,7 @@ export async function POST(request: NextRequest) {
       montant,
       solde_avant: creatorWallet.solde,
       solde_apres: newCreatorSolde,
-      devise: "EUR",
+      devise: linkDeviseReq,
       statut: "confirme",
       reference,
       description: `Paiement reçu de ${payerName}${linkDesc}`,
@@ -316,13 +320,13 @@ export async function POST(request: NextRequest) {
     supabase.from("notifications").insert({
       user_id: link.createur_id,
       titre: "Paiement reçu",
-      message: `${payerName} vous a payé ${montant.toFixed(2)} €${linkDesc}`,
+      message: `${payerName} vous a payé ${formatMontant(montant, linkDeviseReq)}${linkDesc}`,
       lu: false,
     }),
     supabase.from("notifications").insert({
       user_id: user.id,
       titre: "Paiement effectué",
-      message: `Vous avez payé ${montant.toFixed(2)} € à ${creatorName}${linkDesc}`,
+      message: `Vous avez payé ${formatMontant(montant, linkDeviseReq)} à ${creatorName}${linkDesc}`,
       lu: false,
     }),
   ]);

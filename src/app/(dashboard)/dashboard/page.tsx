@@ -15,7 +15,7 @@ import {
   ArrowDownLeft,
   History,
   RefreshCw,
-  QrCode,
+  HandCoins,
   Sparkles,
   TrendingUp,
   Copy,
@@ -210,7 +210,7 @@ export default function DashboardPage() {
           {[
             { icon: ArrowDownToLine, label: "Dépôt", href: "/deposer", gradient: "from-emerald-500 to-emerald-600" },
             { icon: SendHorizonal, label: "Envoi", href: "/envoyer", gradient: "from-cyan-500 to-cyan-600" },
-            { icon: QrCode, label: "QR Code", href: "#", gradient: "from-violet-500 to-violet-600" },
+            { icon: HandCoins, label: "Demander", href: "/demander", gradient: "from-violet-500 to-violet-600" },
             { icon: TrendingUp, label: "Épargne", href: "#", gradient: "from-orange-500 to-orange-600" },
           ].map((svc, i) => (
             <Link

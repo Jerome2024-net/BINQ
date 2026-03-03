@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getAuthenticatedUser } from "@/lib/api-auth";
 import { createClient } from "@supabase/supabase-js";
+import { type DeviseCode, DEVISES, DEFAULT_DEVISE } from "@/lib/currencies";
 import crypto from "crypto";
 
 function getServiceClient() {
@@ -38,7 +39,9 @@ export async function POST(request: NextRequest) {
   if (!user) return NextResponse.json({ error: "Non authentifié" }, { status: 401 });
 
   const body = await request.json();
-  const { montant, description } = body;
+  const { montant, description, devise: rawDevise } = body;
+
+  const devise: DeviseCode = (rawDevise && DEVISES[rawDevise as DeviseCode]) ? (rawDevise as DeviseCode) : DEFAULT_DEVISE;
 
   // Montant optionnel (null = montant libre)
   if (montant !== undefined && montant !== null) {
@@ -58,7 +61,7 @@ export async function POST(request: NextRequest) {
       createur_id: user.id,
       code,
       montant: montant || null,
-      devise: "EUR",
+      devise,
       description: description || null,
       statut: "actif",
       usage_unique: true,
