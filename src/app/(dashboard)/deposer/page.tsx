@@ -216,8 +216,8 @@ export default function DeposerPage() {
       {step === "amount" && (
         <div className="rounded-2xl bg-white/[0.02] border border-white/[0.05] p-5 space-y-5">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-emerald-500/10 flex items-center justify-center">
-              <ArrowDownToLine className="w-5 h-5 text-emerald-400" />
+            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-emerald-500/10 flex items-center justify-center">
+              <ArrowDownToLine className="w-4 h-4 sm:w-5 sm:h-5 text-emerald-400" />
             </div>
             <div>
               <h3 className="text-sm font-bold text-white">Montant du dépôt</h3>
@@ -225,8 +225,8 @@ export default function DeposerPage() {
             </div>
           </div>
 
-          <div className="rounded-2xl bg-white/[0.03] border border-white/[0.05] p-6">
-            <p className="text-[10px] font-bold text-white/20 uppercase tracking-wider text-center mb-4">Montant à créditer</p>
+          <div className="rounded-2xl bg-white/[0.03] border border-white/[0.05] p-4 sm:p-6">
+            <p className="text-[10px] font-bold text-white/20 uppercase tracking-wider text-center mb-3 sm:mb-4">Montant à créditer</p>
             <input
               type="number"
               min="1"
@@ -234,7 +234,7 @@ export default function DeposerPage() {
               value={amount}
               onChange={(e) => setAmount(e.target.value)}
               placeholder="0"
-              className="w-full bg-transparent text-5xl font-black text-white placeholder-white/10 focus:outline-none text-center tabular-nums [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+              className="w-full bg-transparent text-3xl sm:text-5xl font-black text-white placeholder-white/10 focus:outline-none text-center tabular-nums [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
               autoFocus
             />
             <p className="text-center text-[11px] text-white/20 mt-2">EUR</p>
@@ -326,10 +326,10 @@ export default function DeposerPage() {
       {/* ── Step 3: Success ── */}
       {step === "success" && result && (
         <div className="rounded-2xl bg-white/[0.02] border border-white/[0.05] p-5 text-center py-10">
-          <div className="w-20 h-20 bg-emerald-500/15 rounded-3xl flex items-center justify-center mx-auto mb-6">
-            <CheckCircle2 className="w-10 h-10 text-emerald-400" />
+          <div className="w-16 h-16 sm:w-20 sm:h-20 bg-emerald-500/15 rounded-2xl sm:rounded-3xl flex items-center justify-center mx-auto mb-5 sm:mb-6">
+            <CheckCircle2 className="w-8 h-8 sm:w-10 sm:h-10 text-emerald-400" />
           </div>
-          <h3 className="text-2xl font-black text-white mb-2">Dépôt confirmé !</h3>
+          <h3 className="text-xl sm:text-2xl font-black text-white mb-2">Dépôt confirmé !</h3>
           <p className="text-base text-white/40 mb-2">
             <span className="text-white font-bold">{result.montant.toFixed(2)} €</span> crédités
           </p>

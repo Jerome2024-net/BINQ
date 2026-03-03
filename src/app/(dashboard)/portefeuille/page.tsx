@@ -112,8 +112,8 @@ export default function PortefeuillePage() {
   if (loading) {
     return (
       <div className="min-h-[60vh] flex flex-col items-center justify-center gap-4">
-        <div className="w-14 h-14 rounded-2xl bg-emerald-500/10 flex items-center justify-center">
-          <Wallet className="w-7 h-7 text-emerald-400 animate-pulse" />
+        <div className="w-11 h-11 sm:w-14 sm:h-14 rounded-2xl bg-emerald-500/10 flex items-center justify-center">
+          <Wallet className="w-5 h-5 sm:w-7 sm:h-7 text-emerald-400 animate-pulse" />
         </div>
         <p className="text-sm text-white/30 font-medium">Chargement...</p>
       </div>
@@ -134,39 +134,39 @@ export default function PortefeuillePage() {
       </div>
 
       {/* Balance */}
-      <div className="rounded-2xl bg-white/[0.03] border border-white/[0.06] p-5">
+      <div className="rounded-2xl bg-white/[0.03] border border-white/[0.06] p-4 sm:p-5">
         <div className="flex items-center justify-between mb-3">
           <span className="text-xs font-bold text-white/20 uppercase tracking-wider">Solde disponible</span>
           <button onClick={() => setShowSolde(!showSolde)} className="p-1.5 rounded-lg bg-white/[0.05] hover:bg-white/[0.08] transition-colors">
             {showSolde ? <EyeOff className="w-3.5 h-3.5 text-white/30" /> : <Eye className="w-3.5 h-3.5 text-white/30" />}
           </button>
         </div>
-        <p className="text-3xl font-black tracking-tight text-white mb-4">
+        <p className="text-2xl sm:text-3xl font-black tracking-tight text-white mb-4">
           {showSolde ? solde.toLocaleString("fr-FR", { minimumFractionDigits: 2 }) : "••••••"}
           <span className="text-lg text-white/30 ml-1.5">€</span>
         </p>
         <div className="flex gap-2">
-          <Link href="/deposer" className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl bg-emerald-500 text-white text-sm font-bold hover:bg-emerald-400 transition-all active:scale-95">
-            <ArrowDownToLine className="w-4 h-4" />
+          <Link href="/deposer" className="flex-1 flex items-center justify-center gap-1.5 sm:gap-2 py-2.5 rounded-xl bg-emerald-500 text-white text-xs sm:text-sm font-bold hover:bg-emerald-400 transition-all active:scale-95">
+            <ArrowDownToLine className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
             Déposer
           </Link>
-          <Link href="/envoyer" className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl bg-white/[0.06] text-white/60 text-sm font-bold hover:bg-white/[0.1] transition-all active:scale-95">
-            <SendHorizonal className="w-4 h-4" />
+          <Link href="/envoyer" className="flex-1 flex items-center justify-center gap-1.5 sm:gap-2 py-2.5 rounded-xl bg-white/[0.06] text-white/60 text-xs sm:text-sm font-bold hover:bg-white/[0.1] transition-all active:scale-95">
+            <SendHorizonal className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
             Envoyer
           </Link>
         </div>
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-3 gap-2.5">
+      <div className="grid grid-cols-3 gap-2">
         {[
           { label: "Déposé", value: totalDeposits, color: "text-emerald-400" },
           { label: "Envoyé", value: totalSent, color: "text-white/60" },
           { label: "Reçu", value: totalReceived, color: "text-cyan-400" },
         ].map((s, i) => (
-          <div key={i} className="rounded-xl bg-white/[0.02] border border-white/[0.05] p-3 text-center">
-            <p className={`text-base font-black tabular-nums ${s.color}`}>{s.value.toLocaleString("fr-FR", { minimumFractionDigits: 0 })} €</p>
-            <p className="text-[10px] text-white/20 font-semibold mt-0.5">{s.label}</p>
+          <div key={i} className="rounded-xl bg-white/[0.02] border border-white/[0.05] p-2.5 sm:p-3 text-center">
+            <p className={`text-sm sm:text-base font-black tabular-nums ${s.color}`}>{s.value.toLocaleString("fr-FR", { minimumFractionDigits: 0 })} €</p>
+            <p className="text-[9px] sm:text-[10px] text-white/20 font-semibold mt-0.5">{s.label}</p>
           </div>
         ))}
       </div>
@@ -211,12 +211,12 @@ export default function PortefeuillePage() {
         <div className="rounded-2xl bg-white/[0.02] border border-white/[0.05] overflow-hidden divide-y divide-white/[0.04]">
           {filteredActivity.map((item) => (
             <div key={item.id} className="flex items-center gap-3 p-4 hover:bg-white/[0.02] transition-colors active:bg-white/[0.04]">
-              <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${
+              <div className={`w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl flex items-center justify-center shrink-0 ${
                 item.isCredit ? "bg-emerald-500/15" : "bg-white/[0.05]"
               }`}>
                 {item.isCredit
-                  ? <ArrowDownLeft className="w-4 h-4 text-emerald-400" />
-                  : <ArrowUpRight className="w-4 h-4 text-white/30" />
+                  ? <ArrowDownLeft className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-emerald-400" />
+                  : <ArrowUpRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-white/30" />
                 }
               </div>
               <div className="flex-1 min-w-0">

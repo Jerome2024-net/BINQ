@@ -27,18 +27,18 @@ export default function HomePage() {
       {/* ── HEADER ── */}
       <header className="fixed top-0 inset-x-0 z-50 bg-[#0a0a0a]/80 backdrop-blur-2xl border-b border-white/[0.06]">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2.5 group">
-            <div className="w-9 h-9 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-2xl flex items-center justify-center shadow-lg shadow-emerald-500/20">
-              <Wallet className="w-5 h-5 text-white" />
+          <Link href="/" className="flex items-center gap-2 sm:gap-2.5 group">
+            <div className="w-8 h-8 sm:w-9 sm:h-9 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-xl sm:rounded-2xl flex items-center justify-center shadow-lg shadow-emerald-500/20">
+              <Wallet className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
             </div>
-            <span className="font-black text-xl tracking-tight">Binq</span>
+            <span className="font-black text-lg sm:text-xl tracking-tight">Binq</span>
           </Link>
           <div className="flex items-center gap-2 sm:gap-3">
             <Link href="/connexion" className="text-sm font-semibold text-white/60 hover:text-white transition-colors px-3 py-2">
               Se connecter
             </Link>
-            <Link href="/inscription" className="text-sm font-bold bg-emerald-500 text-white px-5 py-2.5 rounded-2xl hover:bg-emerald-400 transition-all flex items-center gap-1.5 shadow-lg shadow-emerald-500/25">
-              Ouvrir un compte <ArrowRight className="w-3.5 h-3.5" />
+            <Link href="/inscription" className="text-xs sm:text-sm font-bold bg-emerald-500 text-white px-4 sm:px-5 py-2 sm:py-2.5 rounded-xl sm:rounded-2xl hover:bg-emerald-400 transition-all flex items-center gap-1.5 shadow-lg shadow-emerald-500/25">
+              Ouvrir un compte <ArrowRight className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
             </Link>
           </div>
         </div>
@@ -94,8 +94,8 @@ export default function HomePage() {
           <div className="relative max-w-xs mx-auto">
             <div className="relative bg-gradient-to-b from-[#111] to-[#0d0d0d] rounded-[2.5rem] border border-white/[0.08] p-6 pt-8 pb-8 shadow-2xl shadow-emerald-900/20">
               {/* Status bar mock */}
-              <div className="flex items-center justify-between mb-6 px-1">
-                <span className="text-[10px] text-white/30 font-bold">9:41</span>
+              <div className="flex items-center justify-between mb-4 sm:mb-6 px-1">
+                <span className="text-[9px] sm:text-[10px] text-white/30 font-bold">9:41</span>
                 <div className="flex gap-1">
                   <div className="w-4 h-2 rounded-sm bg-white/20" />
                   <div className="w-3 h-2 rounded-sm bg-white/20" />
@@ -104,36 +104,36 @@ export default function HomePage() {
               </div>
 
               {/* Balance */}
-              <div className="text-center mb-6">
-                <p className="text-[10px] font-bold text-white/30 uppercase tracking-widest mb-2">Solde disponible</p>
-                <p className="text-4xl font-black tracking-tight">1 250,00 <span className="text-lg text-white/30">&euro;</span></p>
+              <div className="text-center mb-4 sm:mb-6">
+                <p className="text-[9px] sm:text-[10px] font-bold text-white/30 uppercase tracking-widest mb-1.5 sm:mb-2">Solde disponible</p>
+                <p className="text-2xl sm:text-4xl font-black tracking-tight">1 250,00 <span className="text-sm sm:text-lg text-white/30">&euro;</span></p>
               </div>
 
               {/* Action Buttons */}
-              <div className="grid grid-cols-3 gap-3 mb-6">
+              <div className="grid grid-cols-3 gap-2 sm:gap-3 mb-4 sm:mb-6">
                 {[
                   { icon: ArrowDownToLine, label: "D\u00e9poser", color: "from-emerald-500 to-emerald-600" },
                   { icon: SendHorizonal, label: "Envoyer", color: "from-cyan-500 to-cyan-600" },
                   { icon: QrCode, label: "Scanner", color: "from-violet-500 to-violet-600" },
                 ].map((btn, i) => (
-                  <div key={i} className="flex flex-col items-center gap-1.5">
-                    <div className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${btn.color} flex items-center justify-center shadow-lg`}>
-                      <btn.icon className="w-5 h-5 text-white" />
+                  <div key={i} className="flex flex-col items-center gap-1 sm:gap-1.5">
+                    <div className={`w-9 h-9 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-gradient-to-br ${btn.color} flex items-center justify-center shadow-lg`}>
+                      <btn.icon className="w-3.5 h-3.5 sm:w-5 sm:h-5 text-white" />
                     </div>
-                    <span className="text-[10px] font-semibold text-white/40">{btn.label}</span>
+                    <span className="text-[9px] sm:text-[10px] font-semibold text-white/40">{btn.label}</span>
                   </div>
                 ))}
               </div>
 
               {/* Activity preview */}
-              <div className="space-y-2.5">
+              <div className="space-y-2">
                 {[
-                  { name: "Moussa K.", amount: "+50,00 €", time: "Il y a 2min", credit: true },
-                  { name: "D\u00e9p\u00f4t carte", amount: "+100,00 €", time: "Hier", credit: true },
-                  { name: "Fatou D.", amount: "-25,00 €", time: "Lundi", credit: false },
+                  { name: "Moussa K.", amount: "+50,00 \u20ac", time: "Il y a 2min", credit: true },
+                  { name: "D\u00e9p\u00f4t carte", amount: "+100,00 \u20ac", time: "Hier", credit: true },
+                  { name: "Fatou D.", amount: "-25,00 \u20ac", time: "Lundi", credit: false },
                 ].map((item, i) => (
-                  <div key={i} className="flex items-center gap-3 px-3 py-2.5 rounded-xl bg-white/[0.03]">
-                    <div className={`w-8 h-8 rounded-full flex items-center justify-center text-[10px] font-bold ${item.credit ? "bg-emerald-500/20 text-emerald-400" : "bg-white/[0.06] text-white/40"}`}>
+                  <div key={i} className="flex items-center gap-2.5 sm:gap-3 px-2.5 sm:px-3 py-2 sm:py-2.5 rounded-lg sm:rounded-xl bg-white/[0.03]">
+                    <div className={`w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center text-[9px] sm:text-[10px] font-bold ${item.credit ? "bg-emerald-500/20 text-emerald-400" : "bg-white/[0.06] text-white/40"}`}>
                       {item.credit ? "+" : "-"}
                     </div>
                     <div className="flex-1 min-w-0">
@@ -147,21 +147,21 @@ export default function HomePage() {
             </div>
 
             {/* Glow behind phone */}
-            <div className="absolute -inset-4 bg-emerald-500/10 rounded-[3rem] blur-2xl -z-10" />
+            <div className="absolute -inset-4 bg-emerald-500/10 rounded-[2.5rem] sm:rounded-[3rem] blur-2xl -z-10" />
           </div>
 
           {/* Stats row */}
-          <div className="mt-12 sm:mt-16 grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 max-w-3xl mx-auto">
+          <div className="mt-10 sm:mt-16 grid grid-cols-2 md:grid-cols-4 gap-2.5 sm:gap-4 max-w-3xl mx-auto">
             {[
               { label: "Transactions", value: "Instantan\u00e9es", icon: Zap },
               { label: "D\u00e9p\u00f4ts", value: "1% de frais", icon: ArrowDownToLine },
               { label: "Transferts", value: "Gratuits", icon: SendHorizonal },
               { label: "S\u00e9curit\u00e9", value: "AES-256", icon: Lock },
             ].map((stat, i) => (
-              <div key={i} className="flex flex-col items-center gap-2 py-4 px-3 rounded-2xl bg-white/[0.03] border border-white/[0.06] backdrop-blur-sm">
-                <stat.icon className="w-4 h-4 text-emerald-400" />
-                <p className="text-white font-bold text-sm">{stat.value}</p>
-                <p className="text-[10px] text-white/30 font-medium">{stat.label}</p>
+              <div key={i} className="flex flex-col items-center gap-1.5 sm:gap-2 py-3 sm:py-4 px-2.5 sm:px-3 rounded-xl sm:rounded-2xl bg-white/[0.03] border border-white/[0.06] backdrop-blur-sm">
+                <stat.icon className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-emerald-400" />
+                <p className="text-white font-bold text-xs sm:text-sm">{stat.value}</p>
+                <p className="text-[9px] sm:text-[10px] text-white/30 font-medium">{stat.label}</p>
               </div>
             ))}
           </div>
@@ -236,12 +236,12 @@ export default function HomePage() {
                 border: "border-pink-500/20",
               },
             ].map((f, i) => (
-              <div key={i} className={`group relative rounded-3xl bg-gradient-to-b ${f.gradient} border ${f.border} p-6 sm:p-7 hover:scale-[1.02] transition-all duration-300`}>
-                <div className={`w-12 h-12 rounded-2xl bg-white/[0.06] flex items-center justify-center mb-4 ${f.iconColor}`}>
-                  <f.icon className="w-6 h-6" />
+              <div key={i} className={`group relative rounded-2xl sm:rounded-3xl bg-gradient-to-b ${f.gradient} border ${f.border} p-5 sm:p-7 hover:scale-[1.02] transition-all duration-300`}>
+                <div className={`w-9 h-9 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-white/[0.06] flex items-center justify-center mb-3 sm:mb-4 ${f.iconColor}`}>
+                  <f.icon className="w-4 h-4 sm:w-6 sm:h-6" />
                 </div>
-                <h3 className="text-lg font-bold text-white mb-2">{f.title}</h3>
-                <p className="text-white/40 text-sm leading-relaxed">{f.desc}</p>
+                <h3 className="text-base sm:text-lg font-bold text-white mb-1.5 sm:mb-2">{f.title}</h3>
+                <p className="text-white/40 text-xs sm:text-sm leading-relaxed">{f.desc}</p>
               </div>
             ))}
           </div>
@@ -264,8 +264,8 @@ export default function HomePage() {
               { step: "02", title: "Ajoutez de l\u2019argent", desc: "Par carte bancaire. Cr\u00e9dit\u00e9 instantan\u00e9ment sur votre portefeuille.", color: "bg-cyan-500", icon: ArrowDownToLine },
               { step: "03", title: "Envoyez \u00e0 qui vous voulez", desc: "Transfert gratuit et imm\u00e9diat vers n\u2019importe quel utilisateur Binq.", color: "bg-violet-500", icon: SendHorizonal },
             ].map((item, i) => (
-              <div key={i} className="flex items-center gap-4 sm:gap-5 p-5 sm:p-6 rounded-2xl bg-white/[0.03] border border-white/[0.06] hover:bg-white/[0.05] transition-all group">
-                <div className={`w-14 h-14 rounded-2xl ${item.color} text-white flex items-center justify-center font-black text-lg shrink-0 group-hover:scale-110 transition-transform shadow-lg`}>
+              <div key={i} className="flex items-center gap-3 sm:gap-5 p-4 sm:p-6 rounded-xl sm:rounded-2xl bg-white/[0.03] border border-white/[0.06] hover:bg-white/[0.05] transition-all group">
+                <div className={`w-10 h-10 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl ${item.color} text-white flex items-center justify-center font-black text-sm sm:text-lg shrink-0 group-hover:scale-110 transition-transform shadow-lg`}>
                   {item.step}
                 </div>
                 <div>
@@ -287,21 +287,21 @@ export default function HomePage() {
             </h2>
             <p className="text-white/40 text-base sm:text-lg">Transparent, simple, sans surprise.</p>
           </div>
-          <div className="grid sm:grid-cols-2 gap-4 max-w-xl mx-auto">
-            <div className="rounded-3xl bg-gradient-to-b from-emerald-500/10 to-emerald-500/[0.02] border border-emerald-500/20 p-7 text-center">
-              <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 flex items-center justify-center mx-auto mb-4">
-                <ArrowDownToLine className="w-6 h-6 text-emerald-400" />
+          <div className="grid sm:grid-cols-2 gap-3 sm:gap-4 max-w-xl mx-auto">
+            <div className="rounded-2xl sm:rounded-3xl bg-gradient-to-b from-emerald-500/10 to-emerald-500/[0.02] border border-emerald-500/20 p-5 sm:p-7 text-center">
+              <div className="w-9 h-9 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-emerald-500/10 flex items-center justify-center mx-auto mb-3 sm:mb-4">
+                <ArrowDownToLine className="w-4 h-4 sm:w-6 sm:h-6 text-emerald-400" />
               </div>
-              <h3 className="text-lg font-bold text-white mb-2">D&eacute;p&ocirc;ts</h3>
-              <p className="text-4xl font-black text-emerald-400 mb-2">1%</p>
+              <h3 className="text-base sm:text-lg font-bold text-white mb-1.5 sm:mb-2">D&eacute;p&ocirc;ts</h3>
+              <p className="text-2xl sm:text-4xl font-black text-emerald-400 mb-1.5 sm:mb-2">1%</p>
               <p className="text-sm text-white/40">de frais par d&eacute;p&ocirc;t carte</p>
             </div>
-            <div className="rounded-3xl bg-gradient-to-b from-cyan-500/10 to-cyan-500/[0.02] border border-cyan-500/20 p-7 text-center">
-              <div className="w-12 h-12 rounded-2xl bg-cyan-500/10 flex items-center justify-center mx-auto mb-4">
-                <SendHorizonal className="w-6 h-6 text-cyan-400" />
+            <div className="rounded-2xl sm:rounded-3xl bg-gradient-to-b from-cyan-500/10 to-cyan-500/[0.02] border border-cyan-500/20 p-5 sm:p-7 text-center">
+              <div className="w-9 h-9 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-cyan-500/10 flex items-center justify-center mx-auto mb-3 sm:mb-4">
+                <SendHorizonal className="w-4 h-4 sm:w-6 sm:h-6 text-cyan-400" />
               </div>
-              <h3 className="text-lg font-bold text-white mb-2">Transferts</h3>
-              <p className="text-4xl font-black text-cyan-400 mb-2">0&euro;</p>
+              <h3 className="text-base sm:text-lg font-bold text-white mb-1.5 sm:mb-2">Transferts</h3>
+              <p className="text-2xl sm:text-4xl font-black text-cyan-400 mb-1.5 sm:mb-2">0&euro;</p>
               <p className="text-sm text-white/40">entre utilisateurs Binq</p>
             </div>
           </div>
@@ -315,9 +315,9 @@ export default function HomePage() {
             <div className="absolute inset-0 bg-gradient-to-br from-emerald-600 via-emerald-500 to-cyan-500" />
             <div className="absolute inset-0 opacity-10" style={{ backgroundImage: "radial-gradient(circle, white 1px, transparent 1px)", backgroundSize: "20px 20px" }} />
 
-            <div className="relative z-10 p-8 sm:p-16 text-center">
-              <div className="w-16 h-16 rounded-3xl bg-white/20 backdrop-blur-sm flex items-center justify-center mx-auto mb-6 shadow-2xl">
-                <Wallet className="w-8 h-8 text-white" />
+            <div className="relative z-10 p-6 sm:p-16 text-center">
+              <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-2xl sm:rounded-3xl bg-white/20 backdrop-blur-sm flex items-center justify-center mx-auto mb-4 sm:mb-6 shadow-2xl">
+                <Wallet className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
               </div>
               <h2 className="text-2xl sm:text-4xl lg:text-5xl font-black text-white tracking-tight mb-4">
                 Pr&ecirc;t &agrave; commencer ?

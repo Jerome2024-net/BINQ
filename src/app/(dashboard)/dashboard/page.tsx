@@ -112,8 +112,8 @@ export default function DashboardPage() {
   if (loading) {
     return (
       <div className="min-h-[60vh] flex flex-col items-center justify-center gap-4">
-        <div className="w-14 h-14 rounded-2xl bg-emerald-500/10 flex items-center justify-center">
-          <Wallet className="w-7 h-7 text-emerald-400 animate-pulse" />
+        <div className="w-11 h-11 sm:w-14 sm:h-14 rounded-2xl bg-emerald-500/10 flex items-center justify-center">
+          <Wallet className="w-5 h-5 sm:w-7 sm:h-7 text-emerald-400 animate-pulse" />
         </div>
         <p className="text-sm text-white/30 font-medium">Synchronisation...</p>
       </div>
@@ -132,15 +132,15 @@ export default function DashboardPage() {
       </div>
 
       {/* ── Balance Card ── */}
-      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-emerald-600 via-emerald-500 to-cyan-500 p-6 shadow-xl shadow-emerald-900/30">
+      <div className="relative overflow-hidden rounded-2xl sm:rounded-3xl bg-gradient-to-br from-emerald-600 via-emerald-500 to-cyan-500 p-4 sm:p-6 shadow-xl shadow-emerald-900/30">
         {/* Pattern overlay */}
         <div className="absolute inset-0 opacity-10" style={{ backgroundImage: "radial-gradient(circle, white 1px, transparent 1px)", backgroundSize: "16px 16px" }} />
 
         <div className="relative z-10">
-          <div className="flex items-center justify-between mb-5">
+          <div className="flex items-center justify-between mb-3 sm:mb-5">
             <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center">
-                <Wallet className="w-4 h-4 text-white" />
+              <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg sm:rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center">
+                <Wallet className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-white" />
               </div>
               <span className="text-xs font-bold text-white/60 uppercase tracking-wider">Solde</span>
             </div>
@@ -149,26 +149,26 @@ export default function DashboardPage() {
             </button>
           </div>
 
-          <div className="mb-6">
-            <p className="text-4xl sm:text-5xl font-black tracking-tight text-white">
+          <div className="mb-4 sm:mb-6">
+            <p className="text-3xl sm:text-5xl font-black tracking-tight text-white">
               {showSolde ? solde.toLocaleString("fr-FR", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : "••••••"}
               <span className="text-xl text-white/40 ml-2">€</span>
             </p>
           </div>
 
           {/* Quick actions */}
-          <div className="grid grid-cols-3 gap-2.5">
-            <Link href="/deposer" className="flex flex-col items-center gap-1.5 py-3 rounded-2xl bg-white/15 backdrop-blur-sm hover:bg-white/25 transition-all active:scale-95">
-              <ArrowDownToLine className="w-5 h-5" />
-              <span className="text-[11px] font-bold">Déposer</span>
+          <div className="grid grid-cols-3 gap-2">
+            <Link href="/deposer" className="flex flex-col items-center gap-1 sm:gap-1.5 py-2.5 sm:py-3 rounded-xl sm:rounded-2xl bg-white/15 backdrop-blur-sm hover:bg-white/25 transition-all active:scale-95">
+              <ArrowDownToLine className="w-4 h-4 sm:w-5 sm:h-5" />
+              <span className="text-[10px] sm:text-[11px] font-bold">Déposer</span>
             </Link>
-            <Link href="/envoyer" className="flex flex-col items-center gap-1.5 py-3 rounded-2xl bg-white/15 backdrop-blur-sm hover:bg-white/25 transition-all active:scale-95">
-              <SendHorizonal className="w-5 h-5" />
-              <span className="text-[11px] font-bold">Envoyer</span>
+            <Link href="/envoyer" className="flex flex-col items-center gap-1 sm:gap-1.5 py-2.5 sm:py-3 rounded-xl sm:rounded-2xl bg-white/15 backdrop-blur-sm hover:bg-white/25 transition-all active:scale-95">
+              <SendHorizonal className="w-4 h-4 sm:w-5 sm:h-5" />
+              <span className="text-[10px] sm:text-[11px] font-bold">Envoyer</span>
             </Link>
-            <Link href="/portefeuille" className="flex flex-col items-center gap-1.5 py-3 rounded-2xl bg-white/15 backdrop-blur-sm hover:bg-white/25 transition-all active:scale-95">
-              <History className="w-5 h-5" />
-              <span className="text-[11px] font-bold">Historique</span>
+            <Link href="/portefeuille" className="flex flex-col items-center gap-1 sm:gap-1.5 py-2.5 sm:py-3 rounded-xl sm:rounded-2xl bg-white/15 backdrop-blur-sm hover:bg-white/25 transition-all active:scale-95">
+              <History className="w-4 h-4 sm:w-5 sm:h-5" />
+              <span className="text-[10px] sm:text-[11px] font-bold">Historique</span>
             </Link>
           </div>
         </div>
@@ -177,7 +177,7 @@ export default function DashboardPage() {
       {/* ── Services Grid ── */}
       <div>
         <p className="text-xs font-bold text-white/20 uppercase tracking-widest mb-3 px-1">Services</p>
-        <div className="grid grid-cols-4 gap-3">
+        <div className="grid grid-cols-4 gap-2 sm:gap-3">
           {[
             { icon: ArrowDownToLine, label: "Dépôt", href: "/deposer", gradient: "from-emerald-500 to-emerald-600" },
             { icon: SendHorizonal, label: "Envoi", href: "/envoyer", gradient: "from-cyan-500 to-cyan-600" },
@@ -187,21 +187,21 @@ export default function DashboardPage() {
             <Link
               key={i}
               href={svc.href}
-              className="flex flex-col items-center gap-2 py-3 rounded-2xl bg-white/[0.03] border border-white/[0.05] hover:bg-white/[0.06] transition-all active:scale-95"
+              className="flex flex-col items-center gap-1.5 sm:gap-2 py-2.5 sm:py-3 rounded-xl sm:rounded-2xl bg-white/[0.03] border border-white/[0.05] hover:bg-white/[0.06] transition-all active:scale-95"
             >
-              <div className={`w-11 h-11 rounded-2xl bg-gradient-to-br ${svc.gradient} flex items-center justify-center shadow-lg`}>
-                <svc.icon className="w-5 h-5 text-white" />
+              <div className={`w-9 h-9 sm:w-11 sm:h-11 rounded-xl sm:rounded-2xl bg-gradient-to-br ${svc.gradient} flex items-center justify-center shadow-lg`}>
+                <svc.icon className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
               </div>
-              <span className="text-[11px] font-semibold text-white/50">{svc.label}</span>
+              <span className="text-[10px] sm:text-[11px] font-semibold text-white/50">{svc.label}</span>
             </Link>
           ))}
         </div>
       </div>
 
       {/* ── Promo Banner ── */}
-      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-violet-600/20 to-cyan-600/20 border border-violet-500/10 p-4 flex items-center gap-3">
-        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-violet-500 to-cyan-500 flex items-center justify-center shrink-0">
-          <Sparkles className="w-5 h-5 text-white" />
+      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-violet-600/20 to-cyan-600/20 border border-violet-500/10 p-3.5 sm:p-4 flex items-center gap-3">
+        <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-gradient-to-br from-violet-500 to-cyan-500 flex items-center justify-center shrink-0">
+          <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
         </div>
         <div className="flex-1 min-w-0">
           <p className="text-sm font-bold text-white">Transferts gratuits</p>
@@ -225,8 +225,8 @@ export default function DashboardPage() {
 
         {activity.length === 0 ? (
           <div className="rounded-2xl bg-white/[0.02] border border-white/[0.05] p-8 text-center">
-            <div className="w-14 h-14 rounded-2xl bg-white/[0.03] flex items-center justify-center mx-auto mb-3">
-              <Wallet className="w-7 h-7 text-white/10" />
+            <div className="w-11 h-11 sm:w-14 sm:h-14 rounded-2xl bg-white/[0.03] flex items-center justify-center mx-auto mb-3">
+              <Wallet className="w-5 h-5 sm:w-7 sm:h-7 text-white/10" />
             </div>
             <p className="text-white/50 font-bold text-sm mb-1">Aucune activité</p>
             <p className="text-white/20 text-xs mb-4">Commencez par ajouter de l&apos;argent.</p>
@@ -239,12 +239,12 @@ export default function DashboardPage() {
           <div className="rounded-2xl bg-white/[0.02] border border-white/[0.05] overflow-hidden divide-y divide-white/[0.04]">
             {activity.map((item) => (
               <div key={item.id} className="flex items-center gap-3 p-4 hover:bg-white/[0.02] transition-colors active:bg-white/[0.04]">
-                <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${
+                <div className={`w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl flex items-center justify-center shrink-0 ${
                   item.isCredit ? "bg-emerald-500/15" : "bg-white/[0.05]"
                 }`}>
                   {item.isCredit
-                    ? <ArrowDownLeft className="w-4 h-4 text-emerald-400" />
-                    : <ArrowUpRight className="w-4 h-4 text-white/30" />
+                    ? <ArrowDownLeft className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-emerald-400" />
+                    : <ArrowUpRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-white/30" />
                   }
                 </div>
                 <div className="flex-1 min-w-0">

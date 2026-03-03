@@ -136,8 +136,8 @@ export default function EnvoyerPage() {
       {step === "search" && (
         <div className="rounded-2xl bg-white/[0.02] border border-white/[0.05] p-5 space-y-4">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-cyan-500/10 flex items-center justify-center">
-              <Search className="w-5 h-5 text-cyan-400" />
+            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-cyan-500/10 flex items-center justify-center">
+              <Search className="w-4 h-4 sm:w-5 sm:h-5 text-cyan-400" />
             </div>
             <div>
               <h3 className="text-sm font-bold text-white">Choisir un destinataire</h3>
@@ -166,13 +166,13 @@ export default function EnvoyerPage() {
           {!searching && searchResults.length > 0 && (
             <div className="space-y-1 max-h-64 overflow-y-auto">
               {searchResults.map((u) => (
-                <button
+                  <button
                   key={u.id}
                   onClick={() => selectUser(u)}
                   className="flex items-center gap-3 w-full p-3 rounded-xl hover:bg-white/[0.04] transition-colors text-left active:bg-white/[0.06]"
                 >
-                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-emerald-400 to-cyan-500 flex items-center justify-center shrink-0">
-                    <span className="text-white text-[10px] font-black uppercase">{u.prenom[0]}{u.nom[0]}</span>
+                  <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-gradient-to-br from-emerald-400 to-cyan-500 flex items-center justify-center shrink-0">
+                    <span className="text-white text-[9px] sm:text-[10px] font-black uppercase">{u.prenom[0]}{u.nom[0]}</span>
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-bold text-white/80">{u.prenom} {u.nom}</p>
@@ -198,8 +198,8 @@ export default function EnvoyerPage() {
         <div className="rounded-2xl bg-white/[0.02] border border-white/[0.05] p-5 space-y-5">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-emerald-400 to-cyan-500 flex items-center justify-center">
-                <span className="text-white text-[10px] font-black uppercase">{selectedUser.prenom[0]}{selectedUser.nom[0]}</span>
+              <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-gradient-to-br from-emerald-400 to-cyan-500 flex items-center justify-center">
+                <span className="text-white text-[9px] sm:text-[10px] font-black uppercase">{selectedUser.prenom[0]}{selectedUser.nom[0]}</span>
               </div>
               <div>
                 <p className="text-sm font-bold text-white/80">{selectedUser.prenom} {selectedUser.nom}</p>
@@ -211,8 +211,8 @@ export default function EnvoyerPage() {
             </button>
           </div>
 
-          <div className="rounded-2xl bg-white/[0.03] border border-white/[0.05] p-6">
-            <p className="text-[10px] font-bold text-white/20 uppercase tracking-wider text-center mb-4">Montant</p>
+          <div className="rounded-2xl bg-white/[0.03] border border-white/[0.05] p-4 sm:p-6">
+            <p className="text-[10px] font-bold text-white/20 uppercase tracking-wider text-center mb-3 sm:mb-4">Montant</p>
             <input
               type="number"
               min="1"
@@ -220,7 +220,7 @@ export default function EnvoyerPage() {
               value={amount}
               onChange={(e) => setAmount(e.target.value)}
               placeholder="0"
-              className="w-full bg-transparent text-5xl font-black text-white placeholder-white/10 focus:outline-none text-center tabular-nums [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+              className="w-full bg-transparent text-3xl sm:text-5xl font-black text-white placeholder-white/10 focus:outline-none text-center tabular-nums [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
               autoFocus
             />
             <p className="text-center text-[11px] text-white/20 mt-2">EUR</p>
@@ -269,10 +269,10 @@ export default function EnvoyerPage() {
       {/* ── Step 3: Confirm ── */}
       {step === "confirm" && selectedUser && (
         <div className="rounded-2xl bg-white/[0.02] border border-white/[0.05] p-5 space-y-5">
-          <div className="rounded-2xl bg-white/[0.03] border border-white/[0.05] p-6 text-center">
+          <div className="rounded-2xl bg-white/[0.03] border border-white/[0.05] p-4 sm:p-6 text-center">
             <p className="text-[10px] font-bold text-white/20 uppercase tracking-wider mb-2">Vous envoyez</p>
-            <p className="text-4xl font-black text-white tracking-tight mb-4">
-              {parseFloat(amount).toFixed(2)} <span className="text-xl text-white/20">€</span>
+            <p className="text-2xl sm:text-4xl font-black text-white tracking-tight mb-3 sm:mb-4">
+              {parseFloat(amount).toFixed(2)} <span className="text-base sm:text-xl text-white/20">€</span>
             </p>
             <div className="flex items-center justify-center gap-2">
               <span className="text-sm text-white/30">à</span>
@@ -316,11 +316,11 @@ export default function EnvoyerPage() {
 
       {/* ── Step 4: Success ── */}
       {step === "success" && result && (
-        <div className="rounded-2xl bg-white/[0.02] border border-white/[0.05] p-5 text-center py-10">
-          <div className="w-20 h-20 bg-emerald-500/15 rounded-3xl flex items-center justify-center mx-auto mb-6">
-            <CheckCircle2 className="w-10 h-10 text-emerald-400" />
+        <div className="rounded-2xl bg-white/[0.02] border border-white/[0.05] p-5 text-center py-8 sm:py-10">
+          <div className="w-16 h-16 sm:w-20 sm:h-20 bg-emerald-500/15 rounded-2xl sm:rounded-3xl flex items-center justify-center mx-auto mb-5 sm:mb-6">
+            <CheckCircle2 className="w-8 h-8 sm:w-10 sm:h-10 text-emerald-400" />
           </div>
-          <h3 className="text-2xl font-black text-white mb-2">Envoyé !</h3>
+          <h3 className="text-xl sm:text-2xl font-black text-white mb-2">Envoyé !</h3>
           <p className="text-base text-white/40 mb-2">
             <span className="text-white font-bold">{result.montant.toFixed(2)} €</span> envoyé à <span className="text-white font-bold">{result.destinataire}</span>
           </p>

@@ -234,16 +234,16 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 <Link
                   key={tab.href}
                   href={tab.href}
-                  className={`flex flex-col items-center justify-center gap-0.5 w-16 py-1 rounded-xl transition-all duration-200 ${
+                  className={`flex flex-col items-center justify-center gap-0.5 w-14 sm:w-16 py-1 rounded-xl transition-all duration-200 ${
                     isActive
                       ? "text-emerald-400"
                       : "text-white/30 hover:text-white/50"
                   }`}
                 >
-                  <div className={`p-1.5 rounded-xl transition-colors ${isActive ? "bg-emerald-500/15" : ""}`}>
-                    <tab.icon className={`w-5 h-5 ${isActive ? "text-emerald-400" : ""}`} />
+                  <div className={`p-1 sm:p-1.5 rounded-lg sm:rounded-xl transition-colors ${isActive ? "bg-emerald-500/15" : ""}`}>
+                    <tab.icon className={`w-[18px] h-[18px] sm:w-5 sm:h-5 ${isActive ? "text-emerald-400" : ""}`} />
                   </div>
-                  <span className={`text-[10px] font-semibold ${isActive ? "text-emerald-400" : ""}`}>{tab.label}</span>
+                  <span className={`text-[9px] sm:text-[10px] font-semibold ${isActive ? "text-emerald-400" : ""}`}>{tab.label}</span>
                 </Link>
               );
             })}
