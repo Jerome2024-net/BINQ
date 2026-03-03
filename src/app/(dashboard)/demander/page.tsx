@@ -25,7 +25,9 @@ import {
   X,
   Share2,
   MessageSquare,
+  QrCode,
 } from "lucide-react";
+import { QRCodeSVG } from "qrcode.react";
 
 interface PaymentLink {
   id: string;
@@ -382,6 +384,8 @@ function LinkCard({
   const status = statusConfig[link.statut] || statusConfig.actif;
   const StatusIcon = status.icon;
   const isActive = link.statut === "actif";
+  const [showQR, setShowQR] = useState(false);
+  const linkUrl = typeof window !== "undefined" ? `${window.location.origin}/pay/${link.code}` : `/pay/${link.code}`;
 
   return (
     <div className="rounded-2xl bg-white/[0.03] border border-white/[0.06] p-4 space-y-3">
@@ -444,6 +448,16 @@ function LinkCard({
             )}
           </button>
           <button
+            onClick={() => setShowQR(!showQR)}
+            className={`flex items-center justify-center w-10 h-10 rounded-xl transition-all active:scale-95 ${
+              showQR
+                ? "bg-emerald-500/20 text-emerald-400"
+                : "bg-white/[0.05] hover:bg-white/[0.08] text-white/40"
+            }`}
+          >
+            <QrCode className="w-4 h-4" />
+          </button>
+          <button
             onClick={() => onShare(link)}
             className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-400 text-xs font-bold transition-all active:scale-95"
           >
@@ -464,12 +478,29 @@ function LinkCard({
         </div>
       )}
 
+      {/* QR Code */}
+      {isActive && showQR && (
+        <div className="flex flex-col items-center py-3 animate-in fade-in slide-in-from-top-2 duration-200">
+          <div className="bg-white rounded-xl p-3 mb-2">
+            <QRCodeSVG
+              value={linkUrl}
+              size={160}
+              bgColor="#FFFFFF"
+              fgColor="#0a0a0a"
+              level="H"
+              includeMargin={false}
+            />
+          </div>
+          <p className="text-[10px] text-white/20">Scannez pour payer</p>
+        </div>
+      )}
+
       {/* Link preview for active links */}
       {isActive && (
         <div className="flex items-center gap-2 bg-white/[0.02] rounded-lg px-3 py-2 border border-white/[0.04]">
           <ExternalLink className="w-3.5 h-3.5 text-white/15 shrink-0" />
           <p className="text-[11px] text-white/25 font-mono truncate">
-            {typeof window !== "undefined" ? `${window.location.origin}/pay/${link.code}` : `/pay/${link.code}`}
+            {linkUrl}
           </p>
         </div>
       )}
