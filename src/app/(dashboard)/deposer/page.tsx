@@ -17,7 +17,6 @@ import {
 
 const stripePromise = getStripe();
 
-// ─── Payment Form (inside Elements) ───
 function PaymentForm({
   montant,
   frais,
@@ -57,7 +56,6 @@ function PaymentForm({
       }
 
       if (paymentIntent && paymentIntent.status === "succeeded") {
-        // Confirm deposit on backend
         const res = await fetch("/api/wallet/deposit-confirm", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -80,58 +78,51 @@ function PaymentForm({
 
   return (
     <form onSubmit={handleSubmit} className="space-y-5">
-      {/* Summary */}
-      <div className="bg-gray-50 rounded-2xl p-5 border border-gray-100 space-y-2.5">
+      <div className="rounded-2xl bg-white/[0.03] border border-white/[0.05] p-5 space-y-2.5">
         <div className="flex justify-between text-sm">
-          <span className="text-gray-500">Montant à créditer</span>
-          <span className="text-gray-900 font-bold">{montant.toFixed(2)} €</span>
+          <span className="text-white/30">Montant crédité</span>
+          <span className="text-white font-bold">{montant.toFixed(2)} €</span>
         </div>
         <div className="flex justify-between text-sm">
-          <span className="text-gray-500">Frais (1%)</span>
-          <span className="text-gray-600">{frais.toFixed(2)} €</span>
+          <span className="text-white/30">Frais (1%)</span>
+          <span className="text-white/50">{frais.toFixed(2)} €</span>
         </div>
-        <div className="border-t border-gray-200 pt-2 flex justify-between text-sm font-bold">
-          <span className="text-gray-900">Total facturé</span>
-          <span className="text-gray-900">{total.toFixed(2)} €</span>
+        <div className="border-t border-white/[0.05] pt-2 flex justify-between text-sm font-bold">
+          <span className="text-white/60">Total facturé</span>
+          <span className="text-white">{total.toFixed(2)} €</span>
         </div>
       </div>
 
-      {/* Stripe Payment Element */}
-      <div className="rounded-2xl border border-gray-200 p-4">
-        <PaymentElement
-          options={{
-            layout: "tabs",
-          }}
-        />
+      <div className="rounded-2xl bg-[#1a1a1a] border border-white/[0.08] p-4">
+        <PaymentElement options={{ layout: "tabs" }} />
       </div>
 
-      <div className="flex items-center gap-2 px-1 text-xs text-gray-400">
+      <div className="flex items-center gap-2 px-1 text-[11px] text-white/20">
         <ShieldCheck className="w-3.5 h-3.5 shrink-0" />
-        <span>Paiement sécurisé par Stripe. Vos données sont chiffrées.</span>
+        <span>Paiement sécurisé par Stripe. Données chiffrées.</span>
       </div>
 
       <div className="flex gap-3">
         <button
           type="button"
           onClick={onBack}
-          className="flex-[1] py-4 rounded-xl border border-gray-200 text-gray-600 font-bold hover:bg-gray-50 transition-colors text-sm"
+          className="flex-[1] py-4 rounded-xl border border-white/[0.08] text-white/40 font-bold hover:bg-white/[0.04] transition-colors text-sm active:scale-[0.98]"
         >
           Retour
         </button>
         <button
           type="submit"
           disabled={!stripe || paying}
-          className="flex-[2] py-4 rounded-xl bg-gray-900 text-white font-bold hover:bg-gray-800 transition-all disabled:opacity-50 flex items-center justify-center gap-2 text-sm"
+          className="flex-[2] py-4 rounded-xl bg-emerald-500 text-white font-bold hover:bg-emerald-400 transition-all disabled:opacity-50 flex items-center justify-center gap-2 text-sm active:scale-[0.98]"
         >
           {paying ? <Loader2 className="w-5 h-5 animate-spin" /> : <CreditCard className="w-4 h-4" />}
-          {paying ? "Paiement en cours..." : `Payer ${total.toFixed(2)} €`}
+          {paying ? "Paiement..." : `Payer ${total.toFixed(2)} €`}
         </button>
       </div>
     </form>
   );
 }
 
-// ─── Main Page ───
 export default function DeposerPage() {
   const { user } = useAuth();
   const { showToast } = useToast();
@@ -204,164 +195,163 @@ export default function DeposerPage() {
   };
 
   return (
-    <div className="max-w-lg mx-auto space-y-5 sm:space-y-6 pb-12">
+    <div className="space-y-5 pb-8">
 
       <div>
-        <h1 className="text-xl sm:text-2xl font-bold text-gray-900 tracking-tight">
-          Ajouter de l&apos;<span className="text-amber-600">argent</span>
+        <h1 className="text-xl font-black tracking-tight">
+          Ajouter de l&apos;<span className="text-emerald-400">argent</span>
         </h1>
-        <p className="text-gray-500 text-sm mt-1">Alimentez votre portefeuille Binq par carte bancaire.</p>
+        <p className="text-white/30 text-sm mt-0.5">Alimentez votre portefeuille par carte.</p>
       </div>
 
       {/* Solde banner */}
-      <div className="flex items-center gap-3 px-4 py-3 rounded-xl bg-gray-50 border border-gray-100">
-        <Wallet className="w-4 h-4 text-gray-400 shrink-0" />
-        <p className="text-sm text-gray-600">
-          Solde actuel : <span className="font-bold text-gray-900">{solde.toLocaleString("fr-FR", { minimumFractionDigits: 2 })} €</span>
+      <div className="flex items-center gap-3 px-4 py-3 rounded-xl bg-white/[0.03] border border-white/[0.05]">
+        <Wallet className="w-4 h-4 text-white/20 shrink-0" />
+        <p className="text-sm text-white/40">
+          Solde actuel : <span className="font-bold text-white">{solde.toLocaleString("fr-FR", { minimumFractionDigits: 2 })} €</span>
         </p>
       </div>
 
-      <div className="bg-white border border-gray-200/80 rounded-2xl sm:rounded-3xl overflow-hidden shadow-sm">
-
-        {/* ── Step 1: Amount ── */}
-        {step === "amount" && (
-          <div className="p-5 sm:p-6 space-y-6">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-amber-50 border border-amber-100 flex items-center justify-center">
-                <ArrowDownToLine className="w-5 h-5 text-amber-500" />
-              </div>
-              <div>
-                <h3 className="text-base font-bold text-gray-900">Montant du dépôt</h3>
-                <p className="text-xs text-gray-400">Choisissez combien ajouter</p>
-              </div>
+      {/* ── Step 1: Amount ── */}
+      {step === "amount" && (
+        <div className="rounded-2xl bg-white/[0.02] border border-white/[0.05] p-5 space-y-5">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-emerald-500/10 flex items-center justify-center">
+              <ArrowDownToLine className="w-5 h-5 text-emerald-400" />
             </div>
-
-            <div className="bg-gray-50 rounded-2xl p-6 border border-gray-100">
-              <p className="text-xs font-bold text-gray-400 uppercase tracking-wider text-center mb-4">Montant à créditer</p>
-              <input
-                type="number"
-                min="1"
-                step="0.01"
-                value={amount}
-                onChange={(e) => setAmount(e.target.value)}
-                placeholder="0"
-                className="w-full bg-transparent text-5xl font-black text-gray-900 placeholder-gray-200 focus:outline-none text-center tabular-nums [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                autoFocus
-              />
-              <p className="text-center text-xs text-gray-400 mt-2">EUR</p>
-            </div>
-
-            {/* Quick amounts */}
-            <div className="grid grid-cols-4 gap-2">
-              {[10, 50, 100, 500].map((amt) => (
-                <button
-                  key={amt}
-                  onClick={() => setAmount(amt.toString())}
-                  className={`py-3 rounded-xl border text-sm font-bold transition-all ${
-                    amount === amt.toString()
-                      ? "border-amber-500 bg-amber-50 text-amber-600"
-                      : "border-gray-200 text-gray-500 hover:bg-gray-50"
-                  }`}
-                >
-                  {amt} €
-                </button>
-              ))}
-            </div>
-
-            {/* Fee info */}
-            {montant > 0 && (
-              <div className="bg-amber-50/70 border border-amber-100 rounded-xl p-4 space-y-1.5 text-sm">
-                <div className="flex justify-between">
-                  <span className="text-gray-600">Montant crédité</span>
-                  <span className="font-bold text-gray-900">{montant.toFixed(2)} €</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-600">Frais (1%)</span>
-                  <span className="text-gray-600">{fraisCalc.toFixed(2)} €</span>
-                </div>
-                <div className="border-t border-amber-200/60 pt-1.5 flex justify-between font-bold">
-                  <span className="text-gray-900">Total facturé</span>
-                  <span className="text-gray-900">{totalCalc.toFixed(2)} €</span>
-                </div>
-              </div>
-            )}
-
-            <button
-              onClick={handleContinue}
-              disabled={montant < 1 || loading}
-              className="w-full py-4 rounded-xl bg-gray-900 text-white font-bold hover:bg-gray-800 transition-all disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-            >
-              {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <CreditCard className="w-4 h-4" />}
-              {loading ? "Préparation..." : "Passer au paiement"}
-            </button>
-
-            <div className="flex items-start gap-2.5 text-xs text-gray-400 px-1">
-              <Info className="w-3.5 h-3.5 shrink-0 mt-0.5" />
-              <span>Des frais de 1% s&apos;appliquent à chaque dépôt. Les transferts entre utilisateurs Binq sont gratuits.</span>
+            <div>
+              <h3 className="text-sm font-bold text-white">Montant du dépôt</h3>
+              <p className="text-[11px] text-white/25">Choisissez combien ajouter</p>
             </div>
           </div>
-        )}
 
-        {/* ── Step 2: Stripe Payment ── */}
-        {step === "payment" && clientSecret && paymentIntentId && (
-          <div className="p-5 sm:p-6">
-            <Elements
-              stripe={stripePromise}
-              options={{
-                clientSecret,
-                appearance: {
-                  theme: "stripe",
-                  variables: {
-                    colorPrimary: "#f59e0b",
-                    colorBackground: "#ffffff",
-                    fontFamily: "system-ui, sans-serif",
-                    borderRadius: "12px",
-                  },
-                },
-              }}
-            >
-              <PaymentForm
-                montant={montant}
-                frais={frais}
-                total={total}
-                paymentIntentId={paymentIntentId}
-                onSuccess={handleSuccess}
-                onBack={() => setStep("amount")}
-              />
-            </Elements>
+          <div className="rounded-2xl bg-white/[0.03] border border-white/[0.05] p-6">
+            <p className="text-[10px] font-bold text-white/20 uppercase tracking-wider text-center mb-4">Montant à créditer</p>
+            <input
+              type="number"
+              min="1"
+              step="0.01"
+              value={amount}
+              onChange={(e) => setAmount(e.target.value)}
+              placeholder="0"
+              className="w-full bg-transparent text-5xl font-black text-white placeholder-white/10 focus:outline-none text-center tabular-nums [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+              autoFocus
+            />
+            <p className="text-center text-[11px] text-white/20 mt-2">EUR</p>
           </div>
-        )}
 
-        {/* ── Step 3: Success ── */}
-        {step === "success" && result && (
-          <div className="p-5 sm:p-6 text-center py-10">
-            <div className="w-20 h-20 bg-green-50 border border-green-100 rounded-3xl flex items-center justify-center mx-auto mb-6">
-              <CheckCircle2 className="w-10 h-10 text-green-500" />
-            </div>
-            <h3 className="text-2xl font-black text-gray-900 mb-2">Dépôt confirmé !</h3>
-            <p className="text-base text-gray-500 mb-2">
-              <span className="text-gray-900 font-bold">{result.montant.toFixed(2)} €</span> ont été crédités sur votre portefeuille
-            </p>
-            {result.solde > 0 && (
-              <p className="text-sm text-gray-400">
-                Nouveau solde : <span className="font-bold text-gray-600">{result.solde.toFixed(2)} €</span>
-              </p>
-            )}
-            <div className="bg-gray-50 border border-gray-100 rounded-2xl py-3 px-5 inline-block mt-4 mb-8">
-              <p className="text-[10px] text-gray-400 uppercase tracking-wider font-bold">Référence</p>
-              <p className="font-mono text-sm text-gray-600 break-all">{result.reference}</p>
-            </div>
-            <div className="flex gap-3">
-              <button onClick={reset} className="flex-1 py-4 rounded-xl border border-gray-200 text-gray-600 font-bold hover:bg-gray-50 transition-colors text-sm">
-                Nouveau dépôt
+          {/* Quick amounts */}
+          <div className="grid grid-cols-4 gap-2">
+            {[10, 50, 100, 500].map((amt) => (
+              <button
+                key={amt}
+                onClick={() => setAmount(amt.toString())}
+                className={`py-3 rounded-xl border text-sm font-bold transition-all active:scale-95 ${
+                  amount === amt.toString()
+                    ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-400"
+                    : "border-white/[0.06] text-white/30 bg-white/[0.02] hover:bg-white/[0.04]"
+                }`}
+              >
+                {amt} €
               </button>
-              <a href="/portefeuille" className="flex-1 py-4 rounded-xl bg-gray-900 text-white font-bold hover:bg-gray-800 transition-colors text-sm text-center">
-                Mon portefeuille
-              </a>
-            </div>
+            ))}
           </div>
-        )}
-      </div>
+
+          {/* Fee breakdown */}
+          {montant > 0 && (
+            <div className="rounded-xl bg-emerald-500/5 border border-emerald-500/10 p-4 space-y-1.5 text-sm">
+              <div className="flex justify-between">
+                <span className="text-white/40">Crédité</span>
+                <span className="font-bold text-white">{montant.toFixed(2)} €</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-white/40">Frais (1%)</span>
+                <span className="text-white/50">{fraisCalc.toFixed(2)} €</span>
+              </div>
+              <div className="border-t border-emerald-500/10 pt-1.5 flex justify-between font-bold">
+                <span className="text-white/60">Total facturé</span>
+                <span className="text-white">{totalCalc.toFixed(2)} €</span>
+              </div>
+            </div>
+          )}
+
+          <button
+            onClick={handleContinue}
+            disabled={montant < 1 || loading}
+            className="w-full py-4 rounded-xl bg-emerald-500 text-white font-bold hover:bg-emerald-400 transition-all disabled:opacity-30 disabled:cursor-not-allowed flex items-center justify-center gap-2 active:scale-[0.98]"
+          >
+            {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <CreditCard className="w-4 h-4" />}
+            {loading ? "Préparation..." : "Passer au paiement"}
+          </button>
+
+          <div className="flex items-start gap-2.5 text-[11px] text-white/20 px-1">
+            <Info className="w-3.5 h-3.5 shrink-0 mt-0.5" />
+            <span>Frais de 1% par dépôt. Transferts entre utilisateurs Binq gratuits.</span>
+          </div>
+        </div>
+      )}
+
+      {/* ── Step 2: Stripe Payment ── */}
+      {step === "payment" && clientSecret && paymentIntentId && (
+        <div className="rounded-2xl bg-white/[0.02] border border-white/[0.05] p-5">
+          <Elements
+            stripe={stripePromise}
+            options={{
+              clientSecret,
+              appearance: {
+                theme: "night",
+                variables: {
+                  colorPrimary: "#10b981",
+                  colorBackground: "#1a1a1a",
+                  colorText: "#ffffff",
+                  colorTextSecondary: "#ffffff80",
+                  fontFamily: "system-ui, sans-serif",
+                  borderRadius: "12px",
+                },
+              },
+            }}
+          >
+            <PaymentForm
+              montant={montant}
+              frais={frais}
+              total={total}
+              paymentIntentId={paymentIntentId}
+              onSuccess={handleSuccess}
+              onBack={() => setStep("amount")}
+            />
+          </Elements>
+        </div>
+      )}
+
+      {/* ── Step 3: Success ── */}
+      {step === "success" && result && (
+        <div className="rounded-2xl bg-white/[0.02] border border-white/[0.05] p-5 text-center py-10">
+          <div className="w-20 h-20 bg-emerald-500/15 rounded-3xl flex items-center justify-center mx-auto mb-6">
+            <CheckCircle2 className="w-10 h-10 text-emerald-400" />
+          </div>
+          <h3 className="text-2xl font-black text-white mb-2">Dépôt confirmé !</h3>
+          <p className="text-base text-white/40 mb-2">
+            <span className="text-white font-bold">{result.montant.toFixed(2)} €</span> crédités
+          </p>
+          {result.solde > 0 && (
+            <p className="text-sm text-white/25">
+              Nouveau solde : <span className="font-bold text-emerald-400">{result.solde.toFixed(2)} €</span>
+            </p>
+          )}
+          <div className="bg-white/[0.03] border border-white/[0.05] rounded-2xl py-3 px-5 inline-block mt-4 mb-8">
+            <p className="text-[10px] text-white/20 uppercase tracking-wider font-bold">Référence</p>
+            <p className="font-mono text-sm text-white/40 break-all">{result.reference}</p>
+          </div>
+          <div className="flex gap-3">
+            <button onClick={reset} className="flex-1 py-4 rounded-xl border border-white/[0.08] text-white/40 font-bold hover:bg-white/[0.04] transition-colors text-sm active:scale-[0.98]">
+              Nouveau dépôt
+            </button>
+            <a href="/portefeuille" className="flex-1 py-4 rounded-xl bg-emerald-500 text-white font-bold hover:bg-emerald-400 transition-colors text-sm text-center active:scale-[0.98]">
+              Historique
+            </a>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
