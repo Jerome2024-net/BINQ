@@ -5,7 +5,7 @@ import { useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/contexts/ToastContext";
-import { Mail, Lock, ArrowRight, Eye, EyeOff, Loader2, ShieldCheck, Zap, Smartphone } from "lucide-react";
+import { Mail, Lock, ArrowRight, Eye, EyeOff, Loader2, ShieldCheck, Zap, Smartphone, Star } from "lucide-react";
 
 function ConnexionForm() {
   const router = useRouter();
@@ -50,8 +50,8 @@ function ConnexionForm() {
 
         <div className="relative max-w-md z-10 w-full">
           <Link href="/" className="inline-flex items-center gap-3 group mb-12">
-            <div className="w-10 h-10 bg-gradient-to-br from-emerald-400 to-cyan-500 rounded-xl flex items-center justify-center shadow-lg shadow-emerald-500/20">
-              <span className="text-white font-black text-lg">B</span>
+            <div className="w-10 h-10 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-xl flex items-center justify-center shadow-lg shadow-emerald-500/25">
+              <Star className="w-5 h-5 text-white fill-white" />
             </div>
             <span className="font-black text-2xl tracking-tight text-white group-hover:text-emerald-400 transition-colors">Binq</span>
           </Link>
@@ -89,8 +89,8 @@ function ConnexionForm() {
 
           {/* Mobile Logo */}
           <Link href="/" className="lg:hidden flex items-center justify-center gap-3 group mb-10">
-            <div className="w-10 h-10 bg-gradient-to-br from-emerald-400 to-cyan-500 rounded-xl flex items-center justify-center shadow-lg shadow-emerald-500/20">
-              <span className="text-white font-black text-lg">B</span>
+            <div className="w-10 h-10 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-xl flex items-center justify-center shadow-lg shadow-emerald-500/25">
+              <Star className="w-5 h-5 text-white fill-white" />
             </div>
             <span className="font-black text-2xl tracking-tight text-white">Binq</span>
           </Link>

@@ -28,8 +28,8 @@ export default function HomePage() {
       <header className="fixed top-0 inset-x-0 z-50 bg-[#0a0a0a]/80 backdrop-blur-2xl border-b border-white/[0.06]">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2 sm:gap-2.5 group">
-            <div className="w-8 h-8 sm:w-9 sm:h-9 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-xl sm:rounded-2xl flex items-center justify-center shadow-lg shadow-emerald-500/20">
-              <Wallet className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
+            <div className="w-8 h-8 sm:w-9 sm:h-9 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-xl sm:rounded-2xl flex items-center justify-center shadow-lg shadow-emerald-500/25">
+              <Star className="w-4 h-4 sm:w-5 sm:h-5 text-white fill-white" />
             </div>
             <span className="font-black text-lg sm:text-xl tracking-tight">Binq</span>
           </Link>
@@ -319,7 +319,7 @@ export default function HomePage() {
 
             <div className="relative z-10 p-6 sm:p-16 text-center">
               <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-2xl sm:rounded-3xl bg-white/20 backdrop-blur-sm flex items-center justify-center mx-auto mb-4 sm:mb-6 shadow-2xl">
-                <Wallet className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
+                <Star className="w-6 h-6 sm:w-8 sm:h-8 text-white fill-white" />
               </div>
               <h2 className="text-2xl sm:text-4xl lg:text-5xl font-black text-white tracking-tight mb-4">
                 Pr&ecirc;t &agrave; commencer ?

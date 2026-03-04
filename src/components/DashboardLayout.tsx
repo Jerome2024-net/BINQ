@@ -18,6 +18,7 @@ import {
   User,
   X,
   ChevronDown,
+  Star,
 } from "lucide-react";
 
 interface Notification {
@@ -135,8 +136,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           <div className="flex items-center justify-between px-4 sm:px-6 h-14 max-w-2xl mx-auto">
             {/* Left: Logo */}
             <Link href="/dashboard" className="flex items-center gap-2">
-              <div className="w-8 h-8 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-xl flex items-center justify-center">
-                <Wallet className="w-4 h-4 text-white" />
+              <div className="w-8 h-8 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-xl flex items-center justify-center shadow-lg shadow-emerald-500/25">
+                <Star className="w-4 h-4 text-white fill-white" />
               </div>
               <span className="font-black text-base tracking-tight">Binq</span>
             </Link>
