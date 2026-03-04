@@ -342,7 +342,7 @@ export default function HomePage() {
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
             <div className="flex items-center gap-2.5">
               <div className="w-8 h-8 rounded-xl bg-emerald-500/10 flex items-center justify-center">
-                <Wallet className="w-4 h-4 text-emerald-400" />
+                <Star className="w-4 h-4 text-emerald-400 fill-emerald-400" />
               </div>
               <span className="font-bold text-white/80 tracking-tight">Binq</span>
             </div>
