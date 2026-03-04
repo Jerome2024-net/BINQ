@@ -204,6 +204,10 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                       <p className="text-sm font-bold">{user?.prenom} {user?.nom}</p>
                       <p className="text-[11px] text-white/30 truncate">{user?.email}</p>
                     </div>
+                    <Link href="/profil" onClick={() => setProfileOpen(false)} className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-white/60 hover:bg-white/[0.06] hover:text-white transition-colors">
+                      <User className="w-4 h-4" />
+                      Mon Profil
+                    </Link>
                     <Link href="/parametres" onClick={() => setProfileOpen(false)} className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-white/60 hover:bg-white/[0.06] hover:text-white transition-colors">
                       <Settings className="w-4 h-4" />
                       Param&egrave;tres
