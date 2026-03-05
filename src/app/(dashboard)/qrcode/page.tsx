@@ -382,17 +382,17 @@ export default function QRCodePage() {
     <div className="space-y-5 pb-28">
       {/* Header */}
       <div>
-        <h1 className="text-xl font-black text-white tracking-tight">QR Code</h1>
-        <p className="text-xs text-white/30 mt-0.5">Affichez, scannez ou encaissez par QR</p>
+        <h1 className="text-xl font-black text-white tracking-tight">Paiements QR</h1>
+        <p className="text-xs text-white/30 mt-0.5">Recevoir, scanner ou encaisser</p>
       </div>
 
       {/* Tabs */}
       <div className="flex gap-1 bg-white/[0.03] rounded-xl p-1 border border-white/[0.06]">
         {([
-          { key: "mon-qr" as Tab, icon: QrCode, label: "Mon QR" },
+          { key: "mon-qr" as Tab, icon: ArrowDownLeft, label: "Recevoir" },
           { key: "scanner" as Tab, icon: ScanLine, label: "Scanner" },
           { key: "encaisser" as Tab, icon: CreditCard, label: "Encaisser" },
-          { key: "terminaux" as Tab, icon: Store, label: "Terminaux" },
+          { key: "terminaux" as Tab, icon: Store, label: "Terminal" },
         ]).map((t) => (
           <button
             key={t.key}
@@ -409,64 +409,95 @@ export default function QRCodePage() {
         ))}
       </div>
 
-      {/* ═════════════════════ */}
-      {/* ══ MON QR TAB ═════ */}
-      {/* ═════════════════════ */}
+      {/* ═════════════════════════ */}
+      {/* ══ RECEVOIR TAB ══════════ */}
+      {/* ═════════════════════════ */}
       {tab === "mon-qr" && (
-        <div className="space-y-4 animate-in fade-in duration-200">
-          <div className="rounded-2xl bg-white/[0.03] border border-white/[0.06] p-6 flex flex-col items-center">
-            <div className="flex items-center gap-3 mb-5">
+        <div className="space-y-3 animate-in fade-in duration-200">
+          {/* Identity Card */}
+          <div className="rounded-2xl bg-gradient-to-br from-emerald-500/10 via-white/[0.03] to-white/[0.02] border border-emerald-500/15 p-4">
+            <div className="flex items-center gap-3">
               {user?.avatar ? (
-                <img src={user.avatar} alt={user.prenom} className="w-10 h-10 rounded-full object-cover ring-2 ring-emerald-500/30" />
+                <img src={user.avatar} alt={user.prenom} className="w-14 h-14 rounded-2xl object-cover ring-2 ring-emerald-500/30 shadow-lg shadow-emerald-500/10" />
               ) : (
-                <div className="w-10 h-10 rounded-full bg-emerald-600/30 flex items-center justify-center ring-2 ring-emerald-500/30">
-                  <span className="text-sm font-bold text-emerald-300">{initials}</span>
+                <div className="w-14 h-14 rounded-2xl bg-emerald-600/30 flex items-center justify-center ring-2 ring-emerald-500/30 shadow-lg shadow-emerald-500/10">
+                  <span className="text-lg font-black text-emerald-300">{initials}</span>
                 </div>
               )}
-              <div>
-                <p className="text-sm font-bold text-white">{user?.prenom} {user?.nom}</p>
-                <p className="text-[11px] text-white/30">Scannez pour m&apos;envoyer de l&apos;argent</p>
+              <div className="flex-1 min-w-0">
+                <p className="text-base font-black text-white truncate">{user?.prenom} {user?.nom}</p>
+                <div className="flex items-center gap-1.5 mt-0.5">
+                  <div className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                  <p className="text-[11px] text-emerald-400/70 font-semibold">Identifiant de paiement Binq</p>
+                </div>
               </div>
             </div>
+          </div>
 
-            <div className="bg-white rounded-2xl p-4 mb-5">
-              {payUrl ? (
-                <QRCodeSVG id="personal-qr-code" value={payUrl} size={220} bgColor="#FFFFFF" fgColor="#0a0a0a" level="H" includeMargin={false} />
-              ) : (
-                <div className="w-[220px] h-[220px] flex items-center justify-center">
-                  <Loader2 className="w-8 h-8 text-gray-400 animate-spin" />
+          {/* QR Code compact */}
+          <div className="rounded-2xl bg-white/[0.03] border border-white/[0.06] p-4">
+            <div className="flex items-start gap-4">
+              <div className="bg-white rounded-xl p-2.5 shrink-0">
+                {payUrl ? (
+                  <QRCodeSVG id="personal-qr-code" value={payUrl} size={130} bgColor="#FFFFFF" fgColor="#0a0a0a" level="H" includeMargin={false} />
+                ) : (
+                  <div className="w-[130px] h-[130px] flex items-center justify-center">
+                    <Loader2 className="w-6 h-6 text-gray-400 animate-spin" />
+                  </div>
+                )}
+              </div>
+              <div className="flex-1 min-w-0 py-1">
+                <p className="text-xs font-bold text-white/60 mb-2">Montrez ce QR pour recevoir de l&apos;argent</p>
+                <div className="space-y-1.5">
+                  <button onClick={handleShare} className="w-full flex items-center justify-center gap-1.5 py-2 rounded-lg bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-400 text-xs font-bold transition-all active:scale-95">
+                    <Share2 className="w-3.5 h-3.5" />Partager
+                  </button>
+                  <button onClick={handleCopy} className="w-full flex items-center justify-center gap-1.5 py-2 rounded-lg bg-white/[0.05] hover:bg-white/[0.08] text-white/60 text-xs font-bold transition-all active:scale-95">
+                    {copied ? (<><Check className="w-3.5 h-3.5 text-emerald-400" /><span className="text-emerald-400">Copié !</span></>) : (<><Copy className="w-3.5 h-3.5" />Copier le lien</>)}
+                  </button>
+                  <button onClick={handleDownload} className="w-full flex items-center justify-center gap-1.5 py-2 rounded-lg bg-white/[0.05] hover:bg-white/[0.08] text-white/40 text-xs font-bold transition-all active:scale-95">
+                    <Download className="w-3.5 h-3.5" />Télécharger
+                  </button>
                 </div>
-              )}
-            </div>
-
-            <p className="text-xs text-white/20 mb-4 text-center">Montrez ce QR Code pour recevoir un paiement instantané</p>
-
-            <div className="flex items-center gap-2 w-full">
-              <button onClick={handleCopy} className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl bg-white/[0.05] hover:bg-white/[0.08] text-white/60 text-xs font-bold transition-all active:scale-95">
-                {copied ? (<><Check className="w-3.5 h-3.5 text-emerald-400" /><span className="text-emerald-400">Copié !</span></>) : (<><Copy className="w-3.5 h-3.5" />Copier</>)}
-              </button>
-              <button onClick={handleShare} className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-400 text-xs font-bold transition-all active:scale-95">
-                <Share2 className="w-3.5 h-3.5" />Partager
-              </button>
-              <button onClick={handleDownload} className="flex items-center justify-center w-10 h-10 rounded-xl bg-white/[0.05] hover:bg-white/[0.08] text-white/40 transition-all active:scale-95">
-                <Download className="w-4 h-4" />
-              </button>
+              </div>
             </div>
           </div>
 
-          <div className="flex items-center gap-2 bg-white/[0.02] rounded-xl px-3 py-2.5 border border-white/[0.04]">
+          {/* Link preview */}
+          <div className="flex items-center gap-2 bg-white/[0.02] rounded-xl px-3 py-2 border border-white/[0.04]">
             <QrCode className="w-3.5 h-3.5 text-white/15 shrink-0" />
-            <p className="text-[11px] text-white/25 font-mono truncate">{payUrl}</p>
+            <p className="text-[10px] text-white/25 font-mono truncate">{payUrl}</p>
           </div>
 
-          <div className="rounded-2xl bg-emerald-500/5 border border-emerald-500/10 p-4">
-            <p className="text-xs text-emerald-400/80 font-semibold mb-1">Comment ça marche ?</p>
-            <ul className="text-[11px] text-white/30 space-y-1">
-              <li>• Montrez votre QR Code à la personne qui veut vous payer</li>
-              <li>• Elle scanne avec son app Binq ou sa caméra</li>
-              <li>• Elle choisit le montant et valide l&apos;envoi</li>
-              <li>• L&apos;argent arrive instantanément sur votre portefeuille</li>
-            </ul>
+          {/* How it works */}
+          <div className="rounded-2xl bg-emerald-500/5 border border-emerald-500/10 p-3">
+            <p className="text-[11px] text-emerald-400/80 font-semibold mb-1">Comment ça marche ?</p>
+            <div className="grid grid-cols-2 gap-2">
+              <div className="flex items-start gap-2">
+                <div className="w-5 h-5 rounded-md bg-emerald-500/15 flex items-center justify-center shrink-0 mt-0.5">
+                  <span className="text-[9px] font-black text-emerald-400">1</span>
+                </div>
+                <p className="text-[10px] text-white/30">Montrez votre QR ou partagez le lien</p>
+              </div>
+              <div className="flex items-start gap-2">
+                <div className="w-5 h-5 rounded-md bg-emerald-500/15 flex items-center justify-center shrink-0 mt-0.5">
+                  <span className="text-[9px] font-black text-emerald-400">2</span>
+                </div>
+                <p className="text-[10px] text-white/30">L&apos;envoyeur scanne avec Binq</p>
+              </div>
+              <div className="flex items-start gap-2">
+                <div className="w-5 h-5 rounded-md bg-emerald-500/15 flex items-center justify-center shrink-0 mt-0.5">
+                  <span className="text-[9px] font-black text-emerald-400">3</span>
+                </div>
+                <p className="text-[10px] text-white/30">Il choisit le montant et valide</p>
+              </div>
+              <div className="flex items-start gap-2">
+                <div className="w-5 h-5 rounded-md bg-emerald-500/15 flex items-center justify-center shrink-0 mt-0.5">
+                  <span className="text-[9px] font-black text-emerald-400">4</span>
+                </div>
+                <p className="text-[10px] text-white/30">Argent reçu instantanément</p>
+              </div>
+            </div>
           </div>
         </div>
       )}
