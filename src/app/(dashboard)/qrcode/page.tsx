@@ -677,7 +677,7 @@ export default function QRCodePage() {
 
           {/* Explainer */}
           <div className="rounded-xl bg-emerald-500/10 border border-emerald-500/20 px-4 py-3">
-            <p className="text-xs text-white/50"><span className="text-emerald-400 font-semibold">QR réutilisables</span> — Créez des QR permanents que vos clients peuvent scanner à tout moment pour vous payer.</p>
+            <p className="text-xs text-white/50"><span className="text-emerald-400 font-semibold">QR réutilisables</span> — Vos clients scannent et paient, sans limite d&apos;utilisation.</p>
           </div>
 
           {/* Stats */}
