@@ -663,14 +663,8 @@ export default function QRCodePage() {
             </div>
           )}
 
-          <div className="rounded-2xl bg-emerald-500/5 border border-emerald-500/10 p-4">
-            <p className="text-xs text-emerald-400/80 font-semibold mb-1">Mode caisse</p>
-            <ul className="text-[11px] text-white/30 space-y-1">
-              <li>• Saisissez le montant de chaque vente</li>
-              <li>• Un QR Code unique est généré pour cette transaction</li>
-              <li>• Le client scanne et paie depuis son app Binq</li>
-              <li>• Vous recevez la confirmation en temps réel</li>
-            </ul>
+          <div className="rounded-xl bg-emerald-500/5 border border-emerald-500/10 px-3 py-2.5">
+            <p className="text-[11px] text-white/30"><span className="text-emerald-400/70 font-semibold">Encaissement instantané</span> — Le client scanne, paie, vous êtes notifié en temps réel.</p>
           </div>
         </div>
       )}
