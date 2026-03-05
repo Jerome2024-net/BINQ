@@ -675,6 +675,11 @@ export default function QRCodePage() {
       {tab === "terminaux" && (
         <div className="space-y-4 animate-in fade-in duration-200">
 
+          {/* Explainer */}
+          <div className="rounded-xl bg-emerald-500/10 border border-emerald-500/20 px-4 py-3">
+            <p className="text-xs text-white/50"><span className="text-emerald-400 font-semibold">QR réutilisables</span> — Créez des QR permanents que vos clients peuvent scanner à tout moment pour vous payer.</p>
+          </div>
+
           {/* Stats */}
           <div className="grid grid-cols-3 gap-2">
             <div className="rounded-xl bg-white/[0.03] border border-white/[0.06] p-3 text-center">
