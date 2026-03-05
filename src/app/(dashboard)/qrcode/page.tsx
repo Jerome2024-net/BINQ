@@ -15,9 +15,37 @@ import {
   Camera,
   XCircle,
   Loader2,
+  CreditCard,
+  Store,
+  Plus,
+  Trash2,
+  CheckCircle2,
+  RefreshCw,
+  Banknote,
+  ArrowDownLeft,
+  BarChart3,
 } from "lucide-react";
+import { type DeviseCode, DEVISES, DEFAULT_DEVISE, formatMontant, DEVISE_LIST } from "@/lib/currencies";
 
-type Tab = "mon-qr" | "scanner";
+type Tab = "mon-qr" | "scanner" | "encaisser" | "terminaux";
+
+interface Terminal {
+  id: string;
+  code: string;
+  montant: number | null;
+  devise: string;
+  description: string;
+  usage_unique: boolean;
+  created_at: string;
+}
+
+interface Stats {
+  totalTerminals: number;
+  totalReceived: number;
+  paymentsCount: number;
+}
+
+type PosStep = "amount" | "waiting" | "success";
 
 export default function QRCodePage() {
   const { user } = useAuth();
@@ -29,6 +57,33 @@ export default function QRCodePage() {
   const scannerRef = useRef<HTMLDivElement>(null);
   const html5QrScannerRef = useRef<unknown>(null);
 
+  // ── Merchant state ──
+  const [devise, setDevise] = useState<DeviseCode>(() => {
+    if (typeof window !== "undefined") {
+      return (localStorage.getItem("binq_devise") as DeviseCode) || DEFAULT_DEVISE;
+    }
+    return DEFAULT_DEVISE;
+  });
+  const [posStep, setPosStep] = useState<PosStep>("amount");
+  const [posMontant, setPosMontant] = useState("");
+  const [posCode, setPosCode] = useState("");
+  const [posLoading, setPosLoading] = useState(false);
+  const [posPayer, setPosPayer] = useState<string | null>(null);
+  const pollingRef = useRef<NodeJS.Timeout | null>(null);
+
+  const [terminals, setTerminals] = useState<Terminal[]>([]);
+  const [stats, setStats] = useState<Stats>({ totalTerminals: 0, totalReceived: 0, paymentsCount: 0 });
+  const [loadingTerminals, setLoadingTerminals] = useState(true);
+  const [showCreatePerm, setShowCreatePerm] = useState(false);
+  const [permType, setPermType] = useState<"libre" | "fixe">("libre");
+  const [permMontant, setPermMontant] = useState("");
+  const [permDesc, setPermDesc] = useState("");
+  const [creatingPerm, setCreatingPerm] = useState(false);
+  const [copiedCode, setCopiedCode] = useState<string | null>(null);
+  const [expandedQR, setExpandedQR] = useState<string | null>(null);
+
+  const origin = typeof window !== "undefined" ? window.location.origin : "";
+
   const payUrl = typeof window !== "undefined" && user?.id
     ? `${window.location.origin}/pay/user/${user.id}`
     : "";
@@ -37,6 +92,7 @@ export default function QRCodePage() {
     ? `${(user.prenom || "?")[0]}${(user.nom || "?")[0]}`.toUpperCase()
     : "??";
 
+  // ── Personal QR handlers ──
   const handleCopy = async () => {
     if (!payUrl) return;
     try {
@@ -77,8 +133,6 @@ export default function QRCodePage() {
         ctx.fillStyle = "#0a0a0a";
         ctx.fillRect(0, 0, 1024, 1024);
         ctx.drawImage(img, 112, 112, 800, 800);
-
-        // Add label
         ctx.fillStyle = "#ffffff";
         ctx.font = "bold 36px system-ui, sans-serif";
         ctx.textAlign = "center";
@@ -100,19 +154,13 @@ export default function QRCodePage() {
   // ── QR Scanner ──
   const startScanner = useCallback(async () => {
     if (!scannerRef.current) return;
-
     setScanError(null);
     setScanning(true);
 
     try {
-      // Dynamic import to avoid SSR issues
       const { Html5Qrcode } = await import("html5-qrcode");
-
-      // Clean up previous instance
       if (html5QrScannerRef.current) {
-        try {
-          await (html5QrScannerRef.current as InstanceType<typeof Html5Qrcode>).stop();
-        } catch { /* ignore */ }
+        try { await (html5QrScannerRef.current as InstanceType<typeof Html5Qrcode>).stop(); } catch { /* ignore */ }
       }
 
       const scanner = new Html5Qrcode("qr-reader");
@@ -120,38 +168,23 @@ export default function QRCodePage() {
 
       await scanner.start(
         { facingMode: "environment" },
-        {
-          fps: 10,
-          qrbox: { width: 250, height: 250 },
-        },
+        { fps: 10, qrbox: { width: 250, height: 250 } },
         (decodedText: string) => {
-          // QR code detected
           scanner.stop().catch(() => {});
           setScanning(false);
-
-          // Check if it's a Binq URL
           try {
             const url = new URL(decodedText);
             const pathname = url.pathname;
-
-            // /pay/user/UUID  or /pay/CODE
             if (pathname.startsWith("/pay/user/") || pathname.startsWith("/pay/")) {
               router.push(pathname);
               return;
             }
           } catch {
-            // Not a URL, try as raw path
-            if (decodedText.startsWith("/pay/")) {
-              router.push(decodedText);
-              return;
-            }
+            if (decodedText.startsWith("/pay/")) { router.push(decodedText); return; }
           }
-
           setScanError("QR Code non reconnu. Scannez un QR Code Binq.");
         },
-        () => {
-          // Scan failure — ignore, keep scanning
-        }
+        () => {}
       );
     } catch (err) {
       setScanning(false);
@@ -162,78 +195,229 @@ export default function QRCodePage() {
 
   const stopScanner = useCallback(async () => {
     if (html5QrScannerRef.current) {
-      try {
-        await (html5QrScannerRef.current as { stop: () => Promise<void> }).stop();
-      } catch { /* ignore */ }
+      try { await (html5QrScannerRef.current as { stop: () => Promise<void> }).stop(); } catch { /* ignore */ }
       html5QrScannerRef.current = null;
     }
     setScanning(false);
   }, []);
 
-  // Cleanup scanner on unmount or tab switch
   useEffect(() => {
     return () => {
       if (html5QrScannerRef.current) {
-        try {
-          (html5QrScannerRef.current as { stop: () => Promise<void> }).stop();
-        } catch { /* ignore */ }
+        try { (html5QrScannerRef.current as { stop: () => Promise<void> }).stop(); } catch { /* ignore */ }
       }
     };
   }, []);
 
   useEffect(() => {
-    if (tab !== "scanner") {
-      stopScanner();
-    }
+    if (tab !== "scanner") stopScanner();
   }, [tab, stopScanner]);
 
+  // ── Merchant: Fetch terminals ──
+  const fetchTerminals = useCallback(async () => {
+    try {
+      const res = await fetch("/api/merchant");
+      const data = await res.json();
+      if (data.terminals) setTerminals(data.terminals);
+      if (data.stats) setStats(data.stats);
+    } catch { /* ignore */ }
+    finally { setLoadingTerminals(false); }
+  }, []);
+
+  useEffect(() => {
+    if (user) fetchTerminals();
+  }, [user, fetchTerminals]);
+
+  useEffect(() => {
+    return () => { if (pollingRef.current) clearInterval(pollingRef.current); };
+  }, []);
+
+  // ── POS: Generate ──
+  const handleGeneratePOS = async () => {
+    const montant = parseFloat(posMontant);
+    if (!montant || montant <= 0) return;
+    if (montant < DEVISES[devise].minTransfer) return;
+
+    setPosLoading(true);
+    try {
+      const res = await fetch("/api/merchant", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ montant, devise, description: "Vente terminal", terminal: true }),
+      });
+      const data = await res.json();
+      if (data.terminal) {
+        setPosCode(data.terminal.code);
+        setPosStep("waiting");
+        startPolling(data.terminal.code);
+      }
+    } catch { /* ignore */ }
+    finally { setPosLoading(false); }
+  };
+
+  const startPolling = (code: string) => {
+    if (pollingRef.current) clearInterval(pollingRef.current);
+    pollingRef.current = setInterval(async () => {
+      try {
+        const res = await fetch(`/api/merchant/status?code=${code}`);
+        const data = await res.json();
+        if (data.statut === "paye") {
+          if (pollingRef.current) clearInterval(pollingRef.current);
+          setPosPayer(data.paye_par || "Client");
+          setPosStep("success");
+        }
+      } catch { /* ignore */ }
+    }, 3000);
+  };
+
+  const handleCancelPOS = async () => {
+    if (pollingRef.current) clearInterval(pollingRef.current);
+    if (posCode) {
+      try {
+        const res = await fetch("/api/merchant");
+        const data = await res.json();
+        const t = (data.terminals || []).find((t: Terminal) => t.code === posCode);
+        if (t) await fetch(`/api/merchant?id=${t.id}`, { method: "DELETE" });
+      } catch { /* ignore */ }
+    }
+    resetPOS();
+  };
+
+  const resetPOS = () => {
+    setPosStep("amount");
+    setPosMontant("");
+    setPosCode("");
+    setPosPayer(null);
+    if (pollingRef.current) clearInterval(pollingRef.current);
+  };
+
+  // ── Permanent: Create ──
+  const handleCreatePermanent = async () => {
+    if (permType === "fixe") {
+      const m = parseFloat(permMontant);
+      if (!m || m <= 0) return;
+    }
+    setCreatingPerm(true);
+    try {
+      const res = await fetch("/api/merchant", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          montant: permType === "fixe" ? parseFloat(permMontant) : null,
+          devise,
+          description: permDesc || (permType === "libre" ? "Terminal libre" : `Terminal ${permMontant} ${DEVISES[devise].symbol}`),
+          qrType: permType,
+          terminal: false,
+        }),
+      });
+      const data = await res.json();
+      if (data.terminal) {
+        await fetchTerminals();
+        setShowCreatePerm(false);
+        setPermMontant("");
+        setPermDesc("");
+      }
+    } catch { /* ignore */ }
+    finally { setCreatingPerm(false); }
+  };
+
+  const handleDeleteTerminal = async (id: string) => {
+    try {
+      await fetch(`/api/merchant?id=${id}`, { method: "DELETE" });
+      setTerminals((prev) => prev.filter((t) => t.id !== id));
+    } catch { /* ignore */ }
+  };
+
+  // ── Terminal Copy / Share / Download ──
+  const handleCopyTerminal = async (code: string) => {
+    const url = `${origin}/pay/${code}`;
+    try {
+      await navigator.clipboard.writeText(url);
+      setCopiedCode(code);
+      setTimeout(() => setCopiedCode(null), 2000);
+    } catch { /* ignore */ }
+  };
+
+  const handleShareTerminal = async (code: string, desc: string) => {
+    const url = `${origin}/pay/${code}`;
+    if (navigator.share) {
+      try { await navigator.share({ title: `Payer - ${desc}`, text: `Scannez pour payer via Binq`, url }); } catch { /* user cancelled */ }
+    } else {
+      handleCopyTerminal(code);
+    }
+  };
+
+  const handleDownloadQR = (code: string, desc: string) => {
+    const svg = document.getElementById(`qr-${code}`);
+    if (!svg) return;
+    const svgData = new XMLSerializer().serializeToString(svg);
+    const canvas = document.createElement("canvas");
+    const ctx = canvas.getContext("2d");
+    const img = new Image();
+    img.onload = () => {
+      canvas.width = 1024;
+      canvas.height = 1024;
+      if (ctx) {
+        ctx.fillStyle = "#0a0a0a";
+        ctx.fillRect(0, 0, 1024, 1024);
+        ctx.drawImage(img, 112, 112, 800, 800);
+        ctx.fillStyle = "#10b981";
+        ctx.font = "bold 36px system-ui, sans-serif";
+        ctx.textAlign = "center";
+        ctx.fillText(desc, 512, 980);
+        ctx.font = "24px system-ui, sans-serif";
+        ctx.fillText("Binq Pay", 512, 60);
+      }
+      const link = document.createElement("a");
+      link.download = `binq-terminal-${code}.png`;
+      link.href = canvas.toDataURL("image/png");
+      link.click();
+    };
+    img.src = "data:image/svg+xml;base64," + btoa(unescape(encodeURIComponent(svgData)));
+  };
+
+  const posPayUrl = posCode ? `${origin}/pay/${posCode}` : "";
+
   return (
-    <div className="space-y-6 pb-28">
+    <div className="space-y-5 pb-28">
       {/* Header */}
       <div>
         <h1 className="text-xl font-black text-white tracking-tight">QR Code</h1>
-        <p className="text-xs text-white/30 mt-0.5">Affichez votre QR ou scannez pour payer</p>
+        <p className="text-xs text-white/30 mt-0.5">Affichez, scannez ou encaissez par QR</p>
       </div>
 
       {/* Tabs */}
-      <div className="flex gap-2 bg-white/[0.03] rounded-xl p-1 border border-white/[0.06]">
-        <button
-          onClick={() => setTab("mon-qr")}
-          className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg text-sm font-bold transition-all ${
-            tab === "mon-qr"
-              ? "bg-emerald-500/20 text-emerald-400"
-              : "text-white/40 hover:text-white/60"
-          }`}
-        >
-          <QrCode className="w-4 h-4" />
-          Mon QR
-        </button>
-        <button
-          onClick={() => setTab("scanner")}
-          className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg text-sm font-bold transition-all ${
-            tab === "scanner"
-              ? "bg-emerald-500/20 text-emerald-400"
-              : "text-white/40 hover:text-white/60"
-          }`}
-        >
-          <ScanLine className="w-4 h-4" />
-          Scanner
-        </button>
+      <div className="flex gap-1 bg-white/[0.03] rounded-xl p-1 border border-white/[0.06]">
+        {([
+          { key: "mon-qr" as Tab, icon: QrCode, label: "Mon QR" },
+          { key: "scanner" as Tab, icon: ScanLine, label: "Scanner" },
+          { key: "encaisser" as Tab, icon: CreditCard, label: "Encaisser" },
+          { key: "terminaux" as Tab, icon: Store, label: "Terminaux" },
+        ]).map((t) => (
+          <button
+            key={t.key}
+            onClick={() => setTab(t.key)}
+            className={`flex-1 flex items-center justify-center gap-1 py-2.5 rounded-lg text-[11px] font-bold transition-all ${
+              tab === t.key
+                ? "bg-emerald-500/20 text-emerald-400"
+                : "text-white/40 hover:text-white/60"
+            }`}
+          >
+            <t.icon className="w-3.5 h-3.5" />
+            {t.label}
+          </button>
+        ))}
       </div>
 
-      {/* ── Mon QR Tab ── */}
+      {/* ═════════════════════ */}
+      {/* ══ MON QR TAB ═════ */}
+      {/* ═════════════════════ */}
       {tab === "mon-qr" && (
         <div className="space-y-4 animate-in fade-in duration-200">
-          {/* QR Card */}
           <div className="rounded-2xl bg-white/[0.03] border border-white/[0.06] p-6 flex flex-col items-center">
-            {/* User info */}
             <div className="flex items-center gap-3 mb-5">
               {user?.avatar ? (
-                <img
-                  src={user.avatar}
-                  alt={user.prenom}
-                  className="w-10 h-10 rounded-full object-cover ring-2 ring-emerald-500/30"
-                />
+                <img src={user.avatar} alt={user.prenom} className="w-10 h-10 rounded-full object-cover ring-2 ring-emerald-500/30" />
               ) : (
                 <div className="w-10 h-10 rounded-full bg-emerald-600/30 flex items-center justify-center ring-2 ring-emerald-500/30">
                   <span className="text-sm font-bold text-emerald-300">{initials}</span>
@@ -245,18 +429,9 @@ export default function QRCodePage() {
               </div>
             </div>
 
-            {/* QR Code */}
             <div className="bg-white rounded-2xl p-4 mb-5">
               {payUrl ? (
-                <QRCodeSVG
-                  id="personal-qr-code"
-                  value={payUrl}
-                  size={220}
-                  bgColor="#FFFFFF"
-                  fgColor="#0a0a0a"
-                  level="H"
-                  includeMargin={false}
-                />
+                <QRCodeSVG id="personal-qr-code" value={payUrl} size={220} bgColor="#FFFFFF" fgColor="#0a0a0a" level="H" includeMargin={false} />
               ) : (
                 <div className="w-[220px] h-[220px] flex items-center justify-center">
                   <Loader2 className="w-8 h-8 text-gray-400 animate-spin" />
@@ -264,52 +439,26 @@ export default function QRCodePage() {
               )}
             </div>
 
-            {/* Label */}
-            <p className="text-xs text-white/20 mb-4 text-center">
-              Montrez ce QR Code pour recevoir un paiement instantané
-            </p>
+            <p className="text-xs text-white/20 mb-4 text-center">Montrez ce QR Code pour recevoir un paiement instantané</p>
 
-            {/* Actions */}
             <div className="flex items-center gap-2 w-full">
-              <button
-                onClick={handleCopy}
-                className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl bg-white/[0.05] hover:bg-white/[0.08] text-white/60 text-xs font-bold transition-all active:scale-95"
-              >
-                {copied ? (
-                  <>
-                    <Check className="w-3.5 h-3.5 text-emerald-400" />
-                    <span className="text-emerald-400">Copié !</span>
-                  </>
-                ) : (
-                  <>
-                    <Copy className="w-3.5 h-3.5" />
-                    Copier
-                  </>
-                )}
+              <button onClick={handleCopy} className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl bg-white/[0.05] hover:bg-white/[0.08] text-white/60 text-xs font-bold transition-all active:scale-95">
+                {copied ? (<><Check className="w-3.5 h-3.5 text-emerald-400" /><span className="text-emerald-400">Copié !</span></>) : (<><Copy className="w-3.5 h-3.5" />Copier</>)}
               </button>
-              <button
-                onClick={handleShare}
-                className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-400 text-xs font-bold transition-all active:scale-95"
-              >
-                <Share2 className="w-3.5 h-3.5" />
-                Partager
+              <button onClick={handleShare} className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-400 text-xs font-bold transition-all active:scale-95">
+                <Share2 className="w-3.5 h-3.5" />Partager
               </button>
-              <button
-                onClick={handleDownload}
-                className="flex items-center justify-center w-10 h-10 rounded-xl bg-white/[0.05] hover:bg-white/[0.08] text-white/40 transition-all active:scale-95"
-              >
+              <button onClick={handleDownload} className="flex items-center justify-center w-10 h-10 rounded-xl bg-white/[0.05] hover:bg-white/[0.08] text-white/40 transition-all active:scale-95">
                 <Download className="w-4 h-4" />
               </button>
             </div>
           </div>
 
-          {/* Link preview */}
           <div className="flex items-center gap-2 bg-white/[0.02] rounded-xl px-3 py-2.5 border border-white/[0.04]">
             <QrCode className="w-3.5 h-3.5 text-white/15 shrink-0" />
             <p className="text-[11px] text-white/25 font-mono truncate">{payUrl}</p>
           </div>
 
-          {/* Info */}
           <div className="rounded-2xl bg-emerald-500/5 border border-emerald-500/10 p-4">
             <p className="text-xs text-emerald-400/80 font-semibold mb-1">Comment ça marche ?</p>
             <ul className="text-[11px] text-white/30 space-y-1">
@@ -322,67 +471,47 @@ export default function QRCodePage() {
         </div>
       )}
 
-      {/* ── Scanner Tab ── */}
+      {/* ═════════════════════ */}
+      {/* ══ SCANNER TAB ════ */}
+      {/* ═════════════════════ */}
       {tab === "scanner" && (
         <div className="space-y-4 animate-in fade-in duration-200">
-          {/* Scanner area */}
           <div className="rounded-2xl bg-white/[0.03] border border-white/[0.06] overflow-hidden">
             <div ref={scannerRef} className="relative">
               <div id="qr-reader" className="w-full" />
-
               {!scanning && !scanError && (
                 <div className="flex flex-col items-center justify-center py-16 px-4">
                   <div className="w-20 h-20 rounded-2xl bg-white/[0.03] flex items-center justify-center mb-4">
                     <Camera className="w-10 h-10 text-white/15" />
                   </div>
                   <p className="text-white/50 font-bold text-sm mb-1">Scanner un QR Code</p>
-                  <p className="text-white/20 text-xs text-center mb-5">
-                    Pointez la caméra vers un QR Code Binq pour payer
-                  </p>
-                  <button
-                    onClick={startScanner}
-                    className="flex items-center gap-2 px-6 py-3 rounded-xl bg-emerald-500 text-white font-bold hover:bg-emerald-400 transition-all active:scale-95"
-                  >
-                    <ScanLine className="w-5 h-5" />
-                    Démarrer le scan
+                  <p className="text-white/20 text-xs text-center mb-5">Pointez la caméra vers un QR Code Binq pour payer</p>
+                  <button onClick={startScanner} className="flex items-center gap-2 px-6 py-3 rounded-xl bg-emerald-500 text-white font-bold hover:bg-emerald-400 transition-all active:scale-95">
+                    <ScanLine className="w-5 h-5" />Démarrer le scan
                   </button>
                 </div>
               )}
-
               {scanning && (
                 <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4">
                   <div className="flex items-center justify-between">
                     <p className="text-xs text-white/60 font-semibold flex items-center gap-1.5">
-                      <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                      <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse inline-block" />
                       Scan en cours...
                     </p>
-                    <button
-                      onClick={stopScanner}
-                      className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-white/10 text-white/60 text-xs font-bold hover:bg-white/20 transition"
-                    >
-                      <XCircle className="w-3.5 h-3.5" />
-                      Arrêter
+                    <button onClick={stopScanner} className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-white/10 text-white/60 text-xs font-bold hover:bg-white/20 transition">
+                      <XCircle className="w-3.5 h-3.5" />Arrêter
                     </button>
                   </div>
                 </div>
               )}
             </div>
           </div>
-
-          {/* Scan error */}
           {scanError && (
             <div className="rounded-2xl bg-red-500/10 border border-red-500/20 p-4 text-center">
               <p className="text-sm text-red-400 font-semibold mb-2">{scanError}</p>
-              <button
-                onClick={startScanner}
-                className="text-xs text-emerald-400 font-bold hover:text-emerald-300 transition"
-              >
-                Réessayer
-              </button>
+              <button onClick={startScanner} className="text-xs text-emerald-400 font-bold hover:text-emerald-300 transition">Réessayer</button>
             </div>
           )}
-
-          {/* Info */}
           <div className="rounded-2xl bg-white/[0.02] border border-white/[0.04] p-4">
             <p className="text-xs text-white/30 font-semibold mb-1">QR Codes supportés</p>
             <ul className="text-[11px] text-white/20 space-y-1">
@@ -390,6 +519,254 @@ export default function QRCodePage() {
               <li>• QR Code terminal marchand</li>
               <li>• Lien de paiement (Demande d&apos;argent)</li>
               <li>• Lien d&apos;envoi via QR</li>
+            </ul>
+          </div>
+        </div>
+      )}
+
+      {/* ══════════════════════════════════ */}
+      {/* ══ ENCAISSER TAB (POS) ══════════ */}
+      {/* ══════════════════════════════════ */}
+      {tab === "encaisser" && (
+        <div className="space-y-4 animate-in fade-in duration-200">
+
+          {posStep === "amount" && (
+            <div className="rounded-2xl bg-white/[0.03] border border-white/[0.06] p-6">
+              <div className="text-center mb-5">
+                <div className="w-14 h-14 rounded-2xl bg-emerald-500/15 flex items-center justify-center mx-auto mb-3">
+                  <Banknote className="w-7 h-7 text-emerald-400" />
+                </div>
+                <p className="text-sm font-bold text-white">Montant à encaisser</p>
+                <p className="text-[11px] text-white/30 mt-0.5">Saisissez le montant de la vente</p>
+              </div>
+
+              <div className="flex items-center justify-center mb-4">
+                <div className="flex items-center bg-white/[0.05] rounded-lg overflow-hidden">
+                  {DEVISE_LIST.map((d) => (
+                    <button key={d} onClick={() => setDevise(d)} className={`px-3 py-1.5 text-xs font-bold transition-all ${devise === d ? "bg-emerald-500/30 text-emerald-400" : "text-white/30 hover:text-white/50"}`}>
+                      {DEVISES[d].flag} {d}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="relative mb-5">
+                <input
+                  type="number"
+                  min={DEVISES[devise].minTransfer}
+                  step={DEVISES[devise].decimals === 0 ? "1" : "0.01"}
+                  placeholder={DEVISES[devise].decimals === 0 ? "5 000" : "10.00"}
+                  value={posMontant}
+                  onChange={(e) => setPosMontant(e.target.value)}
+                  className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl px-4 py-4 text-3xl font-black text-white text-center outline-none focus:border-emerald-500/50 transition-colors [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                />
+                <span className="absolute right-4 top-1/2 -translate-y-1/2 text-white/20 text-sm font-bold">{DEVISES[devise].symbol}</span>
+              </div>
+
+              <div className="grid grid-cols-4 gap-2 mb-5">
+                {(devise === "XOF" ? [500, 1000, 2500, 5000] : [5, 10, 25, 50]).map((amt) => (
+                  <button key={amt} onClick={() => setPosMontant(String(amt))} className="py-2 rounded-lg bg-white/[0.04] hover:bg-white/[0.08] text-white/50 text-xs font-bold transition-all active:scale-95">
+                    {amt.toLocaleString("fr-FR")}
+                  </button>
+                ))}
+              </div>
+
+              <button
+                onClick={handleGeneratePOS}
+                disabled={posLoading || !posMontant || parseFloat(posMontant) <= 0}
+                className="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-white font-bold transition-all active:scale-[0.98] disabled:opacity-40 disabled:cursor-not-allowed"
+              >
+                {posLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : <QrCode className="w-5 h-5" />}
+                {posLoading ? "Génération..." : "Générer le QR Code"}
+              </button>
+            </div>
+          )}
+
+          {posStep === "waiting" && (
+            <div className="rounded-2xl bg-white/[0.03] border border-white/[0.06] p-6">
+              <div className="text-center mb-4">
+                <p className="text-sm font-bold text-white mb-1">
+                  Montant : <span className="text-emerald-400">{formatMontant(parseFloat(posMontant), devise)}</span>
+                </p>
+                <p className="text-[11px] text-white/30">Le client doit scanner ce QR Code pour payer</p>
+              </div>
+              <div className="flex justify-center mb-5">
+                <div className="bg-white rounded-2xl p-4">
+                  {posPayUrl ? (
+                    <QRCodeSVG id={`qr-pos-${posCode}`} value={posPayUrl} size={220} bgColor="#FFFFFF" fgColor="#0a0a0a" level="H" includeMargin={false} />
+                  ) : (
+                    <div className="w-[220px] h-[220px] flex items-center justify-center"><Loader2 className="w-8 h-8 text-gray-400 animate-spin" /></div>
+                  )}
+                </div>
+              </div>
+              <div className="flex items-center justify-center gap-2 mb-5">
+                <div className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
+                <p className="text-sm text-white/50 font-semibold">En attente de paiement...</p>
+              </div>
+              <div className="flex items-center gap-2 bg-white/[0.02] rounded-xl px-3 py-2.5 border border-white/[0.04] mb-4">
+                <QrCode className="w-3.5 h-3.5 text-white/15 shrink-0" />
+                <p className="text-[11px] text-white/25 font-mono truncate">{posPayUrl}</p>
+              </div>
+              <button onClick={handleCancelPOS} className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-white/[0.05] hover:bg-white/[0.08] text-white/50 font-bold text-sm transition-all active:scale-[0.98]">
+                <XCircle className="w-4 h-4" />Annuler cette vente
+              </button>
+            </div>
+          )}
+
+          {posStep === "success" && (
+            <div className="rounded-2xl bg-emerald-500/10 border border-emerald-500/20 p-6 text-center">
+              <div className="w-20 h-20 rounded-full bg-emerald-500/20 flex items-center justify-center mx-auto mb-4">
+                <CheckCircle2 className="w-10 h-10 text-emerald-400" />
+              </div>
+              <h2 className="text-xl font-black text-white mb-1">Paiement reçu !</h2>
+              <p className="text-3xl font-black text-emerald-400 mb-2">{formatMontant(parseFloat(posMontant), devise)}</p>
+              {posPayer && (
+                <p className="text-sm text-white/40 mb-5">Payé par <span className="text-white/70 font-semibold">{posPayer}</span></p>
+              )}
+              <button
+                onClick={() => { resetPOS(); fetchTerminals(); }}
+                className="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-white font-bold transition-all active:scale-[0.98]"
+              >
+                <RefreshCw className="w-5 h-5" />Nouvelle vente
+              </button>
+            </div>
+          )}
+
+          <div className="rounded-2xl bg-emerald-500/5 border border-emerald-500/10 p-4">
+            <p className="text-xs text-emerald-400/80 font-semibold mb-1">Mode caisse</p>
+            <ul className="text-[11px] text-white/30 space-y-1">
+              <li>• Saisissez le montant de chaque vente</li>
+              <li>• Un QR Code unique est généré pour cette transaction</li>
+              <li>• Le client scanne et paie depuis son app Binq</li>
+              <li>• Vous recevez la confirmation en temps réel</li>
+            </ul>
+          </div>
+        </div>
+      )}
+
+      {/* ══════════════════════════════════ */}
+      {/* ══ TERMINAUX TAB ═══════════════ */}
+      {/* ══════════════════════════════════ */}
+      {tab === "terminaux" && (
+        <div className="space-y-4 animate-in fade-in duration-200">
+
+          {/* Stats */}
+          <div className="grid grid-cols-3 gap-2">
+            <div className="rounded-xl bg-white/[0.03] border border-white/[0.06] p-3 text-center">
+              <p className="text-lg font-black text-emerald-400">{stats.paymentsCount}</p>
+              <p className="text-[10px] text-white/30 font-semibold">Ventes</p>
+            </div>
+            <div className="rounded-xl bg-white/[0.03] border border-white/[0.06] p-3 text-center">
+              <p className="text-lg font-black text-white">{formatMontant(stats.totalReceived, devise)}</p>
+              <p className="text-[10px] text-white/30 font-semibold">Total reçu</p>
+            </div>
+            <div className="rounded-xl bg-white/[0.03] border border-white/[0.06] p-3 text-center">
+              <p className="text-lg font-black text-white">{stats.totalTerminals}</p>
+              <p className="text-[10px] text-white/30 font-semibold">QR actifs</p>
+            </div>
+          </div>
+
+          {/* Create button */}
+          {!showCreatePerm && (
+            <button onClick={() => setShowCreatePerm(true)} className="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-400 font-bold text-sm transition-all active:scale-[0.98] border border-emerald-500/20">
+              <Plus className="w-5 h-5" />Créer un QR permanent
+            </button>
+          )}
+
+          {/* Create form */}
+          {showCreatePerm && (
+            <div className="rounded-2xl bg-white/[0.03] border border-white/[0.06] p-5 space-y-4">
+              <div className="flex items-center justify-between">
+                <p className="text-sm font-bold text-white">Nouveau QR permanent</p>
+                <button onClick={() => setShowCreatePerm(false)} className="text-white/30 hover:text-white/60"><XCircle className="w-4 h-4" /></button>
+              </div>
+              <div className="flex gap-2">
+                <button onClick={() => setPermType("libre")} className={`flex-1 py-2.5 rounded-lg text-xs font-bold transition-all ${permType === "libre" ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30" : "bg-white/[0.04] text-white/40 border border-white/[0.06]"}`}>Montant libre</button>
+                <button onClick={() => setPermType("fixe")} className={`flex-1 py-2.5 rounded-lg text-xs font-bold transition-all ${permType === "fixe" ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30" : "bg-white/[0.04] text-white/40 border border-white/[0.06]"}`}>Montant fixe</button>
+              </div>
+              {permType === "fixe" && (
+                <div className="relative">
+                  <input type="number" min={DEVISES[devise].minTransfer} step={DEVISES[devise].decimals === 0 ? "1" : "0.01"} placeholder="Montant" value={permMontant} onChange={(e) => setPermMontant(e.target.value)} className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-emerald-500/50 transition-colors [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" />
+                  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-white/20 text-xs">{DEVISES[devise].symbol}</span>
+                </div>
+              )}
+              <input type="text" placeholder="Description (ex: Café, Coiffure...)" value={permDesc} onChange={(e) => setPermDesc(e.target.value)} maxLength={60} className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-emerald-500/50 placeholder-white/20 transition-colors" />
+              <div className="flex items-center gap-2">
+                {DEVISE_LIST.map((d) => (
+                  <button key={d} onClick={() => setDevise(d)} className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${devise === d ? "bg-emerald-500/30 text-emerald-400" : "bg-white/[0.04] text-white/30"}`}>{DEVISES[d].flag} {d}</button>
+                ))}
+              </div>
+              <button onClick={handleCreatePermanent} disabled={creatingPerm || (permType === "fixe" && (!permMontant || parseFloat(permMontant) <= 0))} className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-white font-bold text-sm transition-all active:scale-[0.98] disabled:opacity-40">
+                {creatingPerm ? <Loader2 className="w-4 h-4 animate-spin" /> : <Plus className="w-4 h-4" />}
+                {creatingPerm ? "Création..." : "Créer"}
+              </button>
+            </div>
+          )}
+
+          {/* Terminals list */}
+          {loadingTerminals ? (
+            <div className="flex items-center justify-center py-12"><Loader2 className="w-6 h-6 text-emerald-400 animate-spin" /></div>
+          ) : terminals.length === 0 ? (
+            <div className="rounded-2xl bg-white/[0.02] border border-white/[0.05] p-8 text-center">
+              <div className="w-14 h-14 rounded-2xl bg-white/[0.03] flex items-center justify-center mx-auto mb-3"><QrCode className="w-7 h-7 text-white/10" /></div>
+              <p className="text-white/50 font-bold text-sm mb-1">Aucun QR permanent</p>
+              <p className="text-white/20 text-xs">Créez un QR code réutilisable pour votre commerce</p>
+            </div>
+          ) : (
+            <div className="space-y-3">
+              {terminals.map((t) => (
+                <div key={t.id} className="rounded-2xl bg-white/[0.03] border border-white/[0.06] overflow-hidden">
+                  <div className="p-4">
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-bold text-white truncate">{t.description}</p>
+                        <p className="text-[11px] text-white/25 font-mono">{t.code}</p>
+                      </div>
+                      <div className="flex items-center gap-1.5 ml-2">
+                        {t.montant ? (
+                          <span className="px-2 py-1 rounded-lg bg-emerald-500/15 text-emerald-400 text-[10px] font-bold">{formatMontant(t.montant, (t.devise as DeviseCode) || devise)}</span>
+                        ) : (
+                          <span className="px-2 py-1 rounded-lg bg-white/[0.05] text-white/40 text-[10px] font-bold">Libre</span>
+                        )}
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2 mt-3">
+                      <button onClick={() => setExpandedQR(expandedQR === t.code ? null : t.code)} className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg bg-white/[0.04] hover:bg-white/[0.08] text-white/50 text-xs font-bold transition-all active:scale-95">
+                        <QrCode className="w-3.5 h-3.5" />{expandedQR === t.code ? "Masquer" : "QR Code"}
+                      </button>
+                      <button onClick={() => handleCopyTerminal(t.code)} className="flex items-center justify-center gap-1.5 py-2 px-3 rounded-lg bg-white/[0.04] hover:bg-white/[0.08] text-white/50 text-xs font-bold transition-all active:scale-95">
+                        {copiedCode === t.code ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+                      </button>
+                      <button onClick={() => handleShareTerminal(t.code, t.description)} className="flex items-center justify-center py-2 px-3 rounded-lg bg-white/[0.04] hover:bg-white/[0.08] text-white/50 text-xs font-bold transition-all active:scale-95">
+                        <Share2 className="w-3.5 h-3.5" />
+                      </button>
+                      <button onClick={() => handleDeleteTerminal(t.id)} className="flex items-center justify-center py-2 px-3 rounded-lg bg-red-500/10 hover:bg-red-500/20 text-red-400/60 text-xs transition-all active:scale-95">
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                  </div>
+                  {expandedQR === t.code && (
+                    <div className="border-t border-white/[0.04] p-5 flex flex-col items-center gap-3 bg-white/[0.01]">
+                      <div className="bg-white rounded-2xl p-3">
+                        <QRCodeSVG id={`qr-${t.code}`} value={`${origin}/pay/${t.code}`} size={180} bgColor="#FFFFFF" fgColor="#0a0a0a" level="H" includeMargin={false} />
+                      </div>
+                      <button onClick={() => handleDownloadQR(t.code, t.description)} className="flex items-center gap-1.5 text-xs text-emerald-400 font-bold hover:text-emerald-300 transition">
+                        <Download className="w-3.5 h-3.5" />Télécharger le QR
+                      </button>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
+
+          <div className="rounded-2xl bg-emerald-500/5 border border-emerald-500/10 p-4">
+            <p className="text-xs text-emerald-400/80 font-semibold mb-1">QR Permanents</p>
+            <ul className="text-[11px] text-white/30 space-y-1">
+              <li>• Imprimez et affichez le QR dans votre commerce</li>
+              <li>• Les clients scannent et paient directement</li>
+              <li>• <b className="text-white/40">Libre</b> : le client choisit le montant</li>
+              <li>• <b className="text-white/40">Fixe</b> : montant pré-défini (ex: menu, produit)</li>
             </ul>
           </div>
         </div>

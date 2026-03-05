@@ -22,7 +22,6 @@ import {
   Copy,
   Check,
   ChevronDown,
-  Store,
 } from "lucide-react";
 
 interface Transaction {
@@ -208,13 +207,12 @@ export default function DashboardPage() {
       {/* ── Services Grid ── */}
       <div>
         <p className="text-xs font-bold text-white/20 uppercase tracking-widest mb-3 px-1">Services</p>
-        <div className="grid grid-cols-5 gap-2 sm:gap-3">
+        <div className="grid grid-cols-4 gap-2 sm:gap-3">
           {[
             { icon: ArrowDownToLine, label: "Dépôt", href: "/deposer", gradient: "from-emerald-500 to-emerald-600" },
             { icon: SendHorizonal, label: "Envoi", href: "/envoyer", gradient: "from-cyan-500 to-cyan-600" },
             { icon: HandCoins, label: "Demander", href: "/demander", gradient: "from-violet-500 to-violet-600" },
             { icon: QrCode, label: "QR Code", href: "/qrcode", gradient: "from-orange-500 to-orange-600" },
-            { icon: Store, label: "Marchand", href: "/marchand", gradient: "from-pink-500 to-rose-600" },
           ].map((svc, i) => (
             <Link
               key={i}
