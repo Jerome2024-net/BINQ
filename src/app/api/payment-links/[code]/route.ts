@@ -50,15 +50,21 @@ export async function GET(
     console.error("Erreur fetch profil créateur:", profileError, "createur_id:", link.createur_id);
   }
 
+  const isMerchant = (link.description || "").startsWith("[MARCHAND]");
+  const cleanDescription = isMerchant
+    ? (link.description || "").replace("[MARCHAND] ", "")
+    : link.description;
+
   return NextResponse.json({
     link: {
       id: link.id,
       code: link.code,
       montant: link.montant,
       devise: link.devise,
-      description: link.description,
+      description: cleanDescription,
       statut: link.statut,
       type: link.type || 'request',
+      isMerchant,
       createur: profile
         ? {
             prenom: profile.prenom || "",

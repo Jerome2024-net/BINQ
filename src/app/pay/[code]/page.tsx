@@ -14,6 +14,7 @@ import {
   ArrowRight,
   Send,
   User,
+  Store,
 } from "lucide-react";
 import { type DeviseCode, DEVISES, formatMontant } from "@/lib/currencies";
 
@@ -25,6 +26,7 @@ interface PaymentLinkPublic {
   description: string | null;
   statut: string;
   type: "send" | "request";
+  isMerchant?: boolean;
   createur: {
     prenom: string;
     nom: string;
@@ -192,7 +194,7 @@ export default function PayPage() {
           <h2 className="text-2xl font-black text-white tracking-tight">
             <span className="text-emerald-400">Binq</span> Pay
           </h2>
-          <p className="text-white/30 text-sm mt-1">Paiement sécurisé entre particuliers</p>
+          <p className="text-white/30 text-sm mt-1">{link?.isMerchant ? "Terminal de paiement marchand" : "Paiement sécurisé entre particuliers"}</p>
         </div>
 
         {/* Card */}
@@ -214,7 +216,7 @@ export default function PayPage() {
               {link.createur.prenom} {link.createur.nom}
             </p>
             <p className="text-white/40 text-sm">
-              {link.type === "send" ? "vous envoie de l'argent" : "vous demande un paiement"}
+              {link.isMerchant ? "Terminal de paiement" : link.type === "send" ? "vous envoie de l'argent" : "vous demande un paiement"}
             </p>
           </div>
 
