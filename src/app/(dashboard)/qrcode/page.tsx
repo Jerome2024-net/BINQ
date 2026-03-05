@@ -663,8 +663,8 @@ export default function QRCodePage() {
             </div>
           )}
 
-          <div className="rounded-xl bg-emerald-500/5 border border-emerald-500/10 px-3 py-2.5">
-            <p className="text-[11px] text-white/30"><span className="text-emerald-400/70 font-semibold">Encaissement instantané</span> — Le client scanne, paie, vous êtes notifié en temps réel.</p>
+          <div className="rounded-xl bg-emerald-500/10 border border-emerald-500/20 px-4 py-3">
+            <p className="text-xs text-white/50"><span className="text-emerald-400 font-semibold">Encaissement instantané</span> — Le client scanne, paie, vous êtes notifié en temps réel.</p>
           </div>
         </div>
       )}
