@@ -387,6 +387,7 @@ export default function QRCodePage() {
             <p className="text-xs text-white/30 font-semibold mb-1">QR Codes supportés</p>
             <ul className="text-[11px] text-white/20 space-y-1">
               <li>• QR Code personnel d&apos;un utilisateur Binq</li>
+              <li>• QR Code terminal marchand</li>
               <li>• Lien de paiement (Demande d&apos;argent)</li>
               <li>• Lien d&apos;envoi via QR</li>
             </ul>

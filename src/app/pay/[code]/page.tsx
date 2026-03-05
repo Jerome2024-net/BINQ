@@ -265,22 +265,47 @@ export default function PayPage() {
           {/* Action */}
           {!user ? (
             <div className="text-center">
-              <p className="text-white/40 text-sm mb-4">
-                Connectez-vous pour {link.type === "send" ? "récupérer cet argent" : "effectuer ce paiement"}
-              </p>
-              <Link
-                href={`/connexion?redirect=/pay/${code}`}
-                className="w-full inline-flex items-center justify-center gap-2 bg-emerald-500 text-white px-6 py-3.5 rounded-xl font-bold hover:bg-emerald-400 transition"
-              >
-                <LogIn className="w-5 h-5" />
-                Se connecter
-              </Link>
-              <p className="text-xs text-white/20 mt-3">
-                Pas encore de compte ?{" "}
-                <Link href={`/inscription?redirect=/pay/${code}`} className="text-emerald-400 hover:underline">
-                  Créer un compte
-                </Link>
-              </p>
+              {link.isMerchant ? (
+                <>
+                  <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-xl p-3 mb-4">
+                    <p className="text-xs text-emerald-400/80 font-semibold">Paiement rapide & sécurisé</p>
+                    <p className="text-[11px] text-white/30 mt-0.5">Connectez-vous ou créez un compte gratuit en 30 secondes pour payer ce marchand.</p>
+                  </div>
+                  <Link
+                    href={`/inscription?redirect=/pay/${code}`}
+                    className="w-full inline-flex items-center justify-center gap-2 bg-emerald-500 text-white px-6 py-3.5 rounded-xl font-bold hover:bg-emerald-400 transition mb-2.5"
+                  >
+                    <User className="w-5 h-5" />
+                    Créer un compte gratuit
+                  </Link>
+                  <Link
+                    href={`/connexion?redirect=/pay/${code}`}
+                    className="w-full inline-flex items-center justify-center gap-2 bg-white/[0.06] text-white/70 px-6 py-3 rounded-xl font-bold hover:bg-white/[0.1] transition text-sm"
+                  >
+                    <LogIn className="w-4 h-4" />
+                    J&apos;ai déjà un compte
+                  </Link>
+                </>
+              ) : (
+                <>
+                  <p className="text-white/40 text-sm mb-4">
+                    Connectez-vous pour {link.type === "send" ? "récupérer cet argent" : "effectuer ce paiement"}
+                  </p>
+                  <Link
+                    href={`/connexion?redirect=/pay/${code}`}
+                    className="w-full inline-flex items-center justify-center gap-2 bg-emerald-500 text-white px-6 py-3.5 rounded-xl font-bold hover:bg-emerald-400 transition"
+                  >
+                    <LogIn className="w-5 h-5" />
+                    Se connecter
+                  </Link>
+                  <p className="text-xs text-white/20 mt-3">
+                    Pas encore de compte ?{" "}
+                    <Link href={`/inscription?redirect=/pay/${code}`} className="text-emerald-400 hover:underline">
+                      Créer un compte
+                    </Link>
+                  </p>
+                </>
+              )}
             </div>
           ) : (
             <button
@@ -299,9 +324,17 @@ export default function PayPage() {
         </div>
 
         {/* Footer */}
-        <p className="text-center text-xs text-white/15 mt-6">
-          Paiement sécurisé via Binq. Vos fonds sont débités de votre portefeuille.
-        </p>
+        <div className="text-center mt-6 space-y-2">
+          <p className="text-xs text-white/15">
+            Paiement sécurisé via Binq. Vos fonds sont débités de votre portefeuille.
+          </p>
+          {link.isMerchant && !user && (
+            <p className="text-[11px] text-white/20">
+              Binq est ouvert à tous : particuliers, commerçants, freelances.
+              <Link href="/inscription" className="text-emerald-400/60 hover:text-emerald-400 ml-1">Rejoignez-nous</Link>
+            </p>
+          )}
+        </div>
       </div>
     </div>
   );

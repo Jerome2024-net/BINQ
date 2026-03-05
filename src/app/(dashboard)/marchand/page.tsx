@@ -281,6 +281,17 @@ export default function MarchandPage() {
         <p className="text-xs text-white/30 mt-0.5">Acceptez les paiements par QR Code</p>
       </div>
 
+      {/* Open banner */}
+      <div className="rounded-2xl bg-gradient-to-r from-emerald-600/15 to-cyan-600/15 border border-emerald-500/10 p-3.5 flex items-start gap-3">
+        <div className="w-8 h-8 rounded-lg bg-emerald-500/20 flex items-center justify-center shrink-0 mt-0.5">
+          <Store className="w-4 h-4 text-emerald-400" />
+        </div>
+        <div>
+          <p className="text-xs font-bold text-white/70">Ouvert à tous les utilisateurs Binq</p>
+          <p className="text-[11px] text-white/30 mt-0.5">Particulier, commerçant, freelance, vendeur... Tout utilisateur Binq peut encaisser des paiements par QR Code. Aucune inscription spéciale requise.</p>
+        </div>
+      </div>
+
       {/* Stats bar */}
       <div className="grid grid-cols-3 gap-2">
         <div className="rounded-xl bg-white/[0.03] border border-white/[0.06] p-3 text-center">
