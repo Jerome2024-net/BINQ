@@ -791,15 +791,7 @@ export default function QRCodePage() {
             </div>
           )}
 
-          <div className="rounded-2xl bg-emerald-500/5 border border-emerald-500/10 p-4">
-            <p className="text-xs text-emerald-400/80 font-semibold mb-1">QR Permanents</p>
-            <ul className="text-[11px] text-white/30 space-y-1">
-              <li>• Imprimez et affichez le QR dans votre commerce</li>
-              <li>• Les clients scannent et paient directement</li>
-              <li>• <b className="text-white/40">Libre</b> : le client choisit le montant</li>
-              <li>• <b className="text-white/40">Fixe</b> : montant pré-défini (ex: menu, produit)</li>
-            </ul>
-          </div>
+
         </div>
       )}
     </div>
