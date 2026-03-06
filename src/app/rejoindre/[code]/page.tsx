@@ -117,13 +117,10 @@ export default function RejoindreParCodePage({
   // ─── Loading ───
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-950 flex items-center justify-center relative overflow-hidden">
-        {/* Gradient orbs */}
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary-600/20 rounded-full blur-3xl" />
-        <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-accent-500/15 rounded-full blur-3xl" />
+      <div className="min-h-screen bg-[#0a0a0a] flex items-center justify-center relative overflow-hidden">
         <div className="text-center relative z-10">
-          <div className="w-12 h-12 border-[3px] border-primary-400/30 border-t-primary-400 rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-gray-400 text-sm">Chargement de l&apos;invitation...</p>
+          <div className="w-12 h-12 border-[3px] border-emerald-500/30 border-t-emerald-400 rounded-full animate-spin mx-auto mb-4" />
+          <p className="text-white/30 text-sm">Chargement de l&apos;invitation...</p>
         </div>
       </div>
     );
