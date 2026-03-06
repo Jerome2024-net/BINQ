@@ -18,6 +18,7 @@ import {
   MessageSquare,
   Share2,
 } from "lucide-react";
+import { QRCodeSVG } from "qrcode.react";
 import dynamic from "next/dynamic";
 const SuccessConfetti = dynamic(() => import("@/components/SuccessConfetti"), { ssr: false });
 
@@ -180,6 +181,20 @@ export default function PayUserPage() {
             <div className="flex justify-between text-xs"><span className="text-white/30">Référence</span><span className="text-white/60 font-mono">{sentRef}</span></div>
             <div className="flex justify-between text-xs"><span className="text-white/30">Date</span><span className="text-white/60">{sentDate}</span></div>
             <div className="flex justify-between text-xs"><span className="text-white/30">Statut</span><span className="text-emerald-400 font-semibold">Confirmé</span></div>
+          </div>
+
+          {/* QR Receipt - scannable proof */}
+          <div className="flex flex-col items-center my-3">
+            <div className="bg-white rounded-lg p-2">
+              <QRCodeSVG
+                value={`${typeof window !== "undefined" ? window.location.origin : ""}/pay/user/${userId}?ref=${sentRef}`}
+                size={80}
+                bgColor="#FFFFFF"
+                fgColor="#0a0a0a"
+                level="M"
+              />
+            </div>
+            <p className="text-[9px] text-white/20 mt-1.5 flex items-center gap-1"><QrCode className="w-2.5 h-2.5" />Preuve de paiement vérifiable</p>
           </div>
 
           <div className="flex items-center gap-2">

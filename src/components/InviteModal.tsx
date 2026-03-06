@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { X, Mail, Phone, Loader2, CheckCircle2, Clock, XCircle, Copy, Send, MessageCircle, Share2, Link2, Shield, Users, Euro, Calendar } from "lucide-react";
+import { X, Mail, Phone, Loader2, CheckCircle2, Clock, XCircle, Copy, Send, MessageCircle, Share2, Link2, Shield, Users, Euro, Calendar, QrCode } from "lucide-react";
+import { QRCodeSVG } from "qrcode.react";
 import { Invitation } from "@/types";
 
 interface InviteModalProps {
@@ -266,6 +267,24 @@ export default function InviteModal({ isOpen, onClose, onInvite, tontineNom, pla
           ) : (
             /* ========== ÉTAPE 2 : PARTAGE ========== */
             <div className="space-y-4">
+              {/* QR Code d'invitation */}
+              {inviteLink && (
+                <div className="flex flex-col items-center py-3">
+                  <div className="bg-white rounded-xl p-3 border border-gray-100 shadow-sm">
+                    <QRCodeSVG
+                      value={inviteLink}
+                      size={140}
+                      bgColor="#FFFFFF"
+                      fgColor="#0a0a0a"
+                      level="H"
+                    />
+                  </div>
+                  <p className="text-[11px] text-gray-400 mt-2 flex items-center gap-1">
+                    <QrCode className="w-3 h-3" />Scanner pour rejoindre la tontine
+                  </p>
+                </div>
+              )}
+
               {/* Lien copiable */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1.5">Lien d&apos;invitation</label>
