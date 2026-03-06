@@ -16,7 +16,10 @@ import {
   User,
   QrCode,
   MessageSquare,
+  Share2,
 } from "lucide-react";
+import dynamic from "next/dynamic";
+const SuccessConfetti = dynamic(() => import("@/components/SuccessConfetti"), { ssr: false });
 
 interface UserPublic {
   id: string;
@@ -42,6 +45,7 @@ export default function PayUserPage() {
   const [sent, setSent] = useState(false);
   const [sentRef, setSentRef] = useState("");
   const [sentMontant, setSentMontant] = useState(0);
+  const [sentDate, setSentDate] = useState("");
 
   const deviseConfig = DEVISES[devise];
 
@@ -106,6 +110,7 @@ export default function PayUserPage() {
       setSent(true);
       setSentRef(data.reference || data.transfert?.reference || "");
       setSentMontant(parsedMontant);
+      setSentDate(new Date().toLocaleString("fr-FR", { dateStyle: "medium", timeStyle: "short" }));
       showToast("success", "Envoyé", `${formatMontant(parsedMontant, devise)} envoyés avec succès`);
     } catch {
       showToast("error", "Erreur", "Erreur réseau");
@@ -149,25 +154,49 @@ export default function PayUserPage() {
 
   // Success
   if (sent && targetUser) {
+    const receiptText = `Binq Pay — Envoi\n${formatMontant(sentMontant, devise)}\nÀ: ${targetUser.prenom} ${targetUser.nom}\nRéf: ${sentRef}\n${sentDate}`;
+    const handleShareReceipt = async () => {
+      if (navigator.share) {
+        try { await navigator.share({ title: "Reçu Binq", text: receiptText }); } catch { /* cancelled */ }
+      } else {
+        try { await navigator.clipboard.writeText(receiptText); } catch { /* ignore */ }
+      }
+    };
     return (
       <div className="min-h-screen bg-[#0a0a0a] flex items-center justify-center px-4">
-        <div className="bg-white/[0.04] rounded-3xl p-8 max-w-md w-full text-center border border-white/[0.06] backdrop-blur-xl">
-          <div className="w-20 h-20 bg-emerald-500/20 rounded-full flex items-center justify-center mx-auto mb-5">
+        <SuccessConfetti />
+        <div className="bg-white/[0.04] rounded-3xl p-8 max-w-md w-full text-center border border-white/[0.06] backdrop-blur-xl animate-in zoom-in-95 duration-300">
+          <div className="w-20 h-20 bg-emerald-500/20 rounded-full flex items-center justify-center mx-auto mb-4 animate-in zoom-in duration-500">
             <CheckCircle2 className="w-10 h-10 text-emerald-400" />
           </div>
-          <h1 className="text-2xl font-bold text-white mb-2">Envoi effectué !</h1>
-          <p className="text-white/40 mb-2">
-            Vous avez envoyé <span className="text-white font-semibold">{formatMontant(sentMontant, devise)}</span> à{" "}
-            <span className="text-white font-semibold">{targetUser.prenom} {targetUser.nom}</span>.
+          <h1 className="text-2xl font-black text-white mb-1">Envoi effectué !</h1>
+          <p className="text-3xl font-black text-emerald-400 mb-2">{formatMontant(sentMontant, devise)}</p>
+          <p className="text-white/40 text-sm mb-1">
+            À <span className="text-white font-semibold">{targetUser.prenom} {targetUser.nom}</span>
           </p>
-          {sentRef && <p className="text-xs text-white/20 mb-6">Réf: {sentRef}</p>}
-          <Link
-            href="/portefeuille"
-            className="inline-flex items-center gap-2 bg-emerald-500 text-white px-6 py-3 rounded-xl font-semibold hover:bg-emerald-400 transition"
-          >
-            <Wallet className="w-4 h-4" />
-            Mon portefeuille
-          </Link>
+
+          {/* Receipt */}
+          <div className="bg-white/[0.03] rounded-xl p-3 my-4 border border-white/[0.06] text-left space-y-1.5">
+            <div className="flex justify-between text-xs"><span className="text-white/30">Référence</span><span className="text-white/60 font-mono">{sentRef}</span></div>
+            <div className="flex justify-between text-xs"><span className="text-white/30">Date</span><span className="text-white/60">{sentDate}</span></div>
+            <div className="flex justify-between text-xs"><span className="text-white/30">Statut</span><span className="text-emerald-400 font-semibold">Confirmé</span></div>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <Link
+              href="/portefeuille"
+              className="flex-1 inline-flex items-center justify-center gap-2 bg-emerald-500 text-white px-4 py-3 rounded-xl font-bold hover:bg-emerald-400 transition text-sm"
+            >
+              <Wallet className="w-4 h-4" />
+              Portefeuille
+            </Link>
+            <button
+              onClick={handleShareReceipt}
+              className="flex items-center justify-center gap-1.5 px-4 py-3 rounded-xl bg-white/[0.05] hover:bg-white/[0.08] text-white/60 font-bold text-sm transition active:scale-95"
+            >
+              <Share2 className="w-4 h-4" />Reçu
+            </button>
+          </div>
         </div>
       </div>
     );

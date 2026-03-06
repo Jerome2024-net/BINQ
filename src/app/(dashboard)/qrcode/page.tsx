@@ -26,6 +26,9 @@ import {
   BarChart3,
 } from "lucide-react";
 import { type DeviseCode, DEVISES, DEFAULT_DEVISE, formatMontant, DEVISE_LIST } from "@/lib/currencies";
+import { playPaymentSound } from "@/lib/sounds";
+import dynamic from "next/dynamic";
+const SuccessConfetti = dynamic(() => import("@/components/SuccessConfetti"), { ssr: false });
 
 type Tab = "mon-qr" | "scanner" | "encaisser" | "terminaux";
 
@@ -81,6 +84,8 @@ export default function QRCodePage() {
   const [creatingPerm, setCreatingPerm] = useState(false);
   const [copiedCode, setCopiedCode] = useState<string | null>(null);
   const [expandedQR, setExpandedQR] = useState<string | null>(null);
+  const [preFillMontant, setPreFillMontant] = useState("");
+  const [showPreFill, setShowPreFill] = useState(false);
 
   const origin = typeof window !== "undefined" ? window.location.origin : "";
 
@@ -88,28 +93,57 @@ export default function QRCodePage() {
     ? `${window.location.origin}/pay/user/${user.id}`
     : "";
 
+  // Pre-filled payment link: if user sets a montant, we generate a payment-link-style URL
+  const [preFillCode, setPreFillCode] = useState("");
+  const [preFillLoading, setPreFillLoading] = useState(false);
+  const preFillUrl = preFillCode ? `${origin}/pay/${preFillCode}` : payUrl;
+
   const initials = user
     ? `${(user.prenom || "?")[0]}${(user.nom || "?")[0]}`.toUpperCase()
     : "??";
 
   // ── Personal QR handlers ──
+  const handleGeneratePreFill = async () => {
+    const montant = parseFloat(preFillMontant);
+    if (!montant || montant <= 0) return;
+    setPreFillLoading(true);
+    try {
+      const res = await fetch("/api/payment-links", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ montant, devise, description: `Demande ${formatMontant(montant, devise)}` }),
+      });
+      const data = await res.json();
+      if (data.link?.code) {
+        setPreFillCode(data.link.code);
+      }
+    } catch { /* ignore */ }
+    finally { setPreFillLoading(false); }
+  };
+
+  const handleResetPreFill = () => {
+    setPreFillCode("");
+    setPreFillMontant("");
+    setShowPreFill(false);
+  };
+
   const handleCopy = async () => {
     if (!payUrl) return;
     try {
-      await navigator.clipboard.writeText(payUrl);
+      await navigator.clipboard.writeText(preFillUrl);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch { /* ignore */ }
   };
 
   const handleShare = async () => {
-    if (!payUrl || !user) return;
+    if (!payUrl && !preFillUrl) return;
     if (navigator.share) {
       try {
         await navigator.share({
-          title: `Payer ${user.prenom} ${user.nom} sur Binq`,
-          text: `Envoyez-moi de l'argent via Binq`,
-          url: payUrl,
+          title: `Payer ${user?.prenom} ${user?.nom} sur Binq`,
+          text: preFillCode ? `Payez ${formatMontant(parseFloat(preFillMontant), devise)} via Binq` : `Envoyez-moi de l'argent via Binq`,
+          url: preFillUrl,
         });
       } catch { /* user cancelled */ }
     } else {
@@ -265,6 +299,7 @@ export default function QRCodePage() {
           if (pollingRef.current) clearInterval(pollingRef.current);
           setPosPayer(data.paye_par || "Client");
           setPosStep("success");
+          playPaymentSound();
         }
       } catch { /* ignore */ }
     }, 3000);
@@ -436,10 +471,16 @@ export default function QRCodePage() {
 
           {/* QR Code compact */}
           <div className="rounded-2xl bg-white/[0.03] border border-white/[0.06] p-4">
+            {preFillCode && (
+              <div className="flex items-center justify-between mb-3 px-1">
+                <span className="text-xs font-bold text-emerald-400">{formatMontant(parseFloat(preFillMontant), devise)}</span>
+                <button onClick={handleResetPreFill} className="text-[10px] text-white/30 hover:text-white/50 font-semibold transition">Montant libre</button>
+              </div>
+            )}
             <div className="flex items-start gap-4">
               <div className="bg-white rounded-xl p-2.5 shrink-0">
-                {payUrl ? (
-                  <QRCodeSVG id="personal-qr-code" value={payUrl} size={130} bgColor="#FFFFFF" fgColor="#0a0a0a" level="H" includeMargin={false} />
+                {preFillUrl ? (
+                  <QRCodeSVG id="personal-qr-code" value={preFillUrl} size={130} bgColor="#FFFFFF" fgColor="#0a0a0a" level="H" includeMargin={false} />
                 ) : (
                   <div className="w-[130px] h-[130px] flex items-center justify-center">
                     <Loader2 className="w-6 h-6 text-gray-400 animate-spin" />
@@ -463,10 +504,48 @@ export default function QRCodePage() {
             </div>
           </div>
 
+          {/* Pre-fill amount */}
+          {!preFillCode && (
+            <div className="rounded-xl bg-white/[0.03] border border-white/[0.06] overflow-hidden">
+              {!showPreFill ? (
+                <button onClick={() => setShowPreFill(true)} className="w-full flex items-center justify-center gap-1.5 py-2.5 text-xs font-bold text-white/40 hover:text-white/60 transition">
+                  <Banknote className="w-3.5 h-3.5" />Définir un montant précis
+                </button>
+              ) : (
+                <div className="p-3 space-y-2">
+                  <div className="flex items-center gap-2">
+                    <div className="relative flex-1">
+                      <input
+                        type="number"
+                        min={DEVISES[devise].minTransfer}
+                        step={DEVISES[devise].decimals === 0 ? "1" : "0.01"}
+                        placeholder={DEVISES[devise].decimals === 0 ? "5 000" : "10.00"}
+                        value={preFillMontant}
+                        onChange={(e) => setPreFillMontant(e.target.value)}
+                        className="w-full bg-white/[0.04] border border-white/[0.08] rounded-lg px-3 py-2 text-white text-sm font-bold outline-none focus:border-emerald-500/50 transition-colors [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                      />
+                      <span className="absolute right-2.5 top-1/2 -translate-y-1/2 text-white/20 text-xs">{DEVISES[devise].symbol}</span>
+                    </div>
+                    <button
+                      onClick={handleGeneratePreFill}
+                      disabled={preFillLoading || !preFillMontant || parseFloat(preFillMontant) <= 0}
+                      className="px-3 py-2 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-white text-xs font-bold transition disabled:opacity-40 active:scale-95"
+                    >
+                      {preFillLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Générer"}
+                    </button>
+                  </div>
+                  <button onClick={() => { setShowPreFill(false); setPreFillMontant(""); }} className="w-full text-[10px] text-white/25 hover:text-white/40 transition">
+                    Annuler
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
+
           {/* Link preview */}
           <div className="flex items-center gap-2 bg-white/[0.02] rounded-xl px-3 py-2 border border-white/[0.04]">
             <QrCode className="w-3.5 h-3.5 text-white/15 shrink-0" />
-            <p className="text-[10px] text-white/25 font-mono truncate">{payUrl}</p>
+            <p className="text-[10px] text-white/25 font-mono truncate">{preFillUrl}</p>
           </div>
 
           {/* How it works */}
@@ -645,8 +724,9 @@ export default function QRCodePage() {
           )}
 
           {posStep === "success" && (
-            <div className="rounded-2xl bg-emerald-500/10 border border-emerald-500/20 p-6 text-center">
-              <div className="w-20 h-20 rounded-full bg-emerald-500/20 flex items-center justify-center mx-auto mb-4">
+            <div className="rounded-2xl bg-emerald-500/10 border border-emerald-500/20 p-6 text-center animate-in zoom-in-95 duration-300">
+              <SuccessConfetti />
+              <div className="w-20 h-20 rounded-full bg-emerald-500/20 flex items-center justify-center mx-auto mb-4 animate-in zoom-in duration-500">
                 <CheckCircle2 className="w-10 h-10 text-emerald-400" />
               </div>
               <h2 className="text-xl font-black text-white mb-1">Paiement reçu !</h2>
