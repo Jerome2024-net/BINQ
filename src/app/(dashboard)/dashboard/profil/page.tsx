@@ -7,7 +7,6 @@ import { useFinance } from "@/contexts/FinanceContext";
 import { useToast } from "@/contexts/ToastContext";
 import Avatar from "@/components/Avatar";
 import AvatarUpload from "@/components/AvatarUpload";
-import { ConfianceBadge } from "@/components/MemberCard";
 import ScoreFiabilite from "@/components/ScoreFiabilite";
 import { formatMontant } from "@/lib/data";
 import {

@@ -103,7 +103,7 @@ export default function StripeConnectCard() {
             </h3>
             {isVerified ? (
               <p className="text-sm text-gray-600 mt-1">
-                Vos paiements sont activés. Vous pouvez recevoir des pots et effectuer des retraits.
+                Vos paiements sont activés. Vous pouvez recevoir des fonds et effectuer des retraits.
               </p>
             ) : hasAccount ? (
               <p className="text-sm text-gray-600 mt-1">
@@ -111,7 +111,7 @@ export default function StripeConnectCard() {
               </p>
             ) : (
               <p className="text-sm text-gray-600 mt-1">
-                Configurez votre compte pour recevoir les pots de tontine et retirer vers votre banque.
+                Configurez votre compte pour recevoir des paiements et retirer vers votre banque.
               </p>
             )}
           </div>
@@ -197,7 +197,7 @@ export default function StripeConnectCard() {
           <div className="flex flex-wrap gap-4 text-sm text-gray-600">
             <span className="flex items-center gap-1.5">
               <ArrowRight className="w-3 h-3 text-green-500" />
-              Recevoir les pots de tontine
+              Recevoir des paiements
             </span>
             <span className="flex items-center gap-1.5">
               <ArrowRight className="w-3 h-3 text-green-500" />

@@ -24,9 +24,9 @@ interface SubscriptionModalProps {
 }
 
 const avantages = [
-  { icon: Sparkles, label: "Tontines illimitées", desc: "Créez autant de tontines que vous voulez" },
-  { icon: Users, label: "Gestion des membres", desc: "Invitez et gérez vos participants" },
-  { icon: BarChart3, label: "Tableau de bord", desc: "Suivi complet de vos tontines" },
+  { icon: Sparkles, label: "Transferts illimités", desc: "Envoyez et recevez sans limites" },
+  { icon: Users, label: "QR Code marchand", desc: "Encaissez vos clients par QR Code" },
+  { icon: BarChart3, label: "Tableau de bord", desc: "Suivi complet de vos transactions" },
   { icon: Headphones, label: "Support prioritaire", desc: "Assistance dédiée 7j/7" },
 ];
 
@@ -115,7 +115,7 @@ export default function SubscriptionModal({ isOpen, onClose }: SubscriptionModal
                 {mode === "essai" ? "Essai gratuit activé ! 🎉" : "Abonnement activé ! 🎉"}
               </h3>
               <p className="text-gray-500">
-                Vous pouvez maintenant créer et gérer vos propres tontines
+                Vous pouvez maintenant profiter de toutes les fonctionnalités Binq
               </p>
               <div className="mt-4 flex items-center justify-center gap-2 text-sm text-primary-600">
                 <CheckCircle2 className="w-4 h-4" />

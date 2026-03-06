@@ -14,7 +14,7 @@ import {
 
 interface StripeVerificationGuardProps {
   children: React.ReactNode;
-  action?: string; // "créer une tontine" | "rejoindre cette tontine"
+  action?: string; // "effectuer un paiement" | "recevoir un paiement"
 }
 
 /**
