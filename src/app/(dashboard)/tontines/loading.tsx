@@ -1,31 +1,24 @@
-﻿export default function TontinesLoading() {
+﻿export default function Loading() {
   return (
-    <div className="space-y-5 animate-pulse">
-      <div className="flex items-center justify-between">
-        <div className="h-6 w-28 bg-white/[0.06] rounded-lg" />
-        <div className="h-9 w-36 bg-white/[0.06] rounded-xl" />
+    <div className="min-h-screen bg-[#0a0a0a] flex flex-col items-center justify-center">
+      <div className="relative mb-6">
+        <div className="absolute inset-0 w-16 h-16 rounded-full bg-emerald-500/20 animate-ping" />
+        <div className="relative w-16 h-16 rounded-2xl bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center">
+          <svg viewBox="0 0 24 24" fill="white" className="w-8 h-8">
+            <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26" />
+          </svg>
+        </div>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-        {[...Array(6)].map((_, i) => (
-          <div key={i} className="bg-white/[0.03] rounded-2xl p-4 border border-white/[0.06]">
-            <div className="flex items-center gap-3 mb-3">
-              <div className="h-10 w-10 bg-white/[0.06] rounded-xl" />
-              <div>
-                <div className="h-4 w-28 bg-white/[0.06] rounded" />
-                <div className="h-3 w-16 bg-white/[0.04] rounded mt-1.5" />
-              </div>
-            </div>
-            <div className="space-y-2">
-              <div className="h-3 w-full bg-white/[0.04] rounded" />
-              <div className="h-3 w-2/3 bg-white/[0.04] rounded" />
-            </div>
-            <div className="flex gap-2 mt-3">
-              <div className="h-5 w-14 bg-white/[0.06] rounded-full" />
-              <div className="h-5 w-16 bg-white/[0.06] rounded-full" />
-            </div>
-          </div>
-        ))}
+      <div className="w-12 h-12 mb-5 opacity-20">
+        <div className="w-full h-full border-2 border-emerald-400/40 rounded-lg relative">
+          <div className="absolute top-1 left-1 w-3 h-3 border-2 border-emerald-400/60 rounded-sm" />
+          <div className="absolute top-1 right-1 w-3 h-3 border-2 border-emerald-400/60 rounded-sm" />
+          <div className="absolute bottom-1 left-1 w-3 h-3 border-2 border-emerald-400/60 rounded-sm" />
+          <div className="absolute bottom-3 right-3 w-1.5 h-1.5 bg-emerald-400/40 rounded-sm animate-pulse" />
+        </div>
       </div>
+      <p className="text-white/40 text-xs font-medium tracking-wider">BINQ</p>
+      <p className="text-white/20 text-[10px] mt-1">Mobile Money &middot; QR Code</p>
     </div>
   );
 }
