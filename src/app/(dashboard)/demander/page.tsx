@@ -484,11 +484,11 @@ function LinkCard({
           <div className="bg-white rounded-xl p-3 mb-2">
             <QRCodeSVG
               value={linkUrl}
-              size={160}
+              size={200}
               bgColor="#FFFFFF"
-              fgColor="#0a0a0a"
+              fgColor="#000000"
               level="H"
-              includeMargin={false}
+              includeMargin={true}
             />
           </div>
           <p className="text-[10px] text-white/20">Scannez pour payer</p>

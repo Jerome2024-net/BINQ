@@ -162,18 +162,35 @@ export default function QRCodePage() {
 
     img.onload = () => {
       canvas.width = 1024;
-      canvas.height = 1024;
+      canvas.height = 1200;
       if (ctx) {
+        // Dark background
         ctx.fillStyle = "#0a0a0a";
-        ctx.fillRect(0, 0, 1024, 1024);
-        ctx.drawImage(img, 112, 112, 800, 800);
-        ctx.fillStyle = "#ffffff";
-        ctx.font = "bold 36px system-ui, sans-serif";
-        ctx.textAlign = "center";
-        ctx.fillText(`${user?.prenom || ""} ${user?.nom || ""}`, 512, 980);
-        ctx.font = "24px system-ui, sans-serif";
+        ctx.fillRect(0, 0, 1024, 1200);
+        // "Binq Pay" header
+        ctx.font = "bold 32px system-ui, sans-serif";
         ctx.fillStyle = "#10b981";
+        ctx.textAlign = "center";
         ctx.fillText("Binq Pay", 512, 60);
+        // White background for QR (quiet zone)
+        ctx.fillStyle = "#ffffff";
+        ctx.beginPath();
+        ctx.roundRect(112, 90, 800, 800, 32);
+        ctx.fill();
+        // Draw QR on white bg
+        ctx.drawImage(img, 152, 130, 720, 720);
+        // User name
+        ctx.fillStyle = "#ffffff";
+        ctx.font = "bold 42px system-ui, sans-serif";
+        ctx.fillText(`${user?.prenom || ""} ${user?.nom || ""}`, 512, 960);
+        // Subtitle
+        ctx.font = "26px system-ui, sans-serif";
+        ctx.fillStyle = "#6b7280";
+        ctx.fillText("Scannez pour payer", 512, 1010);
+        // URL
+        ctx.font = "20px monospace";
+        ctx.fillStyle = "#374151";
+        ctx.fillText(preFillUrl || payUrl, 512, 1060);
       }
 
       const link = document.createElement("a");
@@ -496,7 +513,7 @@ export default function QRCodePage() {
             </div>
           </div>
 
-          {/* QR Code compact */}
+          {/* QR Code */}
           <div className="rounded-2xl bg-white/[0.03] border border-white/[0.06] p-4">
             {preFillCode && (
               <div className="flex items-center justify-between mb-3 px-1">
@@ -504,29 +521,27 @@ export default function QRCodePage() {
                 <button onClick={handleResetPreFill} className="text-[10px] text-white/30 hover:text-white/50 font-semibold transition">Montant libre</button>
               </div>
             )}
-            <div className="flex items-start gap-4">
-              <div className="bg-white rounded-xl p-2.5 shrink-0">
+            <div className="flex flex-col items-center">
+              <p className="text-xs font-bold text-white/60 mb-3">Montrez ce QR pour recevoir de l&apos;argent</p>
+              <div className="bg-white rounded-2xl p-3 mb-4">
                 {preFillUrl ? (
-                  <QRCodeSVG id="personal-qr-code" value={preFillUrl} size={130} bgColor="#FFFFFF" fgColor="#0a0a0a" level="H" includeMargin={false} />
+                  <QRCodeSVG id="personal-qr-code" value={preFillUrl} size={220} bgColor="#FFFFFF" fgColor="#000000" level="H" includeMargin={true} />
                 ) : (
-                  <div className="w-[130px] h-[130px] flex items-center justify-center">
+                  <div className="w-[220px] h-[220px] flex items-center justify-center">
                     <Loader2 className="w-6 h-6 text-gray-400 animate-spin" />
                   </div>
                 )}
               </div>
-              <div className="flex-1 min-w-0 py-1">
-                <p className="text-xs font-bold text-white/60 mb-2">Montrez ce QR pour recevoir de l&apos;argent</p>
-                <div className="space-y-1.5">
-                  <button onClick={handleShare} className="w-full flex items-center justify-center gap-1.5 py-2 rounded-lg bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-400 text-xs font-bold transition-all active:scale-95">
-                    <Share2 className="w-3.5 h-3.5" />Partager
-                  </button>
-                  <button onClick={handleCopy} className="w-full flex items-center justify-center gap-1.5 py-2 rounded-lg bg-white/[0.05] hover:bg-white/[0.08] text-white/60 text-xs font-bold transition-all active:scale-95">
-                    {copied ? (<><Check className="w-3.5 h-3.5 text-emerald-400" /><span className="text-emerald-400">Copié !</span></>) : (<><Copy className="w-3.5 h-3.5" />Copier le lien</>)}
-                  </button>
-                  <button onClick={handleDownload} className="w-full flex items-center justify-center gap-1.5 py-2 rounded-lg bg-white/[0.05] hover:bg-white/[0.08] text-white/40 text-xs font-bold transition-all active:scale-95">
-                    <Download className="w-3.5 h-3.5" />Télécharger
-                  </button>
-                </div>
+              <div className="w-full grid grid-cols-3 gap-2">
+                <button onClick={handleShare} className="flex flex-col items-center gap-1 py-2.5 rounded-xl bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-400 text-xs font-bold transition-all active:scale-95">
+                  <Share2 className="w-4 h-4" /><span className="text-[10px]">Partager</span>
+                </button>
+                <button onClick={handleCopy} className="flex flex-col items-center gap-1 py-2.5 rounded-xl bg-white/[0.05] hover:bg-white/[0.08] text-white/60 text-xs font-bold transition-all active:scale-95">
+                  {copied ? (<><Check className="w-4 h-4 text-emerald-400" /><span className="text-[10px] text-emerald-400">Copié !</span></>) : (<><Copy className="w-4 h-4" /><span className="text-[10px]">Copier</span></>)}
+                </button>
+                <button onClick={handleDownload} className="flex flex-col items-center gap-1 py-2.5 rounded-xl bg-white/[0.05] hover:bg-white/[0.08] text-white/40 text-xs font-bold transition-all active:scale-95">
+                  <Download className="w-4 h-4" /><span className="text-[10px]">Image</span>
+                </button>
               </div>
             </div>
           </div>
@@ -730,9 +745,9 @@ export default function QRCodePage() {
               <div className="flex justify-center mb-5">
                 <div className="bg-white rounded-2xl p-4">
                   {posPayUrl ? (
-                    <QRCodeSVG id={`qr-pos-${posCode}`} value={posPayUrl} size={220} bgColor="#FFFFFF" fgColor="#0a0a0a" level="H" includeMargin={false} />
+                    <QRCodeSVG id={`qr-pos-${posCode}`} value={posPayUrl} size={240} bgColor="#FFFFFF" fgColor="#000000" level="H" includeMargin={true} />
                   ) : (
-                    <div className="w-[220px] h-[220px] flex items-center justify-center"><Loader2 className="w-8 h-8 text-gray-400 animate-spin" /></div>
+                    <div className="w-[240px] h-[240px] flex items-center justify-center"><Loader2 className="w-8 h-8 text-gray-400 animate-spin" /></div>
                   )}
                 </div>
               </div>
@@ -885,7 +900,7 @@ export default function QRCodePage() {
                   {expandedQR === t.code && (
                     <div className="border-t border-white/[0.04] p-5 flex flex-col items-center gap-3 bg-white/[0.01]">
                       <div className="bg-white rounded-2xl p-3">
-                        <QRCodeSVG id={`qr-${t.code}`} value={`${origin}/pay/${t.code}`} size={180} bgColor="#FFFFFF" fgColor="#0a0a0a" level="H" includeMargin={false} />
+                        <QRCodeSVG id={`qr-${t.code}`} value={`${origin}/pay/${t.code}`} size={220} bgColor="#FFFFFF" fgColor="#000000" level="H" includeMargin={true} />
                       </div>
                       <button onClick={() => handleDownloadQR(t.code, t.description)} className="flex items-center gap-1.5 text-xs text-emerald-400 font-bold hover:text-emerald-300 transition">
                         <Download className="w-3.5 h-3.5" />Télécharger le QR

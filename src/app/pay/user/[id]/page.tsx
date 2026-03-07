@@ -188,10 +188,11 @@ export default function PayUserPage() {
             <div className="bg-white rounded-lg p-2">
               <QRCodeSVG
                 value={`${typeof window !== "undefined" ? window.location.origin : ""}/pay/user/${userId}?ref=${sentRef}`}
-                size={80}
+                size={100}
                 bgColor="#FFFFFF"
-                fgColor="#0a0a0a"
+                fgColor="#000000"
                 level="M"
+                includeMargin={true}
               />
             </div>
             <p className="text-[9px] text-white/20 mt-1.5 flex items-center gap-1"><QrCode className="w-2.5 h-2.5" />Preuve de paiement vérifiable</p>
