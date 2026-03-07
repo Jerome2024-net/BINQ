@@ -195,3 +195,28 @@ html {
   -webkit-backdrop-filter: blur(16px);
   border: 1px solid rgba(255, 255, 255, 0.4);
 }
+
+/* QR Scanner - html5-qrcode mobile fix */
+#qr-reader {
+  border: none !important;
+  background: transparent !important;
+}
+#qr-reader video {
+  width: 100% !important;
+  height: auto !important;
+  min-height: 300px;
+  object-fit: cover !important;
+  border-radius: 12px;
+}
+#qr-reader img[alt="Info icon"] {
+  display: none !important;
+}
+#qr-reader__scan_region {
+  min-height: 300px;
+}
+#qr-reader__dashboard_section,
+#qr-reader__dashboard_section_csr,
+#qr-reader__status_span,
+#qr-reader__header_message {
+  display: none !important;
+}

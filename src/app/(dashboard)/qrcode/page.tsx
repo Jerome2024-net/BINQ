@@ -192,6 +192,24 @@ export default function QRCodePage() {
     setScanning(true);
 
     try {
+      // Request camera permission explicitly first (critical for mobile)
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
+        stream.getTracks().forEach(track => track.stop());
+      } catch (permErr: unknown) {
+        setScanning(false);
+        const name = permErr instanceof DOMException ? permErr.name : "";
+        if (name === "NotAllowedError") {
+          setScanError("Accès caméra refusé. Autorisez la caméra dans les paramètres de votre navigateur.");
+        } else if (name === "NotFoundError") {
+          setScanError("Aucune caméra détectée sur cet appareil.");
+        } else {
+          setScanError("Impossible d\u2019accéder à la caméra. Vérifiez les permissions.");
+        }
+        console.error("Camera permission error:", permErr);
+        return;
+      }
+
       const { Html5Qrcode } = await import("html5-qrcode");
       if (html5QrScannerRef.current) {
         try { await (html5QrScannerRef.current as InstanceType<typeof Html5Qrcode>).stop(); } catch { /* ignore */ }
@@ -200,9 +218,18 @@ export default function QRCodePage() {
       const scanner = new Html5Qrcode("qr-reader");
       html5QrScannerRef.current = scanner;
 
+      // Responsive qrbox: 70% of container width, min 200, max 300
+      const containerWidth = scannerRef.current?.clientWidth || 300;
+      const qrboxSize = Math.min(300, Math.max(200, Math.floor(containerWidth * 0.7)));
+
       await scanner.start(
         { facingMode: "environment" },
-        { fps: 10, qrbox: { width: 250, height: 250 } },
+        {
+          fps: 10,
+          qrbox: { width: qrboxSize, height: qrboxSize },
+          aspectRatio: 1,
+          disableFlip: false,
+        },
         (decodedText: string) => {
           scanner.stop().catch(() => {});
           setScanning(false);
@@ -222,7 +249,7 @@ export default function QRCodePage() {
       );
     } catch (err) {
       setScanning(false);
-      setScanError("Impossible d\u2019accéder à la caméra. Vérifiez les permissions.");
+      setScanError("Erreur du scanner. Rechargez la page et réessayez.");
       console.error("Scanner error:", err);
     }
   }, [router]);
@@ -588,7 +615,7 @@ export default function QRCodePage() {
         <div className="space-y-4 animate-in fade-in duration-200">
           <div className="rounded-2xl bg-white/[0.03] border border-white/[0.06] overflow-hidden">
             <div ref={scannerRef} className="relative">
-              <div id="qr-reader" className="w-full" />
+              <div id="qr-reader" className="w-full" style={{ minHeight: scanning ? 300 : 0 }} />
               {!scanning && !scanError && (
                 <div className="flex flex-col items-center justify-center py-16 px-4">
                   <div className="w-20 h-20 rounded-2xl bg-white/[0.03] flex items-center justify-center mb-4">
