@@ -205,17 +205,71 @@ export default function QRCodePage() {
   };
 
   // ── QR Scanner ──
+  const [manualCode, setManualCode] = useState("");
+  const [photoDecoding, setPhotoDecoding] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Process a decoded QR text (shared by live scanner and photo scanner)
+  const handleDecodedQR = useCallback((decodedText: string) => {
+    try {
+      const url = new URL(decodedText);
+      if (url.pathname.startsWith("/pay/user/") || url.pathname.startsWith("/pay/")) {
+        hapticMedium();
+        router.push(url.pathname);
+        return;
+      }
+    } catch {
+      if (decodedText.startsWith("/pay/")) { hapticMedium(); router.push(decodedText); return; }
+    }
+    hapticError();
+    setScanError("QR Code non reconnu. Scannez un QR Code Binq.");
+  }, [router]);
+
+  // ── Photo-based QR scanner (works on ALL phones) ──
+  const handlePhotoCapture = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setPhotoDecoding(true);
+    setScanError(null);
+    try {
+      const { Html5Qrcode } = await import("html5-qrcode");
+      const scanner = new Html5Qrcode("qr-photo-decoder", { verbose: false });
+      const result = await scanner.scanFile(file, false);
+      scanner.clear();
+      hapticMedium();
+      handleDecodedQR(result);
+    } catch {
+      hapticError();
+      setScanError("Impossible de lire le QR Code sur cette photo. Reprenez la photo plus près, avec un bon éclairage.");
+    } finally {
+      setPhotoDecoding(false);
+      // Reset input so the same file can be re-selected
+      if (fileInputRef.current) fileInputRef.current.value = "";
+    }
+  }, [handleDecodedQR]);
+
+  // ── Live video scanner ──
   const startScanner = useCallback(async () => {
     if (!scannerRef.current) return;
     setScanError(null);
     setScanning(true);
 
+    // Detect in-app browsers that block camera access
+    const ua = navigator.userAgent || "";
+    const isInApp = /FBAN|FBAV|Instagram|Line\/|Twitter|Snapchat|TikTok|Weibo|WeChat|MicroMessenger|LinkedIn/i.test(ua);
+    if (isInApp) {
+      setScanning(false);
+      hapticError();
+      setScanError("Ouvrez ce lien dans Safari ou Chrome. Les navigateurs intégrés (Facebook, Instagram...) bloquent la caméra. Vous pouvez aussi utiliser « Prendre une photo » ci-dessous.");
+      return;
+    }
+
     try {
-      // Check if browser supports camera at all
-      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+      // Check if browser supports camera
+      if (!navigator.mediaDevices?.getUserMedia) {
         setScanning(false);
         hapticError();
-        setScanError("Votre navigateur ne supporte pas la caméra. Utilisez Chrome, Safari ou Firefox.");
+        setScanError("Votre navigateur ne supporte pas la caméra vidéo. Utilisez « Prendre une photo » ci-dessous, ou ouvrez dans Chrome/Safari.");
         return;
       }
 
@@ -232,62 +286,70 @@ export default function QRCodePage() {
 
       // Responsive qrbox
       const containerWidth = scannerRef.current?.clientWidth || 320;
-      const qrboxSize = Math.min(280, Math.max(150, Math.floor(containerWidth * 0.65)));
+      const qrboxSize = Math.min(250, Math.max(120, Math.floor(containerWidth * 0.6)));
 
       const onSuccess = (decodedText: string) => {
         scanner.stop().catch(() => {});
         html5QrScannerRef.current = null;
         setScanning(false);
-        try {
-          const url = new URL(decodedText);
-          const pathname = url.pathname;
-          if (pathname.startsWith("/pay/user/") || pathname.startsWith("/pay/")) {
-            router.push(pathname);
-            return;
-          }
-        } catch {
-          if (decodedText.startsWith("/pay/")) { router.push(decodedText); return; }
-        }
-        hapticError();
-        setScanError("QR Code non reconnu. Scannez un QR Code Binq.");
+        handleDecodedQR(decodedText);
       };
 
-      const config = { fps: 10, qrbox: { width: qrboxSize, height: qrboxSize } };
+      const config = { fps: 10, qrbox: { width: qrboxSize, height: qrboxSize }, disableFlip: false };
 
-      // Try back camera first, fallback to any camera
-      try {
-        await scanner.start({ facingMode: "environment" }, config, onSuccess, () => {});
-      } catch {
+      // Multi-strategy camera start (NO pre-check getUserMedia — it breaks many phones)
+      let started = false;
+
+      // Strategy 1: back camera via facingMode
+      if (!started) {
         try {
-          // Fallback: try any available camera
-          const devices = await Html5Qrcode.getCameras();
-          if (devices && devices.length > 0) {
-            // Prefer back camera if available
-            const backCam = devices.find(d => /back|rear|environment/i.test(d.label));
-            const camId = backCam ? backCam.id : devices[devices.length - 1].id;
-            await scanner.start(camId, config, onSuccess, () => {});
-          } else {
-            throw new Error("No cameras found");
-          }
-        } catch (fallbackErr) {
-          html5QrScannerRef.current = null;
-          setScanning(false);
-          hapticError();
-          const msg = String(fallbackErr);
-          if (msg.includes("NotAllowed") || msg.includes("Permission")) {
-            setScanError("Caméra refusée. Allez dans Paramètres > Safari/Chrome > Autoriser la caméra pour ce site.");
-          } else if (msg.includes("NotFound") || msg.includes("No cameras")) {
-            setScanError("Aucune caméra détectée.");
-          } else {
-            setScanError("Impossible d\u2019ouvrir la caméra. Fermez les autres apps qui utilisent la caméra et réessayez.");
-          }
-          console.error("Scanner fallback error:", fallbackErr);
-          return;
-        }
+          await scanner.start({ facingMode: "environment" }, config, onSuccess, () => {});
+          started = true;
+        } catch { /* try next */ }
       }
 
-      // Force playsinline on video for iOS
-      setTimeout(() => {
+      // Strategy 2: enumerate cameras and pick back camera
+      if (!started) {
+        try {
+          const devices = await Html5Qrcode.getCameras();
+          if (devices && devices.length > 0) {
+            const backCam = devices.find(d => /back|rear|environment|arrière|trasera|posteriore/i.test(d.label));
+            const camId = backCam ? backCam.id : devices[devices.length - 1].id;
+            await scanner.start(camId, config, onSuccess, () => {});
+            started = true;
+          }
+        } catch { /* try next */ }
+      }
+
+      // Strategy 3: front camera
+      if (!started) {
+        try {
+          await scanner.start({ facingMode: "user" }, config, onSuccess, () => {});
+          started = true;
+        } catch { /* try next */ }
+      }
+
+      // Strategy 4: first available camera
+      if (!started) {
+        try {
+          const devices = await Html5Qrcode.getCameras();
+          if (devices && devices.length > 0) {
+            await scanner.start(devices[0].id, config, onSuccess, () => {});
+            started = true;
+          }
+        } catch { /* give up */ }
+      }
+
+      if (!started) {
+        html5QrScannerRef.current = null;
+        setScanning(false);
+        hapticError();
+        setScanError("Impossible de démarrer la caméra. Utilisez « Prendre une photo » ci-dessous, ou essayez Chrome/Safari.");
+        return;
+      }
+
+      // Force playsinline for iOS + fix video styling
+      const fixVideo = () => {
         const video = document.querySelector("#qr-reader video") as HTMLVideoElement;
         if (video) {
           video.setAttribute("playsinline", "true");
@@ -299,15 +361,18 @@ export default function QRCodePage() {
           video.style.objectFit = "cover";
           video.style.borderRadius = "12px";
         }
-      }, 500);
+      };
+      fixVideo();
+      setTimeout(fixVideo, 300);
+      setTimeout(fixVideo, 1000);
     } catch (err) {
       setScanning(false);
       html5QrScannerRef.current = null;
       hapticError();
-      setScanError("Erreur du scanner. Rechargez la page et réessayez.");
+      setScanError("Erreur du scanner. Utilisez « Prendre une photo » ci-dessous, ou rechargez la page.");
       console.error("Scanner error:", err);
     }
-  }, [router]);
+  }, [router, handleDecodedQR]);
 
   const stopScanner = useCallback(async () => {
     if (html5QrScannerRef.current) {
@@ -669,19 +734,42 @@ export default function QRCodePage() {
       {/* ═════════════════════ */}
       {tab === "scanner" && (
         <div className="space-y-4 animate-in fade-in duration-200">
+          {/* Hidden div for photo QR decoding */}
+          <div id="qr-photo-decoder" style={{ display: "none" }} />
+          {/* Hidden file input for photo capture */}
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/*"
+            capture="environment"
+            onChange={handlePhotoCapture}
+            className="hidden"
+          />
+
           <div className="rounded-2xl bg-white/[0.03] border border-white/[0.06] overflow-hidden">
             <div ref={scannerRef} className="relative" style={{ minHeight: scanning ? 320 : "auto" }}>
               <div id="qr-reader" className="w-full" style={{ minHeight: scanning ? 320 : 0, overflow: "hidden", borderRadius: 12 }} />
               {!scanning && !scanError && (
-                <div className="flex flex-col items-center justify-center py-16 px-4">
+                <div className="flex flex-col items-center justify-center py-12 px-4">
                   <div className="w-20 h-20 rounded-2xl bg-white/[0.03] flex items-center justify-center mb-4">
                     <Camera className="w-10 h-10 text-white/15" />
                   </div>
                   <p className="text-white/50 font-bold text-sm mb-1">Scanner un QR Code</p>
-                  <p className="text-white/20 text-xs text-center mb-5">Pointez la caméra vers un QR Code Binq pour payer</p>
-                  <button onClick={startScanner} className="flex items-center gap-2 px-6 py-3 rounded-xl bg-emerald-500 text-white font-bold hover:bg-emerald-400 transition-all active:scale-95">
-                    <ScanLine className="w-5 h-5" />Démarrer le scan
-                  </button>
+                  <p className="text-white/20 text-xs text-center mb-5">Pointez la caméra vers un QR Code Binq</p>
+                  <div className="flex flex-col gap-3 w-full max-w-xs">
+                    <button onClick={startScanner} className="flex items-center justify-center gap-2 w-full px-6 py-3 rounded-xl bg-emerald-500 text-white font-bold hover:bg-emerald-400 transition-all active:scale-95">
+                      <ScanLine className="w-5 h-5" />Scan en direct
+                    </button>
+                    <button
+                      onClick={() => fileInputRef.current?.click()}
+                      disabled={photoDecoding}
+                      className="flex items-center justify-center gap-2 w-full px-6 py-3 rounded-xl bg-white/[0.06] text-white/80 font-bold hover:bg-white/[0.1] transition-all active:scale-95 border border-white/[0.08]"
+                    >
+                      {photoDecoding ? <Loader2 className="w-5 h-5 animate-spin" /> : <Camera className="w-5 h-5" />}
+                      {photoDecoding ? "Analyse..." : "Prendre une photo"}
+                    </button>
+                    <p className="text-[10px] text-white/20 text-center">Si le scan ne marche pas, prenez une photo du QR Code</p>
+                  </div>
                 </div>
               )}
               {scanning && (
@@ -699,20 +787,76 @@ export default function QRCodePage() {
               )}
             </div>
           </div>
+
           {scanError && (
-            <div className="rounded-2xl bg-red-500/10 border border-red-500/20 p-4 text-center">
-              <p className="text-sm text-red-400 font-semibold mb-2">{scanError}</p>
-              <button onClick={startScanner} className="text-xs text-emerald-400 font-bold hover:text-emerald-300 transition">Réessayer</button>
+            <div className="rounded-2xl bg-red-500/10 border border-red-500/20 p-4 text-center space-y-3">
+              <p className="text-sm text-red-400 font-semibold">{scanError}</p>
+              <div className="flex gap-2 justify-center">
+                <button onClick={startScanner} className="text-xs text-emerald-400 font-bold hover:text-emerald-300 transition px-3 py-1.5 rounded-lg bg-emerald-500/10">
+                  Réessayer le scan
+                </button>
+                <button
+                  onClick={() => fileInputRef.current?.click()}
+                  disabled={photoDecoding}
+                  className="text-xs text-white/60 font-bold hover:text-white/80 transition px-3 py-1.5 rounded-lg bg-white/[0.06]"
+                >
+                  📸 Prendre une photo
+                </button>
+              </div>
             </div>
           )}
-          <div className="rounded-2xl bg-white/[0.02] border border-white/[0.04] p-4">
-            <p className="text-xs text-white/30 font-semibold mb-1">QR Codes supportés</p>
-            <ul className="text-[11px] text-white/20 space-y-1">
-              <li>• QR Code personnel d&apos;un utilisateur Binq</li>
-              <li>• QR Code terminal marchand</li>
-              <li>• Lien de paiement (Demande d&apos;argent)</li>
-              <li>• Lien d&apos;envoi via QR</li>
-            </ul>
+
+          {/* Photo capture option (always visible when scanning) */}
+          {scanning && (
+            <button
+              onClick={() => { stopScanner(); setTimeout(() => fileInputRef.current?.click(), 100); }}
+              className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-white/[0.04] border border-white/[0.08] text-white/50 text-xs font-bold hover:bg-white/[0.08] transition active:scale-95"
+            >
+              <Camera className="w-4 h-4" />Le scan ne marche pas ? Prendre une photo
+            </button>
+          )}
+
+          {/* Manual code input fallback */}
+          <div className="rounded-2xl bg-white/[0.03] border border-white/[0.06] p-4">
+            <p className="text-xs text-white/40 font-semibold mb-2.5">Entrez le code manuellement</p>
+            <div className="flex gap-2">
+              <input
+                type="text"
+                placeholder="Code ou lien Binq"
+                value={manualCode}
+                onChange={(e) => setManualCode(e.target.value)}
+                className="flex-1 bg-white/[0.04] border border-white/[0.08] rounded-xl px-3 py-2.5 text-sm text-white font-semibold outline-none focus:border-emerald-500/40 transition-colors placeholder:text-white/15"
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && manualCode.trim()) {
+                    const val = manualCode.trim();
+                    try {
+                      const url = new URL(val);
+                      if (url.pathname.startsWith("/pay/")) { router.push(url.pathname); return; }
+                    } catch { /* not a URL */ }
+                    if (val.startsWith("/pay/")) { router.push(val); return; }
+                    if (/^[a-zA-Z0-9_-]+$/.test(val)) { router.push(`/pay/${val}`); return; }
+                    setScanError("Code invalide. Entrez un lien Binq ou un code de paiement.");
+                  }
+                }}
+              />
+              <button
+                onClick={() => {
+                  const val = manualCode.trim();
+                  if (!val) return;
+                  try {
+                    const url = new URL(val);
+                    if (url.pathname.startsWith("/pay/")) { router.push(url.pathname); return; }
+                  } catch { /* not a URL */ }
+                  if (val.startsWith("/pay/")) { router.push(val); return; }
+                  if (/^[a-zA-Z0-9_-]+$/.test(val)) { router.push(`/pay/${val}`); return; }
+                  setScanError("Code invalide. Entrez un lien Binq ou un code de paiement.");
+                }}
+                disabled={!manualCode.trim()}
+                className="px-4 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-white text-xs font-bold transition disabled:opacity-30 active:scale-95"
+              >
+                Payer
+              </button>
+            </div>
           </div>
         </div>
       )}
