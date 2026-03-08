@@ -485,13 +485,13 @@ function LinkCard({
       {/* QR Code */}
       {isActive && showQR && (
         <div className="flex flex-col items-center py-3 animate-in fade-in slide-in-from-top-2 duration-200">
-          <div className="bg-white rounded-xl p-3 mb-2">
+          <div className="bg-white rounded-xl p-4 mb-2">
             <QRCodeSVG
               value={linkUrl}
-              size={200}
+              size={240}
               bgColor="#FFFFFF"
               fgColor="#000000"
-              level="H"
+              level="M"
               includeMargin={true}
             />
           </div>

@@ -629,11 +629,11 @@ export default function QRCodePage() {
             )}
             <div className="flex flex-col items-center">
               <p className="text-xs font-bold text-white/60 mb-3">Montrez ce QR pour recevoir de l&apos;argent</p>
-              <div className="bg-white rounded-2xl p-3 mb-4">
+              <div className="bg-white rounded-2xl p-5 mb-4">
                 {preFillUrl ? (
-                  <QRCodeSVG id="personal-qr-code" value={preFillUrl} size={220} bgColor="#FFFFFF" fgColor="#000000" level="H" includeMargin={true} />
+                  <QRCodeSVG id="personal-qr-code" value={preFillUrl} size={280} bgColor="#FFFFFF" fgColor="#000000" level="M" includeMargin={true} />
                 ) : (
-                  <div className="w-[220px] h-[220px] flex items-center justify-center">
+                  <div className="w-[280px] h-[280px] flex items-center justify-center">
                     <Loader2 className="w-6 h-6 text-gray-400 animate-spin" />
                   </div>
                 )}
@@ -928,11 +928,11 @@ export default function QRCodePage() {
                 <p className="text-[11px] text-white/30">Le client doit scanner ce QR Code pour payer</p>
               </div>
               <div className="flex justify-center mb-5">
-                <div className="bg-white rounded-2xl p-4">
+                <div className="bg-white rounded-2xl p-5">
                   {posPayUrl ? (
-                    <QRCodeSVG id={`qr-pos-${posCode}`} value={posPayUrl} size={240} bgColor="#FFFFFF" fgColor="#000000" level="H" includeMargin={true} />
+                    <QRCodeSVG id={`qr-pos-${posCode}`} value={posPayUrl} size={280} bgColor="#FFFFFF" fgColor="#000000" level="M" includeMargin={true} />
                   ) : (
-                    <div className="w-[240px] h-[240px] flex items-center justify-center"><Loader2 className="w-8 h-8 text-gray-400 animate-spin" /></div>
+                    <div className="w-[280px] h-[280px] flex items-center justify-center"><Loader2 className="w-8 h-8 text-gray-400 animate-spin" /></div>
                   )}
                 </div>
               </div>
@@ -1084,8 +1084,8 @@ export default function QRCodePage() {
                   </div>
                   {expandedQR === t.code && (
                     <div className="border-t border-white/[0.04] p-5 flex flex-col items-center gap-3 bg-white/[0.01]">
-                      <div className="bg-white rounded-2xl p-3">
-                        <QRCodeSVG id={`qr-${t.code}`} value={`${origin}/pay/${t.code}`} size={220} bgColor="#FFFFFF" fgColor="#000000" level="H" includeMargin={true} />
+                      <div className="bg-white rounded-2xl p-5">
+                        <QRCodeSVG id={`qr-${t.code}`} value={`${origin}/pay/${t.code}`} size={260} bgColor="#FFFFFF" fgColor="#000000" level="M" includeMargin={true} />
                       </div>
                       <button onClick={() => handleDownloadQR(t.code, t.description)} className="flex items-center gap-1.5 text-xs text-emerald-400 font-bold hover:text-emerald-300 transition">
                         <Download className="w-3.5 h-3.5" />Télécharger le QR
