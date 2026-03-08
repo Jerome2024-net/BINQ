@@ -209,63 +209,95 @@ export default function QRCodePage() {
     setScanning(true);
 
     try {
-      // Request camera permission explicitly first (critical for mobile)
-      try {
-        const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
-        stream.getTracks().forEach(track => track.stop());
-      } catch (permErr: unknown) {
+      // Check if browser supports camera at all
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
         setScanning(false);
-        const name = permErr instanceof DOMException ? permErr.name : "";
-        if (name === "NotAllowedError") {
-          setScanError("Accès caméra refusé. Autorisez la caméra dans les paramètres de votre navigateur.");
-        } else if (name === "NotFoundError") {
-          setScanError("Aucune caméra détectée sur cet appareil.");
-        } else {
-          setScanError("Impossible d\u2019accéder à la caméra. Vérifiez les permissions.");
-        }
-        console.error("Camera permission error:", permErr);
+        setScanError("Votre navigateur ne supporte pas la caméra. Utilisez Chrome, Safari ou Firefox.");
         return;
       }
 
       const { Html5Qrcode } = await import("html5-qrcode");
+
+      // Stop any existing scanner
       if (html5QrScannerRef.current) {
-        try { await (html5QrScannerRef.current as InstanceType<typeof Html5Qrcode>).stop(); } catch { /* ignore */ }
+        try { await (html5QrScannerRef.current as InstanceType<typeof Html5Qrcode>).stop(); } catch { /* ok */ }
+        html5QrScannerRef.current = null;
       }
 
-      const scanner = new Html5Qrcode("qr-reader");
+      const scanner = new Html5Qrcode("qr-reader", { verbose: false });
       html5QrScannerRef.current = scanner;
 
-      // Responsive qrbox: 70% of container width, min 200, max 300
-      const containerWidth = scannerRef.current?.clientWidth || 300;
-      const qrboxSize = Math.min(300, Math.max(200, Math.floor(containerWidth * 0.7)));
+      // Responsive qrbox
+      const containerWidth = scannerRef.current?.clientWidth || 320;
+      const qrboxSize = Math.min(280, Math.max(150, Math.floor(containerWidth * 0.65)));
 
-      await scanner.start(
-        { facingMode: "environment" },
-        {
-          fps: 10,
-          qrbox: { width: qrboxSize, height: qrboxSize },
-          aspectRatio: 1,
-          disableFlip: false,
-        },
-        (decodedText: string) => {
-          scanner.stop().catch(() => {});
-          setScanning(false);
-          try {
-            const url = new URL(decodedText);
-            const pathname = url.pathname;
-            if (pathname.startsWith("/pay/user/") || pathname.startsWith("/pay/")) {
-              router.push(pathname);
-              return;
-            }
-          } catch {
-            if (decodedText.startsWith("/pay/")) { router.push(decodedText); return; }
+      const onSuccess = (decodedText: string) => {
+        scanner.stop().catch(() => {});
+        html5QrScannerRef.current = null;
+        setScanning(false);
+        try {
+          const url = new URL(decodedText);
+          const pathname = url.pathname;
+          if (pathname.startsWith("/pay/user/") || pathname.startsWith("/pay/")) {
+            router.push(pathname);
+            return;
           }
-          setScanError("QR Code non reconnu. Scannez un QR Code Binq.");
-        },
-        () => {}
-      );
+        } catch {
+          if (decodedText.startsWith("/pay/")) { router.push(decodedText); return; }
+        }
+        setScanError("QR Code non reconnu. Scannez un QR Code Binq.");
+      };
+
+      const config = { fps: 10, qrbox: { width: qrboxSize, height: qrboxSize } };
+
+      // Try back camera first, fallback to any camera
+      try {
+        await scanner.start({ facingMode: "environment" }, config, onSuccess, () => {});
+      } catch {
+        try {
+          // Fallback: try any available camera
+          const devices = await Html5Qrcode.getCameras();
+          if (devices && devices.length > 0) {
+            // Prefer back camera if available
+            const backCam = devices.find(d => /back|rear|environment/i.test(d.label));
+            const camId = backCam ? backCam.id : devices[devices.length - 1].id;
+            await scanner.start(camId, config, onSuccess, () => {});
+          } else {
+            throw new Error("No cameras found");
+          }
+        } catch (fallbackErr) {
+          html5QrScannerRef.current = null;
+          setScanning(false);
+          const msg = String(fallbackErr);
+          if (msg.includes("NotAllowed") || msg.includes("Permission")) {
+            setScanError("Caméra refusée. Allez dans Paramètres > Safari/Chrome > Autoriser la caméra pour ce site.");
+          } else if (msg.includes("NotFound") || msg.includes("No cameras")) {
+            setScanError("Aucune caméra détectée.");
+          } else {
+            setScanError("Impossible d\u2019ouvrir la caméra. Fermez les autres apps qui utilisent la caméra et réessayez.");
+          }
+          console.error("Scanner fallback error:", fallbackErr);
+          return;
+        }
+      }
+
+      // Force playsinline on video for iOS
+      setTimeout(() => {
+        const video = document.querySelector("#qr-reader video") as HTMLVideoElement;
+        if (video) {
+          video.setAttribute("playsinline", "true");
+          video.setAttribute("webkit-playsinline", "true");
+          video.setAttribute("muted", "true");
+          video.style.width = "100%";
+          video.style.height = "auto";
+          video.style.minHeight = "280px";
+          video.style.objectFit = "cover";
+          video.style.borderRadius = "12px";
+        }
+      }, 500);
     } catch (err) {
       setScanning(false);
+      html5QrScannerRef.current = null;
       setScanError("Erreur du scanner. Rechargez la page et réessayez.");
       console.error("Scanner error:", err);
     }
@@ -273,7 +305,7 @@ export default function QRCodePage() {
 
   const stopScanner = useCallback(async () => {
     if (html5QrScannerRef.current) {
-      try { await (html5QrScannerRef.current as { stop: () => Promise<void> }).stop(); } catch { /* ignore */ }
+      try { await (html5QrScannerRef.current as { stop: () => Promise<void> }).stop(); } catch { /* ok */ }
       html5QrScannerRef.current = null;
     }
     setScanning(false);
@@ -282,7 +314,8 @@ export default function QRCodePage() {
   useEffect(() => {
     return () => {
       if (html5QrScannerRef.current) {
-        try { (html5QrScannerRef.current as { stop: () => Promise<void> }).stop(); } catch { /* ignore */ }
+        try { (html5QrScannerRef.current as { stop: () => Promise<void> }).stop(); } catch { /* ok */ }
+        html5QrScannerRef.current = null;
       }
     };
   }, []);
@@ -629,8 +662,8 @@ export default function QRCodePage() {
       {tab === "scanner" && (
         <div className="space-y-4 animate-in fade-in duration-200">
           <div className="rounded-2xl bg-white/[0.03] border border-white/[0.06] overflow-hidden">
-            <div ref={scannerRef} className="relative">
-              <div id="qr-reader" className="w-full" style={{ minHeight: scanning ? 300 : 0 }} />
+            <div ref={scannerRef} className="relative" style={{ minHeight: scanning ? 320 : "auto" }}>
+              <div id="qr-reader" className="w-full" style={{ minHeight: scanning ? 320 : 0, overflow: "hidden", borderRadius: 12 }} />
               {!scanning && !scanError && (
                 <div className="flex flex-col items-center justify-center py-16 px-4">
                   <div className="w-20 h-20 rounded-2xl bg-white/[0.03] flex items-center justify-center mb-4">
