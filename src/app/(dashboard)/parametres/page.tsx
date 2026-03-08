@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/contexts/ToastContext";
+import { hapticSuccess, hapticHeavy } from "@/lib/haptics";
 import Link from "next/link";
 import {
   ArrowLeft,
@@ -46,6 +47,7 @@ export default function ParametresPage() {
     setLoading(true);
     try {
       await updateProfile({ notificationsEmail: notifEmail, notificationsSms: notifSms });
+      hapticSuccess();
       showToast("success", "Notifications mises à jour !");
     } catch {
       showToast("error", "Erreur lors de la sauvegarde");
@@ -57,6 +59,7 @@ export default function ParametresPage() {
   const handleDeleteAccount = async () => {
     try {
       await logout();
+      hapticHeavy();
       showToast("success", "Compte supprimé", "Votre compte a été supprimé");
     } catch {
       showToast("error", "Erreur", "Impossible de supprimer le compte");

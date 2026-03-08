@@ -3,6 +3,7 @@
 import { useState, useEffect, FormEvent } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/contexts/ToastContext";
+import { hapticSuccess } from "@/lib/haptics";
 import { getStripe } from "@/lib/stripe-client";
 import { Elements, PaymentElement, useStripe, useElements } from "@stripe/react-stripe-js";
 import { type DeviseCode, DEVISE_LIST, DEVISES, DEFAULT_DEVISE, formatMontant, calcDepositStripeAmount } from "@/lib/currencies";
@@ -68,6 +69,7 @@ function PaymentForm({
         if (data.success) {
           onSuccess({ montant: data.montant_credite, reference: data.reference, solde: data.nouveau_solde, devise: data.devise || devise });
         } else {
+          hapticSuccess();
           showToast("success", "Paiement reçu", "Votre dépôt sera crédité sous peu.");
           onSuccess({ montant: montantCredite, reference: paymentIntent.id, solde: 0, devise });
         }

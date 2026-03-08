@@ -3,6 +3,7 @@
 import React, { createContext, useContext, useCallback, useState } from "react";
 import { useAuth } from "./AuthContext";
 import { useToast } from "./ToastContext";
+import { hapticSuccess } from "@/lib/haptics";
 
 // ========================
 // Types du contexte
@@ -128,6 +129,7 @@ export function PaymentProvider({ children }: { children: React.ReactNode }) {
       if (!user) return;
       const deviseLabel = currency === "eur" ? "€" : "$";
       // Le webhook Stripe enregistre automatiquement la transaction dans Supabase
+      hapticSuccess();
       showToast("success", "Dépôt confirmé ! ✅", `${montant.toLocaleString("fr-FR")} ${deviseLabel} traité par Stripe`);
     },
     [user, currency, showToast]
@@ -169,6 +171,7 @@ export function PaymentProvider({ children }: { children: React.ReactNode }) {
         stripePayoutsEnabled: data.payoutsEnabled,
       });
 
+      hapticSuccess();
       showToast("success", "Compte Stripe créé !", "Complétez la vérification d'identité pour recevoir des paiements");
       return { accountId: data.accountId };
     } catch (err) {
@@ -331,6 +334,7 @@ export function PaymentProvider({ children }: { children: React.ReactNode }) {
         const data = await response.json();
         if (!response.ok) throw new Error(data.error || "Erreur distribution pot");
 
+        hapticSuccess();
         showToast("success", "Pot distribué ! 🎉", `${montant.toLocaleString("fr-FR")} ${cur === "eur" ? "€" : "$"} transférés au bénéficiaire`);
         return { transferId: data.transferId as string };
       } catch (err) {
@@ -370,6 +374,7 @@ export function PaymentProvider({ children }: { children: React.ReactNode }) {
         if (!response.ok) throw new Error(data.error || "Erreur payout");
 
         // Le webhook Stripe enregistre automatiquement la transaction
+        hapticSuccess();
         showToast("success", "Retrait initié ! 💸", `${montant.toLocaleString("fr-FR")} ${cur === "eur" ? "€" : "$"} vers votre compte bancaire`);
         return { payoutId: data.payoutId as string, status: data.status as string };
       } catch (err) {
@@ -428,6 +433,7 @@ export function PaymentProvider({ children }: { children: React.ReactNode }) {
       const result = await createPayout(montant, currency);
       if (result) {
         const deviseLabel = currency === "eur" ? "€" : "$";
+        hapticSuccess();
         showToast("success", "Retrait initié ! 📤", `${montant.toLocaleString("fr-FR")} ${deviseLabel} vers ${destination}. Traitement sous 24-48h.`);
       }
     },

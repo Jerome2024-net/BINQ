@@ -27,6 +27,7 @@ import {
 } from "lucide-react";
 import { type DeviseCode, DEVISES, DEFAULT_DEVISE, formatMontant, DEVISE_LIST } from "@/lib/currencies";
 import { playPaymentSound } from "@/lib/sounds";
+import { hapticLight, hapticMedium, hapticError, hapticHeavy } from "@/lib/haptics";
 import dynamic from "next/dynamic";
 const SuccessConfetti = dynamic(() => import("@/components/SuccessConfetti"), { ssr: false });
 
@@ -131,6 +132,7 @@ export default function QRCodePage() {
     if (!payUrl) return;
     try {
       await navigator.clipboard.writeText(preFillUrl);
+      hapticMedium();
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch { /* ignore */ }
@@ -212,6 +214,7 @@ export default function QRCodePage() {
       // Check if browser supports camera at all
       if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
         setScanning(false);
+        hapticError();
         setScanError("Votre navigateur ne supporte pas la caméra. Utilisez Chrome, Safari ou Firefox.");
         return;
       }
@@ -245,6 +248,7 @@ export default function QRCodePage() {
         } catch {
           if (decodedText.startsWith("/pay/")) { router.push(decodedText); return; }
         }
+        hapticError();
         setScanError("QR Code non reconnu. Scannez un QR Code Binq.");
       };
 
@@ -268,6 +272,7 @@ export default function QRCodePage() {
         } catch (fallbackErr) {
           html5QrScannerRef.current = null;
           setScanning(false);
+          hapticError();
           const msg = String(fallbackErr);
           if (msg.includes("NotAllowed") || msg.includes("Permission")) {
             setScanError("Caméra refusée. Allez dans Paramètres > Safari/Chrome > Autoriser la caméra pour ce site.");
@@ -298,6 +303,7 @@ export default function QRCodePage() {
     } catch (err) {
       setScanning(false);
       html5QrScannerRef.current = null;
+      hapticError();
       setScanError("Erreur du scanner. Rechargez la page et réessayez.");
       console.error("Scanner error:", err);
     }
@@ -376,6 +382,7 @@ export default function QRCodePage() {
           if (pollingRef.current) clearInterval(pollingRef.current);
           setPosPayer(data.paye_par || "Client");
           setPosStep("success");
+          hapticHeavy();
           playPaymentSound();
         }
       } catch { /* ignore */ }
@@ -445,6 +452,7 @@ export default function QRCodePage() {
     const url = `${origin}/pay/${code}`;
     try {
       await navigator.clipboard.writeText(url);
+      hapticMedium();
       setCopiedCode(code);
       setTimeout(() => setCopiedCode(null), 2000);
     } catch { /* ignore */ }
@@ -508,7 +516,7 @@ export default function QRCodePage() {
         ]).map((t) => (
           <button
             key={t.key}
-            onClick={() => setTab(t.key)}
+            onClick={() => { hapticLight(); setTab(t.key); }}
             className={`flex-1 flex items-center justify-center gap-1 py-2.5 rounded-lg text-[11px] font-bold transition-all ${
               tab === t.key
                 ? "bg-emerald-500/20 text-emerald-400"

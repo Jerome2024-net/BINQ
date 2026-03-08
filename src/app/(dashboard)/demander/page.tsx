@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/contexts/ToastContext";
+import { hapticSuccess, hapticMedium } from "@/lib/haptics";
 import {
   type DeviseCode,
   DEVISE_LIST,
@@ -101,6 +102,7 @@ export default function DemanderPage() {
     try {
       await navigator.clipboard.writeText(url);
       setCopiedId(link.id);
+      hapticMedium();
       showToast("success", "Copié", "Lien copié dans le presse-papiers");
       setTimeout(() => setCopiedId(null), 2000);
     } catch {
@@ -159,6 +161,7 @@ export default function DemanderPage() {
         return;
       }
 
+      hapticSuccess();
       showToast("success", "Lien créé", "Votre lien de demande est prêt !");
       setMontant("");
       setDescription("");
@@ -190,6 +193,7 @@ export default function DemanderPage() {
         showToast("error", "Erreur", data.error || "Impossible d\u2019annuler");
         return;
       }
+      hapticMedium();
       showToast("success", "Annulé", "Lien de paiement annulé");
       fetchLinks();
     } catch {

@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/contexts/ToastContext";
+import { hapticSuccess, hapticError, hapticWarning } from "@/lib/haptics";
 import { type DeviseCode, DEVISE_LIST, DEVISES, DEFAULT_DEVISE, formatMontant } from "@/lib/currencies";
 import {
   SendHorizonal,
@@ -80,6 +81,7 @@ export default function EnvoyerPage() {
     const montant = parseFloat(amount);
     if (!montant || montant <= 0) return;
     if (montant > solde) {
+      hapticWarning();
       showToast("error", "Solde insuffisant", `Votre solde est de ${formatMontant(solde, devise)}`);
       return;
     }
@@ -102,14 +104,17 @@ export default function EnvoyerPage() {
       });
       const data = await res.json();
       if (!res.ok) {
+        hapticError();
         showToast("error", "Erreur", data.error || "Transfert échoué");
         return;
       }
       setResult(data.transfert);
       setSolde((prev) => prev - parseFloat(amount));
       setStep("success");
+      hapticSuccess();
       showToast("success", "Envoyé !", `${formatMontant(parseFloat(amount), devise)} envoyé à ${selectedUser.prenom}`);
     } catch {
+      hapticError();
       showToast("error", "Erreur", "Erreur lors du transfert");
     } finally { setSending(false); }
   };

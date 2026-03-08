@@ -5,6 +5,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/contexts/ToastContext";
+import { hapticSuccess } from "@/lib/haptics";
 import {
   Mail,
   Lock,
@@ -45,6 +46,7 @@ export default function InscriptionPage() {
     try {
       const result = await register(formData);
       if (result.success) {
+        hapticSuccess();
         showToast("success", "Bienvenue !", "Votre compte a été créé avec succès.");
         router.push("/dashboard");
       } else {

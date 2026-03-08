@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/contexts/ToastContext";
+import { hapticSuccess, hapticError } from "@/lib/haptics";
 import { type DeviseCode, DEVISES, DEVISE_LIST, DEFAULT_DEVISE, formatMontant } from "@/lib/currencies";
 import Link from "next/link";
 import {
@@ -112,8 +113,10 @@ export default function PayUserPage() {
       setSentRef(data.reference || data.transfert?.reference || "");
       setSentMontant(parsedMontant);
       setSentDate(new Date().toLocaleString("fr-FR", { dateStyle: "medium", timeStyle: "short" }));
+      hapticSuccess();
       showToast("success", "Envoyé", `${formatMontant(parsedMontant, devise)} envoyés avec succès`);
     } catch {
+      hapticError();
       showToast("error", "Erreur", "Erreur réseau");
     } finally {
       setSending(false);

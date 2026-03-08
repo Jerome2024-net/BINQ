@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/contexts/ToastContext";
+import { hapticSuccess, hapticError } from "@/lib/haptics";
 import Link from "next/link";
 import {
   Loader2,
@@ -119,8 +120,10 @@ export default function PayPage() {
       setPaidMontant(montant);
       setPaidDate(new Date().toLocaleString("fr-FR", { dateStyle: "medium", timeStyle: "short" }));
       const isSend = link.type === "send";
+      hapticSuccess();
       showToast("success", isSend ? "Argent récupéré" : "Paiement effectué", `${formatMontant(montant, (link.devise as DeviseCode) || "XOF")} ${isSend ? "reçus" : "envoyés"} avec succès`);
     } catch {
+      hapticError();
       showToast("error", "Erreur", "Erreur lors du paiement");
     } finally {
       setPaying(false);

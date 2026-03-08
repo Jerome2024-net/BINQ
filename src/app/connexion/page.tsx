@@ -5,6 +5,7 @@ import { useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/contexts/ToastContext";
+import { hapticSuccess } from "@/lib/haptics";
 import { Mail, Lock, ArrowRight, Eye, EyeOff, Loader2, ShieldCheck, Zap, Smartphone, Star } from "lucide-react";
 
 function ConnexionForm() {
@@ -27,6 +28,7 @@ function ConnexionForm() {
     try {
       const result = await login(email, password);
       if (result.success) {
+        hapticSuccess();
         showToast("success", "Bienvenue !", "Connexion réussie");
         window.location.href = redirect || "/dashboard";
         return;

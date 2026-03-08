@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useFinance } from "@/contexts/FinanceContext";
 import { useToast } from "@/contexts/ToastContext";
+import { hapticSuccess, hapticMedium } from "@/lib/haptics";
 import AvatarUpload from "@/components/AvatarUpload";
 import { formatMontant } from "@/lib/currencies";
 import {
@@ -86,6 +87,7 @@ export default function ProfilPage() {
 
   const handleAvatarUploaded = async (url: string) => {
     await updateProfile({ avatar: url });
+    hapticSuccess();
     showToast("success", "Photo de profil mise à jour !");
   };
 
@@ -94,6 +96,7 @@ export default function ProfilPage() {
     setLoading(true);
     try {
       await updateProfile(formData);
+      hapticSuccess();
       showToast("success", "Profil mis à jour !", "Vos informations ont été enregistrées");
     } catch {
       showToast("error", "Erreur", "Impossible de mettre à jour le profil");
@@ -106,6 +109,7 @@ export default function ProfilPage() {
     setLoading(true);
     try {
       await updateProfile(preferences);
+      hapticSuccess();
       showToast("success", "Préférences sauvegardées !");
     } catch {
       showToast("error", "Erreur", "Impossible de sauvegarder les préférences");
@@ -135,6 +139,7 @@ export default function ProfilPage() {
         body: JSON.stringify({ currentPassword: passwords.current, newPassword: passwords.newPass }),
       });
       if (res.ok) {
+        hapticSuccess();
         showToast("success", "Mot de passe modifié !");
         setPasswords({ current: "", newPass: "", confirm: "" });
       } else {
@@ -151,6 +156,7 @@ export default function ProfilPage() {
   const copyId = () => {
     if (user?.id) {
       navigator.clipboard.writeText(user.id);
+      hapticMedium();
       showToast("success", "ID copié !");
     }
   };
@@ -500,6 +506,7 @@ export default function ProfilPage() {
                 <button
                   onClick={async () => {
                     await updateProfile({ badgeVerifie: true });
+                    hapticSuccess();
                     showToast("success", "Profil vérifié !", "Votre badge est maintenant actif");
                   }}
                   className="bg-amber-500 hover:bg-amber-600 text-white text-xs font-bold py-2 px-4 rounded-xl transition-colors"
