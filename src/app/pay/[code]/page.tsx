@@ -57,6 +57,20 @@ export default function PayPage() {
   const [paidRef, setPaidRef] = useState("");
   const [paidMontant, setPaidMontant] = useState(0);
   const [paidDate, setPaidDate] = useState("");
+  const [guestLoading, setGuestLoading] = useState(false);
+
+  // Check for guest payment success
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("guest_success") === "true") {
+      const amount = parseFloat(params.get("amount") || "0");
+      setPaid(true);
+      setPaidMontant(amount);
+      setPaidRef("GUEST");
+      setPaidDate(new Date().toLocaleString("fr-FR", { dateStyle: "medium", timeStyle: "short" }));
+    }
+  }, []);
 
   // Charger les infos du lien
   useEffect(() => {
@@ -127,6 +141,48 @@ export default function PayPage() {
       showToast("error", "Erreur", "Erreur lors du paiement");
     } finally {
       setPaying(false);
+    }
+  };
+
+  const handleGuestPay = async () => {
+    if (!link) return;
+    const montant = link.montant ? link.montant : parseFloat(montantLibre);
+    if (!montant || montant <= 0) {
+      showToast("error", "Erreur", "Veuillez saisir un montant valide");
+      return;
+    }
+    const linkDevise = (link.devise as DeviseCode) || "XOF";
+    const minAmount = DEVISES[linkDevise].minTransfer;
+    if (montant < minAmount) {
+      showToast("error", "Erreur", `Montant minimum : ${formatMontant(minAmount, linkDevise)}`);
+      return;
+    }
+    setGuestLoading(true);
+    try {
+      const res = await fetch("/api/payment/guest", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          type: "link",
+          code: link.code,
+          montant,
+          devise: linkDevise,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        showToast("error", "Erreur", data.error || "Erreur de paiement");
+        return;
+      }
+      // Redirect to Stripe Checkout
+      if (data.sessionUrl) {
+        window.location.href = data.sessionUrl;
+      }
+    } catch {
+      hapticError();
+      showToast("error", "Erreur", "Erreur réseau");
+    } finally {
+      setGuestLoading(false);
     }
   };
 
@@ -319,23 +375,68 @@ export default function PayPage() {
 
           {/* Action */}
           {!user ? (
-            <div className="text-center">
+            <div className="space-y-4">
+              {/* Guest card payment — for "request" type only */}
+              {link.type !== "send" && (
+                <>
+                  {/* Free amount input for guest if montant is libre */}
+                  {!link.montant && (
+                    <div className="bg-white/[0.03] rounded-2xl p-5 text-center border border-white/[0.06]">
+                      <p className="text-sm text-white/40 mb-3">Montant à payer</p>
+                      <div className="relative">
+                        <input
+                          type="number"
+                          min={DEVISES[(link.devise as DeviseCode) || "XOF"].minTransfer}
+                          step={DEVISES[(link.devise as DeviseCode) || "XOF"].decimals === 0 ? "1" : "0.01"}
+                          placeholder={DEVISES[(link.devise as DeviseCode) || "XOF"].decimals === 0 ? "5 000" : "0.00"}
+                          value={montantLibre}
+                          onChange={(e) => setMontantLibre(e.target.value)}
+                          className="w-full bg-transparent text-3xl font-black text-white text-center outline-none placeholder-white/15 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                        />
+                        <span className="text-white/20 text-lg absolute right-4 top-1/2 -translate-y-1/2">{DEVISES[(link.devise as DeviseCode) || "XOF"].symbol}</span>
+                      </div>
+                    </div>
+                  )}
+
+                  <button
+                    onClick={handleGuestPay}
+                    disabled={guestLoading || (!link.montant && (!montantLibre || parseFloat(montantLibre) <= 0))}
+                    className="w-full flex items-center justify-center gap-2 bg-emerald-500 hover:bg-emerald-400 text-white py-3.5 rounded-xl font-bold transition disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {guestLoading ? (
+                      <Loader2 className="w-5 h-5 animate-spin" />
+                    ) : (
+                      <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+                    )}
+                    {guestLoading ? "Redirection..." : "Payer par carte bancaire"}
+                  </button>
+                  <p className="text-center text-[11px] text-white/25">Frais de 2% inclus • Pas de compte requis</p>
+
+                  <div className="relative flex items-center gap-3 my-1">
+                    <div className="flex-1 h-px bg-white/[0.06]" />
+                    <span className="text-[11px] text-white/20 font-semibold uppercase">ou</span>
+                    <div className="flex-1 h-px bg-white/[0.06]" />
+                  </div>
+                </>
+              )}
+
+              {/* Login / signup — wallet payment (0% fees) */}
               {link.isMerchant ? (
                 <>
-                  <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-xl p-3 mb-4">
-                    <p className="text-xs text-emerald-400/80 font-semibold">Paiement rapide & sécurisé</p>
-                    <p className="text-[11px] text-white/30 mt-0.5">Connectez-vous ou créez un compte gratuit en 30 secondes pour payer ce marchand.</p>
+                  <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-xl p-3">
+                    <p className="text-xs text-emerald-400/80 font-semibold">Payez 0% de frais avec Binq</p>
+                    <p className="text-[11px] text-white/30 mt-0.5">Créez un compte gratuit en 30 secondes pour payer depuis votre portefeuille.</p>
                   </div>
                   <Link
                     href={`/inscription?redirect=/pay/${code}`}
-                    className="w-full inline-flex items-center justify-center gap-2 bg-emerald-500 text-white px-6 py-3.5 rounded-xl font-bold hover:bg-emerald-400 transition mb-2.5"
+                    className="w-full inline-flex items-center justify-center gap-2 bg-white/[0.06] text-white/70 px-6 py-3 rounded-xl font-bold hover:bg-white/[0.1] transition text-sm"
                   >
                     <User className="w-5 h-5" />
-                    Créer un compte gratuit
+                    Créer un compte gratuit (0% frais)
                   </Link>
                   <Link
                     href={`/connexion?redirect=/pay/${code}`}
-                    className="w-full inline-flex items-center justify-center gap-2 bg-white/[0.06] text-white/70 px-6 py-3 rounded-xl font-bold hover:bg-white/[0.1] transition text-sm"
+                    className="w-full inline-flex items-center justify-center gap-2 bg-white/[0.04] text-white/50 px-6 py-2.5 rounded-xl font-bold hover:bg-white/[0.08] transition text-xs"
                   >
                     <LogIn className="w-4 h-4" />
                     J&apos;ai déjà un compte
@@ -343,22 +444,26 @@ export default function PayPage() {
                 </>
               ) : (
                 <>
-                  <p className="text-white/40 text-sm mb-4">
-                    Connectez-vous pour {link.type === "send" ? "récupérer cet argent" : "effectuer ce paiement"}
-                  </p>
-                  <Link
-                    href={`/connexion?redirect=/pay/${code}`}
-                    className="w-full inline-flex items-center justify-center gap-2 bg-emerald-500 text-white px-6 py-3.5 rounded-xl font-bold hover:bg-emerald-400 transition"
-                  >
-                    <LogIn className="w-5 h-5" />
-                    Se connecter
-                  </Link>
-                  <p className="text-xs text-white/20 mt-3">
-                    Pas encore de compte ?{" "}
-                    <Link href={`/inscription?redirect=/pay/${code}`} className="text-emerald-400 hover:underline">
-                      Créer un compte
+                  <div className="text-center">
+                    <p className="text-white/30 text-xs mb-3">
+                      {link.type === "send"
+                        ? "Connectez-vous pour récupérer cet argent"
+                        : "Payez 0% de frais avec votre portefeuille Binq"}
+                    </p>
+                    <Link
+                      href={`/connexion?redirect=/pay/${code}`}
+                      className="w-full inline-flex items-center justify-center gap-2 bg-white/[0.06] text-white/70 px-6 py-3 rounded-xl font-bold hover:bg-white/[0.1] transition text-sm"
+                    >
+                      <LogIn className="w-5 h-5" />
+                      Se connecter (0% frais)
                     </Link>
-                  </p>
+                    <p className="text-xs text-white/20 mt-3">
+                      Pas encore de compte ?{" "}
+                      <Link href={`/inscription?redirect=/pay/${code}`} className="text-emerald-400 hover:underline">
+                        Créer un compte
+                      </Link>
+                    </p>
+                  </div>
                 </>
               )}
             </div>

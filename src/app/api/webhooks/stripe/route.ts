@@ -112,7 +112,7 @@ export async function POST(request: Request) {
                 devise: pi.currency.toUpperCase(),
                 statut: "confirme",
                 reference: `FEE-${pi.id.slice(-8).toUpperCase()}`,
-                description: `Frais plateforme Binq (1%) sur dépôt de ${montantCredite} €`,
+                description: `Frais plateforme Binq sur dépôt de ${montantCredite} €`,
                 meta_methode: "stripe",
                 confirmed_at: new Date().toISOString(),
               });
@@ -285,8 +285,105 @@ export async function POST(request: Request) {
         const sessMeta = session.metadata;
         console.log(`🛒 Checkout terminé: ${session.id} — mode: ${session.mode}`);
 
+        // === GUEST PAYMENT (paiement sans compte) ===
+        if (sessMeta?.type === "guest_payment" && sessMeta?.recipient_id) {
+          const recipientId = sessMeta.recipient_id;
+          const montantCredite = parseFloat(sessMeta.montant_credite || "0");
+          const devise = (sessMeta.devise || "XOF") as string;
+          const fraisGuestCents = parseInt(sessMeta.frais_guest_cents || "0");
+          const fraisGuest = fraisGuestCents / 100;
+          const linkCode = sessMeta.payment_link_code || null;
+
+          if (montantCredite > 0) {
+            // Check idempotency — avoid double-credit
+            const { data: existing } = await supabaseAdmin
+              .from("transactions")
+              .select("id")
+              .eq("stripe_payment_intent_id", session.payment_intent as string)
+              .maybeSingle();
+
+            if (!existing) {
+              // 1. Credit recipient wallet
+              // Get or create wallet for the recipient
+              const { data: wallet } = await supabaseAdmin
+                .from("wallets")
+                .select("id, solde")
+                .eq("user_id", recipientId)
+                .eq("devise", devise)
+                .maybeSingle();
+
+              if (wallet) {
+                await supabaseAdmin
+                  .from("wallets")
+                  .update({ solde: wallet.solde + montantCredite })
+                  .eq("id", wallet.id);
+              } else {
+                await supabaseAdmin.from("wallets").insert({
+                  user_id: recipientId,
+                  devise,
+                  solde: montantCredite,
+                });
+              }
+
+              // 2. Record transaction
+              const ref = `GST-${(session.payment_intent as string).slice(-8).toUpperCase()}`;
+              await supabaseAdmin.from("transactions").insert({
+                user_id: recipientId,
+                type: "depot",
+                montant: montantCredite,
+                devise,
+                statut: "confirme",
+                reference: ref,
+                description: linkCode
+                  ? `Paiement par carte (invité) via lien ${linkCode}`
+                  : "Paiement par carte (invité)",
+                meta_methode: "guest_card",
+                meta_frais: fraisGuest,
+                confirmed_at: new Date().toISOString(),
+                stripe_payment_intent_id: session.payment_intent as string,
+              });
+
+              // 3. Record fee
+              if (fraisGuest > 0) {
+                await supabaseAdmin.from("admin_fees").insert({
+                  user_id: recipientId,
+                  source: "guest_payment",
+                  montant: fraisGuest,
+                  transaction_ref: ref,
+                  stripe_status: "pending",
+                });
+              }
+
+              // 4. Notify recipient
+              try {
+                const deviseLabel = devise === "XOF" ? "FCFA" : "€";
+                const montantStr = devise === "XOF"
+                  ? `${Math.round(montantCredite).toLocaleString("fr-FR")} ${deviseLabel}`
+                  : `${montantCredite.toFixed(2)} ${deviseLabel}`;
+                await supabaseAdmin.from("notifications").insert({
+                  user_id: recipientId,
+                  type: "payment_received",
+                  titre: "Paiement reçu par carte",
+                  message: `Vous avez reçu ${montantStr} d'un visiteur via carte bancaire`,
+                  lu: false,
+                });
+              } catch { /* notification non-blocking */ }
+
+              // 5. Mark payment link as used (if applicable)
+              if (sessMeta.payment_link_id) {
+                await supabaseAdmin
+                  .from("payment_links")
+                  .update({ statut: "paye" })
+                  .eq("id", sessMeta.payment_link_id)
+                  .eq("statut", "actif");
+              }
+
+              console.log(`🎉 Guest payment: ${montantCredite} ${devise} → ${recipientId}, fee: ${fraisGuest}€`);
+            }
+          }
+        }
         // Activer l'abonnement si c'est un checkout d'abonnement
-        if (sessMeta?.type === "abonnement_organisateur" && sessMeta?.userId) {
+        else if (sessMeta?.type === "abonnement_organisateur" && sessMeta?.userId) {
           const now = new Date();
           const expiration = new Date(now);
           expiration.setFullYear(expiration.getFullYear() + 1);
