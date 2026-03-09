@@ -111,13 +111,12 @@ export function formatMontantShort(
 /**
  * Calculer le montant EUR à facturer pour un dépôt en XOF via Stripe.
  * Stripe facture en EUR, on crédite en XOF.
- * Dépôts gratuits — 0% de frais.
  */
 export function calcDepositStripeAmount(
   montantDevise: number,
   devise: DeviseCode
 ): { montantCredite: number; montantEur: number; fraisEur: number; totalEur: number } {
-  const TAUX_FRAIS = 0; // 0% — dépôts gratuits
+  const TAUX_FRAIS = 0.01; // 1%
   const montantEur = devise === "XOF" ? xofToEur(montantDevise) : montantDevise;
   const fraisEur = Math.round(montantEur * TAUX_FRAIS * 100) / 100;
   const totalEur = Math.round((montantEur + fraisEur) * 100) / 100;
@@ -127,24 +126,4 @@ export function calcDepositStripeAmount(
     fraisEur,
     totalEur,
   };
-}
-
-/**
- * Frais de conversion de devise (EUR ↔ XOF) : 2%.
- */
-export const TAUX_FRAIS_CHANGE = 0.02;
-
-/**
- * Calculer le montant reçu après frais de conversion EUR ↔ XOF.
- */
-export function calcExchangeAmount(
-  montant: number,
-  from: DeviseCode,
-  to: DeviseCode
-): { montantEnvoye: number; frais: number; montantRecu: number } {
-  if (from === to) return { montantEnvoye: montant, frais: 0, montantRecu: montant };
-  const frais = Math.round(montant * TAUX_FRAIS_CHANGE * (from === "XOF" ? 1 : 100)) / (from === "XOF" ? 1 : 100);
-  const montantNet = montant - frais;
-  const montantRecu = convertAmount(montantNet, from, to);
-  return { montantEnvoye: montant, frais, montantRecu };
 }

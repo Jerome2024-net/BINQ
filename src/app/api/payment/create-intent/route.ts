@@ -57,7 +57,7 @@ export async function POST(request: Request) {
         montant_demande: String(Math.round(calc.montantCredite * 100)), // Montant à créditer en centimes de la devise
         montant_eur_cents: String(Math.round(calc.montantEur * 100)), // Montant EUR avant frais
         frais_binq: String(Math.round(calc.fraisEur * 100)), // Frais en centimes EUR
-        taux_frais: "0",
+        taux_frais: "0.01",
       },
     });
 

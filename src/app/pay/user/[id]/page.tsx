@@ -48,22 +48,8 @@ export default function PayUserPage() {
   const [sentRef, setSentRef] = useState("");
   const [sentMontant, setSentMontant] = useState(0);
   const [sentDate, setSentDate] = useState("");
-  const [guestLoading, setGuestLoading] = useState(false);
 
   const deviseConfig = DEVISES[devise];
-
-  // Check for guest payment success
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    const params = new URLSearchParams(window.location.search);
-    if (params.get("guest_success") === "true") {
-      const amount = parseFloat(params.get("amount") || "0");
-      setSent(true);
-      setSentMontant(amount);
-      setSentRef("GUEST");
-      setSentDate(new Date().toLocaleString("fr-FR", { dateStyle: "medium", timeStyle: "short" }));
-    }
-  }, []);
 
   useEffect(() => {
     if (!userId) return;
@@ -134,45 +120,6 @@ export default function PayUserPage() {
       showToast("error", "Erreur", "Erreur réseau");
     } finally {
       setSending(false);
-    }
-  };
-
-  const handleGuestPay = async () => {
-    if (!targetUser) return;
-    const parsedMontant = parseFloat(montant);
-    if (!parsedMontant || parsedMontant <= 0) {
-      showToast("error", "Erreur", "Veuillez saisir un montant valide");
-      return;
-    }
-    if (parsedMontant < deviseConfig.minTransfer) {
-      showToast("error", "Erreur", `Montant minimum : ${formatMontant(deviseConfig.minTransfer, devise)}`);
-      return;
-    }
-    setGuestLoading(true);
-    try {
-      const res = await fetch("/api/payment/guest", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          type: "user",
-          code: targetUser.id,
-          montant: parsedMontant,
-          devise,
-        }),
-      });
-      const data = await res.json();
-      if (!res.ok) {
-        showToast("error", "Erreur", data.error || "Erreur de paiement");
-        return;
-      }
-      if (data.sessionUrl) {
-        window.location.href = data.sessionUrl;
-      }
-    } catch {
-      hapticError();
-      showToast("error", "Erreur", "Erreur réseau");
-    } finally {
-      setGuestLoading(false);
     }
   };
 
@@ -314,85 +261,23 @@ export default function PayUserPage() {
           </div>
 
           {!user ? (
-            <div className="space-y-4">
-              {/* Devise selector for guest */}
-              <div className="flex gap-2">
-                {DEVISE_LIST.map((d) => {
-                  const dc = DEVISES[d];
-                  return (
-                    <button
-                      key={d}
-                      onClick={() => setDevise(d)}
-                      className={`flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-sm font-bold transition-all ${
-                        devise === d
-                          ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30"
-                          : "bg-white/[0.03] text-white/40 border border-white/[0.06] hover:bg-white/[0.06]"
-                      }`}
-                    >
-                      <span>{dc.flag}</span>
-                      <span>{dc.code}</span>
-                    </button>
-                  );
-                })}
-              </div>
-
-              {/* Montant */}
-              <div className="bg-white/[0.03] rounded-2xl p-5 text-center border border-white/[0.06]">
-                <p className="text-sm text-white/40 mb-3">Montant à envoyer</p>
-                <div className="relative">
-                  <input
-                    type="number"
-                    min={deviseConfig.minTransfer}
-                    step={deviseConfig.decimals === 0 ? "1" : "0.01"}
-                    placeholder={deviseConfig.decimals === 0 ? "5 000" : "10.00"}
-                    value={montant}
-                    onChange={(e) => setMontant(e.target.value)}
-                    className="w-full bg-transparent text-3xl font-black text-white text-center outline-none placeholder-white/15 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                  />
-                  <span className="text-white/20 text-lg absolute right-4 top-1/2 -translate-y-1/2">
-                    {deviseConfig.symbol}
-                  </span>
-                </div>
-              </div>
-
-              {/* Guest card payment */}
-              <button
-                onClick={handleGuestPay}
-                disabled={guestLoading || !montant || parseFloat(montant) <= 0}
-                className="w-full flex items-center justify-center gap-2 bg-emerald-500 hover:bg-emerald-400 text-white py-3.5 rounded-xl font-bold transition disabled:opacity-50 disabled:cursor-not-allowed"
+            <div className="text-center">
+              <p className="text-white/40 text-sm mb-4">
+                Connectez-vous pour envoyer de l&apos;argent
+              </p>
+              <Link
+                href={`/connexion?redirect=/pay/user/${userId}`}
+                className="w-full inline-flex items-center justify-center gap-2 bg-emerald-500 text-white px-6 py-3.5 rounded-xl font-bold hover:bg-emerald-400 transition"
               >
-                {guestLoading ? (
-                  <Loader2 className="w-5 h-5 animate-spin" />
-                ) : (
-                  <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
-                )}
-                {guestLoading ? "Redirection..." : "Payer par carte bancaire"}
-              </button>
-              <p className="text-center text-[11px] text-white/25">Frais de 2% inclus • Pas de compte requis</p>
-
-              <div className="relative flex items-center gap-3 my-1">
-                <div className="flex-1 h-px bg-white/[0.06]" />
-                <span className="text-[11px] text-white/20 font-semibold uppercase">ou</span>
-                <div className="flex-1 h-px bg-white/[0.06]" />
-              </div>
-
-              {/* Login for free payments */}
-              <div className="text-center">
-                <p className="text-white/30 text-xs mb-2">Payez 0% de frais avec votre portefeuille Binq</p>
-                <Link
-                  href={`/connexion?redirect=/pay/user/${userId}`}
-                  className="w-full inline-flex items-center justify-center gap-2 bg-white/[0.06] text-white/70 px-6 py-3 rounded-xl font-bold hover:bg-white/[0.1] transition text-sm"
-                >
-                  <LogIn className="w-4 h-4" />
-                  Se connecter (0% frais)
+                <LogIn className="w-5 h-5" />
+                Se connecter
+              </Link>
+              <p className="text-xs text-white/20 mt-3">
+                Pas encore de compte ?{" "}
+                <Link href={`/inscription?redirect=/pay/user/${userId}`} className="text-emerald-400 hover:underline">
+                  Créer un compte
                 </Link>
-                <p className="text-xs text-white/20 mt-3">
-                  Pas encore de compte ?{" "}
-                  <Link href={`/inscription?redirect=/pay/user/${userId}`} className="text-emerald-400 hover:underline">
-                    Créer un compte
-                  </Link>
-                </p>
-              </div>
+              </p>
             </div>
           ) : (
             <div className="space-y-4">
