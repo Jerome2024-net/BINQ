@@ -147,7 +147,7 @@ function StripePaymentForm({
         <button
           type="submit"
           disabled={!stripe || !elements || isSubmitting}
-          className="flex-1 py-3 rounded-xl font-semibold text-white bg-primary-600 hover:bg-primary-700 transition-colors flex items-center justify-center gap-2 disabled:opacity-40 disabled:cursor-not-allowed text-sm"
+          className="flex-1 py-3 rounded-xl font-semibold text-gray-900 bg-primary-600 hover:bg-primary-700 transition-colors flex items-center justify-center gap-2 disabled:opacity-40 disabled:cursor-not-allowed text-sm"
         >
           {isSubmitting ? (
             <>
@@ -279,7 +279,7 @@ export default function DepositWithdrawModal({
   return (
     <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[60] flex items-end sm:items-center justify-center p-0 sm:p-4" onClick={handleClose}>
       <div
-        className="bg-white rounded-t-3xl sm:rounded-2xl shadow-2xl w-full sm:max-w-[420px] max-h-[92vh] sm:max-h-[85vh] overflow-y-auto"
+        className="bg-white rounded-t-3xl sm:rounded-2xl shadow-xl w-full sm:max-w-[420px] max-h-[92vh] sm:max-h-[85vh] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
@@ -361,7 +361,7 @@ export default function DepositWithdrawModal({
               
               <button 
                 onClick={handleClose} 
-                className="w-full py-3 rounded-xl font-semibold text-white bg-primary-600 hover:bg-primary-700 transition-colors"
+                className="w-full py-3 rounded-xl font-semibold text-gray-900 bg-primary-600 hover:bg-primary-700 transition-colors"
               >
                 Fermer
               </button>
@@ -376,7 +376,7 @@ export default function DepositWithdrawModal({
               <p className="text-red-500 text-sm mb-5 max-w-[280px] mx-auto">{errorMsg}</p>
               <button 
                 onClick={() => setStep("form")} 
-                className="w-full py-3 rounded-xl font-semibold text-white bg-primary-600 hover:bg-primary-700 transition-colors"
+                className="w-full py-3 rounded-xl font-semibold text-gray-900 bg-primary-600 hover:bg-primary-700 transition-colors"
               >
                 Réessayer
               </button>
@@ -473,7 +473,7 @@ export default function DepositWithdrawModal({
               <button
                 onClick={handleProceedToPayment}
                 disabled={montantNum < 1 || isProcessing || isCreatingIntent}
-                className={`w-full py-3.5 rounded-xl font-semibold text-white transition-colors flex items-center justify-center gap-2 ${
+                className={`w-full py-3.5 rounded-xl font-semibold text-gray-900 transition-colors flex items-center justify-center gap-2 ${
                   montantNum >= 1 && !isCreatingIntent
                     ? "bg-primary-600 hover:bg-primary-700"
                     : "bg-gray-200 text-gray-400 cursor-not-allowed"
@@ -565,7 +565,7 @@ export default function DepositWithdrawModal({
                     >
                       <div
                         className={`w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 ${
-                          methode === m.id ? "bg-primary-600 text-white" : "bg-gray-100 text-gray-400"
+                          methode === m.id ? "bg-primary-600 text-gray-900" : "bg-gray-100 text-gray-400"
                         }`}
                       >
                         <m.icon className="w-4.5 h-4.5" />
@@ -597,7 +597,7 @@ export default function DepositWithdrawModal({
               <button
                 onClick={handleRetrait}
                 disabled={montantNum <= 0 || isDepassement || !destination.trim()}
-                className={`w-full py-3.5 rounded-xl font-semibold text-white transition-colors flex items-center justify-center gap-2 ${
+                className={`w-full py-3.5 rounded-xl font-semibold text-gray-900 transition-colors flex items-center justify-center gap-2 ${
                   montantNum > 0 && !isDepassement && destination.trim()
                     ? "bg-primary-600 hover:bg-primary-700"
                     : "bg-gray-200 text-gray-400 cursor-not-allowed"

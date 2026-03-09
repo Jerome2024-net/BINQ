@@ -70,7 +70,7 @@ export default function Avatar({ user, size = "md", showBorder = false, classNam
         showBorder ? "ring-2 ring-white shadow-sm" : ""
       } ${className}`}
     >
-      <span className="text-white font-semibold">{initials}</span>
+      <span className="text-gray-900 font-semibold">{initials}</span>
     </div>
   );
 }

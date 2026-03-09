@@ -43,19 +43,19 @@ function ConnexionForm() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a] text-white font-sans flex selection:bg-emerald-500/20">
+    <div className="min-h-screen bg-white text-white font-sans flex selection:bg-emerald-50">
 
       {/* ── Left Branding ── */}
-      <div className="hidden lg:flex lg:w-1/2 p-12 items-center justify-center relative overflow-hidden border-r border-white/[0.04]">
+      <div className="hidden lg:flex lg:w-1/2 p-12 items-center justify-center relative overflow-hidden border-r border-gray-200/50">
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-emerald-500/[0.06] rounded-full blur-[150px] pointer-events-none" />
         <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-cyan-500/[0.04] rounded-full blur-[120px] pointer-events-none" />
 
         <div className="relative max-w-md z-10 w-full">
           <Link href="/" className="inline-flex items-center gap-3 group mb-12">
             <div className="w-10 h-10 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-xl flex items-center justify-center shadow-lg shadow-emerald-500/25">
-              <Star className="w-5 h-5 text-white fill-white" />
+              <Star className="w-5 h-5 text-gray-900 fill-white" />
             </div>
-            <span className="font-black text-2xl tracking-tight text-white group-hover:text-emerald-400 transition-colors">Binq</span>
+            <span className="font-black text-2xl tracking-tight text-gray-900 group-hover:text-emerald-600 transition-colors">Binq</span>
           </Link>
 
           <h1 className="text-4xl font-black mb-6 tracking-tight leading-[1.1]">
@@ -64,21 +64,21 @@ function ConnexionForm() {
               mobile.
             </span>
           </h1>
-          <p className="text-white/40 text-lg leading-relaxed font-medium">
+          <p className="text-gray-400 text-lg leading-relaxed font-medium">
             Connectez-vous pour accéder à votre portefeuille et gérer votre argent en toute sécurité.
           </p>
 
-          <div className="mt-12 space-y-3 border-t border-white/[0.06] pt-10">
+          <div className="mt-12 space-y-3 border-t border-gray-200/50 pt-10">
             {[
-              { text: "Accès instantané à votre solde", icon: Zap, color: "text-emerald-400 bg-emerald-500/10 border-emerald-500/10" },
-              { text: "Chiffrement de bout en bout", icon: Lock, color: "text-cyan-400 bg-cyan-500/10 border-cyan-500/10" },
+              { text: "Accès instantané à votre solde", icon: Zap, color: "text-emerald-600 bg-emerald-50 border-emerald-500/10" },
+              { text: "Chiffrement de bout en bout", icon: Lock, color: "text-cyan-600 bg-cyan-500/10 border-cyan-500/10" },
               { text: "Infrastructure certifiée et sécurisée", icon: ShieldCheck, color: "text-violet-400 bg-violet-500/10 border-violet-500/10" },
             ].map((item, i) => (
-              <div key={i} className="flex items-center gap-4 bg-white/[0.02] p-4 rounded-2xl border border-white/[0.05]">
+              <div key={i} className="flex items-center gap-4 bg-gray-50/50 p-4 rounded-2xl border border-gray-200/50">
                 <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 border ${item.color}`}>
                   <item.icon className="w-5 h-5" />
                 </div>
-                <span className="text-white/50 font-medium text-sm">{item.text}</span>
+                <span className="text-gray-400 font-medium text-sm">{item.text}</span>
               </div>
             ))}
           </div>
@@ -92,18 +92,18 @@ function ConnexionForm() {
           {/* Mobile Logo */}
           <Link href="/" className="lg:hidden flex items-center justify-center gap-3 group mb-10">
             <div className="w-10 h-10 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-xl flex items-center justify-center shadow-lg shadow-emerald-500/25">
-              <Star className="w-5 h-5 text-white fill-white" />
+              <Star className="w-5 h-5 text-gray-900 fill-white" />
             </div>
-            <span className="font-black text-2xl tracking-tight text-white">Binq</span>
+            <span className="font-black text-2xl tracking-tight text-gray-900">Binq</span>
           </Link>
 
           <div className="mb-10 text-center lg:text-left">
             <h2 className="text-3xl font-black mb-2">Bienvenue</h2>
-            <p className="text-white/30 text-[15px]">Entrez vos identifiants pour continuer</p>
+            <p className="text-gray-500 text-[15px]">Entrez vos identifiants pour continuer</p>
           </div>
 
           {error && (
-            <div className="mb-8 p-4 bg-red-500/10 border border-red-500/20 rounded-2xl flex items-center gap-3 text-red-400 text-sm font-medium">
+            <div className="mb-8 p-4 bg-red-500/10 border border-red-500/20 rounded-2xl flex items-center gap-3 text-red-500 text-sm font-medium">
               <div className="w-2 h-2 rounded-full bg-red-500 shrink-0" />
               {error}
             </div>
@@ -111,14 +111,14 @@ function ConnexionForm() {
 
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="space-y-1.5">
-              <label className="block text-sm font-bold text-white/50 ml-1">Adresse email</label>
+              <label className="block text-sm font-bold text-gray-400 ml-1">Adresse email</label>
               <div className="relative group">
-                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/20 group-focus-within:text-emerald-400 transition-colors" />
+                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-emerald-600 transition-colors" />
                 <input
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full bg-white/[0.04] border border-white/[0.06] rounded-2xl py-3.5 pl-12 pr-4 text-white placeholder-white/15 focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-500/50 transition-all"
+                  className="w-full bg-gray-50/80 border border-gray-200/50 rounded-2xl py-3.5 pl-12 pr-4 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-200 focus:border-emerald-200 transition-all"
                   placeholder="votre@email.com"
                   required
                 />
@@ -126,21 +126,21 @@ function ConnexionForm() {
             </div>
 
             <div className="space-y-1.5">
-              <label className="block text-sm font-bold text-white/50 ml-1">Mot de passe</label>
+              <label className="block text-sm font-bold text-gray-400 ml-1">Mot de passe</label>
               <div className="relative group">
-                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/20 group-focus-within:text-emerald-400 transition-colors" />
+                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-emerald-600 transition-colors" />
                 <input
                   type={showPassword ? "text" : "password"}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full bg-white/[0.04] border border-white/[0.06] rounded-2xl py-3.5 pl-12 pr-12 text-white placeholder-white/15 focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-500/50 transition-all font-mono"
+                  className="w-full bg-gray-50/80 border border-gray-200/50 rounded-2xl py-3.5 pl-12 pr-12 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-200 focus:border-emerald-200 transition-all font-mono"
                   placeholder="••••••••"
                   required
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-white/20 hover:text-white/50 transition-colors p-1"
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-500 transition-colors p-1"
                 >
                   {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                 </button>
@@ -167,16 +167,16 @@ function ConnexionForm() {
           </form>
 
           <div className="mt-10 text-center font-medium">
-            <p className="text-white/30 text-[15px]">
+            <p className="text-gray-500 text-[15px]">
               Nouveau sur l&apos;application ?{" "}
-              <Link href="/inscription" className="text-emerald-400 hover:text-emerald-300 hover:underline transition-colors">
+              <Link href="/inscription" className="text-emerald-600 hover:text-emerald-600 hover:underline transition-colors">
                 Créer un compte
               </Link>
             </p>
           </div>
 
           <div className="mt-8">
-            <Link href="/" className="inline-flex items-center justify-center w-full gap-2 py-3 text-sm font-bold text-white/25 hover:text-white/50 bg-white/[0.02] hover:bg-white/[0.04] rounded-xl transition-colors border border-white/[0.05]">
+            <Link href="/" className="inline-flex items-center justify-center w-full gap-2 py-3 text-sm font-bold text-gray-400 hover:text-gray-500 bg-gray-50/50 hover:bg-gray-50/80 rounded-xl transition-colors border border-gray-200/50">
               ← Retour à l&apos;accueil
             </Link>
           </div>
@@ -188,7 +188,7 @@ function ConnexionForm() {
 
 export default function ConnexionPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-[#0a0a0a] flex items-center justify-center"><Loader2 className="w-8 h-8 text-emerald-500 animate-spin" /></div>}>
+    <Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="w-8 h-8 text-emerald-500 animate-spin" /></div>}>
       <ConnexionForm />
     </Suspense>
   );

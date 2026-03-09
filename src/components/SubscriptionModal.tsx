@@ -88,7 +88,7 @@ export default function SubscriptionModal({ isOpen, onClose }: SubscriptionModal
   return (
     <div className="fixed inset-0 bg-black/50 z-[60] flex items-center justify-center p-3 sm:p-4" onClick={handleClose}>
       <div
-        className="bg-white rounded-2xl shadow-2xl w-full max-w-md max-h-[90vh] overflow-y-auto"
+        className="bg-white rounded-2xl shadow-xl w-full max-w-md max-h-[90vh] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
@@ -170,7 +170,7 @@ export default function SubscriptionModal({ isOpen, onClose }: SubscriptionModal
                   </div>
                   <button
                     onClick={handleActiverEssai}
-                    className="w-full flex items-center justify-center gap-2 bg-primary-600 text-white py-3.5 rounded-xl font-semibold hover:bg-primary-700 transition-colors text-lg"
+                    className="w-full flex items-center justify-center gap-2 bg-primary-600 text-gray-900 py-3.5 rounded-xl font-semibold hover:bg-primary-700 transition-colors text-lg"
                   >
                     <Gift className="w-5 h-5" />
                     Commencer l&apos;essai gratuit
@@ -224,7 +224,7 @@ export default function SubscriptionModal({ isOpen, onClose }: SubscriptionModal
                 {/* Bouton payer par carte */}
                 <button
                   onClick={handlePayerParCarte}
-                  className={`w-full flex items-center justify-center gap-2 bg-primary-600 text-white py-3.5 rounded-xl font-semibold hover:bg-primary-700 transition-colors mt-4 ${dejaEuEssai || enEssai ? 'text-lg' : 'text-base'}`}
+                  className={`w-full flex items-center justify-center gap-2 bg-primary-600 text-gray-900 py-3.5 rounded-xl font-semibold hover:bg-primary-700 transition-colors mt-4 ${dejaEuEssai || enEssai ? 'text-lg' : 'text-base'}`}
                 >
                   <CreditCard className="w-5 h-5" />
                   {enEssai ? "Passer au plan annuel" : dejaEuEssai ? "Souscrire maintenant" : "Souscrire par carte"}

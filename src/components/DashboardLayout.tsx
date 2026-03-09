@@ -129,10 +129,10 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   return (
     <AuthGuard>
-      <div className="min-h-screen bg-[#0a0a0a] font-sans antialiased text-white">
+      <div className="min-h-screen bg-white font-sans antialiased text-gray-900">
 
         {/* ── Top Header Bar ── */}
-        <header className="sticky top-0 z-40 bg-[#0a0a0a]/90 backdrop-blur-2xl border-b border-white/[0.04]">
+        <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-2xl border-b border-gray-100">
           <div className="flex items-center justify-between px-4 sm:px-6 h-14 max-w-2xl mx-auto">
             {/* Left: Logo */}
             <Link href="/dashboard" className="flex items-center gap-2">
@@ -146,8 +146,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             <div className="flex items-center gap-1">
               {/* Notification */}
               <div className="relative" ref={notifRef}>
-                <button onClick={() => { setNotifOpen(!notifOpen); setProfileOpen(false); }} className="relative p-2.5 rounded-xl hover:bg-white/[0.06] transition-colors">
-                  <Bell className="w-[18px] h-[18px] text-white/40" />
+                <button onClick={() => { setNotifOpen(!notifOpen); setProfileOpen(false); }} className="relative p-2.5 rounded-xl hover:bg-gray-100/50 transition-colors">
+                  <Bell className="w-[18px] h-[18px] text-gray-400" />
                   {unreadCount > 0 && (
                     <span className="absolute top-1.5 right-1.5 flex h-2 w-2">
                       <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
@@ -157,11 +157,11 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 </button>
 
                 {notifOpen && (
-                  <div className="absolute right-0 mt-2 w-80 sm:w-96 bg-[#151515] border border-white/[0.08] rounded-2xl shadow-2xl overflow-hidden z-50">
-                    <div className="flex items-center justify-between px-5 py-3 border-b border-white/[0.06]">
+                  <div className="absolute right-0 mt-2 w-80 sm:w-96 bg-white border border-gray-200/60 rounded-2xl shadow-xl overflow-hidden z-50">
+                    <div className="flex items-center justify-between px-5 py-3 border-b border-gray-200/50">
                       <h3 className="text-sm font-bold">Notifications</h3>
                       {unreadCount > 0 && (
-                        <button onClick={markAllRead} className="text-xs font-semibold text-emerald-400 hover:text-emerald-300 transition-colors">
+                        <button onClick={markAllRead} className="text-xs font-semibold text-emerald-600 hover:text-emerald-600 transition-colors">
                           Tout marquer lu
                         </button>
                       )}
@@ -169,19 +169,19 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                     <div className="max-h-72 overflow-y-auto">
                       {notifications.length === 0 ? (
                         <div className="py-10 text-center">
-                          <Bell className="w-8 h-8 text-white/10 mx-auto mb-2" />
-                          <p className="text-sm text-white/30">Aucune notification</p>
+                          <Bell className="w-8 h-8 text-gray-300 mx-auto mb-2" />
+                          <p className="text-sm text-gray-500">Aucune notification</p>
                         </div>
                       ) : (
                         <div className="p-1.5 space-y-0.5">
                           {notifications.map((notif) => (
-                            <div key={notif.id} className={`px-4 py-2.5 rounded-xl transition-colors ${notif.lu ? "opacity-50" : "bg-emerald-500/10"}`}>
+                            <div key={notif.id} className={`px-4 py-2.5 rounded-xl transition-colors ${notif.lu ? "opacity-50" : "bg-emerald-50"}`}>
                               <div className="flex justify-between items-start gap-3">
-                                <span className={`text-sm font-bold ${notif.lu ? "text-white/60" : "text-emerald-400"}`}>{notif.titre}</span>
+                                <span className={`text-sm font-bold ${notif.lu ? "text-gray-500" : "text-emerald-600"}`}>{notif.titre}</span>
                                 {!notif.lu && <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0 mt-1.5" />}
                               </div>
-                              <p className="text-[11px] text-white/30 mt-0.5 leading-relaxed">{notif.message}</p>
-                              <span className="text-[10px] text-white/15 mt-0.5 block">{formatTimeAgo(notif.created_at)}</span>
+                              <p className="text-[11px] text-gray-500 mt-0.5 leading-relaxed">{notif.message}</p>
+                              <span className="text-[10px] text-gray-400 mt-0.5 block">{formatTimeAgo(notif.created_at)}</span>
                             </div>
                           ))}
                         </div>
@@ -193,28 +193,28 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
               {/* Profile */}
               <div className="relative" ref={profileRef}>
-                <button onClick={() => { setProfileOpen(!profileOpen); setNotifOpen(false); }} className="p-1.5 rounded-xl hover:bg-white/[0.06] transition-colors">
+                <button onClick={() => { setProfileOpen(!profileOpen); setNotifOpen(false); }} className="p-1.5 rounded-xl hover:bg-gray-100/50 transition-colors">
                   <div className="w-8 h-8 rounded-full bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center">
                     <span className="text-white text-[10px] font-black uppercase">{initials}</span>
                   </div>
                 </button>
 
                 {profileOpen && (
-                  <div className="absolute right-0 mt-2 w-56 bg-[#151515] border border-white/[0.08] rounded-2xl shadow-2xl p-1.5 z-50">
+                  <div className="absolute right-0 mt-2 w-56 bg-white border border-gray-200/60 rounded-2xl shadow-xl p-1.5 z-50">
                     <div className="px-3 py-2.5 mb-1">
                       <p className="text-sm font-bold">{user?.prenom} {user?.nom}</p>
-                      <p className="text-[11px] text-white/30 truncate">{user?.email}</p>
+                      <p className="text-[11px] text-gray-500 truncate">{user?.email}</p>
                     </div>
-                    <Link href="/profil" onClick={() => setProfileOpen(false)} className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-white/60 hover:bg-white/[0.06] hover:text-white transition-colors">
+                    <Link href="/profil" onClick={() => setProfileOpen(false)} className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-gray-500 hover:bg-gray-100/50 hover:text-gray-900 transition-colors">
                       <User className="w-4 h-4" />
                       Mon Profil
                     </Link>
-                    <Link href="/parametres" onClick={() => setProfileOpen(false)} className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-white/60 hover:bg-white/[0.06] hover:text-white transition-colors">
+                    <Link href="/parametres" onClick={() => setProfileOpen(false)} className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-gray-500 hover:bg-gray-100/50 hover:text-gray-900 transition-colors">
                       <Settings className="w-4 h-4" />
                       Param&egrave;tres
                     </Link>
-                    <div className="h-px bg-white/[0.06] my-1" />
-                    <button onClick={handleLogout} className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-red-400 hover:bg-red-500/10 transition-colors w-full text-left">
+                    <div className="h-px bg-gray-100/50 my-1" />
+                    <button onClick={handleLogout} className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-red-500 hover:bg-red-500/10 transition-colors w-full text-left">
                       <LogOut className="w-4 h-4" />
                       D&eacute;connexion
                     </button>
@@ -233,7 +233,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         </main>
 
         {/* ── Bottom Tab Bar (Mobile Money style) ── */}
-        <nav className="fixed bottom-0 inset-x-0 z-50 bg-[#111]/95 backdrop-blur-2xl border-t border-white/[0.06] safe-area-pb">
+        <nav className="fixed bottom-0 inset-x-0 z-50 bg-white/95 backdrop-blur-2xl border-t border-gray-200/50 safe-area-pb">
           <div className="max-w-2xl mx-auto flex items-center justify-around h-16 px-2">
             {bottomTabs.map((tab) => {
               const isActive = pathname === tab.href || (tab.href !== "/dashboard" && pathname.startsWith(tab.href));
@@ -243,14 +243,14 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                   href={tab.href}
                   className={`flex flex-col items-center justify-center gap-0.5 w-14 sm:w-16 py-1 rounded-xl transition-all duration-200 ${
                     isActive
-                      ? "text-emerald-400"
-                      : "text-white/30 hover:text-white/50"
+                      ? "text-emerald-600"
+                      : "text-gray-400 hover:text-gray-500"
                   }`}
                 >
-                  <div className={`p-1 sm:p-1.5 rounded-lg sm:rounded-xl transition-colors ${isActive ? "bg-emerald-500/15" : ""}`}>
-                    <tab.icon className={`w-[18px] h-[18px] sm:w-5 sm:h-5 ${isActive ? "text-emerald-400" : ""}`} />
+                  <div className={`p-1 sm:p-1.5 rounded-lg sm:rounded-xl transition-colors ${isActive ? "bg-emerald-50" : ""}`}>
+                    <tab.icon className={`w-[18px] h-[18px] sm:w-5 sm:h-5 ${isActive ? "text-emerald-600" : ""}`} />
                   </div>
-                  <span className={`text-[9px] sm:text-[10px] font-semibold ${isActive ? "text-emerald-400" : ""}`}>{tab.label}</span>
+                  <span className={`text-[9px] sm:text-[10px] font-semibold ${isActive ? "text-emerald-600" : ""}`}>{tab.label}</span>
                 </Link>
               );
             })}

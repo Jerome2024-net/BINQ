@@ -100,14 +100,14 @@ export default function StripeVerificationGuard({
           onClick={() => setShowModal(false)}
         >
           <div
-            className="bg-white rounded-2xl max-w-md w-full shadow-2xl max-h-[90vh] overflow-y-auto"
+            className="bg-white rounded-2xl max-w-md w-full shadow-xl max-h-[90vh] overflow-y-auto"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Header */}
             <div className="bg-gradient-to-r from-primary-600 to-primary-700 p-6 text-center relative">
               <button
                 onClick={() => setShowModal(false)}
-                className="absolute top-4 right-4 p-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-white/80 transition-colors"
+                className="absolute top-4 right-4 p-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-gray-600 transition-colors"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -115,15 +115,15 @@ export default function StripeVerificationGuard({
                 {isPending ? (
                   <AlertTriangle className="w-8 h-8 text-amber-300" />
                 ) : (
-                  <Shield className="w-8 h-8 text-white" />
+                  <Shield className="w-8 h-8 text-gray-900" />
                 )}
               </div>
-              <h2 className="text-xl font-bold text-white">
+              <h2 className="text-xl font-bold text-gray-900">
                 {isPending
                   ? "Vérification en cours"
                   : "Vérification d'identité requise"}
               </h2>
-              <p className="text-white/70 text-sm mt-1">
+              <p className="text-gray-500 text-sm mt-1">
                 {isPending
                   ? "Votre dossier est en cours de validation"
                   : "Rapide, sécurisé et obligatoire"}
@@ -178,7 +178,7 @@ export default function StripeVerificationGuard({
                 <button
                   onClick={startVerification}
                   disabled={isRedirecting || isProcessing}
-                  className="w-full py-3.5 rounded-xl font-semibold text-white bg-primary-600 hover:bg-primary-700 transition-colors flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full py-3.5 rounded-xl font-semibold text-gray-900 bg-primary-600 hover:bg-primary-700 transition-colors flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {isRedirecting || isProcessing ? (
                     <>

@@ -37,7 +37,7 @@ export default function MotDePasseOubliePage() {
   return (
     <div className="min-h-screen bg-surface-50 flex">
       {/* Left side - Branding */}
-      <div className="hidden lg:flex lg:w-1/2 bg-gray-950 text-white p-12 items-center justify-center relative overflow-hidden">
+      <div className="hidden lg:flex lg:w-1/2 bg-gray-950 text-gray-900 p-12 items-center justify-center relative overflow-hidden">
         <div className="absolute top-1/4 left-1/4 w-[400px] h-[400px] bg-primary-600/20 rounded-full blur-[100px]" />
         <div className="absolute bottom-1/4 right-1/4 w-[300px] h-[300px] bg-accent-500/10 rounded-full blur-[80px]" />
 

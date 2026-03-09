@@ -91,7 +91,7 @@ export default function ProfilPage() {
       <div className="card overflow-hidden">
         <div className="h-28 bg-gradient-to-r from-primary-600 to-emerald-500 -mx-6 -mt-6 relative">
           <div className="absolute inset-0 bg-black/5"></div>
-          <button className="absolute bottom-3 right-4 bg-white/20 hover:bg-white/30 backdrop-blur-sm text-white px-3 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1.5 transition-colors">
+          <button className="absolute bottom-3 right-4 bg-white/20 hover:bg-white/30 backdrop-blur-sm text-gray-900 px-3 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1.5 transition-colors">
             <Camera className="w-3.5 h-3.5" />
             Changer la bannière
           </button>

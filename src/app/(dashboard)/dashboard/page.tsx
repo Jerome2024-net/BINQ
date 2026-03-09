@@ -128,10 +128,10 @@ export default function DashboardPage() {
   if (loading) {
     return (
       <div className="min-h-[60vh] flex flex-col items-center justify-center gap-4">
-        <div className="w-11 h-11 sm:w-14 sm:h-14 rounded-2xl bg-emerald-500/10 flex items-center justify-center">
-          <Wallet className="w-5 h-5 sm:w-7 sm:h-7 text-emerald-400 animate-pulse" />
+        <div className="w-11 h-11 sm:w-14 sm:h-14 rounded-2xl bg-emerald-50 flex items-center justify-center">
+          <Wallet className="w-5 h-5 sm:w-7 sm:h-7 text-emerald-600 animate-pulse" />
         </div>
-        <p className="text-sm text-white/30 font-medium">Synchronisation...</p>
+        <p className="text-sm text-gray-500 font-medium">Synchronisation...</p>
       </div>
     );
   }
@@ -142,13 +142,13 @@ export default function DashboardPage() {
       {/* Greeting */}
       <div>
         <h1 className="text-xl font-black tracking-tight">
-          Salut, <span className="text-emerald-400">{user?.prenom || "là"}</span> 👋
+          Salut, <span className="text-emerald-600">{user?.prenom || "là"}</span> 👋
         </h1>
-        <p className="text-white/30 text-sm mt-0.5">Votre portefeuille mobile.</p>
+        <p className="text-gray-500 text-sm mt-0.5">Votre portefeuille mobile.</p>
       </div>
 
       {/* ── Balance Card ── */}
-      <div className="relative overflow-hidden rounded-2xl sm:rounded-3xl bg-gradient-to-br from-emerald-600 via-emerald-500 to-cyan-500 p-4 sm:p-6 shadow-xl shadow-emerald-900/30">
+      <div className="relative overflow-hidden rounded-2xl sm:rounded-3xl bg-gradient-to-br from-emerald-600 via-emerald-500 to-cyan-500 p-4 sm:p-6 shadow-xl shadow-emerald-500/25">
         {/* Pattern overlay */}
         <div className="absolute inset-0 opacity-10" style={{ backgroundImage: "radial-gradient(circle, white 1px, transparent 1px)", backgroundSize: "16px 16px" }} />
 
@@ -167,7 +167,7 @@ export default function DashboardPage() {
                     className={`px-2.5 py-1 text-[10px] sm:text-xs font-bold transition-all ${
                       devise === d
                         ? "bg-white/30 text-white"
-                        : "text-white/40 hover:text-white/60"
+                        : "text-white/60 hover:text-white/80"
                     }`}
                   >
                     {DEVISES[d].flag} {d}
@@ -176,7 +176,7 @@ export default function DashboardPage() {
               </div>
             </div>
             <button onClick={() => setShowSolde(!showSolde)} className="p-2 rounded-xl bg-white/10 hover:bg-white/20 transition-colors">
-              {showSolde ? <EyeOff className="w-4 h-4 text-white/60" /> : <Eye className="w-4 h-4 text-white/60" />}
+              {showSolde ? <EyeOff className="w-4 h-4 text-white/70" /> : <Eye className="w-4 h-4 text-white/70" />}
             </button>
           </div>
 
@@ -188,15 +188,15 @@ export default function DashboardPage() {
 
           {/* Quick actions */}
           <div className="grid grid-cols-3 gap-2">
-            <Link href="/deposer" className="flex flex-col items-center gap-1 sm:gap-1.5 py-2.5 sm:py-3 rounded-xl sm:rounded-2xl bg-white/15 backdrop-blur-sm hover:bg-white/25 transition-all active:scale-95">
+            <Link href="/deposer" className="flex flex-col items-center gap-1 sm:gap-1.5 py-2.5 sm:py-3 rounded-xl sm:rounded-2xl bg-white/15 backdrop-blur-sm hover:bg-white/25 transition-all active:scale-95 text-white">
               <ArrowDownToLine className="w-4 h-4 sm:w-5 sm:h-5" />
               <span className="text-[10px] sm:text-[11px] font-bold">Déposer</span>
             </Link>
-            <Link href="/envoyer" className="flex flex-col items-center gap-1 sm:gap-1.5 py-2.5 sm:py-3 rounded-xl sm:rounded-2xl bg-white/15 backdrop-blur-sm hover:bg-white/25 transition-all active:scale-95">
+            <Link href="/envoyer" className="flex flex-col items-center gap-1 sm:gap-1.5 py-2.5 sm:py-3 rounded-xl sm:rounded-2xl bg-white/15 backdrop-blur-sm hover:bg-white/25 transition-all active:scale-95 text-white">
               <SendHorizonal className="w-4 h-4 sm:w-5 sm:h-5" />
               <span className="text-[10px] sm:text-[11px] font-bold">Envoyer</span>
             </Link>
-            <Link href="/portefeuille" className="flex flex-col items-center gap-1 sm:gap-1.5 py-2.5 sm:py-3 rounded-xl sm:rounded-2xl bg-white/15 backdrop-blur-sm hover:bg-white/25 transition-all active:scale-95">
+            <Link href="/portefeuille" className="flex flex-col items-center gap-1 sm:gap-1.5 py-2.5 sm:py-3 rounded-xl sm:rounded-2xl bg-white/15 backdrop-blur-sm hover:bg-white/25 transition-all active:scale-95 text-white">
               <History className="w-4 h-4 sm:w-5 sm:h-5" />
               <span className="text-[10px] sm:text-[11px] font-bold">Historique</span>
             </Link>
@@ -206,7 +206,7 @@ export default function DashboardPage() {
 
       {/* ── Services Grid ── */}
       <div>
-        <p className="text-xs font-bold text-white/20 uppercase tracking-widest mb-3 px-1">Services</p>
+        <p className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-3 px-1">Services</p>
         <div className="grid grid-cols-4 gap-2 sm:gap-3">
           {[
             { icon: ArrowDownToLine, label: "Dépôt", href: "/deposer", gradient: "from-emerald-500 to-emerald-600" },
@@ -217,12 +217,12 @@ export default function DashboardPage() {
             <Link
               key={i}
               href={svc.href}
-              className="flex flex-col items-center gap-1.5 sm:gap-2 py-2.5 sm:py-3 rounded-xl sm:rounded-2xl bg-white/[0.03] border border-white/[0.05] hover:bg-white/[0.06] transition-all active:scale-95"
+              className="flex flex-col items-center gap-1.5 sm:gap-2 py-2.5 sm:py-3 rounded-xl sm:rounded-2xl bg-gray-50/50 border border-gray-200/50 hover:bg-gray-100/50 transition-all active:scale-95"
             >
               <div className={`w-9 h-9 sm:w-11 sm:h-11 rounded-xl sm:rounded-2xl bg-gradient-to-br ${svc.gradient} flex items-center justify-center shadow-lg`}>
                 <svc.icon className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
               </div>
-              <span className="text-[10px] sm:text-[11px] font-semibold text-white/50">{svc.label}</span>
+              <span className="text-[10px] sm:text-[11px] font-semibold text-gray-400">{svc.label}</span>
             </Link>
           ))}
         </div>
@@ -234,56 +234,56 @@ export default function DashboardPage() {
           <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
         </div>
         <div className="flex-1 min-w-0">
-          <p className="text-sm font-bold text-white">Transferts gratuits</p>
-          <p className="text-[11px] text-white/30">Envoyez de l&apos;argent entre utilisateurs Binq sans frais.</p>
+          <p className="text-sm font-bold text-gray-900">Transferts gratuits</p>
+          <p className="text-[11px] text-gray-500">Envoyez de l&apos;argent entre utilisateurs Binq sans frais.</p>
         </div>
       </div>
 
       {/* ── Recent Activity ── */}
       <div>
         <div className="flex items-center justify-between mb-3 px-1">
-          <p className="text-xs font-bold text-white/20 uppercase tracking-widest">Activité récente</p>
+          <p className="text-xs font-bold text-gray-500 uppercase tracking-widest">Activité récente</p>
           <div className="flex items-center gap-2">
-            <button onClick={fetchData} className="p-1.5 rounded-lg hover:bg-white/[0.06] transition-colors">
-              <RefreshCw className={`w-3.5 h-3.5 text-white/20 ${loading ? "animate-spin" : ""}`} />
+            <button onClick={fetchData} className="p-1.5 rounded-lg hover:bg-gray-100/50 transition-colors">
+              <RefreshCw className={`w-3.5 h-3.5 text-gray-400 ${loading ? "animate-spin" : ""}`} />
             </button>
-            <Link href="/portefeuille" className="text-[11px] font-bold text-emerald-400 hover:text-emerald-300 flex items-center gap-0.5 transition-colors">
+            <Link href="/portefeuille" className="text-[11px] font-bold text-emerald-600 hover:text-emerald-600 flex items-center gap-0.5 transition-colors">
               Tout voir <ArrowRight className="w-3 h-3" />
             </Link>
           </div>
         </div>
 
         {activity.length === 0 ? (
-          <div className="rounded-2xl bg-white/[0.02] border border-white/[0.05] p-8 text-center">
-            <div className="w-11 h-11 sm:w-14 sm:h-14 rounded-2xl bg-white/[0.03] flex items-center justify-center mx-auto mb-3">
-              <Wallet className="w-5 h-5 sm:w-7 sm:h-7 text-white/10" />
+          <div className="rounded-2xl bg-gray-50/50 border border-gray-200/50 p-8 text-center">
+            <div className="w-11 h-11 sm:w-14 sm:h-14 rounded-2xl bg-gray-50/50 flex items-center justify-center mx-auto mb-3">
+              <Wallet className="w-5 h-5 sm:w-7 sm:h-7 text-gray-300" />
             </div>
-            <p className="text-white/50 font-bold text-sm mb-1">Aucune activité</p>
-            <p className="text-white/20 text-xs mb-4">Commencez par ajouter de l&apos;argent.</p>
+            <p className="text-gray-400 font-bold text-sm mb-1">Aucune activité</p>
+            <p className="text-gray-400 text-xs mb-4">Commencez par ajouter de l&apos;argent.</p>
             <Link href="/deposer" className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-emerald-500 text-white text-sm font-bold hover:bg-emerald-400 transition-all active:scale-95">
               <ArrowDownToLine className="w-4 h-4" />
               Déposer
             </Link>
           </div>
         ) : (
-          <div className="rounded-2xl bg-white/[0.02] border border-white/[0.05] overflow-hidden divide-y divide-white/[0.04]">
+          <div className="rounded-2xl bg-gray-50/50 border border-gray-200/50 overflow-hidden divide-y divide-gray-100">
             {activity.map((item) => (
-              <div key={item.id} className="flex items-center gap-3 p-4 hover:bg-white/[0.02] transition-colors active:bg-white/[0.04]">
+              <div key={item.id} className="flex items-center gap-3 p-4 hover:bg-gray-50 transition-colors active:bg-gray-50/80">
                 <div className={`w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl flex items-center justify-center shrink-0 ${
-                  item.isCredit ? "bg-emerald-500/15" : "bg-white/[0.05]"
+                  item.isCredit ? "bg-emerald-50" : "bg-gray-50/80"
                 }`}>
                   {item.isCredit
-                    ? <ArrowDownLeft className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-emerald-400" />
-                    : <ArrowUpRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-white/30" />
+                    ? <ArrowDownLeft className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-emerald-600" />
+                    : <ArrowUpRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-gray-400" />
                   }
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-bold text-white/80 truncate">{item.label}</p>
-                  <p className="text-[10px] text-white/20 mt-0.5">
+                  <p className="text-sm font-bold text-gray-600 truncate">{item.label}</p>
+                  <p className="text-[10px] text-gray-400 mt-0.5">
                     {new Date(item.date).toLocaleDateString("fr-FR", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}
                   </p>
                 </div>
-                <p className={`text-sm font-bold tabular-nums ${item.isCredit ? "text-emerald-400" : "text-white/60"}`}>
+                <p className={`text-sm font-bold tabular-nums ${item.isCredit ? "text-emerald-600" : "text-gray-500"}`}>
                   {item.isCredit ? "+" : "-"}{formatMontant(item.montant, devise)}
                 </p>
               </div>

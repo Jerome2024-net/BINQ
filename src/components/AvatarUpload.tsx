@@ -94,7 +94,7 @@ export default function AvatarUpload({ userId, currentAvatar, userName, onUpload
         className="absolute inset-0 flex items-center justify-center bg-black/40 rounded-2xl opacity-0 group-hover:opacity-100 transition-all duration-200 cursor-pointer"
         aria-label="Changer la photo de profil"
       >
-        <Camera className="w-6 h-6 text-white" />
+        <Camera className="w-6 h-6 text-gray-900" />
       </button>
 
       {/* Modal */}
@@ -107,7 +107,7 @@ export default function AvatarUpload({ userId, currentAvatar, userName, onUpload
           />
 
           {/* Dialog */}
-          <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+          <div className="relative bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden animate-in fade-in zoom-in-95 duration-200">
             {/* Header */}
             <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
               <h3 className="text-lg font-semibold text-gray-900">Photo de profil</h3>
@@ -135,7 +135,7 @@ export default function AvatarUpload({ userId, currentAvatar, userName, onUpload
                         />
                       ) : (
                         <div className="w-full h-full bg-primary-600 flex items-center justify-center">
-                          <span className="text-3xl font-semibold text-white">{initials}</span>
+                          <span className="text-3xl font-semibold text-gray-900">{initials}</span>
                         </div>
                       )}
                     </div>
@@ -205,7 +205,7 @@ export default function AvatarUpload({ userId, currentAvatar, userName, onUpload
                     <button
                       onClick={handleUpload}
                       disabled={uploading}
-                      className="flex-1 px-4 py-2.5 bg-primary-600 hover:bg-primary-700 text-white rounded-xl text-sm font-medium transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
+                      className="flex-1 px-4 py-2.5 bg-primary-600 hover:bg-primary-700 text-gray-900 rounded-xl text-sm font-medium transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
                     >
                       {uploading ? (
                         <>

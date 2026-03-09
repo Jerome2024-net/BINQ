@@ -25,7 +25,7 @@ export default function Footer() {
 
           {/* Produit */}
           <div>
-            <h3 className="text-white text-sm font-semibold mb-4">Produit</h3>
+            <h3 className="text-gray-900 text-sm font-semibold mb-4">Produit</h3>
             <ul className="space-y-2.5">
               {[
                 { href: "/#fonctionnalites", label: "Fonctionnalités" },
@@ -33,7 +33,7 @@ export default function Footer() {
                 { href: "/dashboard", label: "Dashboard" },
               ].map((link) => (
                 <li key={link.href}>
-                  <Link href={link.href} className="text-gray-500 hover:text-gray-300 transition-colors text-[14px]">
+                  <Link href={link.href} className="text-gray-500 hover:text-gray-700 transition-colors text-[14px]">
                     {link.label}
                   </Link>
                 </li>
@@ -43,7 +43,7 @@ export default function Footer() {
 
           {/* Ressources */}
           <div>
-            <h3 className="text-white text-sm font-semibold mb-4">Ressources</h3>
+            <h3 className="text-gray-900 text-sm font-semibold mb-4">Ressources</h3>
             <ul className="space-y-2.5">
               {[
                 { href: "#", label: "Centre d'aide" },
@@ -52,7 +52,7 @@ export default function Footer() {
                 { href: "#", label: "Blog" },
               ].map((link) => (
                 <li key={link.label}>
-                  <Link href={link.href} className="text-gray-500 hover:text-gray-300 transition-colors text-[14px]">
+                  <Link href={link.href} className="text-gray-500 hover:text-gray-700 transition-colors text-[14px]">
                     {link.label}
                   </Link>
                 </li>
@@ -62,11 +62,11 @@ export default function Footer() {
 
           {/* Contact */}
           <div className="col-span-2 md:col-span-1">
-            <h3 className="text-white text-sm font-semibold mb-4">Contact</h3>
+            <h3 className="text-gray-900 text-sm font-semibold mb-4">Contact</h3>
             <ul className="space-y-3 text-gray-500 text-[14px]">
               <li className="flex items-center gap-2">
                 <Mail className="w-4 h-4 text-gray-600" />
-                <a href="mailto:support@binq.io" className="hover:text-gray-300 transition-colors">
+                <a href="mailto:support@binq.io" className="hover:text-gray-700 transition-colors">
                   support@binq.io
                 </a>
               </li>
@@ -75,16 +75,16 @@ export default function Footer() {
                 <span>Support 7j/7</span>
               </li>
             </ul>
-            <div className="mt-6 bg-white/[0.04] border border-white/[0.06] rounded-xl p-4">
+            <div className="mt-6 bg-gray-50/80 border border-gray-200/50 rounded-xl p-4">
               <p className="text-[13px] text-gray-400 font-medium mb-1">Newsletter</p>
               <p className="text-[12px] text-gray-600 mb-3">Restez informé des nouveautés</p>
               <div className="flex flex-col sm:flex-row gap-2">
                 <input
                   type="email"
                   placeholder="votre@email.com"
-                  className="flex-1 min-w-0 px-3 py-2 bg-white/[0.06] border border-white/[0.08] rounded-lg text-[13px] text-white placeholder:text-gray-600 outline-none focus:border-primary-500/50"
+                  className="flex-1 min-w-0 px-3 py-2 bg-gray-100/50 border border-gray-200/60 rounded-lg text-[13px] text-gray-900 placeholder:text-gray-600 outline-none focus:border-primary-500/50"
                 />
-                <button className="px-3 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-lg text-[13px] font-medium transition-colors whitespace-nowrap">
+                <button className="px-3 py-2 bg-primary-600 hover:bg-primary-700 text-gray-900 rounded-lg text-[13px] font-medium transition-colors whitespace-nowrap">
                   OK
                 </button>
               </div>

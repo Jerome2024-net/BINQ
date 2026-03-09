@@ -126,10 +126,10 @@ export default function PayUserPage() {
   // Loading
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#0a0a0a] flex items-center justify-center">
+      <div className="min-h-screen bg-white flex items-center justify-center">
         <div className="text-center">
-          <Loader2 className="w-10 h-10 text-emerald-400 animate-spin mx-auto mb-4" />
-          <p className="text-white/40">Chargement...</p>
+          <Loader2 className="w-10 h-10 text-emerald-600 animate-spin mx-auto mb-4" />
+          <p className="text-gray-400">Chargement...</p>
         </div>
       </div>
     );
@@ -138,13 +138,13 @@ export default function PayUserPage() {
   // Error
   if (error) {
     return (
-      <div className="min-h-screen bg-[#0a0a0a] flex items-center justify-center px-4">
-        <div className="bg-white/[0.04] rounded-3xl p-8 max-w-md w-full text-center border border-white/[0.06] backdrop-blur-xl">
-          <div className="w-16 h-16 bg-red-500/20 rounded-full flex items-center justify-center mx-auto mb-5">
-            <AlertTriangle className="w-8 h-8 text-red-400" />
+      <div className="min-h-screen bg-white flex items-center justify-center px-4">
+        <div className="bg-gray-50/80 rounded-3xl p-8 max-w-md w-full text-center border border-gray-200/50 backdrop-blur-xl">
+          <div className="w-16 h-16 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-5">
+            <AlertTriangle className="w-8 h-8 text-red-500" />
           </div>
-          <h1 className="text-xl font-bold text-white mb-2">Utilisateur introuvable</h1>
-          <p className="text-white/40 mb-6">{error}</p>
+          <h1 className="text-xl font-bold text-gray-900 mb-2">Utilisateur introuvable</h1>
+          <p className="text-gray-400 mb-6">{error}</p>
           <Link
             href="/dashboard"
             className="inline-flex items-center gap-2 bg-emerald-500 text-white px-6 py-3 rounded-xl font-semibold hover:bg-emerald-400 transition"
@@ -167,23 +167,23 @@ export default function PayUserPage() {
       }
     };
     return (
-      <div className="min-h-screen bg-[#0a0a0a] flex items-center justify-center px-4">
+      <div className="min-h-screen bg-white flex items-center justify-center px-4">
         <SuccessConfetti />
-        <div className="bg-white/[0.04] rounded-3xl p-8 max-w-md w-full text-center border border-white/[0.06] backdrop-blur-xl animate-in zoom-in-95 duration-300">
-          <div className="w-20 h-20 bg-emerald-500/20 rounded-full flex items-center justify-center mx-auto mb-4 animate-in zoom-in duration-500">
-            <CheckCircle2 className="w-10 h-10 text-emerald-400" />
+        <div className="bg-gray-50/80 rounded-3xl p-8 max-w-md w-full text-center border border-gray-200/50 backdrop-blur-xl animate-in zoom-in-95 duration-300">
+          <div className="w-20 h-20 bg-emerald-50 rounded-full flex items-center justify-center mx-auto mb-4 animate-in zoom-in duration-500">
+            <CheckCircle2 className="w-10 h-10 text-emerald-600" />
           </div>
-          <h1 className="text-2xl font-black text-white mb-1">Envoi effectué !</h1>
-          <p className="text-3xl font-black text-emerald-400 mb-2">{formatMontant(sentMontant, devise)}</p>
-          <p className="text-white/40 text-sm mb-1">
-            À <span className="text-white font-semibold">{targetUser.prenom} {targetUser.nom}</span>
+          <h1 className="text-2xl font-black text-gray-900 mb-1">Envoi effectué !</h1>
+          <p className="text-3xl font-black text-emerald-600 mb-2">{formatMontant(sentMontant, devise)}</p>
+          <p className="text-gray-400 text-sm mb-1">
+            À <span className="text-gray-900 font-semibold">{targetUser.prenom} {targetUser.nom}</span>
           </p>
 
           {/* Receipt */}
-          <div className="bg-white/[0.03] rounded-xl p-3 my-4 border border-white/[0.06] text-left space-y-1.5">
-            <div className="flex justify-between text-xs"><span className="text-white/30">Référence</span><span className="text-white/60 font-mono">{sentRef}</span></div>
-            <div className="flex justify-between text-xs"><span className="text-white/30">Date</span><span className="text-white/60">{sentDate}</span></div>
-            <div className="flex justify-between text-xs"><span className="text-white/30">Statut</span><span className="text-emerald-400 font-semibold">Confirmé</span></div>
+          <div className="bg-gray-50/50 rounded-xl p-3 my-4 border border-gray-200/50 text-left space-y-1.5">
+            <div className="flex justify-between text-xs"><span className="text-gray-500">Référence</span><span className="text-gray-500 font-mono">{sentRef}</span></div>
+            <div className="flex justify-between text-xs"><span className="text-gray-500">Date</span><span className="text-gray-500">{sentDate}</span></div>
+            <div className="flex justify-between text-xs"><span className="text-gray-500">Statut</span><span className="text-emerald-600 font-semibold">Confirmé</span></div>
           </div>
 
           {/* QR Receipt - scannable proof */}
@@ -198,7 +198,7 @@ export default function PayUserPage() {
                 includeMargin={true}
               />
             </div>
-            <p className="text-[9px] text-white/20 mt-1.5 flex items-center gap-1"><QrCode className="w-2.5 h-2.5" />Preuve de paiement vérifiable</p>
+            <p className="text-[9px] text-gray-400 mt-1.5 flex items-center gap-1"><QrCode className="w-2.5 h-2.5" />Preuve de paiement vérifiable</p>
           </div>
 
           <div className="flex items-center gap-2">
@@ -211,7 +211,7 @@ export default function PayUserPage() {
             </Link>
             <button
               onClick={handleShareReceipt}
-              className="flex items-center justify-center gap-1.5 px-4 py-3 rounded-xl bg-white/[0.05] hover:bg-white/[0.08] text-white/60 font-bold text-sm transition active:scale-95"
+              className="flex items-center justify-center gap-1.5 px-4 py-3 rounded-xl bg-gray-50/80 hover:bg-gray-100 text-gray-500 font-bold text-sm transition active:scale-95"
             >
               <Share2 className="w-4 h-4" />Reçu
             </button>
@@ -226,43 +226,43 @@ export default function PayUserPage() {
   const initials = `${(targetUser.prenom || "?")[0]}${(targetUser.nom || "?")[0]}`.toUpperCase();
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a] flex items-center justify-center px-4 py-10">
+    <div className="min-h-screen bg-white flex items-center justify-center px-4 py-10">
       <div className="max-w-md w-full">
         {/* Logo */}
         <div className="text-center mb-8">
-          <h2 className="text-2xl font-black text-white tracking-tight">
-            <span className="text-emerald-400">Binq</span> Pay
+          <h2 className="text-2xl font-black text-gray-900 tracking-tight">
+            <span className="text-emerald-600">Binq</span> Pay
           </h2>
-          <p className="text-white/30 text-sm mt-1 flex items-center justify-center gap-1.5">
+          <p className="text-gray-500 text-sm mt-1 flex items-center justify-center gap-1.5">
             <QrCode className="w-3.5 h-3.5" />
             Paiement par QR Code
           </p>
         </div>
 
         {/* Card */}
-        <div className="bg-white/[0.04] rounded-3xl p-8 border border-white/[0.06] backdrop-blur-xl">
+        <div className="bg-gray-50/80 rounded-3xl p-8 border border-gray-200/50 backdrop-blur-xl">
           {/* User info */}
           <div className="flex flex-col items-center mb-6">
             {targetUser.avatar_url ? (
               <img
                 src={targetUser.avatar_url}
                 alt={targetUser.prenom}
-                className="w-16 h-16 rounded-full object-cover mb-3 ring-2 ring-emerald-500/30"
+                className="w-16 h-16 rounded-full object-cover mb-3 ring-2 ring-emerald-200"
               />
             ) : (
-              <div className="w-16 h-16 rounded-full bg-emerald-600/30 flex items-center justify-center mb-3 ring-2 ring-emerald-500/30">
-                <span className="text-lg font-bold text-emerald-300">{initials}</span>
+              <div className="w-16 h-16 rounded-full bg-emerald-100 flex items-center justify-center mb-3 ring-2 ring-emerald-200">
+                <span className="text-lg font-bold text-emerald-600">{initials}</span>
               </div>
             )}
-            <p className="text-lg font-semibold text-white">
+            <p className="text-lg font-semibold text-gray-900">
               {targetUser.prenom} {targetUser.nom}
             </p>
-            <p className="text-white/40 text-sm">Envoyer de l&apos;argent</p>
+            <p className="text-gray-400 text-sm">Envoyer de l&apos;argent</p>
           </div>
 
           {!user ? (
             <div className="text-center">
-              <p className="text-white/40 text-sm mb-4">
+              <p className="text-gray-400 text-sm mb-4">
                 Connectez-vous pour envoyer de l&apos;argent
               </p>
               <Link
@@ -272,9 +272,9 @@ export default function PayUserPage() {
                 <LogIn className="w-5 h-5" />
                 Se connecter
               </Link>
-              <p className="text-xs text-white/20 mt-3">
+              <p className="text-xs text-gray-400 mt-3">
                 Pas encore de compte ?{" "}
-                <Link href={`/inscription?redirect=/pay/user/${userId}`} className="text-emerald-400 hover:underline">
+                <Link href={`/inscription?redirect=/pay/user/${userId}`} className="text-emerald-600 hover:underline">
                   Créer un compte
                 </Link>
               </p>
@@ -291,8 +291,8 @@ export default function PayUserPage() {
                       onClick={() => setDevise(d)}
                       className={`flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-sm font-bold transition-all ${
                         devise === d
-                          ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30"
-                          : "bg-white/[0.03] text-white/40 border border-white/[0.06] hover:bg-white/[0.06]"
+                          ? "bg-emerald-50 text-emerald-600 border border-emerald-200/60"
+                          : "bg-gray-50/50 text-gray-400 border border-gray-200/50 hover:bg-gray-100/50"
                       }`}
                     >
                       <span>{dc.flag}</span>
@@ -303,8 +303,8 @@ export default function PayUserPage() {
               </div>
 
               {/* Montant */}
-              <div className="bg-white/[0.03] rounded-2xl p-5 text-center border border-white/[0.06]">
-                <p className="text-sm text-white/40 mb-3">Montant à envoyer</p>
+              <div className="bg-gray-50/50 rounded-2xl p-5 text-center border border-gray-200/50">
+                <p className="text-sm text-gray-400 mb-3">Montant à envoyer</p>
                 <div className="relative">
                   <input
                     type="number"
@@ -313,9 +313,9 @@ export default function PayUserPage() {
                     placeholder={deviseConfig.decimals === 0 ? "5 000" : "10.00"}
                     value={montant}
                     onChange={(e) => setMontant(e.target.value)}
-                    className="w-full bg-transparent text-3xl font-black text-white text-center outline-none placeholder-white/15 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                    className="w-full bg-transparent text-3xl font-black text-gray-900 text-center outline-none placeholder-gray-400 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                   />
-                  <span className="text-white/20 text-lg absolute right-4 top-1/2 -translate-y-1/2">
+                  <span className="text-gray-400 text-lg absolute right-4 top-1/2 -translate-y-1/2">
                     {deviseConfig.symbol}
                   </span>
                 </div>
@@ -323,14 +323,14 @@ export default function PayUserPage() {
 
               {/* Message */}
               <div className="relative">
-                <MessageSquare className="absolute left-3 top-3 w-4 h-4 text-white/15" />
+                <MessageSquare className="absolute left-3 top-3 w-4 h-4 text-gray-400" />
                 <input
                   type="text"
                   maxLength={100}
                   placeholder="Message (optionnel)"
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
-                  className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl pl-9 pr-4 py-3 text-white placeholder-white/15 outline-none focus:border-emerald-500/40 transition text-sm"
+                  className="w-full bg-gray-50/80 border border-gray-200/60 rounded-xl pl-9 pr-4 py-3 text-gray-900 placeholder-gray-400 outline-none focus:border-emerald-200 transition text-sm"
                 />
               </div>
 
@@ -351,7 +351,7 @@ export default function PayUserPage() {
           )}
         </div>
 
-        <p className="text-center text-xs text-white/15 mt-6">
+        <p className="text-center text-xs text-gray-400 mt-6">
           Paiement sécurisé via Binq. Vos fonds sont débités de votre portefeuille.
         </p>
       </div>

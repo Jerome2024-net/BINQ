@@ -1,8 +1,8 @@
 ﻿export default function Loading() {
   return (
-    <div className="min-h-screen bg-[#0a0a0a] flex flex-col items-center justify-center">
+    <div className="min-h-screen bg-white flex flex-col items-center justify-center">
       <div className="relative mb-6">
-        <div className="absolute inset-0 w-16 h-16 rounded-full bg-emerald-500/20 animate-ping" />
+        <div className="absolute inset-0 w-16 h-16 rounded-full bg-emerald-50 animate-ping" />
         <div className="relative w-16 h-16 rounded-2xl bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center">
           <svg viewBox="0 0 24 24" fill="white" className="w-8 h-8">
             <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26" />
@@ -17,8 +17,8 @@
           <div className="absolute bottom-3 right-3 w-1.5 h-1.5 bg-emerald-400/40 rounded-sm animate-pulse" />
         </div>
       </div>
-      <p className="text-white/40 text-xs font-medium tracking-wider">BINQ</p>
-      <p className="text-white/20 text-[10px] mt-1">Mobile Money &middot; QR Code</p>
+      <p className="text-gray-400 text-xs font-medium tracking-wider">BINQ</p>
+      <p className="text-gray-400 text-[10px] mt-1">Mobile Money &middot; QR Code</p>
     </div>
   );
 }

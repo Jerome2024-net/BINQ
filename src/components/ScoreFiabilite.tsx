@@ -143,7 +143,7 @@ export default function ScoreFiabilite({
             <Shield size={20} color={color} />
           </div>
           <div>
-            <h3 className="text-white text-base font-semibold">
+            <h3 className="text-gray-900 text-base font-semibold">
               Score de fiabilité
             </h3>
             <p className="text-slate-400 text-xs">{label}</p>
@@ -167,21 +167,21 @@ export default function ScoreFiabilite({
 
       {/* Stats */}
       <div className="grid grid-cols-2 gap-3">
-        <div className="bg-emerald-500/10 rounded-xl p-3">
+        <div className="bg-emerald-50 rounded-xl p-3">
           <p className="text-slate-400 text-[11px] mb-1">A temps</p>
-          <p className="text-emerald-400 text-xl font-bold">
+          <p className="text-emerald-600 text-xl font-bold">
             {score.paiementsATemps}
           </p>
         </div>
         <div className="bg-amber-500/10 rounded-xl p-3">
           <p className="text-slate-400 text-[11px] mb-1">En retard</p>
-          <p className="text-amber-400 text-xl font-bold">
+          <p className="text-amber-600 text-xl font-bold">
             {score.paiementsRetard}
           </p>
         </div>
         <div className="bg-red-500/10 rounded-xl p-3">
           <p className="text-slate-400 text-[11px] mb-1">Défaillances</p>
-          <p className="text-red-400 text-xl font-bold">
+          <p className="text-red-500 text-xl font-bold">
             {score.defaillances}
           </p>
         </div>

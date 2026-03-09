@@ -133,7 +133,7 @@ export default function StripeConnectCard() {
             <button
               onClick={handleCreateAccount}
               disabled={isProcessing}
-              className="flex items-center gap-2 bg-primary-600 text-white px-5 py-2.5 rounded-xl font-semibold hover:bg-primary-700 transition-colors text-sm disabled:opacity-50"
+              className="flex items-center gap-2 bg-primary-600 text-gray-900 px-5 py-2.5 rounded-xl font-semibold hover:bg-primary-700 transition-colors text-sm disabled:opacity-50"
             >
               {isProcessing ? (
                 <Loader2 className="w-4 h-4 animate-spin" />
