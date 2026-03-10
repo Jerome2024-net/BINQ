@@ -45,9 +45,9 @@ interface PaymentLink {
 
 const statusConfig: Record<string, { label: string; color: string; dot: string; icon: typeof Clock }> = {
   actif: { label: "Actif", color: "text-emerald-700 bg-emerald-50 border-emerald-100", dot: "bg-emerald-500", icon: Clock },
-  paye: { label: "Pay\u00e9", color: "text-cyan-700 bg-cyan-50 border-cyan-100", dot: "bg-cyan-500", icon: CheckCircle2 },
-  annule: { label: "Annul\u00e9", color: "text-red-600 bg-red-50 border-red-100", dot: "bg-red-400", icon: XCircle },
-  expire: { label: "Expir\u00e9", color: "text-gray-600 bg-gray-100 border-gray-200", dot: "bg-gray-400", icon: XCircle },
+  paye: { label: "Payé", color: "text-cyan-700 bg-cyan-50 border-cyan-100", dot: "bg-cyan-500", icon: CheckCircle2 },
+  annule: { label: "Annulé", color: "text-red-600 bg-red-50 border-red-100", dot: "bg-red-400", icon: XCircle },
+  expire: { label: "Expiré", color: "text-gray-600 bg-gray-100 border-gray-200", dot: "bg-gray-400", icon: XCircle },
 };
 
 export default function DemanderPage() {
@@ -101,7 +101,7 @@ export default function DemanderPage() {
       await navigator.clipboard.writeText(url);
       setCopiedId(link.id);
       hapticMedium();
-      showToast("success", "Copi\u00e9", "Lien copi\u00e9 dans le presse-papiers");
+      showToast("success", "Copié", "Lien copié dans le presse-papiers");
       setTimeout(() => setCopiedId(null), 2000);
     } catch {
       showToast("error", "Erreur", "Impossible de copier le lien");
@@ -113,11 +113,11 @@ export default function DemanderPage() {
     const montantText = link.montant
       ? formatMontant(link.montant, link.devise as DeviseCode)
       : "montant libre";
-    const text = `${link.description || "Demande de paiement"} \u2014 ${montantText}`;
+    const text = `${link.description || "Demande de paiement"} — ${montantText}`;
 
     if (navigator.share) {
       try {
-        await navigator.share({ title: "Binq \u2014 Demande de paiement", text, url });
+        await navigator.share({ title: "Binq — Demande de paiement", text, url });
       } catch {
         /* user cancelled */
       }
@@ -155,12 +155,12 @@ export default function DemanderPage() {
       const data = await res.json();
 
       if (!res.ok) {
-        showToast("error", "Erreur", data.error || "Impossible de cr\u00e9er le lien");
+        showToast("error", "Erreur", data.error || "Impossible de créer le lien");
         return;
       }
 
       hapticSuccess();
-      showToast("success", "Lien cr\u00e9\u00e9", "Votre demande de paiement est pr\u00eate !");
+      showToast("success", "Lien créé", "Votre demande de paiement est prête !");
       setMontant("");
       setDescription("");
       setShowForm(false);
@@ -175,7 +175,7 @@ export default function DemanderPage() {
         /* ignore */
       }
     } catch {
-      showToast("error", "Erreur", "Erreur r\u00e9seau");
+      showToast("error", "Erreur", "Erreur réseau");
     } finally {
       setCreating(false);
     }
@@ -187,14 +187,14 @@ export default function DemanderPage() {
       const res = await fetch(`/api/payment-links?id=${id}`, { method: "DELETE" });
       if (!res.ok) {
         const data = await res.json();
-        showToast("error", "Erreur", data.error || "Impossible d\u2019annuler");
+        showToast("error", "Erreur", data.error || "Impossible d’annuler");
         return;
       }
       hapticMedium();
-      showToast("success", "Annul\u00e9", "Demande de paiement annul\u00e9e");
+      showToast("success", "Annulé", "Demande de paiement annulée");
       fetchLinks();
     } catch {
-      showToast("error", "Erreur", "Erreur r\u00e9seau");
+      showToast("error", "Erreur", "Erreur réseau");
     } finally {
       setDeletingId(null);
     }
@@ -223,7 +223,7 @@ export default function DemanderPage() {
           className="w-full flex items-center justify-center gap-2.5 bg-gradient-to-r from-emerald-500 to-emerald-600 text-white py-4 rounded-2xl font-bold text-base hover:from-emerald-400 hover:to-emerald-500 transition-all active:scale-[0.98] shadow-lg shadow-emerald-500/20"
         >
           <Plus className="w-5 h-5" />
-          Cr\u00e9er une demande
+          Créer une demande
         </button>
       ) : (
         <div className="rounded-2xl bg-white border border-gray-200/60 p-5 space-y-5 shadow-sm animate-in slide-in-from-top-2 duration-200">
@@ -303,7 +303,7 @@ export default function DemanderPage() {
             ) : (
               <Link2 className="w-5 h-5" />
             )}
-            {creating ? "Cr\u00e9ation..." : "Cr\u00e9er le lien de paiement"}
+            {creating ? "Création..." : "Créer le lien de paiement"}
           </button>
         </div>
       )}
@@ -316,12 +316,12 @@ export default function DemanderPage() {
           </div>
           <div className="flex-1">
             <p className="text-xs font-bold text-emerald-700">
-              {totalPaye} paiement{totalPaye > 1 ? "s" : ""} re\u00e7u{totalPaye > 1 ? "s" : ""}
+              {totalPaye} paiement{totalPaye > 1 ? "s" : ""} reçu{totalPaye > 1 ? "s" : ""}
             </p>
             {totalRecuMontant > 0 && (
               <p className="text-lg font-black text-gray-900 -mt-0.5">
                 {formatMontant(totalRecuMontant, devise)}
-                <span className="text-xs font-bold text-gray-500 ml-1">total re\u00e7u</span>
+                <span className="text-xs font-bold text-gray-500 ml-1">total reçu</span>
               </p>
             )}
           </div>
@@ -339,14 +339,14 @@ export default function DemanderPage() {
             <HandCoins className="w-8 h-8 text-emerald-600" />
           </div>
           <p className="text-gray-900 font-bold text-base mb-1">Aucune demande</p>
-          <p className="text-gray-500 text-sm mb-5">Cr\u00e9ez votre premi\u00e8re demande de paiement<br />et partagez-la en un clic.</p>
+          <p className="text-gray-500 text-sm mb-5">Créez votre première demande de paiement<br />et partagez-la en un clic.</p>
           {!showForm && (
             <button
               onClick={() => setShowForm(true)}
               className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-emerald-500 text-white text-sm font-bold hover:bg-emerald-400 transition-all active:scale-95"
             >
               <Plus className="w-4 h-4" />
-              Cr\u00e9er une demande
+              Créer une demande
             </button>
           )}
         </div>
@@ -381,7 +381,7 @@ export default function DemanderPage() {
               </p>
               <div className="space-y-2">
                 {pastLinks.map((link) => (
-                  <PastLinkCard key={link.id} link={link} />
+                  <PastLinkCard key={link.id} link={link} deletingId={deletingId} onDelete={handleDelete} />
                 ))}
               </div>
             </div>
@@ -472,7 +472,7 @@ function LinkCard({
           {copiedId === link.id ? (
             <>
               <Check className="w-3.5 h-3.5 text-emerald-600" />
-              <span className="text-emerald-600">Copi\u00e9 !</span>
+              <span className="text-emerald-600">Copié !</span>
             </>
           ) : (
             <>
@@ -516,7 +516,7 @@ function LinkCard({
 /* ═══════════════════════════════════════════
    Past Link Card — compact, muted
    ═══════════════════════════════════════════ */
-function PastLinkCard({ link }: { link: PaymentLink }) {
+function PastLinkCard({ link, deletingId, onDelete }: { link: PaymentLink; deletingId: string | null; onDelete: (id: string) => void }) {
   const status = statusConfig[link.statut] || statusConfig.expire;
 
   const dateStr = new Date(link.created_at).toLocaleDateString("fr-FR", {
@@ -550,6 +550,18 @@ function PastLinkCard({ link }: { link: PaymentLink }) {
       <span className={`text-[10px] font-bold px-2 py-1 rounded-full border ${status.color}`}>
         {status.label}
       </span>
+
+      <button
+        onClick={() => onDelete(link.id)}
+        disabled={deletingId === link.id}
+        className="p-2 rounded-lg text-gray-300 hover:text-red-400 hover:bg-red-50/50 transition-colors active:scale-95 disabled:opacity-50"
+      >
+        {deletingId === link.id ? (
+          <Loader2 className="w-3.5 h-3.5 animate-spin" />
+        ) : (
+          <Trash2 className="w-3.5 h-3.5" />
+        )}
+      </button>
     </div>
   );
 }
