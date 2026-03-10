@@ -987,7 +987,7 @@ export default function QRCodePage() {
 
           {/* ── Stats Hero ── */}
           <div className="rounded-2xl bg-gradient-to-br from-emerald-500 to-emerald-600 p-5 text-white">
-            <p className="text-xs font-semibold text-white/70 uppercase tracking-widest mb-1">Total encaiss&eacute;</p>
+            <p className="text-xs font-semibold text-white/70 uppercase tracking-widest mb-1">Total encaissé</p>
             <p className="text-3xl font-black tracking-tight">{formatMontant(stats.totalReceived, devise)}</p>
             <div className="flex items-center gap-3 mt-2">
               <span className="text-xs text-white/80 font-semibold">{stats.paymentsCount} vente{stats.paymentsCount !== 1 ? "s" : ""}</span>
@@ -1011,7 +1011,7 @@ export default function QRCodePage() {
           {showCreatePerm && (
             <div className="rounded-2xl bg-white border border-gray-200/60 p-5 space-y-4 shadow-sm">
               <div className="flex items-center justify-between">
-                <p className="text-sm font-bold text-gray-900">Cr&eacute;er un QR marchand</p>
+                <p className="text-sm font-bold text-gray-900">Créer un QR marchand</p>
                 <button onClick={() => setShowCreatePerm(false)} className="p-1.5 rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-50 transition"><XCircle className="w-4 h-4" /></button>
               </div>
 
@@ -1032,7 +1032,7 @@ export default function QRCodePage() {
                 </div>
               )}
 
-              <input type="text" placeholder="Nom du produit (ex: Caf&eacute;, Coiffure...)" value={permDesc} onChange={(e) => setPermDesc(e.target.value)} maxLength={60} className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-gray-900 text-sm outline-none focus:border-emerald-300 focus:ring-2 focus:ring-emerald-100 placeholder-gray-400 transition" />
+              <input type="text" placeholder="Nom du produit (ex: Café, Coiffure...)" value={permDesc} onChange={(e) => setPermDesc(e.target.value)} maxLength={60} className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-gray-900 text-sm outline-none focus:border-emerald-300 focus:ring-2 focus:ring-emerald-100 placeholder-gray-400 transition" />
 
               <div className="flex items-center gap-2">
                 {DEVISE_LIST.map((d) => (
@@ -1042,7 +1042,7 @@ export default function QRCodePage() {
 
               <button onClick={handleCreatePermanent} disabled={creatingPerm || (permType === "fixe" && (!permMontant || parseFloat(permMontant) <= 0))} className="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-white font-bold text-sm transition-all active:scale-[0.98] disabled:opacity-40">
                 {creatingPerm ? <Loader2 className="w-4 h-4 animate-spin" /> : <QrCode className="w-4 h-4" />}
-                {creatingPerm ? "Cr&eacute;ation..." : "Cr&eacute;er le QR"}
+                {creatingPerm ? "Création..." : "Créer le QR"}
               </button>
             </div>
           )}
@@ -1056,9 +1056,9 @@ export default function QRCodePage() {
                 <Store className="w-8 h-8 text-emerald-600" />
               </div>
               <p className="text-gray-900 font-bold text-base mb-1">Aucun QR marchand</p>
-              <p className="text-gray-500 text-sm mb-5">Cr&eacute;ez votre premier QR et commencez &agrave; encaisser</p>
+              <p className="text-gray-500 text-sm mb-5">Créez votre premier QR et commencez à encaisser</p>
               <button onClick={() => setShowCreatePerm(true)} className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-emerald-500 text-white text-sm font-bold hover:bg-emerald-400 transition-all active:scale-95">
-                <Plus className="w-4 h-4" />Cr&eacute;er un QR
+                <Plus className="w-4 h-4" />Créer un QR
               </button>
             </div>
           ) : (
@@ -1174,7 +1174,7 @@ export default function QRCodePage() {
               className="flex-1 flex items-center justify-center gap-2 py-3.5 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold text-sm transition-all active:scale-[0.98]"
             >
               <Download className="w-4 h-4" />
-              T&eacute;l&eacute;charger
+              Télécharger
             </button>
           </div>
         </div>
