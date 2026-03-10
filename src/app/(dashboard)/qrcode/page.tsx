@@ -23,7 +23,6 @@ import {
   RefreshCw,
   Banknote,
   ArrowDownLeft,
-  BarChart3,
 } from "lucide-react";
 import { type DeviseCode, DEVISES, DEFAULT_DEVISE, formatMontant, DEVISE_LIST } from "@/lib/currencies";
 import { playPaymentSound } from "@/lib/sounds";
@@ -84,7 +83,8 @@ export default function QRCodePage() {
   const [permDesc, setPermDesc] = useState("");
   const [creatingPerm, setCreatingPerm] = useState(false);
   const [copiedCode, setCopiedCode] = useState<string | null>(null);
-  const [expandedQR, setExpandedQR] = useState<string | null>(null);
+  const [fullscreenTerminal, setFullscreenTerminal] = useState<Terminal | null>(null);
+  const [deletingTerminalId, setDeletingTerminalId] = useState<string | null>(null);
   const [preFillMontant, setPreFillMontant] = useState("");
   const [showPreFill, setShowPreFill] = useState(false);
 
@@ -506,10 +506,13 @@ export default function QRCodePage() {
   };
 
   const handleDeleteTerminal = async (id: string) => {
+    setDeletingTerminalId(id);
     try {
       await fetch(`/api/merchant?id=${id}`, { method: "DELETE" });
       setTerminals((prev) => prev.filter((t) => t.id !== id));
+      if (fullscreenTerminal?.id === id) setFullscreenTerminal(null);
     } catch { /* ignore */ }
+    finally { setDeletingTerminalId(null); }
   };
 
   // ── Terminal Copy / Share / Download ──
@@ -567,8 +570,8 @@ export default function QRCodePage() {
     <div className="space-y-5 pb-28">
       {/* Header */}
       <div>
-        <h1 className="text-xl font-black text-gray-900 tracking-tight">Paiements QR</h1>
-        <p className="text-xs text-gray-700 mt-0.5">Recevoir, scanner ou encaisser</p>
+        <h1 className="text-2xl font-black text-gray-900 tracking-tight">Terminal QR</h1>
+        <p className="text-xs text-gray-500 mt-0.5">Encaissez des paiements instantanément</p>
       </div>
 
       {/* Tabs */}
@@ -980,124 +983,200 @@ export default function QRCodePage() {
       {/* ══ TERMINAUX TAB ═══════════════ */}
       {/* ══════════════════════════════════ */}
       {tab === "terminaux" && (
-        <div className="space-y-4 animate-in fade-in duration-200">
+        <div className="space-y-5 animate-in fade-in duration-200">
 
-          {/* Explainer */}
-          <div className="rounded-xl bg-emerald-50 border border-emerald-200/40 px-4 py-3">
-            <p className="text-xs text-gray-600"><span className="text-emerald-600 font-semibold">QR réutilisables</span> — Vos clients scannent et paient, sans limite d&apos;utilisation.</p>
-          </div>
-
-          {/* Stats */}
-          <div className="grid grid-cols-3 gap-2">
-            <div className="rounded-xl bg-gray-50/50 border border-gray-200/50 p-3 text-center">
-              <p className="text-lg font-black text-emerald-600">{stats.paymentsCount}</p>
-              <p className="text-[10px] text-gray-700 font-semibold">Ventes</p>
-            </div>
-            <div className="rounded-xl bg-gray-50/50 border border-gray-200/50 p-3 text-center">
-              <p className="text-lg font-black text-gray-900">{formatMontant(stats.totalReceived, devise)}</p>
-              <p className="text-[10px] text-gray-700 font-semibold">Total reçu</p>
-            </div>
-            <div className="rounded-xl bg-gray-50/50 border border-gray-200/50 p-3 text-center">
-              <p className="text-lg font-black text-gray-900">{stats.totalTerminals}</p>
-              <p className="text-[10px] text-gray-700 font-semibold">QR actifs</p>
+          {/* ── Stats Hero ── */}
+          <div className="rounded-2xl bg-gradient-to-br from-emerald-500 to-emerald-600 p-5 text-white">
+            <p className="text-xs font-semibold text-white/70 uppercase tracking-widest mb-1">Total encaiss&eacute;</p>
+            <p className="text-3xl font-black tracking-tight">{formatMontant(stats.totalReceived, devise)}</p>
+            <div className="flex items-center gap-3 mt-2">
+              <span className="text-xs text-white/80 font-semibold">{stats.paymentsCount} vente{stats.paymentsCount !== 1 ? "s" : ""}</span>
+              <span className="w-1 h-1 rounded-full bg-white/40" />
+              <span className="text-xs text-white/80 font-semibold">{stats.totalTerminals} QR actif{stats.totalTerminals !== 1 ? "s" : ""}</span>
             </div>
           </div>
 
-          {/* Create button */}
+          {/* ── CTA: Nouveau QR marchand ── */}
           {!showCreatePerm && (
-            <button onClick={() => setShowCreatePerm(true)} className="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl bg-emerald-50 hover:bg-emerald-100/60 text-emerald-600 font-bold text-sm transition-all active:scale-[0.98] border border-emerald-200/40">
-              <Plus className="w-5 h-5" />Créer un QR permanent
+            <button
+              onClick={() => { hapticMedium(); setShowCreatePerm(true); }}
+              className="w-full flex items-center justify-center gap-2.5 py-4 rounded-2xl bg-gray-900 hover:bg-gray-800 text-white font-bold text-sm transition-all active:scale-[0.98] shadow-lg shadow-gray-900/20"
+            >
+              <Plus className="w-5 h-5" />
+              Nouveau QR marchand
             </button>
           )}
 
-          {/* Create form */}
+          {/* ── Create Form ── */}
           {showCreatePerm && (
-            <div className="rounded-2xl bg-gray-50/50 border border-gray-200/50 p-5 space-y-4">
+            <div className="rounded-2xl bg-white border border-gray-200/60 p-5 space-y-4 shadow-sm">
               <div className="flex items-center justify-between">
-                <p className="text-sm font-bold text-gray-900">Nouveau QR permanent</p>
-                  <button onClick={() => setShowCreatePerm(false)} className="text-gray-600 hover:text-gray-700"><XCircle className="w-4 h-4" /></button>
+                <p className="text-sm font-bold text-gray-900">Cr&eacute;er un QR marchand</p>
+                <button onClick={() => setShowCreatePerm(false)} className="p-1.5 rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-50 transition"><XCircle className="w-4 h-4" /></button>
               </div>
+
+              {/* Type selector */}
               <div className="flex gap-2">
-                <button onClick={() => setPermType("libre")} className={`flex-1 py-2.5 rounded-lg text-xs font-bold transition-all ${permType === "libre" ? "bg-emerald-50 text-emerald-600 border border-emerald-200/60" : "bg-gray-50/80 text-gray-600 border border-gray-200/50"}`}>Montant libre</button>
-                <button onClick={() => setPermType("fixe")} className={`flex-1 py-2.5 rounded-lg text-xs font-bold transition-all ${permType === "fixe" ? "bg-emerald-50 text-emerald-600 border border-emerald-200/60" : "bg-gray-50/80 text-gray-600 border border-gray-200/50"}`}>Montant fixe</button>
+                <button onClick={() => setPermType("libre")} className={`flex-1 py-2.5 rounded-xl text-xs font-bold transition-all ${permType === "libre" ? "bg-emerald-50 text-emerald-600 ring-1 ring-emerald-200" : "bg-gray-50 text-gray-500 hover:bg-gray-100"}`}>
+                  Montant libre
+                </button>
+                <button onClick={() => setPermType("fixe")} className={`flex-1 py-2.5 rounded-xl text-xs font-bold transition-all ${permType === "fixe" ? "bg-emerald-50 text-emerald-600 ring-1 ring-emerald-200" : "bg-gray-50 text-gray-500 hover:bg-gray-100"}`}>
+                  Montant fixe
+                </button>
               </div>
+
               {permType === "fixe" && (
                 <div className="relative">
-                  <input type="number" min={DEVISES[devise].minTransfer} step={DEVISES[devise].decimals === 0 ? "1" : "0.01"} placeholder="Montant" value={permMontant} onChange={(e) => setPermMontant(e.target.value)} className="w-full bg-gray-50/80 border border-gray-200/60 rounded-xl px-4 py-3 text-gray-900 text-sm outline-none focus:border-emerald-200 transition-colors [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" />
-                  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-600 text-xs">{DEVISES[devise].symbol}</span>
+                  <input type="number" min={DEVISES[devise].minTransfer} step={DEVISES[devise].decimals === 0 ? "1" : "0.01"} placeholder="Montant" value={permMontant} onChange={(e) => setPermMontant(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-gray-900 text-sm font-semibold outline-none focus:border-emerald-300 focus:ring-2 focus:ring-emerald-100 transition [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" />
+                  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 text-xs font-bold">{DEVISES[devise].symbol}</span>
                 </div>
               )}
-              <input type="text" placeholder="Description (ex: Café, Coiffure...)" value={permDesc} onChange={(e) => setPermDesc(e.target.value)} maxLength={60} className="w-full bg-gray-50/80 border border-gray-200/60 rounded-xl px-4 py-3 text-gray-900 text-sm outline-none focus:border-emerald-200 placeholder-gray-400 transition-colors" />
+
+              <input type="text" placeholder="Nom du produit (ex: Caf&eacute;, Coiffure...)" value={permDesc} onChange={(e) => setPermDesc(e.target.value)} maxLength={60} className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-gray-900 text-sm outline-none focus:border-emerald-300 focus:ring-2 focus:ring-emerald-100 placeholder-gray-400 transition" />
+
               <div className="flex items-center gap-2">
                 {DEVISE_LIST.map((d) => (
-                  <button key={d} onClick={() => setDevise(d)} className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${devise === d ? "bg-emerald-500/30 text-emerald-600" : "bg-gray-50/80 text-gray-700"}`}>{DEVISES[d].flag} {d}</button>
+                  <button key={d} onClick={() => setDevise(d)} className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${devise === d ? "bg-emerald-100 text-emerald-700" : "bg-gray-50 text-gray-500 hover:text-gray-700"}`}>{DEVISES[d].flag} {d}</button>
                 ))}
               </div>
-              <button onClick={handleCreatePermanent} disabled={creatingPerm || (permType === "fixe" && (!permMontant || parseFloat(permMontant) <= 0))} className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-white font-bold text-sm transition-all active:scale-[0.98] disabled:opacity-40">
-                {creatingPerm ? <Loader2 className="w-4 h-4 animate-spin" /> : <Plus className="w-4 h-4" />}
-                {creatingPerm ? "Création..." : "Créer"}
+
+              <button onClick={handleCreatePermanent} disabled={creatingPerm || (permType === "fixe" && (!permMontant || parseFloat(permMontant) <= 0))} className="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-white font-bold text-sm transition-all active:scale-[0.98] disabled:opacity-40">
+                {creatingPerm ? <Loader2 className="w-4 h-4 animate-spin" /> : <QrCode className="w-4 h-4" />}
+                {creatingPerm ? "Cr&eacute;ation..." : "Cr&eacute;er le QR"}
               </button>
             </div>
           )}
 
-          {/* Terminals list */}
+          {/* ── Terminals List ── */}
           {loadingTerminals ? (
-            <div className="flex items-center justify-center py-12"><Loader2 className="w-6 h-6 text-emerald-600 animate-spin" /></div>
-          ) : terminals.length === 0 ? (
-            <div className="rounded-2xl bg-gray-50/50 border border-gray-200/50 p-8 text-center">
-              <div className="w-14 h-14 rounded-2xl bg-gray-50/50 flex items-center justify-center mx-auto mb-3"><QrCode className="w-7 h-7 text-gray-500" /></div>
-              <p className="text-gray-600 font-bold text-sm mb-1">Aucun QR permanent</p>
-              <p className="text-gray-600 text-xs">Créez un QR code réutilisable pour votre commerce</p>
+            <div className="flex items-center justify-center py-16"><Loader2 className="w-6 h-6 text-emerald-600 animate-spin" /></div>
+          ) : terminals.length === 0 && !showCreatePerm ? (
+            <div className="rounded-2xl bg-white border border-gray-200/60 p-10 text-center">
+              <div className="w-16 h-16 rounded-2xl bg-emerald-50 flex items-center justify-center mx-auto mb-4">
+                <Store className="w-8 h-8 text-emerald-600" />
+              </div>
+              <p className="text-gray-900 font-bold text-base mb-1">Aucun QR marchand</p>
+              <p className="text-gray-500 text-sm mb-5">Cr&eacute;ez votre premier QR et commencez &agrave; encaisser</p>
+              <button onClick={() => setShowCreatePerm(true)} className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-emerald-500 text-white text-sm font-bold hover:bg-emerald-400 transition-all active:scale-95">
+                <Plus className="w-4 h-4" />Cr&eacute;er un QR
+              </button>
             </div>
           ) : (
             <div className="space-y-3">
               {terminals.map((t) => (
-                <div key={t.id} className="rounded-2xl bg-gray-50/50 border border-gray-200/50 overflow-hidden">
-                  <div className="p-4">
-                    <div className="flex items-center justify-between mb-2">
-                      <div className="flex-1 min-w-0">
-                        <p className="text-sm font-bold text-gray-900 truncate">{t.description}</p>
-                        <p className="text-[11px] text-gray-600 font-mono">{t.code}</p>
-                      </div>
-                      <div className="flex items-center gap-1.5 ml-2">
-                        {t.montant ? (
-                          <span className="px-2 py-1 rounded-lg bg-emerald-50 text-emerald-600 text-[10px] font-bold">{formatMontant(t.montant, (t.devise as DeviseCode) || devise)}</span>
-                        ) : (
-                          <span className="px-2 py-1 rounded-lg bg-gray-50/80 text-gray-600 text-[10px] font-bold">Libre</span>
-                        )}
-                      </div>
+                <div
+                  key={t.id}
+                  className="rounded-2xl bg-white border border-gray-200/60 p-5 shadow-sm hover:shadow-md transition-shadow"
+                >
+                  {/* Card header: description + amount */}
+                  <div className="flex items-start justify-between mb-3">
+                    <div className="flex-1 min-w-0">
+                      <p className="text-base font-bold text-gray-900 truncate">{t.description}</p>
+                      <p className="text-2xl font-black text-emerald-600 mt-0.5">
+                        {t.montant ? formatMontant(t.montant, (t.devise as DeviseCode) || devise) : "Montant libre"}
+                      </p>
                     </div>
-                    <div className="flex items-center gap-2 mt-3">
-                      <button onClick={() => setExpandedQR(expandedQR === t.code ? null : t.code)} className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg bg-gray-50/80 hover:bg-gray-100 text-gray-600 text-xs font-bold transition-all active:scale-95">
-                        <QrCode className="w-3.5 h-3.5" />{expandedQR === t.code ? "Masquer" : "QR Code"}
-                      </button>
-                      <button onClick={() => handleCopyTerminal(t.code)} className="flex items-center justify-center gap-1.5 py-2 px-3 rounded-lg bg-gray-50/80 hover:bg-gray-100 text-gray-600 text-xs font-bold transition-all active:scale-95">
-                        {copiedCode === t.code ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5" />}
-                      </button>
-                      <button onClick={() => handleShareTerminal(t.code, t.description)} className="flex items-center justify-center py-2 px-3 rounded-lg bg-gray-50/80 hover:bg-gray-100 text-gray-600 text-xs font-bold transition-all active:scale-95">
-                        <Share2 className="w-3.5 h-3.5" />
-                      </button>
-                      <button onClick={() => handleDeleteTerminal(t.id)} className="flex items-center justify-center py-2 px-3 rounded-lg bg-red-500/10 hover:bg-red-50 text-red-500/60 text-xs transition-all active:scale-95">
-                        <Trash2 className="w-3.5 h-3.5" />
-                      </button>
+                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ml-3 ${t.montant ? "bg-emerald-50" : "bg-gray-50"}`}>
+                      <QrCode className={`w-5 h-5 ${t.montant ? "text-emerald-600" : "text-gray-400"}`} />
                     </div>
                   </div>
-                  {expandedQR === t.code && (
-                    <div className="border-t border-gray-200/50 p-5 flex flex-col items-center gap-3 bg-gray-50/30">
-                      <div className="bg-white rounded-2xl p-5">
-                        <QRCodeSVG id={`qr-${t.code}`} value={`${origin}/pay/${t.code}`} size={260} bgColor="#FFFFFF" fgColor="#000000" level="M" includeMargin={true} />
-                      </div>
-                      <button onClick={() => handleDownloadQR(t.code, t.description)} className="flex items-center gap-1.5 text-xs text-emerald-600 font-bold hover:text-emerald-600 transition">
-                        <Download className="w-3.5 h-3.5" />Télécharger le QR
-                      </button>
-                    </div>
-                  )}
+
+                  {/* Actions: Afficher QR | Partager | Delete */}
+                  <div className="flex items-center gap-2 pt-3 border-t border-gray-100">
+                    <button
+                      onClick={() => { hapticMedium(); setFullscreenTerminal(t); }}
+                      className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl bg-gray-900 hover:bg-gray-800 text-white text-xs font-bold transition-all active:scale-95"
+                    >
+                      <QrCode className="w-3.5 h-3.5" />
+                      Afficher QR
+                    </button>
+                    <button
+                      onClick={() => handleShareTerminal(t.code, t.description)}
+                      className="flex items-center justify-center gap-1.5 py-2.5 px-4 rounded-xl bg-gray-50 hover:bg-gray-100 text-gray-600 text-xs font-bold transition-all active:scale-95"
+                    >
+                      <Share2 className="w-3.5 h-3.5" />
+                      Partager
+                    </button>
+                    <button
+                      onClick={() => handleDeleteTerminal(t.id)}
+                      disabled={deletingTerminalId === t.id}
+                      className="flex items-center justify-center py-2.5 px-3 rounded-xl bg-gray-50 hover:bg-red-50 text-gray-300 hover:text-red-400 transition-all active:scale-95 disabled:opacity-50"
+                    >
+                      {deletingTerminalId === t.id ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Trash2 className="w-3.5 h-3.5" />}
+                    </button>
+                  </div>
                 </div>
               ))}
             </div>
           )}
+        </div>
+      )}
 
+      {/* ══════════════════════════════════════ */}
+      {/* ══ FULLSCREEN QR OVERLAY (POS) ═════ */}
+      {/* ══════════════════════════════════════ */}
+      {fullscreenTerminal && (
+        <div className="fixed inset-0 z-50 bg-white flex flex-col animate-in zoom-in-95 fade-in duration-200">
+          {/* Top bar */}
+          <div className="flex items-center justify-between px-5 pt-5 pb-2">
+            <div className="flex-1" />
+            <button
+              onClick={() => setFullscreenTerminal(null)}
+              className="w-10 h-10 rounded-xl bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-all active:scale-95"
+            >
+              <XCircle className="w-5 h-5 text-gray-500" />
+            </button>
+          </div>
 
+          {/* Content — centered */}
+          <div className="flex-1 flex flex-col items-center justify-center px-6 -mt-10">
+            {/* Commerce name */}
+            <p className="text-sm font-semibold text-gray-500 mb-1">{user?.prenom} {user?.nom}</p>
+
+            {/* Description */}
+            <p className="text-lg font-bold text-gray-900 mb-1">{fullscreenTerminal.description}</p>
+
+            {/* Amount — huge */}
+            <p className="text-4xl font-black text-emerald-600 mb-8">
+              {fullscreenTerminal.montant
+                ? formatMontant(fullscreenTerminal.montant, (fullscreenTerminal.devise as DeviseCode) || devise)
+                : "Montant libre"}
+            </p>
+
+            {/* QR Code — LARGE */}
+            <div className="bg-white rounded-3xl p-6 shadow-lg shadow-gray-200/50 ring-1 ring-gray-100 mb-6">
+              <QRCodeSVG
+                id={`qr-${fullscreenTerminal.code}`}
+                value={`${origin}/pay/${fullscreenTerminal.code}`}
+                size={280}
+                bgColor="#FFFFFF"
+                fgColor="#000000"
+                level="M"
+                includeMargin={true}
+              />
+            </div>
+
+            {/* Scan instruction */}
+            <p className="text-sm text-gray-500 font-semibold">Scannez pour payer avec Binq</p>
+          </div>
+
+          {/* Bottom actions */}
+          <div className="px-6 pb-8 pt-4 flex items-center gap-3">
+            <button
+              onClick={() => handleShareTerminal(fullscreenTerminal.code, fullscreenTerminal.description)}
+              className="flex-1 flex items-center justify-center gap-2 py-3.5 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold text-sm transition-all active:scale-[0.98]"
+            >
+              <Share2 className="w-4 h-4" />
+              Partager
+            </button>
+            <button
+              onClick={() => handleDownloadQR(fullscreenTerminal.code, fullscreenTerminal.description)}
+              className="flex-1 flex items-center justify-center gap-2 py-3.5 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold text-sm transition-all active:scale-[0.98]"
+            >
+              <Download className="w-4 h-4" />
+              T&eacute;l&eacute;charger
+            </button>
+          </div>
         </div>
       )}
     </div>
