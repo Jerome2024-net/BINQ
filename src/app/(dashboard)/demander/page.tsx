@@ -48,7 +48,7 @@ const statusConfig: Record<string, { label: string; color: string; icon: typeof 
   actif: { label: "Actif", color: "text-emerald-600 bg-emerald-50", icon: Clock },
   paye: { label: "Payé", color: "text-cyan-600 bg-cyan-50", icon: CheckCircle2 },
   annule: { label: "Annulé", color: "text-red-500 bg-red-50", icon: XCircle },
-  expire: { label: "Expiré", color: "text-gray-300 bg-gray-50/80", icon: XCircle },
+  expire: { label: "Expiré", color: "text-gray-500 bg-gray-50/80", icon: XCircle },
 };
 
 export default function DemanderPage() {
@@ -212,7 +212,7 @@ export default function DemanderPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-xl font-black text-gray-900 tracking-tight">Demander</h1>
-          <p className="text-xs text-gray-500 mt-0.5">Créez un lien pour recevoir un paiement</p>
+          <p className="text-xs text-gray-700 mt-0.5">Créez un lien pour recevoir un paiement</p>
         </div>
         <button
           onClick={() => setShowForm(!showForm)}
@@ -233,7 +233,7 @@ export default function DemanderPage() {
 
           {/* Devise */}
           <div>
-            <label className="block text-xs font-semibold text-gray-500 mb-1.5">Devise</label>
+            <label className="block text-xs font-semibold text-gray-700 mb-1.5">Devise</label>
             <div className="flex gap-2">
               {DEVISE_LIST.map((d) => {
                 const dc = DEVISES[d];
@@ -244,7 +244,7 @@ export default function DemanderPage() {
                     className={`flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-sm font-bold transition-all ${
                       devise === d
                         ? "bg-emerald-50 text-emerald-600 border border-emerald-200/60"
-                        : "bg-gray-50/50 text-gray-400 border border-gray-200/50 hover:bg-gray-100/50"
+                        : "bg-gray-50/50 text-gray-600 border border-gray-200/50 hover:bg-gray-100/50"
                     }`}
                   >
                     <span>{dc.flag}</span>
@@ -257,8 +257,8 @@ export default function DemanderPage() {
 
           {/* Montant */}
           <div>
-            <label className="block text-xs font-semibold text-gray-500 mb-1.5">
-              Montant <span className="text-gray-400">(optionnel — laissez vide pour montant libre)</span>
+            <label className="block text-xs font-semibold text-gray-700 mb-1.5">
+              Montant <span className="text-gray-600">(optionnel — laissez vide pour montant libre)</span>
             </label>
             <div className="relative">
               <input
@@ -270,7 +270,7 @@ export default function DemanderPage() {
                 onChange={(e) => setMontant(e.target.value)}
                 className="w-full bg-gray-50/80 border border-gray-200/60 rounded-xl px-4 py-3 text-gray-900 text-lg font-bold placeholder-gray-400 outline-none focus:border-emerald-200 transition [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
               />
-              <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 font-semibold text-sm">
+              <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-600 font-semibold text-sm">
                 {deviseConfig.symbol}
               </span>
             </div>
@@ -278,11 +278,11 @@ export default function DemanderPage() {
 
           {/* Description */}
           <div>
-            <label className="block text-xs font-semibold text-gray-500 mb-1.5">
-              Description <span className="text-gray-400">(optionnel)</span>
+            <label className="block text-xs font-semibold text-gray-700 mb-1.5">
+              Description <span className="text-gray-600">(optionnel)</span>
             </label>
             <div className="relative">
-              <MessageSquare className="absolute left-3 top-3 w-4 h-4 text-gray-400" />
+              <MessageSquare className="absolute left-3 top-3 w-4 h-4 text-gray-600" />
               <input
                 type="text"
                 maxLength={100}
@@ -312,7 +312,7 @@ export default function DemanderPage() {
 
       {/* ── Active Links ── */}
       <div>
-        <p className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-3 px-1">
+        <p className="text-xs font-bold text-gray-700 uppercase tracking-widest mb-3 px-1">
           Liens actifs {activeLinks.length > 0 && `(${activeLinks.length})`}
         </p>
         {loading ? (
@@ -322,10 +322,10 @@ export default function DemanderPage() {
         ) : activeLinks.length === 0 ? (
           <div className="rounded-2xl bg-gray-50/50 border border-gray-200/50 p-8 text-center">
             <div className="w-14 h-14 rounded-2xl bg-gray-50/50 flex items-center justify-center mx-auto mb-3">
-              <HandCoins className="w-7 h-7 text-gray-300" />
+              <HandCoins className="w-7 h-7 text-gray-500" />
             </div>
-            <p className="text-gray-400 font-bold text-sm mb-1">Aucun lien actif</p>
-            <p className="text-gray-400 text-xs">Créez un lien pour demander un paiement.</p>
+            <p className="text-gray-600 font-bold text-sm mb-1">Aucun lien actif</p>
+            <p className="text-gray-600 text-xs">Créez un lien pour demander un paiement.</p>
           </div>
         ) : (
           <div className="space-y-3">
@@ -347,7 +347,7 @@ export default function DemanderPage() {
       {/* ── Past Links ── */}
       {pastLinks.length > 0 && (
         <div>
-          <p className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-3 px-1">
+          <p className="text-xs font-bold text-gray-700 uppercase tracking-widest mb-3 px-1">
             Historique ({pastLinks.length})
           </p>
           <div className="space-y-3">
@@ -399,9 +399,9 @@ function LinkCard({
           {link.description ? (
             <p className="text-sm font-bold text-gray-900 truncate">{link.description}</p>
           ) : (
-            <p className="text-sm font-bold text-gray-400 italic">Sans description</p>
+            <p className="text-sm font-bold text-gray-600 italic">Sans description</p>
           )}
-          <p className="text-xs text-gray-400 mt-0.5">
+          <p className="text-xs text-gray-600 mt-0.5">
             {new Date(link.created_at).toLocaleDateString("fr-FR", {
               day: "numeric",
               month: "short",
@@ -428,7 +428,7 @@ function LinkCard({
               ? formatMontant(link.montant, (link.devise as DeviseCode) || "XOF")
               : "Montant libre"}
           </p>
-          <p className="text-[10px] text-gray-400 font-mono">{link.code}</p>
+          <p className="text-[10px] text-gray-600 font-mono">{link.code}</p>
         </div>
       </div>
 
@@ -437,7 +437,7 @@ function LinkCard({
         <div className="flex items-center gap-2">
           <button
             onClick={() => onCopy(link)}
-            className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl bg-gray-50/80 hover:bg-gray-100 text-gray-500 text-xs font-bold transition-all active:scale-95"
+            className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl bg-gray-50/80 hover:bg-gray-100 text-gray-700 text-xs font-bold transition-all active:scale-95"
           >
             {copiedId === link.id ? (
               <>
@@ -456,7 +456,7 @@ function LinkCard({
             className={`flex items-center justify-center w-10 h-10 rounded-xl transition-all active:scale-95 ${
               showQR
                 ? "bg-emerald-50 text-emerald-600"
-                : "bg-gray-50/80 hover:bg-gray-100 text-gray-400"
+                : "bg-gray-50/80 hover:bg-gray-100 text-gray-600"
             }`}
           >
             <QrCode className="w-4 h-4" />
@@ -495,15 +495,15 @@ function LinkCard({
               includeMargin={true}
             />
           </div>
-          <p className="text-[10px] text-gray-400">Scannez pour payer</p>
+          <p className="text-[10px] text-gray-600">Scannez pour payer</p>
         </div>
       )}
 
       {/* Link preview for active links */}
       {isActive && (
         <div className="flex items-center gap-2 bg-gray-50/50 rounded-lg px-3 py-2 border border-gray-200/50">
-          <ExternalLink className="w-3.5 h-3.5 text-gray-400 shrink-0" />
-          <p className="text-[11px] text-gray-500 font-mono truncate">
+          <ExternalLink className="w-3.5 h-3.5 text-gray-600 shrink-0" />
+          <p className="text-[11px] text-gray-700 font-mono truncate">
             {linkUrl}
           </p>
         </div>

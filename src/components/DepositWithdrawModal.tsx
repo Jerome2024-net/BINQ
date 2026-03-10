@@ -111,12 +111,12 @@ function StripePaymentForm({
     <form onSubmit={handleSubmit} className="space-y-5">
       {/* Récapitulatif */}
       <div className="bg-gray-50 rounded-xl p-4 text-center">
-        <p className="text-[11px] text-gray-400 uppercase tracking-wider mb-0.5">Montant crédité</p>
+        <p className="text-[11px] text-gray-600 uppercase tracking-wider mb-0.5">Montant crédité</p>
         <p className="text-2xl font-bold text-gray-900">
           {montant.toLocaleString("fr-FR")} {deviseSymbol}
         </p>
         <div className="mt-2 space-y-0.5">
-          <p className="text-xs text-gray-400">Frais Binq (1%) : +{(montant * 0.01).toFixed(2)} {deviseSymbol}</p>
+          <p className="text-xs text-gray-600">Frais Binq (1%) : +{(montant * 0.01).toFixed(2)} {deviseSymbol}</p>
           <p className="text-sm font-semibold text-primary-600">Total débité : {(montant * 1.01).toFixed(2)} {deviseSymbol}</p>
         </div>
       </div>
@@ -139,7 +139,7 @@ function StripePaymentForm({
           type="button"
           onClick={onCancel}
           disabled={isSubmitting}
-          className="flex-1 py-3 rounded-xl font-semibold text-gray-500 hover:text-gray-700 hover:bg-gray-50 transition-all text-sm"
+          className="flex-1 py-3 rounded-xl font-semibold text-gray-700 hover:text-gray-900 hover:bg-gray-50 transition-all text-sm"
         >
           <ArrowLeft className="w-4 h-4 inline mr-1" />
           Retour
@@ -164,7 +164,7 @@ function StripePaymentForm({
       </div>
 
       {/* Sécurité */}
-      <p className="text-center text-[11px] text-gray-400 flex items-center justify-center gap-1.5">
+      <p className="text-center text-[11px] text-gray-600 flex items-center justify-center gap-1.5">
         <ShieldCheck className="w-3 h-3" />
         Paiement sécurisé via Stripe · SSL 256 bits
       </p>
@@ -289,13 +289,13 @@ export default function DepositWithdrawModal({
           </div>
           <div className="min-w-0 flex-1">
             <h2 className="text-base font-bold text-gray-900">{title}</h2>
-            <p className="text-[11px] text-gray-400 flex items-center gap-1">
+            <p className="text-[11px] text-gray-600 flex items-center gap-1">
               <ShieldCheck className="w-3 h-3" />
               Transaction sécurisée
             </p>
           </div>
           <button onClick={handleClose} className="p-2 -mr-1.5 rounded-lg hover:bg-gray-100 transition-colors flex-shrink-0">
-            <X className="w-5 h-5 text-gray-400" />
+            <X className="w-5 h-5 text-gray-600" />
           </button>
         </div>
 
@@ -308,14 +308,14 @@ export default function DepositWithdrawModal({
               </div>
               <div className="space-y-1">
                 <h3 className="text-base font-bold text-gray-900">Configuration requise</h3>
-                <p className="text-sm text-gray-500">
+                <p className="text-sm text-gray-700">
                   Pour effectuer des transactions, configurez votre compte Stripe.
                 </p>
               </div>
 
               <div className="bg-gray-50 rounded-xl p-4 text-left space-y-3">
                 <p className="text-sm font-semibold text-gray-800">Étapes de configuration :</p>
-                <ol className="text-xs text-gray-500 space-y-2 list-decimal list-inside">
+                <ol className="text-xs text-gray-700 space-y-2 list-decimal list-inside">
                   <li>Créez un compte sur <strong className="text-gray-800">stripe.com</strong></li>
                   <li>Récupérez vos clés <strong className="text-gray-800">Publishable</strong> et <strong className="text-gray-800">Secret</strong></li>
                   <li>
@@ -347,14 +347,14 @@ export default function DepositWithdrawModal({
               <h3 className="text-lg font-bold text-gray-900 mb-1">
                 {isDepot ? "Dépôt confirmé !" : "Retrait initié !"}
               </h3>
-              <p className="text-sm text-gray-500 mb-5">
+              <p className="text-sm text-gray-700 mb-5">
                 <span className="text-gray-900 font-semibold">{montantNum.toLocaleString("fr-FR")} {deviseSymbol}</span>
                 {" "}{isDepot ? "crédités sur votre portefeuille." : "en cours de transfert."}
               </p>
               
               {reference && (
                 <div className="bg-gray-50 rounded-lg py-2 px-4 inline-block mb-5">
-                  <p className="text-[10px] text-gray-400 uppercase tracking-wider">Référence</p>
+                  <p className="text-[10px] text-gray-600 uppercase tracking-wider">Référence</p>
                   <p className="font-mono text-sm text-gray-700">{reference}</p>
                 </div>
               )}
@@ -411,7 +411,7 @@ export default function DepositWithdrawModal({
             <div className="space-y-5">
               {/* Solde actuel */}
               <div className="bg-gray-50 rounded-xl p-4 text-center">
-                <p className="text-[11px] font-medium text-gray-400 uppercase tracking-wider mb-0.5">Solde disponible</p>
+                <p className="text-[11px] font-medium text-gray-600 uppercase tracking-wider mb-0.5">Solde disponible</p>
                 <p className="text-xl font-bold text-gray-900">
                   {soldeActuel.toLocaleString("fr-FR")} {deviseSymbol}
                 </p>
@@ -419,7 +419,7 @@ export default function DepositWithdrawModal({
 
               {/* Montant */}
               <div className="space-y-2">
-                <label className="text-xs font-medium text-gray-500 ml-0.5">
+                <label className="text-xs font-medium text-gray-700 ml-0.5">
                   Montant à déposer ({deviseSymbol})
                 </label>
                 <input
@@ -443,7 +443,7 @@ export default function DepositWithdrawModal({
                     className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors ${
                       montantNum === m
                         ? "border-primary-500 bg-primary-50 text-primary-700"
-                        : "border-gray-200 hover:border-gray-300 text-gray-500"
+                        : "border-gray-200 hover:border-gray-300 text-gray-700"
                     }`}
                   >
                     {m} {deviseSymbol}
@@ -455,11 +455,11 @@ export default function DepositWithdrawModal({
               {montantNum >= 1 && (
                 <div className="bg-gray-50 rounded-xl p-4 space-y-2">
                   <div className="flex justify-between items-center text-sm">
-                    <span className="text-gray-500">Crédité sur wallet</span>
+                    <span className="text-gray-700">Crédité sur wallet</span>
                     <span className="text-gray-900 font-medium">{montantNum.toLocaleString("fr-FR")} {deviseSymbol}</span>
                   </div>
                   <div className="flex justify-between items-center text-sm">
-                    <span className="text-gray-400">Frais Binq (1%)</span>
+                    <span className="text-gray-600">Frais Binq (1%)</span>
                     <span className="text-amber-600 font-medium">+{(montantNum * 0.01).toFixed(2)} {deviseSymbol}</span>
                   </div>
                   <div className="border-t border-gray-200 pt-2 flex justify-between items-center">
@@ -476,7 +476,7 @@ export default function DepositWithdrawModal({
                 className={`w-full py-3.5 rounded-xl font-semibold text-gray-900 transition-colors flex items-center justify-center gap-2 ${
                   montantNum >= 1 && !isCreatingIntent
                     ? "bg-primary-600 hover:bg-primary-700"
-                    : "bg-gray-200 text-gray-400 cursor-not-allowed"
+                    : "bg-gray-200 text-gray-600 cursor-not-allowed"
                 }`}
               >
                 {isCreatingIntent ? (
@@ -492,7 +492,7 @@ export default function DepositWithdrawModal({
                 )}
               </button>
 
-              <p className="text-center text-[11px] text-gray-400 flex items-center justify-center gap-1.5">
+              <p className="text-center text-[11px] text-gray-600 flex items-center justify-center gap-1.5">
                 <ShieldCheck className="w-3 h-3" />
                 Paiement sécurisé via Stripe · SSL 256 bits
               </p>
@@ -502,7 +502,7 @@ export default function DepositWithdrawModal({
             <div className="space-y-5">
               {/* Solde */}
               <div className="bg-gray-50 rounded-xl p-4 text-center">
-                <p className="text-[11px] font-medium text-gray-400 uppercase tracking-wider mb-0.5">Solde disponible</p>
+                <p className="text-[11px] font-medium text-gray-600 uppercase tracking-wider mb-0.5">Solde disponible</p>
                 <p className="text-xl font-bold text-gray-900">
                   {soldeActuel.toLocaleString("fr-FR")} {deviseSymbol}
                 </p>
@@ -510,7 +510,7 @@ export default function DepositWithdrawModal({
 
               {/* Montant */}
               <div className="space-y-2">
-                <label className="text-xs font-medium text-gray-500 ml-0.5">
+                <label className="text-xs font-medium text-gray-700 ml-0.5">
                   Montant à retirer ({deviseSymbol})
                 </label>
                 <input
@@ -539,7 +539,7 @@ export default function DepositWithdrawModal({
                     className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors ${
                       montantNum === m
                         ? "border-primary-500 bg-primary-50 text-primary-700"
-                        : "border-gray-200 hover:border-gray-300 text-gray-500"
+                        : "border-gray-200 hover:border-gray-300 text-gray-700"
                     }`}
                   >
                     {m} {deviseSymbol}
@@ -549,7 +549,7 @@ export default function DepositWithdrawModal({
 
               {/* Méthode de retrait */}
               <div className="space-y-2">
-                <label className="text-xs font-medium text-gray-500 ml-0.5">
+                <label className="text-xs font-medium text-gray-700 ml-0.5">
                   Mode de réception
                 </label>
                 <div className="space-y-2">
@@ -565,14 +565,14 @@ export default function DepositWithdrawModal({
                     >
                       <div
                         className={`w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 ${
-                          methode === m.id ? "bg-primary-600 text-gray-900" : "bg-gray-100 text-gray-400"
+                          methode === m.id ? "bg-primary-600 text-gray-900" : "bg-gray-100 text-gray-600"
                         }`}
                       >
                         <m.icon className="w-4.5 h-4.5" />
                       </div>
                       <div className="flex-1 min-w-0">
                         <p className="font-medium text-sm text-gray-900">{m.label}</p>
-                        <p className="text-[11px] text-gray-400 truncate">{m.desc}</p>
+                        <p className="text-[11px] text-gray-600 truncate">{m.desc}</p>
                       </div>
                     </button>
                   ))}
@@ -581,7 +581,7 @@ export default function DepositWithdrawModal({
 
               {/* Destination */}
               <div className="space-y-2">
-                <label className="text-xs font-medium text-gray-500 ml-0.5">
+                <label className="text-xs font-medium text-gray-700 ml-0.5">
                   IBAN / Numéro de compte
                 </label>
                 <input
@@ -600,7 +600,7 @@ export default function DepositWithdrawModal({
                 className={`w-full py-3.5 rounded-xl font-semibold text-gray-900 transition-colors flex items-center justify-center gap-2 ${
                   montantNum > 0 && !isDepassement && destination.trim()
                     ? "bg-primary-600 hover:bg-primary-700"
-                    : "bg-gray-200 text-gray-400 cursor-not-allowed"
+                    : "bg-gray-200 text-gray-600 cursor-not-allowed"
                 }`}
               >
                 <ArrowUpFromLine className="w-5 h-5" />

@@ -90,7 +90,7 @@ export default function InscriptionPage() {
               simplement.
             </span>
           </h1>
-          <p className="text-gray-400 text-lg leading-relaxed font-medium">
+          <p className="text-gray-600 text-lg leading-relaxed font-medium">
             Créez votre compte en moins d&apos;une minute et accédez à votre portefeuille numérique sécurisé.
           </p>
 
@@ -106,7 +106,7 @@ export default function InscriptionPage() {
                 </div>
                 <div>
                   <h3 className="text-gray-900 font-bold text-base mb-1">{item.title}</h3>
-                  <p className="text-gray-500 text-sm leading-relaxed">{item.desc}</p>
+                  <p className="text-gray-700 text-sm leading-relaxed">{item.desc}</p>
                 </div>
               </div>
             ))}
@@ -128,7 +128,7 @@ export default function InscriptionPage() {
 
           <div className="mb-10 text-center lg:text-left">
             <h2 className="text-3xl font-black mb-2">Créer un compte</h2>
-            <p className="text-gray-500 text-[15px]">Remplissez vos informations pour commencer.</p>
+            <p className="text-gray-700 text-[15px]">Remplissez vos informations pour commencer.</p>
           </div>
 
           {error && (
@@ -141,9 +141,9 @@ export default function InscriptionPage() {
           <form onSubmit={handleSubmit} className="space-y-5">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-1.5">
-                <label className="block text-sm font-bold text-gray-400 ml-1">Prénom</label>
+                <label className="block text-sm font-bold text-gray-600 ml-1">Prénom</label>
                 <div className="relative group">
-                  <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-emerald-600 transition-colors" />
+                  <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-600 group-focus-within:text-emerald-600 transition-colors" />
                   <input
                     type="text"
                     name="prenom"
@@ -156,9 +156,9 @@ export default function InscriptionPage() {
                 </div>
               </div>
               <div className="space-y-1.5">
-                <label className="block text-sm font-bold text-gray-400 ml-1">Nom</label>
+                <label className="block text-sm font-bold text-gray-600 ml-1">Nom</label>
                 <div className="relative group">
-                  <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-emerald-600 transition-colors" />
+                  <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-600 group-focus-within:text-emerald-600 transition-colors" />
                   <input
                     type="text"
                     name="nom"
@@ -173,9 +173,9 @@ export default function InscriptionPage() {
             </div>
 
             <div className="space-y-1.5">
-              <label className="block text-sm font-bold text-gray-400 ml-1">Email</label>
+              <label className="block text-sm font-bold text-gray-600 ml-1">Email</label>
               <div className="relative group">
-                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-emerald-600 transition-colors" />
+                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-600 group-focus-within:text-emerald-600 transition-colors" />
                 <input
                   type="email"
                   name="email"
@@ -189,9 +189,9 @@ export default function InscriptionPage() {
             </div>
 
             <div className="space-y-1.5">
-              <label className="block text-sm font-bold text-gray-400 ml-1">Téléphone</label>
+              <label className="block text-sm font-bold text-gray-600 ml-1">Téléphone</label>
               <div className="relative group">
-                <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-emerald-600 transition-colors" />
+                <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-600 group-focus-within:text-emerald-600 transition-colors" />
                 <input
                   type="tel"
                   name="telephone"
@@ -205,9 +205,9 @@ export default function InscriptionPage() {
             </div>
 
             <div className="space-y-1.5">
-              <label className="block text-sm font-bold text-gray-400 ml-1">Mot de passe</label>
+              <label className="block text-sm font-bold text-gray-600 ml-1">Mot de passe</label>
               <div className="relative group">
-                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-emerald-600 transition-colors" />
+                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-600 group-focus-within:text-emerald-600 transition-colors" />
                 <input
                   type={showPassword ? "text" : "password"}
                   name="password"
@@ -221,12 +221,12 @@ export default function InscriptionPage() {
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-500 transition-colors p-1"
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-600 hover:text-gray-700 transition-colors p-1"
                 >
                   {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                 </button>
               </div>
-              <p className="text-[11px] text-gray-400 mt-2 px-1">Au moins 8 caractères</p>
+              <p className="text-[11px] text-gray-600 mt-2 px-1">Au moins 8 caractères</p>
             </div>
 
             <button
@@ -248,15 +248,15 @@ export default function InscriptionPage() {
             </button>
           </form>
 
-          <p className="text-xs text-gray-400 text-center mt-6">
+          <p className="text-xs text-gray-600 text-center mt-6">
             En m&apos;inscrivant, j&apos;accepte les{" "}
-            <Link href="#" className="underline hover:text-gray-400 transition-colors">Conditions d&apos;Utilisation</Link>{" "}
+            <Link href="#" className="underline hover:text-gray-600 transition-colors">Conditions d&apos;Utilisation</Link>{" "}
             et la{" "}
-            <Link href="#" className="underline hover:text-gray-400 transition-colors">Politique de Confidentialité</Link>.
+            <Link href="#" className="underline hover:text-gray-600 transition-colors">Politique de Confidentialité</Link>.
           </p>
 
           <div className="mt-10 pt-8 border-t border-gray-200/50 text-center font-medium">
-            <p className="text-gray-500 text-[15px]">
+            <p className="text-gray-700 text-[15px]">
               Vous avez déjà un compte ?{" "}
               <Link href="/connexion" className="text-emerald-600 hover:text-emerald-600 hover:underline transition-colors">
                 Se connecter

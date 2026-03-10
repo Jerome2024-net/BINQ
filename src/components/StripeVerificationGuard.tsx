@@ -123,7 +123,7 @@ export default function StripeVerificationGuard({
                   ? "Vérification en cours"
                   : "Vérification d'identité requise"}
               </h2>
-              <p className="text-gray-500 text-sm mt-1">
+              <p className="text-gray-700 text-sm mt-1">
                 {isPending
                   ? "Votre dossier est en cours de validation"
                   : "Rapide, sécurisé et obligatoire"}
@@ -200,7 +200,7 @@ export default function StripeVerificationGuard({
 
                 <button
                   onClick={() => setShowModal(false)}
-                  className="w-full py-3 rounded-xl font-medium text-gray-500 hover:text-gray-700 hover:bg-gray-50 transition-colors"
+                  className="w-full py-3 rounded-xl font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50 transition-colors"
                 >
                   Plus tard
                 </button>
@@ -209,7 +209,7 @@ export default function StripeVerificationGuard({
               {/* Footer sécurité */}
               <div className="flex items-center justify-center gap-2 pt-1">
                 <CheckCircle2 className="w-3.5 h-3.5 text-green-500" />
-                <span className="text-xs text-gray-400">
+                <span className="text-xs text-gray-600">
                   Propulsé par Stripe · Données chiffrées et sécurisées
                 </span>
               </div>

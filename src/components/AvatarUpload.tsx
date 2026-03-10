@@ -115,7 +115,7 @@ export default function AvatarUpload({ userId, currentAvatar, userName, onUpload
                 onClick={handleClose}
                 className="p-1.5 rounded-lg hover:bg-gray-100 transition-colors"
               >
-                <X className="w-5 h-5 text-gray-500" />
+                <X className="w-5 h-5 text-gray-700" />
               </button>
             </div>
 
@@ -159,7 +159,7 @@ export default function AvatarUpload({ userId, currentAvatar, userName, onUpload
                     <p className="text-sm font-medium text-gray-700">
                       Glissez une image ici ou <span className="text-primary-600">parcourir</span>
                     </p>
-                    <p className="text-xs text-gray-400 mt-1.5">
+                    <p className="text-xs text-gray-600 mt-1.5">
                       JPG, PNG ou WebP • Max 5 Mo
                     </p>
                   </div>
@@ -186,7 +186,7 @@ export default function AvatarUpload({ userId, currentAvatar, userName, onUpload
                     </div>
                   </div>
 
-                  <p className="text-center text-sm text-gray-500 mb-2">
+                  <p className="text-center text-sm text-gray-700 mb-2">
                     Aperçu de votre nouvelle photo
                   </p>
 

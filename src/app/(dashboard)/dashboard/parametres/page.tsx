@@ -31,7 +31,7 @@ export default function ParametresPage() {
       {value ? (
         <ToggleRight className="w-10 h-10 text-primary-600" />
       ) : (
-        <ToggleLeft className="w-10 h-10 text-gray-300" />
+        <ToggleLeft className="w-10 h-10 text-gray-500" />
       )}
     </button>
   );
@@ -40,7 +40,7 @@ export default function ParametresPage() {
     <div className="max-w-3xl mx-auto space-y-6">
       <div>
         <h1 className="text-2xl md:text-3xl font-bold text-gray-900">Paramètres</h1>
-        <p className="text-gray-500 mt-1">Configurez votre expérience Binq</p>
+        <p className="text-gray-700 mt-1">Configurez votre expérience Binq</p>
       </div>
 
       {/* Notifications */}
@@ -53,28 +53,28 @@ export default function ParametresPage() {
           <div className="flex items-center justify-between">
             <div>
               <p className="font-medium text-gray-900">Notifications par email</p>
-              <p className="text-sm text-gray-500">Recevoir les alertes par email</p>
+              <p className="text-sm text-gray-700">Recevoir les alertes par email</p>
             </div>
             <Toggle value={notifEmail} onChange={setNotifEmail} />
           </div>
           <div className="flex items-center justify-between">
             <div>
               <p className="font-medium text-gray-900">Rappels de paiement</p>
-              <p className="text-sm text-gray-500">Rappel avant chaque échéance</p>
+              <p className="text-sm text-gray-700">Rappel avant chaque échéance</p>
             </div>
             <Toggle value={notifPaiement} onChange={setNotifPaiement} />
           </div>
           <div className="flex items-center justify-between">
             <div>
               <p className="font-medium text-gray-900">Début de tour</p>
-              <p className="text-sm text-gray-500">Notification quand un nouveau tour commence</p>
+              <p className="text-sm text-gray-700">Notification quand un nouveau tour commence</p>
             </div>
             <Toggle value={notifTour} onChange={setNotifTour} />
           </div>
           <div className="flex items-center justify-between">
             <div>
               <p className="font-medium text-gray-900">Invitations</p>
-              <p className="text-sm text-gray-500">Alertes pour les invitations reçues</p>
+              <p className="text-sm text-gray-700">Alertes pour les invitations reçues</p>
             </div>
             <Toggle value={notifInvite} onChange={setNotifInvite} />
           </div>
@@ -152,7 +152,7 @@ export default function ParametresPage() {
           <Trash2 className="w-5 h-5" />
           Zone dangereuse
         </h2>
-        <p className="text-sm text-gray-500 mb-4">
+        <p className="text-sm text-gray-700 mb-4">
           La suppression de votre compte est irréversible. Toutes vos données et historiques seront perdus.
         </p>
         <button

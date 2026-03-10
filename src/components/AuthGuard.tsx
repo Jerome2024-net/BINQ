@@ -34,8 +34,8 @@ export default function AuthGuard({ children }: { children: React.ReactNode }) {
             <div className="absolute bottom-3 right-3 w-1.5 h-1.5 bg-emerald-400/40 rounded-sm animate-pulse" />
           </div>
         </div>
-        <p className="text-gray-400 text-xs font-medium tracking-wider">BINQ</p>
-        <p className="text-gray-400 text-[10px] mt-1">Mobile Money · QR Code</p>
+        <p className="text-gray-600 text-xs font-medium tracking-wider">BINQ</p>
+        <p className="text-gray-600 text-[10px] mt-1">Mobile Money · QR Code</p>
       </div>
     );
   }

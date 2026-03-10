@@ -131,7 +131,7 @@ export default function DashboardPage() {
         <div className="w-11 h-11 sm:w-14 sm:h-14 rounded-2xl bg-emerald-50 flex items-center justify-center">
           <Wallet className="w-5 h-5 sm:w-7 sm:h-7 text-emerald-600 animate-pulse" />
         </div>
-        <p className="text-sm text-gray-500 font-medium">Synchronisation...</p>
+        <p className="text-sm text-gray-700 font-medium">Synchronisation...</p>
       </div>
     );
   }
@@ -144,7 +144,7 @@ export default function DashboardPage() {
         <h1 className="text-xl font-black tracking-tight">
           Salut, <span className="text-emerald-600">{user?.prenom || "là"}</span> 👋
         </h1>
-        <p className="text-gray-500 text-sm mt-0.5">Votre portefeuille mobile.</p>
+        <p className="text-gray-700 text-sm mt-0.5">Votre portefeuille mobile.</p>
       </div>
 
       {/* ── Balance Card ── */}
@@ -206,7 +206,7 @@ export default function DashboardPage() {
 
       {/* ── Services Grid ── */}
       <div>
-        <p className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-3 px-1">Services</p>
+        <p className="text-xs font-bold text-gray-700 uppercase tracking-widest mb-3 px-1">Services</p>
         <div className="grid grid-cols-4 gap-2 sm:gap-3">
           {[
             { icon: ArrowDownToLine, label: "Dépôt", href: "/deposer", gradient: "from-emerald-500 to-emerald-600" },
@@ -222,7 +222,7 @@ export default function DashboardPage() {
               <div className={`w-9 h-9 sm:w-11 sm:h-11 rounded-xl sm:rounded-2xl bg-gradient-to-br ${svc.gradient} flex items-center justify-center shadow-lg`}>
                 <svc.icon className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
               </div>
-              <span className="text-[10px] sm:text-[11px] font-semibold text-gray-400">{svc.label}</span>
+              <span className="text-[10px] sm:text-[11px] font-semibold text-gray-600">{svc.label}</span>
             </Link>
           ))}
         </div>
@@ -235,17 +235,17 @@ export default function DashboardPage() {
         </div>
         <div className="flex-1 min-w-0">
           <p className="text-sm font-bold text-gray-900">Transferts gratuits</p>
-          <p className="text-[11px] text-gray-500">Envoyez de l&apos;argent entre utilisateurs Binq sans frais.</p>
+          <p className="text-[11px] text-gray-700">Envoyez de l&apos;argent entre utilisateurs Binq sans frais.</p>
         </div>
       </div>
 
       {/* ── Recent Activity ── */}
       <div>
         <div className="flex items-center justify-between mb-3 px-1">
-          <p className="text-xs font-bold text-gray-500 uppercase tracking-widest">Activité récente</p>
+          <p className="text-xs font-bold text-gray-700 uppercase tracking-widest">Activité récente</p>
           <div className="flex items-center gap-2">
             <button onClick={fetchData} className="p-1.5 rounded-lg hover:bg-gray-100/50 transition-colors">
-              <RefreshCw className={`w-3.5 h-3.5 text-gray-400 ${loading ? "animate-spin" : ""}`} />
+              <RefreshCw className={`w-3.5 h-3.5 text-gray-600 ${loading ? "animate-spin" : ""}`} />
             </button>
             <Link href="/portefeuille" className="text-[11px] font-bold text-emerald-600 hover:text-emerald-600 flex items-center gap-0.5 transition-colors">
               Tout voir <ArrowRight className="w-3 h-3" />
@@ -256,10 +256,10 @@ export default function DashboardPage() {
         {activity.length === 0 ? (
           <div className="rounded-2xl bg-gray-50/50 border border-gray-200/50 p-8 text-center">
             <div className="w-11 h-11 sm:w-14 sm:h-14 rounded-2xl bg-gray-50/50 flex items-center justify-center mx-auto mb-3">
-              <Wallet className="w-5 h-5 sm:w-7 sm:h-7 text-gray-300" />
+              <Wallet className="w-5 h-5 sm:w-7 sm:h-7 text-gray-500" />
             </div>
-            <p className="text-gray-400 font-bold text-sm mb-1">Aucune activité</p>
-            <p className="text-gray-400 text-xs mb-4">Commencez par ajouter de l&apos;argent.</p>
+            <p className="text-gray-600 font-bold text-sm mb-1">Aucune activité</p>
+            <p className="text-gray-600 text-xs mb-4">Commencez par ajouter de l&apos;argent.</p>
             <Link href="/deposer" className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-emerald-500 text-white text-sm font-bold hover:bg-emerald-400 transition-all active:scale-95">
               <ArrowDownToLine className="w-4 h-4" />
               Déposer
@@ -274,16 +274,16 @@ export default function DashboardPage() {
                 }`}>
                   {item.isCredit
                     ? <ArrowDownLeft className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-emerald-600" />
-                    : <ArrowUpRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-gray-400" />
+                    : <ArrowUpRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-gray-600" />
                   }
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-bold text-gray-600 truncate">{item.label}</p>
-                  <p className="text-[10px] text-gray-400 mt-0.5">
+                  <p className="text-[10px] text-gray-600 mt-0.5">
                     {new Date(item.date).toLocaleDateString("fr-FR", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}
                   </p>
                 </div>
-                <p className={`text-sm font-bold tabular-nums ${item.isCredit ? "text-emerald-600" : "text-gray-500"}`}>
+                <p className={`text-sm font-bold tabular-nums ${item.isCredit ? "text-emerald-600" : "text-gray-700"}`}>
                   {item.isCredit ? "+" : "-"}{formatMontant(item.montant, devise)}
                 </p>
               </div>

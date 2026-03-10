@@ -85,15 +85,15 @@ function PaymentForm({
     <form onSubmit={handleSubmit} className="space-y-5">
       <div className="rounded-2xl bg-gray-50/50 border border-gray-200/50 p-5 space-y-2.5">
         <div className="flex justify-between text-sm">
-          <span className="text-gray-500">Montant crédité</span>
+          <span className="text-gray-700">Montant crédité</span>
           <span className="text-gray-900 font-bold">{formatMontant(montantCredite, devise)}</span>
         </div>
         <div className="flex justify-between text-sm">
-          <span className="text-gray-500">Frais (1%)</span>
-          <span className="text-gray-400">{fraisEur.toFixed(2)} €</span>
+          <span className="text-gray-700">Frais (1%)</span>
+          <span className="text-gray-600">{fraisEur.toFixed(2)} €</span>
         </div>
         <div className="border-t border-gray-200/50 pt-2 flex justify-between text-sm font-bold">
-          <span className="text-gray-500">Total facturé</span>
+          <span className="text-gray-700">Total facturé</span>
           <span className="text-gray-900">{totalEur.toFixed(2)} €</span>
         </div>
       </div>
@@ -102,7 +102,7 @@ function PaymentForm({
         <PaymentElement options={{ layout: "tabs" }} />
       </div>
 
-      <div className="flex items-center gap-2 px-1 text-[11px] text-gray-500">
+      <div className="flex items-center gap-2 px-1 text-[11px] text-gray-700">
         <ShieldCheck className="w-3.5 h-3.5 shrink-0" />
         <span>Paiement sécurisé par Stripe. Données chiffrées.</span>
       </div>
@@ -111,7 +111,7 @@ function PaymentForm({
         <button
           type="button"
           onClick={onBack}
-          className="flex-[1] py-4 rounded-xl border border-gray-200/60 text-gray-400 font-bold hover:bg-gray-50/80 transition-colors text-sm active:scale-[0.98]"
+          className="flex-[1] py-4 rounded-xl border border-gray-200/60 text-gray-600 font-bold hover:bg-gray-50/80 transition-colors text-sm active:scale-[0.98]"
         >
           Retour
         </button>
@@ -219,13 +219,13 @@ export default function DeposerPage() {
         <h1 className="text-xl font-black tracking-tight">
           Ajouter de l&apos;<span className="text-emerald-600">argent</span>
         </h1>
-        <p className="text-gray-500 text-sm mt-0.5">Alimentez votre portefeuille par carte.</p>
+        <p className="text-gray-700 text-sm mt-0.5">Alimentez votre portefeuille par carte.</p>
       </div>
 
       {/* Currency Switcher */}
       <div className="flex items-center gap-3 px-4 py-3 rounded-xl bg-gray-50/50 border border-gray-200/50">
-        <Wallet className="w-4 h-4 text-gray-400 shrink-0" />
-        <p className="text-sm text-gray-400">
+        <Wallet className="w-4 h-4 text-gray-600 shrink-0" />
+        <p className="text-sm text-gray-600">
           Solde : <span className="font-bold text-gray-900">{formatMontant(solde, devise)}</span>
         </p>
         <div className="ml-auto flex items-center bg-gray-50/80 rounded-lg overflow-hidden">
@@ -236,7 +236,7 @@ export default function DeposerPage() {
               className={`px-2.5 py-1.5 text-[10px] sm:text-xs font-bold transition-all ${
                 devise === d
                   ? "bg-emerald-50 text-emerald-600"
-                  : "text-gray-400 hover:text-gray-500"
+                  : "text-gray-600 hover:text-gray-700"
               }`}
             >
               {DEVISES[d].flag} {d}
@@ -254,12 +254,12 @@ export default function DeposerPage() {
             </div>
             <div>
               <h3 className="text-sm font-bold text-gray-900">Montant du dépôt</h3>
-              <p className="text-[11px] text-gray-400">Choisissez combien ajouter en {deviseConfig.label}</p>
+              <p className="text-[11px] text-gray-600">Choisissez combien ajouter en {deviseConfig.label}</p>
             </div>
           </div>
 
           <div className="rounded-2xl bg-gray-50/50 border border-gray-200/50 p-4 sm:p-6">
-            <p className="text-[10px] font-bold text-gray-500 uppercase tracking-wider text-center mb-3 sm:mb-4">Montant à créditer</p>
+            <p className="text-[10px] font-bold text-gray-700 uppercase tracking-wider text-center mb-3 sm:mb-4">Montant à créditer</p>
             <input
               type="number"
               min={deviseConfig.minDeposit}
@@ -270,7 +270,7 @@ export default function DeposerPage() {
               className="w-full bg-transparent text-3xl sm:text-5xl font-black text-gray-900 placeholder-gray-300 focus:outline-none text-center tabular-nums [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
               autoFocus
             />
-            <p className="text-center text-[11px] text-gray-500 mt-2">{deviseConfig.symbol}</p>
+            <p className="text-center text-[11px] text-gray-700 mt-2">{deviseConfig.symbol}</p>
           </div>
 
           {/* Quick amounts */}
@@ -282,7 +282,7 @@ export default function DeposerPage() {
                 className={`py-3 rounded-xl border text-sm font-bold transition-all active:scale-95 ${
                   amount === amt.toString()
                     ? "border-emerald-200/60 bg-emerald-50 text-emerald-600"
-                    : "border-gray-200/50 text-gray-400 bg-gray-50/50 hover:bg-gray-50/80"
+                    : "border-gray-200/50 text-gray-600 bg-gray-50/50 hover:bg-gray-50/80"
                 }`}
               >
                 {devise === "XOF" ? `${amt.toLocaleString("fr-FR")}` : `${amt} €`}
@@ -294,21 +294,21 @@ export default function DeposerPage() {
           {calc && montant >= deviseConfig.minDeposit && (
             <div className="rounded-xl bg-emerald-500/5 border border-emerald-500/10 p-4 space-y-1.5 text-sm">
               <div className="flex justify-between">
-                <span className="text-gray-400">Crédité</span>
+                <span className="text-gray-600">Crédité</span>
                 <span className="font-bold text-gray-900">{formatMontant(calc.montantCredite, devise)}</span>
               </div>
               {devise === "XOF" && (
                 <div className="flex justify-between">
-                  <span className="text-gray-400">Équivalent EUR</span>
-                  <span className="text-gray-400">{calc.montantEur.toFixed(2)} €</span>
+                  <span className="text-gray-600">Équivalent EUR</span>
+                  <span className="text-gray-600">{calc.montantEur.toFixed(2)} €</span>
                 </div>
               )}
               <div className="flex justify-between">
-                <span className="text-gray-400">Frais (1%)</span>
-                <span className="text-gray-400">{calc.fraisEur.toFixed(2)} €</span>
+                <span className="text-gray-600">Frais (1%)</span>
+                <span className="text-gray-600">{calc.fraisEur.toFixed(2)} €</span>
               </div>
               <div className="border-t border-emerald-500/10 pt-1.5 flex justify-between font-bold">
-                <span className="text-gray-500">Total facturé (carte)</span>
+                <span className="text-gray-700">Total facturé (carte)</span>
                 <span className="text-gray-900">{calc.totalEur.toFixed(2)} €</span>
               </div>
             </div>
@@ -323,7 +323,7 @@ export default function DeposerPage() {
             {loading ? "Préparation..." : "Passer au paiement"}
           </button>
 
-          <div className="flex items-start gap-2.5 text-[11px] text-gray-500 px-1">
+          <div className="flex items-start gap-2.5 text-[11px] text-gray-700 px-1">
             <Info className="w-3.5 h-3.5 shrink-0 mt-0.5" />
             <span>
               {devise === "XOF"
@@ -374,20 +374,20 @@ export default function DeposerPage() {
             <CheckCircle2 className="w-8 h-8 sm:w-10 sm:h-10 text-emerald-600" />
           </div>
           <h3 className="text-xl sm:text-2xl font-black text-gray-900 mb-2">Dépôt confirmé !</h3>
-          <p className="text-base text-gray-400 mb-2">
+          <p className="text-base text-gray-600 mb-2">
             <span className="text-gray-900 font-bold">{formatMontant(result.montant, result.devise)}</span> crédités
           </p>
           {result.solde > 0 && (
-            <p className="text-sm text-gray-400">
+            <p className="text-sm text-gray-600">
               Nouveau solde : <span className="font-bold text-emerald-600">{formatMontant(result.solde, result.devise)}</span>
             </p>
           )}
           <div className="bg-gray-50/50 border border-gray-200/50 rounded-2xl py-3 px-5 inline-block mt-4 mb-8">
-            <p className="text-[10px] text-gray-500 uppercase tracking-wider font-bold">Référence</p>
-            <p className="font-mono text-sm text-gray-400 break-all">{result.reference}</p>
+            <p className="text-[10px] text-gray-700 uppercase tracking-wider font-bold">Référence</p>
+            <p className="font-mono text-sm text-gray-600 break-all">{result.reference}</p>
           </div>
           <div className="flex gap-3">
-            <button onClick={reset} className="flex-1 py-4 rounded-xl border border-gray-200/60 text-gray-400 font-bold hover:bg-gray-50/80 transition-colors text-sm active:scale-[0.98]">
+            <button onClick={reset} className="flex-1 py-4 rounded-xl border border-gray-200/60 text-gray-600 font-bold hover:bg-gray-50/80 transition-colors text-sm active:scale-[0.98]">
               Nouveau dépôt
             </button>
             <a href="/portefeuille" className="flex-1 py-4 rounded-xl bg-emerald-500 text-white font-bold hover:bg-emerald-400 transition-colors text-sm text-center active:scale-[0.98]">

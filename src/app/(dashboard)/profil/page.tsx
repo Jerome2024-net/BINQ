@@ -179,11 +179,11 @@ export default function ProfilPage() {
       {/* Header */}
       <div className="flex items-center gap-3">
         <Link href="/dashboard" className="p-2 rounded-xl hover:bg-gray-100/50 transition-colors">
-          <ArrowLeft className="w-5 h-5 text-gray-400" />
+          <ArrowLeft className="w-5 h-5 text-gray-600" />
         </Link>
         <div>
           <h1 className="text-xl font-bold">Mon Profil</h1>
-          <p className="text-xs text-gray-400">Gérez vos informations personnelles</p>
+          <p className="text-xs text-gray-600">Gérez vos informations personnelles</p>
         </div>
       </div>
 
@@ -223,12 +223,12 @@ export default function ProfilPage() {
                   </span>
                 )}
               </div>
-              <p className="text-xs text-gray-400 mt-0.5">{user.email}</p>
+              <p className="text-xs text-gray-600 mt-0.5">{user.email}</p>
             </div>
           </div>
 
           {/* Quick Info */}
-          <div className="flex items-center gap-4 mt-4 flex-wrap text-xs text-gray-400">
+          <div className="flex items-center gap-4 mt-4 flex-wrap text-xs text-gray-600">
             {user.ville && (
               <span className="flex items-center gap-1">
                 <MapPin className="w-3 h-3" /> {user.ville}{user.pays ? `, ${user.pays}` : ""}
@@ -247,13 +247,13 @@ export default function ProfilPage() {
           </div>
 
           {user.bio && (
-            <p className="text-sm text-gray-400 mt-3 leading-relaxed border-l-2 border-emerald-200/60 pl-3">
+            <p className="text-sm text-gray-600 mt-3 leading-relaxed border-l-2 border-emerald-200/60 pl-3">
               {user.bio}
             </p>
           )}
 
           {/* ID */}
-          <button onClick={copyId} className="flex items-center gap-2 mt-3 text-[10px] text-gray-400 hover:text-gray-500 transition-colors">
+          <button onClick={copyId} className="flex items-center gap-2 mt-3 text-[10px] text-gray-600 hover:text-gray-700 transition-colors">
             <span className="font-mono">ID: {user.id.slice(0, 8)}...</span>
             <Copy className="w-3 h-3" />
           </button>
@@ -265,17 +265,17 @@ export default function ProfilPage() {
         <div className="bg-gray-50 border border-gray-200/50 rounded-2xl p-4 text-center">
           <Wallet className="w-4 h-4 text-emerald-600 mx-auto mb-1.5" />
           <p className="text-lg font-bold text-emerald-600">{formatMontant(wallet?.solde ?? 0, (wallet?.devise as "EUR" | "XOF") || "XOF")}</p>
-          <p className="text-[10px] text-gray-500 mt-0.5">Solde</p>
+          <p className="text-[10px] text-gray-700 mt-0.5">Solde</p>
         </div>
         <div className="bg-gray-50 border border-gray-200/50 rounded-2xl p-4 text-center">
           <TrendingUp className="w-4 h-4 text-cyan-600 mx-auto mb-1.5" />
           <p className="text-lg font-bold">{user.scoreConfiance ?? 50}</p>
-          <p className="text-[10px] text-gray-500 mt-0.5">Score confiance</p>
+          <p className="text-[10px] text-gray-700 mt-0.5">Score confiance</p>
         </div>
         <div className="bg-gray-50 border border-gray-200/50 rounded-2xl p-4 text-center">
           <Star className="w-4 h-4 text-amber-600 mx-auto mb-1.5" />
           <p className="text-lg font-bold">{user.badgeVerifie ? "Oui" : "Non"}</p>
-          <p className="text-[10px] text-gray-500 mt-0.5">Vérifié</p>
+          <p className="text-[10px] text-gray-700 mt-0.5">Vérifié</p>
         </div>
       </div>
 
@@ -288,7 +288,7 @@ export default function ProfilPage() {
             className={`flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-xs font-semibold transition-all ${
               activeTab === tab.key
                 ? "bg-emerald-50 text-emerald-600"
-                : "text-gray-500 hover:text-gray-600"
+                : "text-gray-700 hover:text-gray-800"
             }`}
           >
             <tab.icon className="w-3.5 h-3.5" />
@@ -308,7 +308,7 @@ export default function ProfilPage() {
 
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="block text-[11px] font-medium text-gray-400 mb-1.5">Prénom</label>
+                <label className="block text-[11px] font-medium text-gray-600 mb-1.5">Prénom</label>
                 <input
                   type="text"
                   value={formData.prenom}
@@ -318,7 +318,7 @@ export default function ProfilPage() {
                 />
               </div>
               <div>
-                <label className="block text-[11px] font-medium text-gray-400 mb-1.5">Nom</label>
+                <label className="block text-[11px] font-medium text-gray-600 mb-1.5">Nom</label>
                 <input
                   type="text"
                   value={formData.nom}
@@ -330,20 +330,20 @@ export default function ProfilPage() {
             </div>
 
             <div>
-              <label className="flex text-[11px] font-medium text-gray-400 mb-1.5 items-center gap-1.5">
+              <label className="flex text-[11px] font-medium text-gray-600 mb-1.5 items-center gap-1.5">
                 <Mail className="w-3 h-3" /> Email
               </label>
               <input
                 type="email"
                 value={user.email}
-                className="w-full bg-gray-100 border border-gray-200/50 rounded-xl px-3 py-2.5 text-sm text-gray-400 cursor-not-allowed"
+                className="w-full bg-gray-100 border border-gray-200/50 rounded-xl px-3 py-2.5 text-sm text-gray-600 cursor-not-allowed"
                 disabled
               />
-              <p className="text-[10px] text-gray-400 mt-1">L&apos;email ne peut pas être modifié</p>
+              <p className="text-[10px] text-gray-600 mt-1">L&apos;email ne peut pas être modifié</p>
             </div>
 
             <div>
-              <label className="flex text-[11px] font-medium text-gray-400 mb-1.5 items-center gap-1.5">
+              <label className="flex text-[11px] font-medium text-gray-600 mb-1.5 items-center gap-1.5">
                 <Phone className="w-3 h-3" /> Téléphone
               </label>
               <input
@@ -363,7 +363,7 @@ export default function ProfilPage() {
             </h3>
 
             <div>
-              <label className="block text-[11px] font-medium text-gray-400 mb-1.5">Bio</label>
+              <label className="block text-[11px] font-medium text-gray-600 mb-1.5">Bio</label>
               <textarea
                 value={formData.bio}
                 onChange={(e) => setFormData({ ...formData, bio: e.target.value })}
@@ -371,12 +371,12 @@ export default function ProfilPage() {
                 placeholder="Présentez-vous en quelques mots..."
                 maxLength={200}
               />
-              <p className="text-[10px] text-gray-400 mt-1">{formData.bio.length}/200</p>
+              <p className="text-[10px] text-gray-600 mt-1">{formData.bio.length}/200</p>
             </div>
 
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="flex text-[11px] font-medium text-gray-400 mb-1.5 items-center gap-1.5">
+                <label className="flex text-[11px] font-medium text-gray-600 mb-1.5 items-center gap-1.5">
                   <Briefcase className="w-3 h-3" /> Profession
                 </label>
                 <input
@@ -388,7 +388,7 @@ export default function ProfilPage() {
                 />
               </div>
               <div>
-                <label className="flex text-[11px] font-medium text-gray-400 mb-1.5 items-center gap-1.5">
+                <label className="flex text-[11px] font-medium text-gray-600 mb-1.5 items-center gap-1.5">
                   <MapPin className="w-3 h-3" /> Ville
                 </label>
                 <input
@@ -402,7 +402,7 @@ export default function ProfilPage() {
             </div>
 
             <div>
-              <label className="flex text-[11px] font-medium text-gray-400 mb-1.5 items-center gap-1.5">
+              <label className="flex text-[11px] font-medium text-gray-600 mb-1.5 items-center gap-1.5">
                 <Globe className="w-3 h-3" /> Pays
               </label>
               <input
@@ -437,7 +437,7 @@ export default function ProfilPage() {
             </h3>
 
             <div>
-              <label className="block text-[11px] font-medium text-gray-400 mb-1.5">Mot de passe actuel</label>
+              <label className="block text-[11px] font-medium text-gray-600 mb-1.5">Mot de passe actuel</label>
               <input
                 type="password"
                 value={passwords.current}
@@ -449,7 +449,7 @@ export default function ProfilPage() {
 
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="block text-[11px] font-medium text-gray-400 mb-1.5">Nouveau mot de passe</label>
+                <label className="block text-[11px] font-medium text-gray-600 mb-1.5">Nouveau mot de passe</label>
                 <input
                   type="password"
                   value={passwords.newPass}
@@ -459,7 +459,7 @@ export default function ProfilPage() {
                 />
               </div>
               <div>
-                <label className="block text-[11px] font-medium text-gray-400 mb-1.5">Confirmer</label>
+                <label className="block text-[11px] font-medium text-gray-600 mb-1.5">Confirmer</label>
                 <input
                   type="password"
                   value={passwords.confirm}
@@ -493,7 +493,7 @@ export default function ProfilPage() {
                 <CheckCircle2 className="w-6 h-6 text-emerald-600" />
                 <div>
                   <p className="text-sm font-bold text-emerald-600">Profil vérifié</p>
-                  <p className="text-xs text-gray-400">Votre identité a été confirmée</p>
+                  <p className="text-xs text-gray-600">Votre identité a été confirmée</p>
                 </div>
               </div>
             ) : (
@@ -501,7 +501,7 @@ export default function ProfilPage() {
                 <Phone className="w-6 h-6 text-amber-600" />
                 <div className="flex-1">
                   <p className="text-sm font-bold text-amber-600">Profil non vérifié</p>
-                  <p className="text-xs text-gray-400">Confirmez votre téléphone pour le badge vérifié</p>
+                  <p className="text-xs text-gray-600">Confirmez votre téléphone pour le badge vérifié</p>
                 </div>
                 <button
                   onClick={async () => {
@@ -528,15 +528,15 @@ export default function ProfilPage() {
                 onClick={() => showToast("info", "Sessions", "Toutes les autres sessions ont été déconnectées")}
                 className="w-full flex items-center justify-between p-3 bg-gray-50/50 border border-gray-200/50 rounded-xl hover:bg-gray-100/50 transition-colors group"
               >
-                <span className="text-sm text-gray-500 group-hover:text-gray-600">Déconnecter les autres sessions</span>
-                <ChevronRight className="w-4 h-4 text-gray-400" />
+                <span className="text-sm text-gray-700 group-hover:text-gray-800">Déconnecter les autres sessions</span>
+                <ChevronRight className="w-4 h-4 text-gray-600" />
               </button>
               <button
                 onClick={() => showToast("info", "Données", "Vos données seront prêtes sous 24h")}
                 className="w-full flex items-center justify-between p-3 bg-gray-50/50 border border-gray-200/50 rounded-xl hover:bg-gray-100/50 transition-colors group"
               >
-                <span className="text-sm text-gray-500 group-hover:text-gray-600">Télécharger mes données</span>
-                <ChevronRight className="w-4 h-4 text-gray-400" />
+                <span className="text-sm text-gray-700 group-hover:text-gray-800">Télécharger mes données</span>
+                <ChevronRight className="w-4 h-4 text-gray-600" />
               </button>
             </div>
           </div>
@@ -572,7 +572,7 @@ export default function ProfilPage() {
           {/* Visibilité */}
           <div className="bg-gray-50 border border-gray-200/50 rounded-2xl p-5 space-y-4">
             <h3 className="text-sm font-bold flex items-center gap-2">
-              {preferences.profilPublic ? <Eye className="w-4 h-4 text-emerald-600" /> : <EyeOff className="w-4 h-4 text-gray-400" />}
+              {preferences.profilPublic ? <Eye className="w-4 h-4 text-emerald-600" /> : <EyeOff className="w-4 h-4 text-gray-600" />}
               Visibilité
             </h3>
 
@@ -602,18 +602,18 @@ export default function ProfilPage() {
             </h3>
             <div className="space-y-2">
               <Link href="/parametres" className="flex items-center justify-between p-3 bg-gray-50/50 border border-gray-200/50 rounded-xl hover:bg-gray-100/50 transition-colors group">
-                <span className="text-sm text-gray-500 group-hover:text-gray-600 flex items-center gap-2">
+                <span className="text-sm text-gray-700 group-hover:text-gray-800 flex items-center gap-2">
                   <Settings className="w-4 h-4" />
                   Paramètres avancés
                 </span>
-                <ChevronRight className="w-4 h-4 text-gray-400" />
+                <ChevronRight className="w-4 h-4 text-gray-600" />
               </Link>
               <Link href="/qrcode" className="flex items-center justify-between p-3 bg-gray-50/50 border border-gray-200/50 rounded-xl hover:bg-gray-100/50 transition-colors group">
-                <span className="text-sm text-gray-500 group-hover:text-gray-600 flex items-center gap-2">
+                <span className="text-sm text-gray-700 group-hover:text-gray-800 flex items-center gap-2">
                   <Globe className="w-4 h-4" />
                   Mon QR Code
                 </span>
-                <ChevronRight className="w-4 h-4 text-gray-400" />
+                <ChevronRight className="w-4 h-4 text-gray-600" />
               </Link>
             </div>
           </div>
@@ -644,10 +644,10 @@ function ToggleRow({
       className="w-full flex items-center justify-between p-3 bg-gray-50/50 border border-gray-200/50 rounded-xl hover:bg-gray-100/50 transition-colors"
     >
       <div className="flex items-center gap-3 text-left">
-        <Icon className={`w-4 h-4 ${value ? "text-emerald-600" : "text-gray-400"}`} />
+        <Icon className={`w-4 h-4 ${value ? "text-emerald-600" : "text-gray-600"}`} />
         <div>
           <p className="text-sm font-medium">{label}</p>
-          <p className="text-[10px] text-gray-500">{description}</p>
+          <p className="text-[10px] text-gray-700">{description}</p>
         </div>
       </div>
       <div className={`w-10 h-5.5 rounded-full relative transition-colors ${value ? "bg-emerald-500" : "bg-gray-200"}`} style={{ width: 40, height: 22 }}>

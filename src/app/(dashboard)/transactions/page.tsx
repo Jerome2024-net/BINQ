@@ -164,7 +164,7 @@ export default function TransactionsPage() {
             <BarChart3 className="w-8 h-8 text-primary-600" />
             Transactions
           </h1>
-          <p className="text-gray-500 mt-1">Historique complet de vos opérations financières</p>
+          <p className="text-gray-700 mt-1">Historique complet de vos opérations financières</p>
         </div>
         <div className="flex flex-wrap gap-2 sm:gap-3">
           <button
@@ -190,7 +190,7 @@ export default function TransactionsPage() {
             <ArrowDownLeft className="w-6 h-6 text-green-600" />
           </div>
           <div>
-            <p className="text-sm text-gray-500 font-medium">Total entrant</p>
+            <p className="text-sm text-gray-700 font-medium">Total entrant</p>
             <p className="text-xl font-bold text-green-600">{formatMontant(stats.totalEntrant)}</p>
           </div>
         </div>
@@ -200,7 +200,7 @@ export default function TransactionsPage() {
             <ArrowUpRight className="w-6 h-6 text-red-600" />
           </div>
           <div>
-            <p className="text-sm text-gray-500 font-medium">Total sortant</p>
+            <p className="text-sm text-gray-700 font-medium">Total sortant</p>
             <p className="text-xl font-bold text-red-600">{formatMontant(stats.totalSortant)}</p>
           </div>
         </div>
@@ -210,7 +210,7 @@ export default function TransactionsPage() {
             <Hash className="w-6 h-6 text-primary-600" />
           </div>
           <div>
-            <p className="text-sm text-gray-500 font-medium">Nb. transactions</p>
+            <p className="text-sm text-gray-700 font-medium">Nb. transactions</p>
             <p className="text-xl font-bold text-gray-900">{stats.count}</p>
           </div>
         </div>
@@ -224,7 +224,7 @@ export default function TransactionsPage() {
             Grand Livre Comptable (Double Entrée)
           </h2>
           {ledgerEntries.length === 0 ? (
-            <p className="text-gray-400 text-center py-6">Aucune entrée comptable</p>
+            <p className="text-gray-600 text-center py-6">Aucune entrée comptable</p>
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
@@ -243,7 +243,7 @@ export default function TransactionsPage() {
                     .slice(0, 50)
                     .map((entry) => (
                       <tr key={entry.id} className="hover:bg-gray-50">
-                        <td className="px-4 py-3 text-gray-500 whitespace-nowrap">
+                        <td className="px-4 py-3 text-gray-700 whitespace-nowrap">
                           {formatDate(entry.date)}
                         </td>
                         <td className="px-4 py-3">
@@ -273,7 +273,7 @@ export default function TransactionsPage() {
       <div className="card !p-4">
         <div className="flex flex-col sm:flex-row gap-4">
           <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-600" />
             <input
               type="text"
               value={searchQuery}
@@ -283,7 +283,7 @@ export default function TransactionsPage() {
             />
           </div>
           <div className="flex items-center gap-2">
-            <Filter className="w-5 h-5 text-gray-400" />
+            <Filter className="w-5 h-5 text-gray-600" />
             <select
               value={typeFilter}
               onChange={(e) => setTypeFilter(e.target.value)}
@@ -303,9 +303,9 @@ export default function TransactionsPage() {
       <div className="card">
         {filteredTransactions.length === 0 ? (
           <div className="text-center py-12">
-            <BarChart3 className="w-12 h-12 text-gray-300 mx-auto mb-4" />
-            <p className="text-gray-500 font-medium">Aucune transaction trouvée</p>
-            <p className="text-sm text-gray-400 mt-1">
+            <BarChart3 className="w-12 h-12 text-gray-500 mx-auto mb-4" />
+            <p className="text-gray-700 font-medium">Aucune transaction trouvée</p>
+            <p className="text-sm text-gray-600 mt-1">
               {searchQuery || typeFilter !== "all"
                 ? "Essayez de modifier vos filtres"
                 : "Vos transactions apparaîtront ici"}
@@ -333,7 +333,7 @@ export default function TransactionsPage() {
                       <span className={`px-2 py-0.5 rounded text-xs font-medium ${getTypeColor(tx.type)}`}>
                         {getTransactionLabel(tx.type)}
                       </span>
-                      <span className="text-xs text-gray-400 flex items-center gap-1">
+                      <span className="text-xs text-gray-600 flex items-center gap-1">
                         <CalendarDays className="w-3 h-3" />
                         {formatDate(tx.dateCreation)}
                       </span>
@@ -349,15 +349,15 @@ export default function TransactionsPage() {
                       {isCredit(tx.type) ? "+" : "-"}
                       {tx.montant.toLocaleString("fr-FR")} €
                     </p>
-                    <p className="text-xs text-gray-400">
+                    <p className="text-xs text-gray-600">
                       Solde: {tx.soldeApres.toLocaleString("fr-FR")}
                     </p>
                   </div>
 
                   {expandedTx === tx.id ? (
-                    <ChevronUp className="w-5 h-5 text-gray-400 flex-shrink-0" />
+                    <ChevronUp className="w-5 h-5 text-gray-600 flex-shrink-0" />
                   ) : (
-                    <ChevronDown className="w-5 h-5 text-gray-400 flex-shrink-0" />
+                    <ChevronDown className="w-5 h-5 text-gray-600 flex-shrink-0" />
                   )}
                 </button>
 
@@ -367,11 +367,11 @@ export default function TransactionsPage() {
                     <div className="bg-gray-50 rounded-xl p-3 sm:p-4 space-y-2 text-sm">
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                         <div>
-                          <p className="text-gray-500">Référence</p>
+                          <p className="text-gray-700">Référence</p>
                           <p className="font-mono font-medium text-gray-900">{tx.reference}</p>
                         </div>
                         <div>
-                          <p className="text-gray-500">Statut</p>
+                          <p className="text-gray-700">Statut</p>
                           <p className="font-medium">
                             <span
                               className={
@@ -391,13 +391,13 @@ export default function TransactionsPage() {
                           </p>
                         </div>
                         <div>
-                          <p className="text-gray-500">Solde avant</p>
+                          <p className="text-gray-700">Solde avant</p>
                           <p className="font-medium text-gray-900">
                             {tx.soldeAvant.toLocaleString("fr-FR")} €
                           </p>
                         </div>
                         <div>
-                          <p className="text-gray-500">Solde après</p>
+                          <p className="text-gray-700">Solde après</p>
                           <p className="font-medium text-gray-900">
                             {tx.soldeApres.toLocaleString("fr-FR")} €
                           </p>
@@ -405,7 +405,7 @@ export default function TransactionsPage() {
 
                         {tx.metadata.methode && (
                           <div>
-                            <p className="text-gray-500">Méthode</p>
+                            <p className="text-gray-700">Méthode</p>
                             <p className="font-medium text-gray-900">
                               {tx.metadata.methode === "virement"
                                 ? "Virement"
@@ -417,7 +417,7 @@ export default function TransactionsPage() {
                         )}
                         {tx.metadata.frais !== undefined && tx.metadata.frais > 0 && (
                           <div>
-                            <p className="text-gray-500">Frais/Commission</p>
+                            <p className="text-gray-700">Frais/Commission</p>
                             <p className="font-medium text-amber-600">
                               {tx.metadata.frais.toLocaleString("fr-FR")} €
                             </p>
@@ -435,7 +435,7 @@ export default function TransactionsPage() {
         {/* Pagination info */}
         {filteredTransactions.length > 0 && (
           <div className="mt-4 pt-4 border-t border-gray-100 text-center">
-            <p className="text-sm text-gray-500">
+            <p className="text-sm text-gray-700">
               {filteredTransactions.length} transaction(s) affichée(s)
               {typeFilter !== "all" && ` · Filtre: ${typeFilters.find((f) => f.value === typeFilter)?.label}`}
             </p>

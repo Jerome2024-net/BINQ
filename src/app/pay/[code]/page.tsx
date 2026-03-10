@@ -136,7 +136,7 @@ export default function PayPage() {
       <div className="min-h-screen bg-white flex items-center justify-center">
         <div className="text-center">
           <Loader2 className="w-10 h-10 text-emerald-600 animate-spin mx-auto mb-4" />
-          <p className="text-gray-400">Chargement du lien de paiement...</p>
+          <p className="text-gray-600">Chargement du lien de paiement...</p>
         </div>
       </div>
     );
@@ -151,7 +151,7 @@ export default function PayPage() {
             <AlertTriangle className="w-8 h-8 text-red-500" />
           </div>
           <h1 className="text-xl font-bold text-gray-900 mb-2">Lien non disponible</h1>
-          <p className="text-gray-400 mb-6">{error}</p>
+          <p className="text-gray-600 mb-6">{error}</p>
           <Link
             href="/dashboard"
             className="inline-flex items-center gap-2 bg-emerald-500 text-white px-6 py-3 rounded-xl font-semibold hover:bg-emerald-400 transition"
@@ -186,7 +186,7 @@ export default function PayPage() {
           <p className="text-3xl font-black text-emerald-600 mb-2">
             {formatMontant(paidMontant, (link?.devise as DeviseCode) || "XOF")}
           </p>
-          <p className="text-gray-400 text-sm mb-1">
+          <p className="text-gray-600 text-sm mb-1">
             {link?.type === "send" ? (
               <>De <span className="text-gray-900 font-semibold">{link?.createur.prenom} {link?.createur.nom}</span></>
             ) : (
@@ -196,9 +196,9 @@ export default function PayPage() {
 
           {/* Receipt */}
           <div className="bg-gray-50/50 rounded-xl p-3 my-4 border border-gray-200/50 text-left space-y-1.5">
-            <div className="flex justify-between text-xs"><span className="text-gray-500">Référence</span><span className="text-gray-500 font-mono">{paidRef}</span></div>
-            <div className="flex justify-between text-xs"><span className="text-gray-500">Date</span><span className="text-gray-500">{paidDate}</span></div>
-            <div className="flex justify-between text-xs"><span className="text-gray-500">Statut</span><span className="text-emerald-600 font-semibold">Confirmé</span></div>
+            <div className="flex justify-between text-xs"><span className="text-gray-700">Référence</span><span className="text-gray-700 font-mono">{paidRef}</span></div>
+            <div className="flex justify-between text-xs"><span className="text-gray-700">Date</span><span className="text-gray-700">{paidDate}</span></div>
+            <div className="flex justify-between text-xs"><span className="text-gray-700">Statut</span><span className="text-emerald-600 font-semibold">Confirmé</span></div>
           </div>
 
           {/* QR Receipt - scannable proof */}
@@ -213,7 +213,7 @@ export default function PayPage() {
                 includeMargin={true}
               />
             </div>
-            <p className="text-[9px] text-gray-400 mt-1.5 flex items-center gap-1"><QrCode className="w-2.5 h-2.5" />Preuve de paiement vérifiable</p>
+            <p className="text-[9px] text-gray-600 mt-1.5 flex items-center gap-1"><QrCode className="w-2.5 h-2.5" />Preuve de paiement vérifiable</p>
           </div>
 
           <div className="flex items-center gap-2">
@@ -226,7 +226,7 @@ export default function PayPage() {
             </Link>
             <button
               onClick={handleShareReceipt}
-              className="flex items-center justify-center gap-1.5 px-4 py-3 rounded-xl bg-gray-50/80 hover:bg-gray-100 text-gray-500 font-bold text-sm transition active:scale-95"
+              className="flex items-center justify-center gap-1.5 px-4 py-3 rounded-xl bg-gray-50/80 hover:bg-gray-100 text-gray-700 font-bold text-sm transition active:scale-95"
             >
               <Share2 className="w-4 h-4" />Reçu
             </button>
@@ -249,7 +249,7 @@ export default function PayPage() {
           <h2 className="text-2xl font-black text-gray-900 tracking-tight">
             <span className="text-emerald-600">Binq</span> Pay
           </h2>
-          <p className="text-gray-500 text-sm mt-1">{link?.isMerchant ? "Terminal de paiement marchand" : "Paiement sécurisé entre particuliers"}</p>
+          <p className="text-gray-700 text-sm mt-1">{link?.isMerchant ? "Terminal de paiement marchand" : "Paiement sécurisé entre particuliers"}</p>
         </div>
 
         {/* Card */}
@@ -270,7 +270,7 @@ export default function PayPage() {
             <p className="text-lg font-semibold text-gray-900">
               {link.createur.prenom} {link.createur.nom}
             </p>
-            <p className="text-gray-400 text-sm">
+            <p className="text-gray-600 text-sm">
               {link.isMerchant ? "Terminal de paiement" : link.type === "send" ? "vous envoie de l'argent" : "vous demande un paiement"}
             </p>
           </div>
@@ -279,21 +279,21 @@ export default function PayPage() {
           <div className="bg-gray-50/50 rounded-2xl p-5 mb-6 text-center border border-gray-200/50">
             {link.type === "send" ? (
               <>
-                <p className="text-sm text-gray-400 mb-1">Montant à récupérer</p>
+                <p className="text-sm text-gray-600 mb-1">Montant à récupérer</p>
                 <p className="text-3xl font-black text-emerald-600">
                   {formatMontant(link.montant!, (link.devise as DeviseCode) || "XOF")}
                 </p>
               </>
             ) : montantFixe ? (
               <>
-                <p className="text-sm text-gray-400 mb-1">Montant à payer</p>
+                <p className="text-sm text-gray-600 mb-1">Montant à payer</p>
                 <p className="text-3xl font-black text-gray-900">
                   {formatMontant(link.montant!, (link.devise as DeviseCode) || "XOF")}
                 </p>
               </>
             ) : (
               <>
-                <p className="text-sm text-gray-400 mb-3">Montant libre</p>
+                <p className="text-sm text-gray-600 mb-3">Montant libre</p>
                 <div className="relative">
                   <input
                     type="number"
@@ -304,7 +304,7 @@ export default function PayPage() {
                     onChange={(e) => setMontantLibre(e.target.value)}
                     className="w-full bg-transparent text-3xl font-black text-gray-900 text-center outline-none placeholder-gray-400 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                   />
-                  <span className="text-gray-400 text-lg absolute right-4 top-1/2 -translate-y-1/2">{DEVISES[(link.devise as DeviseCode) || "XOF"].symbol}</span>
+                  <span className="text-gray-600 text-lg absolute right-4 top-1/2 -translate-y-1/2">{DEVISES[(link.devise as DeviseCode) || "XOF"].symbol}</span>
                 </div>
               </>
             )}
@@ -313,7 +313,7 @@ export default function PayPage() {
           {/* Description */}
           {link.description && (
             <div className="bg-gray-50/50 rounded-xl p-3 mb-6 border border-gray-200/50">
-              <p className="text-sm text-gray-500">&ldquo;{link.description}&rdquo;</p>
+              <p className="text-sm text-gray-700">&ldquo;{link.description}&rdquo;</p>
             </div>
           )}
 
@@ -324,7 +324,7 @@ export default function PayPage() {
                 <>
                   <div className="bg-emerald-50 border border-emerald-200/40 rounded-xl p-3 mb-4">
                     <p className="text-xs text-emerald-600/80 font-semibold">Paiement rapide & sécurisé</p>
-                    <p className="text-[11px] text-gray-500 mt-0.5">Connectez-vous ou créez un compte gratuit en 30 secondes pour payer ce marchand.</p>
+                    <p className="text-[11px] text-gray-700 mt-0.5">Connectez-vous ou créez un compte gratuit en 30 secondes pour payer ce marchand.</p>
                   </div>
                   <Link
                     href={`/inscription?redirect=/pay/${code}`}
@@ -335,7 +335,7 @@ export default function PayPage() {
                   </Link>
                   <Link
                     href={`/connexion?redirect=/pay/${code}`}
-                    className="w-full inline-flex items-center justify-center gap-2 bg-gray-100/50 text-gray-500 px-6 py-3 rounded-xl font-bold hover:bg-gray-100 transition text-sm"
+                    className="w-full inline-flex items-center justify-center gap-2 bg-gray-100/50 text-gray-700 px-6 py-3 rounded-xl font-bold hover:bg-gray-100 transition text-sm"
                   >
                     <LogIn className="w-4 h-4" />
                     J&apos;ai déjà un compte
@@ -343,7 +343,7 @@ export default function PayPage() {
                 </>
               ) : (
                 <>
-                  <p className="text-gray-400 text-sm mb-4">
+                  <p className="text-gray-600 text-sm mb-4">
                     Connectez-vous pour {link.type === "send" ? "récupérer cet argent" : "effectuer ce paiement"}
                   </p>
                   <Link
@@ -353,7 +353,7 @@ export default function PayPage() {
                     <LogIn className="w-5 h-5" />
                     Se connecter
                   </Link>
-                  <p className="text-xs text-gray-400 mt-3">
+                  <p className="text-xs text-gray-600 mt-3">
                     Pas encore de compte ?{" "}
                     <Link href={`/inscription?redirect=/pay/${code}`} className="text-emerald-600 hover:underline">
                       Créer un compte
@@ -380,11 +380,11 @@ export default function PayPage() {
 
         {/* Footer */}
         <div className="text-center mt-6 space-y-2">
-          <p className="text-xs text-gray-400">
+          <p className="text-xs text-gray-600">
             Paiement sécurisé via Binq. Vos fonds sont débités de votre portefeuille.
           </p>
           {link.isMerchant && !user && (
-            <p className="text-[11px] text-gray-400">
+            <p className="text-[11px] text-gray-600">
               Binq est ouvert à tous : particuliers, commerçants, freelances.
               <Link href="/inscription" className="text-emerald-600/60 hover:text-emerald-600 ml-1">Rejoignez-nous</Link>
             </p>

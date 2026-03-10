@@ -108,7 +108,7 @@ function ResetPasswordForm() {
           <h1 className="text-4xl font-bold mb-4 tracking-tight leading-tight">
             Nouveau départ
           </h1>
-          <p className="text-gray-400 text-lg leading-relaxed">
+          <p className="text-gray-600 text-lg leading-relaxed">
             Choisissez un mot de passe fort pour sécuriser votre compte.
           </p>
           <div className="mt-12 space-y-4">
@@ -121,7 +121,7 @@ function ResetPasswordForm() {
                 <div className="w-5 h-5 bg-accent-500/20 rounded-full flex items-center justify-center flex-shrink-0">
                   <ShieldCheck className="w-2.5 h-2.5 text-accent-400" />
                 </div>
-                <span className="text-gray-400 text-[15px]">{item}</span>
+                <span className="text-gray-600 text-[15px]">{item}</span>
               </div>
             ))}
           </div>
@@ -142,7 +142,7 @@ function ResetPasswordForm() {
                 <CheckCircle2 className="w-8 h-8 text-green-600" />
               </div>
               <h2 className="text-2xl font-bold text-gray-900 mb-2">Mot de passe modifié !</h2>
-              <p className="text-gray-500 mb-6">
+              <p className="text-gray-700 mb-6">
                 Votre mot de passe a été mis à jour avec succès.
                 <br />Vous allez être redirigé...
               </p>
@@ -154,7 +154,7 @@ function ResetPasswordForm() {
           ) : (
             <>
               <h2 className="text-2xl font-bold text-gray-900 mb-1.5">Nouveau mot de passe</h2>
-              <p className="text-gray-500 mb-8 text-[15px]">
+              <p className="text-gray-700 mb-8 text-[15px]">
                 Choisissez un nouveau mot de passe sécurisé pour votre compte.
               </p>
 
@@ -170,7 +170,7 @@ function ResetPasswordForm() {
                     Nouveau mot de passe
                   </label>
                   <div className="relative">
-                    <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-gray-400" />
+                    <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-gray-600" />
                     <input
                       type={showPassword ? "text" : "password"}
                       value={password}
@@ -183,7 +183,7 @@ function ResetPasswordForm() {
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                      className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-600 hover:text-gray-800"
                     >
                       {showPassword ? <EyeOff className="w-[18px] h-[18px]" /> : <Eye className="w-[18px] h-[18px]" />}
                     </button>
@@ -213,7 +213,7 @@ function ResetPasswordForm() {
                     Confirmer le mot de passe
                   </label>
                   <div className="relative">
-                    <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-gray-400" />
+                    <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-gray-600" />
                     <input
                       type={showPassword ? "text" : "password"}
                       value={confirmPassword}
@@ -251,7 +251,7 @@ function ResetPasswordForm() {
           )}
 
           <div className="mt-6">
-            <Link href="/" className="text-sm text-gray-400 hover:text-gray-600 flex items-center justify-center gap-1 transition-colors">
+            <Link href="/" className="text-sm text-gray-600 hover:text-gray-800 flex items-center justify-center gap-1 transition-colors">
               ← Retour à l&apos;accueil
             </Link>
           </div>

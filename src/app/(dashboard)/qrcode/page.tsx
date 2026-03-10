@@ -568,7 +568,7 @@ export default function QRCodePage() {
       {/* Header */}
       <div>
         <h1 className="text-xl font-black text-gray-900 tracking-tight">Paiements QR</h1>
-        <p className="text-xs text-gray-500 mt-0.5">Recevoir, scanner ou encaisser</p>
+        <p className="text-xs text-gray-700 mt-0.5">Recevoir, scanner ou encaisser</p>
       </div>
 
       {/* Tabs */}
@@ -585,7 +585,7 @@ export default function QRCodePage() {
             className={`flex-1 flex items-center justify-center gap-1 py-2.5 rounded-lg text-[11px] font-bold transition-all ${
               tab === t.key
                 ? "bg-emerald-50 text-emerald-600"
-                : "text-gray-400 hover:text-gray-500"
+                : "text-gray-600 hover:text-gray-700"
             }`}
           >
             <t.icon className="w-3.5 h-3.5" />
@@ -624,17 +624,17 @@ export default function QRCodePage() {
             {preFillCode && (
               <div className="flex items-center justify-between mb-3 px-1">
                 <span className="text-xs font-bold text-emerald-600">{formatMontant(parseFloat(preFillMontant), devise)}</span>
-                <button onClick={handleResetPreFill} className="text-[10px] text-gray-500 hover:text-gray-600 font-semibold transition">Montant libre</button>
+                <button onClick={handleResetPreFill} className="text-[10px] text-gray-700 hover:text-gray-800 font-semibold transition">Montant libre</button>
               </div>
             )}
             <div className="flex flex-col items-center">
-              <p className="text-xs font-bold text-gray-500 mb-3">Montrez ce QR pour recevoir de l&apos;argent</p>
+              <p className="text-xs font-bold text-gray-700 mb-3">Montrez ce QR pour recevoir de l&apos;argent</p>
               <div className="bg-white rounded-2xl p-5 mb-4">
                 {preFillUrl ? (
                   <QRCodeSVG id="personal-qr-code" value={preFillUrl} size={280} bgColor="#FFFFFF" fgColor="#000000" level="M" includeMargin={true} />
                 ) : (
                   <div className="w-[280px] h-[280px] flex items-center justify-center">
-                    <Loader2 className="w-6 h-6 text-gray-400 animate-spin" />
+                    <Loader2 className="w-6 h-6 text-gray-600 animate-spin" />
                   </div>
                 )}
               </div>
@@ -642,10 +642,10 @@ export default function QRCodePage() {
                 <button onClick={handleShare} className="flex flex-col items-center gap-1 py-2.5 rounded-xl bg-emerald-50 hover:bg-emerald-100/60 text-emerald-600 text-xs font-bold transition-all active:scale-95">
                   <Share2 className="w-4 h-4" /><span className="text-[10px]">Partager</span>
                 </button>
-                <button onClick={handleCopy} className="flex flex-col items-center gap-1 py-2.5 rounded-xl bg-gray-50/80 hover:bg-gray-100 text-gray-500 text-xs font-bold transition-all active:scale-95">
+                <button onClick={handleCopy} className="flex flex-col items-center gap-1 py-2.5 rounded-xl bg-gray-50/80 hover:bg-gray-100 text-gray-700 text-xs font-bold transition-all active:scale-95">
                   {copied ? (<><Check className="w-4 h-4 text-emerald-600" /><span className="text-[10px] text-emerald-600">Copié !</span></>) : (<><Copy className="w-4 h-4" /><span className="text-[10px]">Copier</span></>)}
                 </button>
-                <button onClick={handleDownload} className="flex flex-col items-center gap-1 py-2.5 rounded-xl bg-gray-50/80 hover:bg-gray-100 text-gray-400 text-xs font-bold transition-all active:scale-95">
+                <button onClick={handleDownload} className="flex flex-col items-center gap-1 py-2.5 rounded-xl bg-gray-50/80 hover:bg-gray-100 text-gray-600 text-xs font-bold transition-all active:scale-95">
                   <Download className="w-4 h-4" /><span className="text-[10px]">Image</span>
                 </button>
               </div>
@@ -656,7 +656,7 @@ export default function QRCodePage() {
           {!preFillCode && (
             <div className="rounded-xl bg-gray-50/50 border border-gray-200/50 overflow-hidden">
               {!showPreFill ? (
-                <button onClick={() => setShowPreFill(true)} className="w-full flex items-center justify-center gap-1.5 py-2.5 text-xs font-bold text-gray-400 hover:text-gray-500 transition">
+                <button onClick={() => setShowPreFill(true)} className="w-full flex items-center justify-center gap-1.5 py-2.5 text-xs font-bold text-gray-600 hover:text-gray-700 transition">
                   <Banknote className="w-3.5 h-3.5" />Définir un montant précis
                 </button>
               ) : (
@@ -672,7 +672,7 @@ export default function QRCodePage() {
                         onChange={(e) => setPreFillMontant(e.target.value)}
                         className="w-full bg-gray-50/80 border border-gray-200/60 rounded-lg px-3 py-2 text-gray-900 text-sm font-bold outline-none focus:border-emerald-200 transition-colors [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                       />
-                      <span className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 text-xs">{DEVISES[devise].symbol}</span>
+                      <span className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-600 text-xs">{DEVISES[devise].symbol}</span>
                     </div>
                     <button
                       onClick={handleGeneratePreFill}
@@ -682,7 +682,7 @@ export default function QRCodePage() {
                       {preFillLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Générer"}
                     </button>
                   </div>
-                  <button onClick={() => { setShowPreFill(false); setPreFillMontant(""); }} className="w-full text-[10px] text-gray-400 hover:text-gray-500 transition">
+                  <button onClick={() => { setShowPreFill(false); setPreFillMontant(""); }} className="w-full text-[10px] text-gray-600 hover:text-gray-700 transition">
                     Annuler
                   </button>
                 </div>
@@ -692,8 +692,8 @@ export default function QRCodePage() {
 
           {/* Link preview */}
           <div className="flex items-center gap-2 bg-gray-50/50 rounded-xl px-3 py-2 border border-gray-200/50">
-            <QrCode className="w-3.5 h-3.5 text-gray-400 shrink-0" />
-            <p className="text-[10px] text-gray-400 font-mono truncate">{preFillUrl}</p>
+            <QrCode className="w-3.5 h-3.5 text-gray-600 shrink-0" />
+            <p className="text-[10px] text-gray-600 font-mono truncate">{preFillUrl}</p>
           </div>
 
           {/* How it works */}
@@ -704,25 +704,25 @@ export default function QRCodePage() {
                 <div className="w-5 h-5 rounded-md bg-emerald-50 flex items-center justify-center shrink-0 mt-0.5">
                   <span className="text-[9px] font-black text-emerald-600">1</span>
                 </div>
-                <p className="text-[10px] text-gray-500">Montrez votre QR ou partagez le lien</p>
+                <p className="text-[10px] text-gray-700">Montrez votre QR ou partagez le lien</p>
               </div>
               <div className="flex items-start gap-2">
                 <div className="w-5 h-5 rounded-md bg-emerald-50 flex items-center justify-center shrink-0 mt-0.5">
                   <span className="text-[9px] font-black text-emerald-600">2</span>
                 </div>
-                <p className="text-[10px] text-gray-500">L&apos;envoyeur scanne avec Binq</p>
+                <p className="text-[10px] text-gray-700">L&apos;envoyeur scanne avec Binq</p>
               </div>
               <div className="flex items-start gap-2">
                 <div className="w-5 h-5 rounded-md bg-emerald-50 flex items-center justify-center shrink-0 mt-0.5">
                   <span className="text-[9px] font-black text-emerald-600">3</span>
                 </div>
-                <p className="text-[10px] text-gray-500">Il choisit le montant et valide</p>
+                <p className="text-[10px] text-gray-700">Il choisit le montant et valide</p>
               </div>
               <div className="flex items-start gap-2">
                 <div className="w-5 h-5 rounded-md bg-emerald-50 flex items-center justify-center shrink-0 mt-0.5">
                   <span className="text-[9px] font-black text-emerald-600">4</span>
                 </div>
-                <p className="text-[10px] text-gray-500">Argent reçu instantanément</p>
+                <p className="text-[10px] text-gray-700">Argent reçu instantanément</p>
               </div>
             </div>
           </div>
@@ -752,10 +752,10 @@ export default function QRCodePage() {
               {!scanning && !scanError && (
                 <div className="flex flex-col items-center justify-center py-12 px-4">
                   <div className="w-20 h-20 rounded-2xl bg-gray-50/50 flex items-center justify-center mb-4">
-                    <Camera className="w-10 h-10 text-gray-400" />
+                    <Camera className="w-10 h-10 text-gray-600" />
                   </div>
-                  <p className="text-gray-400 font-bold text-sm mb-1">Scanner un QR Code</p>
-                  <p className="text-gray-400 text-xs text-center mb-5">Pointez la caméra vers un QR Code Binq</p>
+                  <p className="text-gray-600 font-bold text-sm mb-1">Scanner un QR Code</p>
+                  <p className="text-gray-600 text-xs text-center mb-5">Pointez la caméra vers un QR Code Binq</p>
                   <div className="flex flex-col gap-3 w-full max-w-xs">
                     <button onClick={startScanner} className="flex items-center justify-center gap-2 w-full px-6 py-3 rounded-xl bg-emerald-500 text-white font-bold hover:bg-emerald-400 transition-all active:scale-95">
                       <ScanLine className="w-5 h-5" />Scan en direct
@@ -768,18 +768,18 @@ export default function QRCodePage() {
                       {photoDecoding ? <Loader2 className="w-5 h-5 animate-spin" /> : <Camera className="w-5 h-5" />}
                       {photoDecoding ? "Analyse..." : "Prendre une photo"}
                     </button>
-                    <p className="text-[10px] text-gray-400 text-center">Si le scan ne marche pas, prenez une photo du QR Code</p>
+                    <p className="text-[10px] text-gray-600 text-center">Si le scan ne marche pas, prenez une photo du QR Code</p>
                   </div>
                 </div>
               )}
               {scanning && (
                 <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4">
                   <div className="flex items-center justify-between">
-                    <p className="text-xs text-gray-500 font-semibold flex items-center gap-1.5">
+                    <p className="text-xs text-gray-700 font-semibold flex items-center gap-1.5">
                       <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse inline-block" />
                       Scan en cours...
                     </p>
-                    <button onClick={stopScanner} className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-white/10 text-gray-500 text-xs font-bold hover:bg-white/20 transition">
+                    <button onClick={stopScanner} className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-white/10 text-gray-700 text-xs font-bold hover:bg-white/20 transition">
                       <XCircle className="w-3.5 h-3.5" />Arrêter
                     </button>
                   </div>
@@ -798,7 +798,7 @@ export default function QRCodePage() {
                 <button
                   onClick={() => fileInputRef.current?.click()}
                   disabled={photoDecoding}
-                  className="text-xs text-gray-500 font-bold hover:text-gray-600 transition px-3 py-1.5 rounded-lg bg-gray-100/50"
+                  className="text-xs text-gray-700 font-bold hover:text-gray-800 transition px-3 py-1.5 rounded-lg bg-gray-100/50"
                 >
                   📸 Prendre une photo
                 </button>
@@ -810,7 +810,7 @@ export default function QRCodePage() {
           {scanning && (
             <button
               onClick={() => { stopScanner(); setTimeout(() => fileInputRef.current?.click(), 100); }}
-              className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-gray-50/80 border border-gray-200/60 text-gray-400 text-xs font-bold hover:bg-gray-100 transition active:scale-95"
+              className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-gray-50/80 border border-gray-200/60 text-gray-600 text-xs font-bold hover:bg-gray-100 transition active:scale-95"
             >
               <Camera className="w-4 h-4" />Le scan ne marche pas ? Prendre une photo
             </button>
@@ -818,14 +818,14 @@ export default function QRCodePage() {
 
           {/* Manual code input fallback */}
           <div className="rounded-2xl bg-gray-50/50 border border-gray-200/50 p-4">
-            <p className="text-xs text-gray-400 font-semibold mb-2.5">Entrez le code manuellement</p>
+            <p className="text-xs text-gray-600 font-semibold mb-2.5">Entrez le code manuellement</p>
             <div className="flex gap-2">
               <input
                 type="text"
                 placeholder="Code ou lien Binq"
                 value={manualCode}
                 onChange={(e) => setManualCode(e.target.value)}
-                className="flex-1 bg-gray-50/80 border border-gray-200/60 rounded-xl px-3 py-2.5 text-sm text-gray-900 font-semibold outline-none focus:border-emerald-200 transition-colors placeholder:text-gray-300"
+                className="flex-1 bg-gray-50/80 border border-gray-200/60 rounded-xl px-3 py-2.5 text-sm text-gray-900 font-semibold outline-none focus:border-emerald-200 transition-colors placeholder:text-gray-400"
                 onKeyDown={(e) => {
                   if (e.key === "Enter" && manualCode.trim()) {
                     const val = manualCode.trim();
@@ -874,13 +874,13 @@ export default function QRCodePage() {
                   <Banknote className="w-7 h-7 text-emerald-600" />
                 </div>
                 <p className="text-sm font-bold text-gray-900">Montant à encaisser</p>
-                <p className="text-[11px] text-gray-500 mt-0.5">Saisissez le montant de la vente</p>
+                <p className="text-[11px] text-gray-700 mt-0.5">Saisissez le montant de la vente</p>
               </div>
 
               <div className="flex items-center justify-center mb-4">
                 <div className="flex items-center bg-gray-50/80 rounded-lg overflow-hidden">
                   {DEVISE_LIST.map((d) => (
-                    <button key={d} onClick={() => setDevise(d)} className={`px-3 py-1.5 text-xs font-bold transition-all ${devise === d ? "bg-emerald-500/30 text-emerald-600" : "text-gray-500 hover:text-gray-600"}`}>
+                    <button key={d} onClick={() => setDevise(d)} className={`px-3 py-1.5 text-xs font-bold transition-all ${devise === d ? "bg-emerald-500/30 text-emerald-600" : "text-gray-700 hover:text-gray-800"}`}>
                       {DEVISES[d].flag} {d}
                     </button>
                   ))}
@@ -897,12 +897,12 @@ export default function QRCodePage() {
                   onChange={(e) => setPosMontant(e.target.value)}
                   className="w-full bg-gray-50/80 border border-gray-200/60 rounded-xl px-4 py-4 text-3xl font-black text-gray-900 text-center outline-none focus:border-emerald-200 transition-colors [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                 />
-                <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 text-sm font-bold">{DEVISES[devise].symbol}</span>
+                <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-600 text-sm font-bold">{DEVISES[devise].symbol}</span>
               </div>
 
               <div className="grid grid-cols-4 gap-2 mb-5">
                 {(devise === "XOF" ? [500, 1000, 2500, 5000] : [5, 10, 25, 50]).map((amt) => (
-                  <button key={amt} onClick={() => setPosMontant(String(amt))} className="py-2 rounded-lg bg-gray-50/80 hover:bg-gray-100 text-gray-400 text-xs font-bold transition-all active:scale-95">
+                  <button key={amt} onClick={() => setPosMontant(String(amt))} className="py-2 rounded-lg bg-gray-50/80 hover:bg-gray-100 text-gray-600 text-xs font-bold transition-all active:scale-95">
                     {amt.toLocaleString("fr-FR")}
                   </button>
                 ))}
@@ -925,26 +925,26 @@ export default function QRCodePage() {
                 <p className="text-sm font-bold text-gray-900 mb-1">
                   Montant : <span className="text-emerald-600">{formatMontant(parseFloat(posMontant), devise)}</span>
                 </p>
-                <p className="text-[11px] text-gray-500">Le client doit scanner ce QR Code pour payer</p>
+                <p className="text-[11px] text-gray-700">Le client doit scanner ce QR Code pour payer</p>
               </div>
               <div className="flex justify-center mb-5">
                 <div className="bg-white rounded-2xl p-5">
                   {posPayUrl ? (
                     <QRCodeSVG id={`qr-pos-${posCode}`} value={posPayUrl} size={280} bgColor="#FFFFFF" fgColor="#000000" level="M" includeMargin={true} />
                   ) : (
-                    <div className="w-[280px] h-[280px] flex items-center justify-center"><Loader2 className="w-8 h-8 text-gray-400 animate-spin" /></div>
+                    <div className="w-[280px] h-[280px] flex items-center justify-center"><Loader2 className="w-8 h-8 text-gray-600 animate-spin" /></div>
                   )}
                 </div>
               </div>
               <div className="flex items-center justify-center gap-2 mb-5">
                 <div className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
-                <p className="text-sm text-gray-400 font-semibold">En attente de paiement...</p>
+                <p className="text-sm text-gray-600 font-semibold">En attente de paiement...</p>
               </div>
               <div className="flex items-center gap-2 bg-gray-50/50 rounded-xl px-3 py-2.5 border border-gray-200/50 mb-4">
-                <QrCode className="w-3.5 h-3.5 text-gray-400 shrink-0" />
-                <p className="text-[11px] text-gray-400 font-mono truncate">{posPayUrl}</p>
+                <QrCode className="w-3.5 h-3.5 text-gray-600 shrink-0" />
+                <p className="text-[11px] text-gray-600 font-mono truncate">{posPayUrl}</p>
               </div>
-              <button onClick={handleCancelPOS} className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-gray-50/80 hover:bg-gray-100 text-gray-400 font-bold text-sm transition-all active:scale-[0.98]">
+              <button onClick={handleCancelPOS} className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-gray-50/80 hover:bg-gray-100 text-gray-600 font-bold text-sm transition-all active:scale-[0.98]">
                 <XCircle className="w-4 h-4" />Annuler cette vente
               </button>
             </div>
@@ -959,7 +959,7 @@ export default function QRCodePage() {
               <h2 className="text-xl font-black text-gray-900 mb-1">Paiement reçu !</h2>
               <p className="text-3xl font-black text-emerald-600 mb-2">{formatMontant(parseFloat(posMontant), devise)}</p>
               {posPayer && (
-                <p className="text-sm text-gray-400 mb-5">Payé par <span className="text-gray-500 font-semibold">{posPayer}</span></p>
+                <p className="text-sm text-gray-600 mb-5">Payé par <span className="text-gray-700 font-semibold">{posPayer}</span></p>
               )}
               <button
                 onClick={() => { resetPOS(); fetchTerminals(); }}
@@ -971,7 +971,7 @@ export default function QRCodePage() {
           )}
 
           <div className="rounded-xl bg-emerald-50 border border-emerald-200/40 px-4 py-3">
-            <p className="text-xs text-gray-400"><span className="text-emerald-600 font-semibold">Encaissement instantané</span> — Le client scanne, paie, vous êtes notifié en temps réel.</p>
+            <p className="text-xs text-gray-600"><span className="text-emerald-600 font-semibold">Encaissement instantané</span> — Le client scanne, paie, vous êtes notifié en temps réel.</p>
           </div>
         </div>
       )}
@@ -984,22 +984,22 @@ export default function QRCodePage() {
 
           {/* Explainer */}
           <div className="rounded-xl bg-emerald-50 border border-emerald-200/40 px-4 py-3">
-            <p className="text-xs text-gray-400"><span className="text-emerald-600 font-semibold">QR réutilisables</span> — Vos clients scannent et paient, sans limite d&apos;utilisation.</p>
+            <p className="text-xs text-gray-600"><span className="text-emerald-600 font-semibold">QR réutilisables</span> — Vos clients scannent et paient, sans limite d&apos;utilisation.</p>
           </div>
 
           {/* Stats */}
           <div className="grid grid-cols-3 gap-2">
             <div className="rounded-xl bg-gray-50/50 border border-gray-200/50 p-3 text-center">
               <p className="text-lg font-black text-emerald-600">{stats.paymentsCount}</p>
-              <p className="text-[10px] text-gray-500 font-semibold">Ventes</p>
+              <p className="text-[10px] text-gray-700 font-semibold">Ventes</p>
             </div>
             <div className="rounded-xl bg-gray-50/50 border border-gray-200/50 p-3 text-center">
               <p className="text-lg font-black text-gray-900">{formatMontant(stats.totalReceived, devise)}</p>
-              <p className="text-[10px] text-gray-500 font-semibold">Total reçu</p>
+              <p className="text-[10px] text-gray-700 font-semibold">Total reçu</p>
             </div>
             <div className="rounded-xl bg-gray-50/50 border border-gray-200/50 p-3 text-center">
               <p className="text-lg font-black text-gray-900">{stats.totalTerminals}</p>
-              <p className="text-[10px] text-gray-500 font-semibold">QR actifs</p>
+              <p className="text-[10px] text-gray-700 font-semibold">QR actifs</p>
             </div>
           </div>
 
@@ -1015,22 +1015,22 @@ export default function QRCodePage() {
             <div className="rounded-2xl bg-gray-50/50 border border-gray-200/50 p-5 space-y-4">
               <div className="flex items-center justify-between">
                 <p className="text-sm font-bold text-gray-900">Nouveau QR permanent</p>
-                  <button onClick={() => setShowCreatePerm(false)} className="text-gray-400 hover:text-gray-500"><XCircle className="w-4 h-4" /></button>
+                  <button onClick={() => setShowCreatePerm(false)} className="text-gray-600 hover:text-gray-700"><XCircle className="w-4 h-4" /></button>
               </div>
               <div className="flex gap-2">
-                <button onClick={() => setPermType("libre")} className={`flex-1 py-2.5 rounded-lg text-xs font-bold transition-all ${permType === "libre" ? "bg-emerald-50 text-emerald-600 border border-emerald-200/60" : "bg-gray-50/80 text-gray-400 border border-gray-200/50"}`}>Montant libre</button>
-                <button onClick={() => setPermType("fixe")} className={`flex-1 py-2.5 rounded-lg text-xs font-bold transition-all ${permType === "fixe" ? "bg-emerald-50 text-emerald-600 border border-emerald-200/60" : "bg-gray-50/80 text-gray-400 border border-gray-200/50"}`}>Montant fixe</button>
+                <button onClick={() => setPermType("libre")} className={`flex-1 py-2.5 rounded-lg text-xs font-bold transition-all ${permType === "libre" ? "bg-emerald-50 text-emerald-600 border border-emerald-200/60" : "bg-gray-50/80 text-gray-600 border border-gray-200/50"}`}>Montant libre</button>
+                <button onClick={() => setPermType("fixe")} className={`flex-1 py-2.5 rounded-lg text-xs font-bold transition-all ${permType === "fixe" ? "bg-emerald-50 text-emerald-600 border border-emerald-200/60" : "bg-gray-50/80 text-gray-600 border border-gray-200/50"}`}>Montant fixe</button>
               </div>
               {permType === "fixe" && (
                 <div className="relative">
                   <input type="number" min={DEVISES[devise].minTransfer} step={DEVISES[devise].decimals === 0 ? "1" : "0.01"} placeholder="Montant" value={permMontant} onChange={(e) => setPermMontant(e.target.value)} className="w-full bg-gray-50/80 border border-gray-200/60 rounded-xl px-4 py-3 text-gray-900 text-sm outline-none focus:border-emerald-200 transition-colors [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" />
-                  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 text-xs">{DEVISES[devise].symbol}</span>
+                  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-600 text-xs">{DEVISES[devise].symbol}</span>
                 </div>
               )}
               <input type="text" placeholder="Description (ex: Café, Coiffure...)" value={permDesc} onChange={(e) => setPermDesc(e.target.value)} maxLength={60} className="w-full bg-gray-50/80 border border-gray-200/60 rounded-xl px-4 py-3 text-gray-900 text-sm outline-none focus:border-emerald-200 placeholder-gray-400 transition-colors" />
               <div className="flex items-center gap-2">
                 {DEVISE_LIST.map((d) => (
-                  <button key={d} onClick={() => setDevise(d)} className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${devise === d ? "bg-emerald-500/30 text-emerald-600" : "bg-gray-50/80 text-gray-500"}`}>{DEVISES[d].flag} {d}</button>
+                  <button key={d} onClick={() => setDevise(d)} className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${devise === d ? "bg-emerald-500/30 text-emerald-600" : "bg-gray-50/80 text-gray-700"}`}>{DEVISES[d].flag} {d}</button>
                 ))}
               </div>
               <button onClick={handleCreatePermanent} disabled={creatingPerm || (permType === "fixe" && (!permMontant || parseFloat(permMontant) <= 0))} className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-white font-bold text-sm transition-all active:scale-[0.98] disabled:opacity-40">
@@ -1045,9 +1045,9 @@ export default function QRCodePage() {
             <div className="flex items-center justify-center py-12"><Loader2 className="w-6 h-6 text-emerald-600 animate-spin" /></div>
           ) : terminals.length === 0 ? (
             <div className="rounded-2xl bg-gray-50/50 border border-gray-200/50 p-8 text-center">
-              <div className="w-14 h-14 rounded-2xl bg-gray-50/50 flex items-center justify-center mx-auto mb-3"><QrCode className="w-7 h-7 text-gray-300" /></div>
-              <p className="text-gray-400 font-bold text-sm mb-1">Aucun QR permanent</p>
-              <p className="text-gray-400 text-xs">Créez un QR code réutilisable pour votre commerce</p>
+              <div className="w-14 h-14 rounded-2xl bg-gray-50/50 flex items-center justify-center mx-auto mb-3"><QrCode className="w-7 h-7 text-gray-500" /></div>
+              <p className="text-gray-600 font-bold text-sm mb-1">Aucun QR permanent</p>
+              <p className="text-gray-600 text-xs">Créez un QR code réutilisable pour votre commerce</p>
             </div>
           ) : (
             <div className="space-y-3">
@@ -1057,24 +1057,24 @@ export default function QRCodePage() {
                     <div className="flex items-center justify-between mb-2">
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-bold text-gray-900 truncate">{t.description}</p>
-                        <p className="text-[11px] text-gray-400 font-mono">{t.code}</p>
+                        <p className="text-[11px] text-gray-600 font-mono">{t.code}</p>
                       </div>
                       <div className="flex items-center gap-1.5 ml-2">
                         {t.montant ? (
                           <span className="px-2 py-1 rounded-lg bg-emerald-50 text-emerald-600 text-[10px] font-bold">{formatMontant(t.montant, (t.devise as DeviseCode) || devise)}</span>
                         ) : (
-                          <span className="px-2 py-1 rounded-lg bg-gray-50/80 text-gray-400 text-[10px] font-bold">Libre</span>
+                          <span className="px-2 py-1 rounded-lg bg-gray-50/80 text-gray-600 text-[10px] font-bold">Libre</span>
                         )}
                       </div>
                     </div>
                     <div className="flex items-center gap-2 mt-3">
-                      <button onClick={() => setExpandedQR(expandedQR === t.code ? null : t.code)} className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg bg-gray-50/80 hover:bg-gray-100 text-gray-400 text-xs font-bold transition-all active:scale-95">
+                      <button onClick={() => setExpandedQR(expandedQR === t.code ? null : t.code)} className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg bg-gray-50/80 hover:bg-gray-100 text-gray-600 text-xs font-bold transition-all active:scale-95">
                         <QrCode className="w-3.5 h-3.5" />{expandedQR === t.code ? "Masquer" : "QR Code"}
                       </button>
-                      <button onClick={() => handleCopyTerminal(t.code)} className="flex items-center justify-center gap-1.5 py-2 px-3 rounded-lg bg-gray-50/80 hover:bg-gray-100 text-gray-400 text-xs font-bold transition-all active:scale-95">
+                      <button onClick={() => handleCopyTerminal(t.code)} className="flex items-center justify-center gap-1.5 py-2 px-3 rounded-lg bg-gray-50/80 hover:bg-gray-100 text-gray-600 text-xs font-bold transition-all active:scale-95">
                         {copiedCode === t.code ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5" />}
                       </button>
-                      <button onClick={() => handleShareTerminal(t.code, t.description)} className="flex items-center justify-center py-2 px-3 rounded-lg bg-gray-50/80 hover:bg-gray-100 text-gray-400 text-xs font-bold transition-all active:scale-95">
+                      <button onClick={() => handleShareTerminal(t.code, t.description)} className="flex items-center justify-center py-2 px-3 rounded-lg bg-gray-50/80 hover:bg-gray-100 text-gray-600 text-xs font-bold transition-all active:scale-95">
                         <Share2 className="w-3.5 h-3.5" />
                       </button>
                       <button onClick={() => handleDeleteTerminal(t.id)} className="flex items-center justify-center py-2 px-3 rounded-lg bg-red-500/10 hover:bg-red-50 text-red-500/60 text-xs transition-all active:scale-95">

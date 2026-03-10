@@ -147,7 +147,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               {/* Notification */}
               <div className="relative" ref={notifRef}>
                 <button onClick={() => { setNotifOpen(!notifOpen); setProfileOpen(false); }} className="relative p-2.5 rounded-xl hover:bg-gray-100/50 transition-colors">
-                  <Bell className="w-[18px] h-[18px] text-gray-400" />
+                  <Bell className="w-[18px] h-[18px] text-gray-600" />
                   {unreadCount > 0 && (
                     <span className="absolute top-1.5 right-1.5 flex h-2 w-2">
                       <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
@@ -169,19 +169,19 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                     <div className="max-h-72 overflow-y-auto">
                       {notifications.length === 0 ? (
                         <div className="py-10 text-center">
-                          <Bell className="w-8 h-8 text-gray-300 mx-auto mb-2" />
-                          <p className="text-sm text-gray-500">Aucune notification</p>
+                          <Bell className="w-8 h-8 text-gray-500 mx-auto mb-2" />
+                          <p className="text-sm text-gray-700">Aucune notification</p>
                         </div>
                       ) : (
                         <div className="p-1.5 space-y-0.5">
                           {notifications.map((notif) => (
                             <div key={notif.id} className={`px-4 py-2.5 rounded-xl transition-colors ${notif.lu ? "opacity-50" : "bg-emerald-50"}`}>
                               <div className="flex justify-between items-start gap-3">
-                                <span className={`text-sm font-bold ${notif.lu ? "text-gray-500" : "text-emerald-600"}`}>{notif.titre}</span>
+                                <span className={`text-sm font-bold ${notif.lu ? "text-gray-700" : "text-emerald-600"}`}>{notif.titre}</span>
                                 {!notif.lu && <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0 mt-1.5" />}
                               </div>
-                              <p className="text-[11px] text-gray-500 mt-0.5 leading-relaxed">{notif.message}</p>
-                              <span className="text-[10px] text-gray-400 mt-0.5 block">{formatTimeAgo(notif.created_at)}</span>
+                              <p className="text-[11px] text-gray-700 mt-0.5 leading-relaxed">{notif.message}</p>
+                              <span className="text-[10px] text-gray-600 mt-0.5 block">{formatTimeAgo(notif.created_at)}</span>
                             </div>
                           ))}
                         </div>
@@ -203,13 +203,13 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                   <div className="absolute right-0 mt-2 w-56 bg-white border border-gray-200/60 rounded-2xl shadow-xl p-1.5 z-50">
                     <div className="px-3 py-2.5 mb-1">
                       <p className="text-sm font-bold">{user?.prenom} {user?.nom}</p>
-                      <p className="text-[11px] text-gray-500 truncate">{user?.email}</p>
+                      <p className="text-[11px] text-gray-700 truncate">{user?.email}</p>
                     </div>
-                    <Link href="/profil" onClick={() => setProfileOpen(false)} className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-gray-500 hover:bg-gray-100/50 hover:text-gray-900 transition-colors">
+                    <Link href="/profil" onClick={() => setProfileOpen(false)} className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-gray-700 hover:bg-gray-100/50 hover:text-gray-900 transition-colors">
                       <User className="w-4 h-4" />
                       Mon Profil
                     </Link>
-                    <Link href="/parametres" onClick={() => setProfileOpen(false)} className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-gray-500 hover:bg-gray-100/50 hover:text-gray-900 transition-colors">
+                    <Link href="/parametres" onClick={() => setProfileOpen(false)} className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-gray-700 hover:bg-gray-100/50 hover:text-gray-900 transition-colors">
                       <Settings className="w-4 h-4" />
                       Param&egrave;tres
                     </Link>
@@ -244,7 +244,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                   className={`flex flex-col items-center justify-center gap-0.5 w-14 sm:w-16 py-1 rounded-xl transition-all duration-200 ${
                     isActive
                       ? "text-emerald-600"
-                      : "text-gray-400 hover:text-gray-500"
+                      : "text-gray-600 hover:text-gray-700"
                   }`}
                 >
                   <div className={`p-1 sm:p-1.5 rounded-lg sm:rounded-xl transition-colors ${isActive ? "bg-emerald-50" : ""}`}>

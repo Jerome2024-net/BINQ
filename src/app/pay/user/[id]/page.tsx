@@ -129,7 +129,7 @@ export default function PayUserPage() {
       <div className="min-h-screen bg-white flex items-center justify-center">
         <div className="text-center">
           <Loader2 className="w-10 h-10 text-emerald-600 animate-spin mx-auto mb-4" />
-          <p className="text-gray-400">Chargement...</p>
+          <p className="text-gray-600">Chargement...</p>
         </div>
       </div>
     );
@@ -144,7 +144,7 @@ export default function PayUserPage() {
             <AlertTriangle className="w-8 h-8 text-red-500" />
           </div>
           <h1 className="text-xl font-bold text-gray-900 mb-2">Utilisateur introuvable</h1>
-          <p className="text-gray-400 mb-6">{error}</p>
+          <p className="text-gray-600 mb-6">{error}</p>
           <Link
             href="/dashboard"
             className="inline-flex items-center gap-2 bg-emerald-500 text-white px-6 py-3 rounded-xl font-semibold hover:bg-emerald-400 transition"
@@ -175,15 +175,15 @@ export default function PayUserPage() {
           </div>
           <h1 className="text-2xl font-black text-gray-900 mb-1">Envoi effectué !</h1>
           <p className="text-3xl font-black text-emerald-600 mb-2">{formatMontant(sentMontant, devise)}</p>
-          <p className="text-gray-400 text-sm mb-1">
+          <p className="text-gray-600 text-sm mb-1">
             À <span className="text-gray-900 font-semibold">{targetUser.prenom} {targetUser.nom}</span>
           </p>
 
           {/* Receipt */}
           <div className="bg-gray-50/50 rounded-xl p-3 my-4 border border-gray-200/50 text-left space-y-1.5">
-            <div className="flex justify-between text-xs"><span className="text-gray-500">Référence</span><span className="text-gray-500 font-mono">{sentRef}</span></div>
-            <div className="flex justify-between text-xs"><span className="text-gray-500">Date</span><span className="text-gray-500">{sentDate}</span></div>
-            <div className="flex justify-between text-xs"><span className="text-gray-500">Statut</span><span className="text-emerald-600 font-semibold">Confirmé</span></div>
+            <div className="flex justify-between text-xs"><span className="text-gray-700">Référence</span><span className="text-gray-700 font-mono">{sentRef}</span></div>
+            <div className="flex justify-between text-xs"><span className="text-gray-700">Date</span><span className="text-gray-700">{sentDate}</span></div>
+            <div className="flex justify-between text-xs"><span className="text-gray-700">Statut</span><span className="text-emerald-600 font-semibold">Confirmé</span></div>
           </div>
 
           {/* QR Receipt - scannable proof */}
@@ -198,7 +198,7 @@ export default function PayUserPage() {
                 includeMargin={true}
               />
             </div>
-            <p className="text-[9px] text-gray-400 mt-1.5 flex items-center gap-1"><QrCode className="w-2.5 h-2.5" />Preuve de paiement vérifiable</p>
+            <p className="text-[9px] text-gray-600 mt-1.5 flex items-center gap-1"><QrCode className="w-2.5 h-2.5" />Preuve de paiement vérifiable</p>
           </div>
 
           <div className="flex items-center gap-2">
@@ -211,7 +211,7 @@ export default function PayUserPage() {
             </Link>
             <button
               onClick={handleShareReceipt}
-              className="flex items-center justify-center gap-1.5 px-4 py-3 rounded-xl bg-gray-50/80 hover:bg-gray-100 text-gray-500 font-bold text-sm transition active:scale-95"
+              className="flex items-center justify-center gap-1.5 px-4 py-3 rounded-xl bg-gray-50/80 hover:bg-gray-100 text-gray-700 font-bold text-sm transition active:scale-95"
             >
               <Share2 className="w-4 h-4" />Reçu
             </button>
@@ -233,7 +233,7 @@ export default function PayUserPage() {
           <h2 className="text-2xl font-black text-gray-900 tracking-tight">
             <span className="text-emerald-600">Binq</span> Pay
           </h2>
-          <p className="text-gray-500 text-sm mt-1 flex items-center justify-center gap-1.5">
+          <p className="text-gray-700 text-sm mt-1 flex items-center justify-center gap-1.5">
             <QrCode className="w-3.5 h-3.5" />
             Paiement par QR Code
           </p>
@@ -257,12 +257,12 @@ export default function PayUserPage() {
             <p className="text-lg font-semibold text-gray-900">
               {targetUser.prenom} {targetUser.nom}
             </p>
-            <p className="text-gray-400 text-sm">Envoyer de l&apos;argent</p>
+            <p className="text-gray-600 text-sm">Envoyer de l&apos;argent</p>
           </div>
 
           {!user ? (
             <div className="text-center">
-              <p className="text-gray-400 text-sm mb-4">
+              <p className="text-gray-600 text-sm mb-4">
                 Connectez-vous pour envoyer de l&apos;argent
               </p>
               <Link
@@ -272,7 +272,7 @@ export default function PayUserPage() {
                 <LogIn className="w-5 h-5" />
                 Se connecter
               </Link>
-              <p className="text-xs text-gray-400 mt-3">
+              <p className="text-xs text-gray-600 mt-3">
                 Pas encore de compte ?{" "}
                 <Link href={`/inscription?redirect=/pay/user/${userId}`} className="text-emerald-600 hover:underline">
                   Créer un compte
@@ -292,7 +292,7 @@ export default function PayUserPage() {
                       className={`flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-sm font-bold transition-all ${
                         devise === d
                           ? "bg-emerald-50 text-emerald-600 border border-emerald-200/60"
-                          : "bg-gray-50/50 text-gray-400 border border-gray-200/50 hover:bg-gray-100/50"
+                          : "bg-gray-50/50 text-gray-600 border border-gray-200/50 hover:bg-gray-100/50"
                       }`}
                     >
                       <span>{dc.flag}</span>
@@ -304,7 +304,7 @@ export default function PayUserPage() {
 
               {/* Montant */}
               <div className="bg-gray-50/50 rounded-2xl p-5 text-center border border-gray-200/50">
-                <p className="text-sm text-gray-400 mb-3">Montant à envoyer</p>
+                <p className="text-sm text-gray-600 mb-3">Montant à envoyer</p>
                 <div className="relative">
                   <input
                     type="number"
@@ -315,7 +315,7 @@ export default function PayUserPage() {
                     onChange={(e) => setMontant(e.target.value)}
                     className="w-full bg-transparent text-3xl font-black text-gray-900 text-center outline-none placeholder-gray-400 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                   />
-                  <span className="text-gray-400 text-lg absolute right-4 top-1/2 -translate-y-1/2">
+                  <span className="text-gray-600 text-lg absolute right-4 top-1/2 -translate-y-1/2">
                     {deviseConfig.symbol}
                   </span>
                 </div>
@@ -323,7 +323,7 @@ export default function PayUserPage() {
 
               {/* Message */}
               <div className="relative">
-                <MessageSquare className="absolute left-3 top-3 w-4 h-4 text-gray-400" />
+                <MessageSquare className="absolute left-3 top-3 w-4 h-4 text-gray-600" />
                 <input
                   type="text"
                   maxLength={100}
@@ -351,7 +351,7 @@ export default function PayUserPage() {
           )}
         </div>
 
-        <p className="text-center text-xs text-gray-400 mt-6">
+        <p className="text-center text-xs text-gray-600 mt-6">
           Paiement sécurisé via Binq. Vos fonds sont débités de votre portefeuille.
         </p>
       </div>

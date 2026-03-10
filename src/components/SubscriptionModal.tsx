@@ -98,10 +98,10 @@ export default function SubscriptionModal({ isOpen, onClose }: SubscriptionModal
           </div>
           <div>
             <h2 className="text-lg font-bold text-gray-900">Abonnement Organisateur</h2>
-            <p className="text-xs text-gray-500">Débloquez toutes les fonctionnalités</p>
+            <p className="text-xs text-gray-700">Débloquez toutes les fonctionnalités</p>
           </div>
           <button onClick={handleClose} className="ml-auto p-2 rounded-lg hover:bg-gray-100">
-            <X className="w-5 h-5 text-gray-400" />
+            <X className="w-5 h-5 text-gray-600" />
           </button>
         </div>
 
@@ -114,7 +114,7 @@ export default function SubscriptionModal({ isOpen, onClose }: SubscriptionModal
               <h3 className="text-xl font-bold text-gray-900 mb-2">
                 {mode === "essai" ? "Essai gratuit activé ! 🎉" : "Abonnement activé ! 🎉"}
               </h3>
-              <p className="text-gray-500">
+              <p className="text-gray-700">
                 Vous pouvez maintenant profiter de toutes les fonctionnalités Binq
               </p>
               <div className="mt-4 flex items-center justify-center gap-2 text-sm text-primary-600">
@@ -145,7 +145,7 @@ export default function SubscriptionModal({ isOpen, onClose }: SubscriptionModal
                 </div>
               </div>
               <p className="text-gray-900 font-semibold text-lg">Activation en cours...</p>
-              <p className="text-sm text-gray-500 mt-2">
+              <p className="text-sm text-gray-700 mt-2">
                 {mode === "essai" ? "Activation de votre essai gratuit" : "Redirection vers le paiement sécurisé..."}
               </p>
               <div className="mt-4 flex items-center justify-center gap-1.5">
@@ -175,7 +175,7 @@ export default function SubscriptionModal({ isOpen, onClose }: SubscriptionModal
                     <Gift className="w-5 h-5" />
                     Commencer l&apos;essai gratuit
                   </button>
-                  <p className="text-xs text-gray-400 flex items-center justify-center gap-1">
+                  <p className="text-xs text-gray-600 flex items-center justify-center gap-1">
                     <Clock className="w-3 h-3" />
                     Aucun paiement requis · Se termine automatiquement
                   </p>
@@ -186,7 +186,7 @@ export default function SubscriptionModal({ isOpen, onClose }: SubscriptionModal
               {!dejaEuEssai && !enEssai && (
                 <div className="flex items-center gap-3">
                   <div className="flex-1 border-t border-gray-200"></div>
-                  <span className="text-xs text-gray-400 font-medium">OU</span>
+                  <span className="text-xs text-gray-600 font-medium">OU</span>
                   <div className="flex-1 border-t border-gray-200"></div>
                 </div>
               )}
@@ -196,7 +196,7 @@ export default function SubscriptionModal({ isOpen, onClose }: SubscriptionModal
                 <div className="text-center mb-4">
                   <div className="inline-flex items-baseline gap-1">
                     <span className="text-4xl font-bold text-gray-900">{prixAbonnement.toLocaleString("fr-FR")}</span>
-                    <span className="text-lg text-gray-500 font-normal">€/an</span>
+                    <span className="text-lg text-gray-700 font-normal">€/an</span>
                   </div>
                   {enEssai && (
                     <p className="text-sm text-primary-600 mt-1 font-medium">
@@ -214,7 +214,7 @@ export default function SubscriptionModal({ isOpen, onClose }: SubscriptionModal
                       </div>
                       <div>
                         <p className="text-sm font-semibold text-gray-900">{a.label}</p>
-                        <p className="text-xs text-gray-500">{a.desc}</p>
+                        <p className="text-xs text-gray-700">{a.desc}</p>
                       </div>
                       <CheckCircle2 className="w-5 h-5 text-green-500 ml-auto flex-shrink-0" />
                     </div>
@@ -232,7 +232,7 @@ export default function SubscriptionModal({ isOpen, onClose }: SubscriptionModal
               </div>
 
               {/* Sécurité */}
-              <div className="flex items-center justify-center gap-2 text-xs text-gray-400">
+              <div className="flex items-center justify-center gap-2 text-xs text-gray-600">
                 <ShieldCheck className="w-3.5 h-3.5" />
                 <span>Paiement sécurisé · Annulable à tout moment</span>
               </div>

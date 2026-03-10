@@ -127,7 +127,7 @@ export default function PortefeuillePage() {
         <div className="w-11 h-11 sm:w-14 sm:h-14 rounded-2xl bg-emerald-50 flex items-center justify-center">
           <Wallet className="w-5 h-5 sm:w-7 sm:h-7 text-emerald-600 animate-pulse" />
         </div>
-        <p className="text-sm text-gray-500 font-medium">Chargement...</p>
+        <p className="text-sm text-gray-700 font-medium">Chargement...</p>
       </div>
     );
   }
@@ -138,10 +138,10 @@ export default function PortefeuillePage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-xl font-black tracking-tight">Portefeuille</h1>
-          <p className="text-gray-500 text-sm mt-0.5">Historique complet</p>
+          <p className="text-gray-700 text-sm mt-0.5">Historique complet</p>
         </div>
         <button onClick={fetchData} className="p-2 rounded-xl hover:bg-gray-100/50 transition-colors">
-          <RefreshCw className={`w-4 h-4 text-gray-400 ${loading ? "animate-spin" : ""}`} />
+          <RefreshCw className={`w-4 h-4 text-gray-600 ${loading ? "animate-spin" : ""}`} />
         </button>
       </div>
 
@@ -149,15 +149,15 @@ export default function PortefeuillePage() {
       <div className="rounded-2xl bg-gray-50/50 border border-gray-200/50 p-4 sm:p-5">
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
-            <span className="text-xs font-bold text-gray-500 uppercase tracking-wider">Solde disponible</span>
+            <span className="text-xs font-bold text-gray-700 uppercase tracking-wider">Solde disponible</span>
             <div className="flex items-center bg-gray-50/80 rounded-lg overflow-hidden">
               {DEVISE_LIST.map((d) => (
-                <button key={d} onClick={() => switchDevise(d)} className={`px-2 py-1 text-[9px] font-bold transition-all ${devise === d ? "bg-emerald-50 text-emerald-600" : "text-gray-400 hover:text-gray-500"}`}>{DEVISES[d].flag} {d}</button>
+                <button key={d} onClick={() => switchDevise(d)} className={`px-2 py-1 text-[9px] font-bold transition-all ${devise === d ? "bg-emerald-50 text-emerald-600" : "text-gray-600 hover:text-gray-700"}`}>{DEVISES[d].flag} {d}</button>
               ))}
             </div>
           </div>
           <button onClick={() => setShowSolde(!showSolde)} className="p-1.5 rounded-lg bg-gray-50/80 hover:bg-gray-100 transition-colors">
-            {showSolde ? <EyeOff className="w-3.5 h-3.5 text-gray-400" /> : <Eye className="w-3.5 h-3.5 text-gray-400" />}
+            {showSolde ? <EyeOff className="w-3.5 h-3.5 text-gray-600" /> : <Eye className="w-3.5 h-3.5 text-gray-600" />}
           </button>
         </div>
         <p className="text-2xl sm:text-3xl font-black tracking-tight text-gray-900 mb-4">
@@ -168,7 +168,7 @@ export default function PortefeuillePage() {
             <ArrowDownToLine className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
             Déposer
           </Link>
-          <Link href="/envoyer" className="flex-1 flex items-center justify-center gap-1.5 sm:gap-2 py-2.5 rounded-xl bg-gray-100/50 text-gray-500 text-xs sm:text-sm font-bold hover:bg-gray-100 transition-all active:scale-95">
+          <Link href="/envoyer" className="flex-1 flex items-center justify-center gap-1.5 sm:gap-2 py-2.5 rounded-xl bg-gray-100/50 text-gray-700 text-xs sm:text-sm font-bold hover:bg-gray-100 transition-all active:scale-95">
             <SendHorizonal className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
             Envoyer
           </Link>
@@ -179,12 +179,12 @@ export default function PortefeuillePage() {
       <div className="grid grid-cols-3 gap-2">
         {[
           { label: "Déposé", value: totalDeposits, color: "text-emerald-600" },
-          { label: "Envoyé", value: totalSent, color: "text-gray-500" },
+          { label: "Envoyé", value: totalSent, color: "text-gray-700" },
           { label: "Reçu", value: totalReceived, color: "text-cyan-600" },
         ].map((s, i) => (
           <div key={i} className="rounded-xl bg-gray-50/50 border border-gray-200/50 p-2.5 sm:p-3 text-center">
             <p className={`text-sm sm:text-base font-black tabular-nums ${s.color}`}>{formatMontant(s.value, devise)}</p>
-            <p className="text-[9px] sm:text-[10px] text-gray-400 font-semibold mt-0.5">{s.label}</p>
+            <p className="text-[9px] sm:text-[10px] text-gray-600 font-semibold mt-0.5">{s.label}</p>
           </div>
         ))}
       </div>
@@ -192,7 +192,7 @@ export default function PortefeuillePage() {
       {/* Search + Filters */}
       <div className="space-y-3">
         <div className="relative">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-600" />
           <input
             type="text"
             value={searchQuery}
@@ -210,7 +210,7 @@ export default function PortefeuillePage() {
               className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${
                 filter === f
                   ? "bg-emerald-50 text-emerald-600 border border-emerald-200/40"
-                  : "bg-gray-50/50 text-gray-400 border border-gray-200/50 hover:text-gray-500"
+                  : "bg-gray-50/50 text-gray-600 border border-gray-200/50 hover:text-gray-700"
               }`}
             >
               {f === "all" ? "Tout" : f === "depot" ? "Dépôts" : f === "envoi" ? "Envoyés" : "Reçus"}
@@ -222,8 +222,8 @@ export default function PortefeuillePage() {
       {/* Transaction List */}
       {filteredActivity.length === 0 ? (
         <div className="rounded-2xl bg-gray-50/50 border border-gray-200/50 p-8 text-center">
-          <Filter className="w-8 h-8 text-gray-300 mx-auto mb-2" />
-          <p className="text-sm text-gray-500">Aucune transaction trouvée</p>
+          <Filter className="w-8 h-8 text-gray-500 mx-auto mb-2" />
+          <p className="text-sm text-gray-700">Aucune transaction trouvée</p>
         </div>
       ) : (
         <div className="rounded-2xl bg-gray-50/50 border border-gray-200/50 overflow-hidden divide-y divide-gray-100">
@@ -234,16 +234,16 @@ export default function PortefeuillePage() {
               }`}>
                 {item.isCredit
                   ? <ArrowDownLeft className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-emerald-600" />
-                  : <ArrowUpRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-gray-400" />
+                  : <ArrowUpRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-gray-600" />
                 }
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-bold text-gray-600 truncate">{item.label}</p>
-                <p className="text-[10px] text-gray-400 mt-0.5">
+                <p className="text-[10px] text-gray-600 mt-0.5">
                   {new Date(item.date).toLocaleDateString("fr-FR", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}
                 </p>
               </div>
-              <p className={`text-sm font-bold tabular-nums ${item.isCredit ? "text-emerald-600" : "text-gray-400"}`}>
+              <p className={`text-sm font-bold tabular-nums ${item.isCredit ? "text-emerald-600" : "text-gray-600"}`}>
                 {item.isCredit ? "+" : "-"}{formatMontant(item.montant, devise)}
               </p>
             </div>

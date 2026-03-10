@@ -71,18 +71,18 @@ export default function ParametresPage() {
       {/* Header */}
       <div className="flex items-center gap-3">
         <Link href="/profil" className="p-2 rounded-xl hover:bg-gray-100/50 transition-colors">
-          <ArrowLeft className="w-5 h-5 text-gray-400" />
+          <ArrowLeft className="w-5 h-5 text-gray-600" />
         </Link>
         <div>
           <h1 className="text-xl font-bold">Paramètres</h1>
-          <p className="text-xs text-gray-400">Configurez votre expérience Binq</p>
+          <p className="text-xs text-gray-600">Configurez votre expérience Binq</p>
         </div>
       </div>
 
       {/* ── Compte ── */}
       <div className="bg-gray-50 border border-gray-200/50 rounded-2xl overflow-hidden">
         <div className="px-5 py-3 border-b border-gray-200/50">
-          <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider">Compte</h3>
+          <h3 className="text-xs font-bold text-gray-600 uppercase tracking-wider">Compte</h3>
         </div>
         <div className="divide-y divide-gray-100">
           <Link href="/profil" className="flex items-center justify-between px-5 py-3.5 hover:bg-gray-50/50 transition-colors">
@@ -92,10 +92,10 @@ export default function ParametresPage() {
               </div>
               <div>
                 <p className="text-sm font-medium">Mon Profil</p>
-                <p className="text-[10px] text-gray-500">Modifier vos informations</p>
+                <p className="text-[10px] text-gray-700">Modifier vos informations</p>
               </div>
             </div>
-            <ChevronRight className="w-4 h-4 text-gray-400" />
+            <ChevronRight className="w-4 h-4 text-gray-600" />
           </Link>
 
           <Link href="/profil" className="flex items-center justify-between px-5 py-3.5 hover:bg-gray-50/50 transition-colors" onClick={() => {}}>
@@ -105,10 +105,10 @@ export default function ParametresPage() {
               </div>
               <div>
                 <p className="text-sm font-medium">Sécurité</p>
-                <p className="text-[10px] text-gray-500">Mot de passe et vérification</p>
+                <p className="text-[10px] text-gray-700">Mot de passe et vérification</p>
               </div>
             </div>
-            <ChevronRight className="w-4 h-4 text-gray-400" />
+            <ChevronRight className="w-4 h-4 text-gray-600" />
           </Link>
 
           <Link href="/portefeuille" className="flex items-center justify-between px-5 py-3.5 hover:bg-gray-50/50 transition-colors">
@@ -118,10 +118,10 @@ export default function ParametresPage() {
               </div>
               <div>
                 <p className="text-sm font-medium">Portefeuille</p>
-                <p className="text-[10px] text-gray-500">Solde et historique des transactions</p>
+                <p className="text-[10px] text-gray-700">Solde et historique des transactions</p>
               </div>
             </div>
-            <ChevronRight className="w-4 h-4 text-gray-400" />
+            <ChevronRight className="w-4 h-4 text-gray-600" />
           </Link>
         </div>
       </div>
@@ -129,7 +129,7 @@ export default function ParametresPage() {
       {/* ── Notifications ── */}
       <div className="bg-gray-50 border border-gray-200/50 rounded-2xl overflow-hidden">
         <div className="px-5 py-3 border-b border-gray-200/50">
-          <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider">Notifications</h3>
+          <h3 className="text-xs font-bold text-gray-600 uppercase tracking-wider">Notifications</h3>
         </div>
         <div className="p-5 space-y-4">
           <ToggleRow
@@ -161,7 +161,7 @@ export default function ParametresPage() {
       {/* ── Général ── */}
       <div className="bg-gray-50 border border-gray-200/50 rounded-2xl overflow-hidden">
         <div className="px-5 py-3 border-b border-gray-200/50">
-          <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider">Général</h3>
+          <h3 className="text-xs font-bold text-gray-600 uppercase tracking-wider">Général</h3>
         </div>
         <div className="divide-y divide-gray-100">
           <div className="flex items-center justify-between px-5 py-3.5">
@@ -171,7 +171,7 @@ export default function ParametresPage() {
               </div>
               <div>
                 <p className="text-sm font-medium">Langue</p>
-                <p className="text-[10px] text-gray-500">Langue de l&apos;application</p>
+                <p className="text-[10px] text-gray-700">Langue de l&apos;application</p>
               </div>
             </div>
             <span className="text-sm text-emerald-600 font-medium">Français</span>
@@ -184,7 +184,7 @@ export default function ParametresPage() {
               </div>
               <div>
                 <p className="text-sm font-medium">Devise</p>
-                <p className="text-[10px] text-gray-500">Devise par défaut</p>
+                <p className="text-[10px] text-gray-700">Devise par défaut</p>
               </div>
             </div>
             <span className="text-sm text-emerald-600 font-medium">XOF (FCFA)</span>
@@ -197,7 +197,7 @@ export default function ParametresPage() {
               </div>
               <div>
                 <p className="text-sm font-medium">Thème</p>
-                <p className="text-[10px] text-gray-500">Apparence de l&apos;application</p>
+                <p className="text-[10px] text-gray-700">Apparence de l&apos;application</p>
               </div>
             </div>
             <span className="text-sm text-emerald-600 font-medium">Sombre</span>
@@ -208,7 +208,7 @@ export default function ParametresPage() {
       {/* ── Support ── */}
       <div className="bg-gray-50 border border-gray-200/50 rounded-2xl overflow-hidden">
         <div className="px-5 py-3 border-b border-gray-200/50">
-          <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider">Support</h3>
+          <h3 className="text-xs font-bold text-gray-600 uppercase tracking-wider">Support</h3>
         </div>
         <div className="divide-y divide-gray-100">
           <button
@@ -221,7 +221,7 @@ export default function ParametresPage() {
               </div>
               <p className="text-sm font-medium">Centre d&apos;aide</p>
             </div>
-            <ChevronRight className="w-4 h-4 text-gray-400" />
+            <ChevronRight className="w-4 h-4 text-gray-600" />
           </button>
 
           <button
@@ -230,11 +230,11 @@ export default function ParametresPage() {
           >
             <div className="flex items-center gap-3">
               <div className="w-8 h-8 rounded-lg bg-gray-500/15 flex items-center justify-center">
-                <FileText className="w-4 h-4 text-gray-400" />
+                <FileText className="w-4 h-4 text-gray-600" />
               </div>
               <p className="text-sm font-medium">Conditions d&apos;utilisation</p>
             </div>
-            <ChevronRight className="w-4 h-4 text-gray-400" />
+            <ChevronRight className="w-4 h-4 text-gray-600" />
           </button>
 
           <button
@@ -247,7 +247,7 @@ export default function ParametresPage() {
               </div>
               <p className="text-sm font-medium">Télécharger mes données</p>
             </div>
-            <ChevronRight className="w-4 h-4 text-gray-400" />
+            <ChevronRight className="w-4 h-4 text-gray-600" />
           </button>
         </div>
       </div>
@@ -257,7 +257,7 @@ export default function ParametresPage() {
         onClick={async () => {
           await logout();
         }}
-        className="w-full flex items-center justify-center gap-2 py-3.5 bg-gray-50/80 border border-gray-200/50 rounded-2xl text-gray-500 hover:text-gray-900 hover:bg-gray-100/50 transition-colors"
+        className="w-full flex items-center justify-center gap-2 py-3.5 bg-gray-50/80 border border-gray-200/50 rounded-2xl text-gray-700 hover:text-gray-900 hover:bg-gray-100/50 transition-colors"
       >
         <LogOut className="w-4 h-4" />
         <span className="text-sm font-semibold">Se déconnecter</span>
@@ -269,7 +269,7 @@ export default function ParametresPage() {
           <Trash2 className="w-4 h-4" />
           Zone dangereuse
         </h3>
-        <p className="text-xs text-gray-500 mb-4">
+        <p className="text-xs text-gray-700 mb-4">
           La suppression de votre compte est irréversible. Toutes vos données seront perdues.
         </p>
 
@@ -290,7 +290,7 @@ export default function ParametresPage() {
             </button>
             <button
               onClick={() => setShowDeleteConfirm(false)}
-              className="text-sm text-gray-400 hover:text-gray-500 transition-colors"
+              className="text-sm text-gray-600 hover:text-gray-700 transition-colors"
             >
               Annuler
             </button>
@@ -299,7 +299,7 @@ export default function ParametresPage() {
       </div>
 
       {/* Version */}
-      <p className="text-center text-[10px] text-gray-400 pb-4">
+      <p className="text-center text-[10px] text-gray-600 pb-4">
         Binq v1.0.0 — Fait avec ❤️ pour l&apos;Afrique
       </p>
     </div>
@@ -327,10 +327,10 @@ function ToggleRow({
       className="w-full flex items-center justify-between p-3 bg-gray-50/50 border border-gray-200/50 rounded-xl hover:bg-gray-100/50 transition-colors"
     >
       <div className="flex items-center gap-3 text-left">
-        <Icon className={`w-4 h-4 ${value ? "text-emerald-600" : "text-gray-400"}`} />
+        <Icon className={`w-4 h-4 ${value ? "text-emerald-600" : "text-gray-600"}`} />
         <div>
           <p className="text-sm font-medium">{label}</p>
-          <p className="text-[10px] text-gray-500">{description}</p>
+          <p className="text-[10px] text-gray-700">{description}</p>
         </div>
       </div>
       <div className={`rounded-full relative transition-colors ${value ? "bg-emerald-500" : "bg-gray-200"}`} style={{ width: 40, height: 22 }}>

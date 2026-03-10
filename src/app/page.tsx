@@ -34,7 +34,7 @@ export default function HomePage() {
             <span className="font-black text-lg sm:text-xl tracking-tight">Binq</span>
           </Link>
           <div className="flex items-center gap-1.5 sm:gap-3">
-            <Link href="/connexion" className="text-[11px] sm:text-sm font-semibold text-gray-500 hover:text-gray-900 transition-colors px-2 sm:px-3 py-2">
+            <Link href="/connexion" className="text-[11px] sm:text-sm font-semibold text-gray-700 hover:text-gray-900 transition-colors px-2 sm:px-3 py-2">
               <span className="hidden sm:inline">Se connecter</span>
               <span className="sm:hidden">Connexion</span>
             </Link>
@@ -73,7 +73,7 @@ export default function HomePage() {
               Votre{" "}<span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-cyan-400 to-emerald-400">mobile money.</span>
             </h1>
 
-            <p className="text-base sm:text-xl text-gray-400 max-w-2xl mx-auto mb-8 sm:mb-10 leading-relaxed px-2">
+            <p className="text-base sm:text-xl text-gray-600 max-w-2xl mx-auto mb-8 sm:mb-10 leading-relaxed px-2">
               Envoyez, recevez et d&eacute;posez de l&apos;argent en un instant.
               Binq, votre portefeuille mobile.
             </p>
@@ -94,7 +94,7 @@ export default function HomePage() {
 
           {/* ── Mock Phone UI ── */}
           <div className="relative max-w-xs mx-auto">
-            <div className="relative bg-gradient-to-b from-[#111] to-[#0d0d0d] rounded-[2.5rem] border border-gray-200/60 p-6 pt-8 pb-8 shadow-xl shadow-emerald-500/20">
+            <div className="relative bg-gradient-to-b from-[#111] to-[#0d0d0d] rounded-[2.5rem] border border-gray-200/60 p-6 pt-8 pb-8 shadow-xl shadow-emerald-500/20 text-white">
               {/* Status bar mock */}
               <div className="flex items-center justify-between mb-4 sm:mb-6 px-1">
                 <span className="text-[9px] sm:text-[10px] text-gray-300 font-bold">9:41</span>
@@ -120,7 +120,7 @@ export default function HomePage() {
                 ].map((btn, i) => (
                   <div key={i} className="flex flex-col items-center gap-1 sm:gap-1.5">
                     <div className={`w-9 h-9 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-gradient-to-br ${btn.color} flex items-center justify-center shadow-lg`}>
-                      <btn.icon className="w-3.5 h-3.5 sm:w-5 sm:h-5 text-gray-900" />
+                      <btn.icon className="w-3.5 h-3.5 sm:w-5 sm:h-5 text-white" />
                     </div>
                     <span className="text-[9px] sm:text-[10px] font-semibold text-gray-400">{btn.label}</span>
                   </div>
@@ -139,7 +139,7 @@ export default function HomePage() {
                       {item.credit ? "+" : "-"}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-xs font-semibold text-gray-600 truncate">{item.name}</p>
+                      <p className="text-xs font-semibold text-white/80 truncate">{item.name}</p>
                       <p className="text-[10px] text-white/25">{item.time}</p>
                     </div>
                     <span className={`text-xs font-bold ${item.credit ? "text-emerald-600" : "text-gray-400"}`}>{item.amount}</span>
@@ -163,7 +163,7 @@ export default function HomePage() {
               <div key={i} className="flex flex-col items-center gap-1.5 sm:gap-2 py-3 sm:py-4 px-2.5 sm:px-3 rounded-xl sm:rounded-2xl bg-gray-50/50 border border-gray-200/50 backdrop-blur-sm">
                 <stat.icon className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-emerald-600" />
                 <p className="text-gray-900 font-bold text-xs sm:text-sm">{stat.value}</p>
-                <p className="text-[9px] sm:text-[10px] text-gray-500 font-medium">{stat.label}</p>
+                <p className="text-[9px] sm:text-[10px] text-gray-700 font-medium">{stat.label}</p>
               </div>
             ))}
           </div>
@@ -182,7 +182,7 @@ export default function HomePage() {
               Tout pour votre argent.{" "}
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-400">En mieux.</span>
             </h2>
-            <p className="text-gray-400 text-base sm:text-lg max-w-xl mx-auto">
+            <p className="text-gray-600 text-base sm:text-lg max-w-xl mx-auto">
               Une exp&eacute;rience mobile money compl&egrave;te, pens&eacute;e pour l&apos;Afrique et le monde.
             </p>
           </div>
@@ -243,7 +243,7 @@ export default function HomePage() {
                   <f.icon className="w-4 h-4 sm:w-6 sm:h-6" />
                 </div>
                 <h3 className="text-base sm:text-lg font-bold text-gray-900 mb-1.5 sm:mb-2">{f.title}</h3>
-                <p className="text-gray-400 text-xs sm:text-sm leading-relaxed">{f.desc}</p>
+                <p className="text-gray-600 text-xs sm:text-sm leading-relaxed">{f.desc}</p>
               </div>
             ))}
           </div>
@@ -257,7 +257,7 @@ export default function HomePage() {
             <h2 className="text-2xl sm:text-4xl lg:text-5xl font-black tracking-tight mb-3">
               3 &eacute;tapes. C&apos;est tout.
             </h2>
-            <p className="text-gray-400 text-base sm:text-lg">De z&eacute;ro &agrave; votre premier envoi en moins de 2 minutes.</p>
+            <p className="text-gray-600 text-base sm:text-lg">De z&eacute;ro &agrave; votre premier envoi en moins de 2 minutes.</p>
           </div>
 
           <div className="space-y-4 sm:space-y-6">
@@ -272,7 +272,7 @@ export default function HomePage() {
                 </div>
                 <div>
                   <h3 className="text-base sm:text-lg font-bold text-gray-900 mb-1">{item.title}</h3>
-                  <p className="text-gray-400 text-sm leading-relaxed">{item.desc}</p>
+                  <p className="text-gray-600 text-sm leading-relaxed">{item.desc}</p>
                 </div>
               </div>
             ))}
@@ -287,7 +287,7 @@ export default function HomePage() {
             <h2 className="text-2xl sm:text-4xl font-black tracking-tight mb-3">
               Des tarifs <span className="text-emerald-600">imbattables</span>.
             </h2>
-            <p className="text-gray-400 text-base sm:text-lg">Transparent, simple, sans surprise.</p>
+            <p className="text-gray-600 text-base sm:text-lg">Transparent, simple, sans surprise.</p>
           </div>
           <div className="grid sm:grid-cols-2 gap-3 sm:gap-4 max-w-xl mx-auto">
             <div className="rounded-2xl sm:rounded-3xl bg-gradient-to-b from-emerald-500/10 to-emerald-500/[0.02] border border-emerald-200/40 p-5 sm:p-7 text-center">
@@ -296,7 +296,7 @@ export default function HomePage() {
               </div>
               <h3 className="text-base sm:text-lg font-bold text-gray-900 mb-1.5 sm:mb-2">D&eacute;p&ocirc;ts</h3>
               <p className="text-2xl sm:text-4xl font-black text-emerald-600 mb-1.5 sm:mb-2">1%</p>
-              <p className="text-sm text-gray-400">de frais par d&eacute;p&ocirc;t carte</p>
+              <p className="text-sm text-gray-600">de frais par d&eacute;p&ocirc;t carte</p>
             </div>
             <div className="rounded-2xl sm:rounded-3xl bg-gradient-to-b from-cyan-500/10 to-cyan-500/[0.02] border border-cyan-500/20 p-5 sm:p-7 text-center">
               <div className="w-9 h-9 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-cyan-500/10 flex items-center justify-center mx-auto mb-3 sm:mb-4">
@@ -304,7 +304,7 @@ export default function HomePage() {
               </div>
               <h3 className="text-base sm:text-lg font-bold text-gray-900 mb-1.5 sm:mb-2">Transferts</h3>
               <p className="text-2xl sm:text-4xl font-black text-cyan-600 mb-1.5 sm:mb-2">0 FCFA</p>
-              <p className="text-sm text-gray-400">entre utilisateurs Binq</p>
+              <p className="text-sm text-gray-600">entre utilisateurs Binq</p>
             </div>
           </div>
         </div>
@@ -329,7 +329,7 @@ export default function HomePage() {
               </p>
               <Link href="/inscription" className="group inline-flex items-center justify-center gap-2 px-10 py-5 bg-white text-gray-900 font-black rounded-2xl hover:bg-gray-100 transition-all shadow-xl text-base">
                 Cr&eacute;er mon compte
-                <ChevronRight className="w-5 h-5 text-gray-400 group-hover:text-gray-900 group-hover:translate-x-1 transition-all" />
+                <ChevronRight className="w-5 h-5 text-gray-600 group-hover:text-gray-900 group-hover:translate-x-1 transition-all" />
               </Link>
             </div>
           </div>
@@ -346,7 +346,7 @@ export default function HomePage() {
               </div>
               <span className="font-bold text-gray-600 tracking-tight">Binq</span>
             </div>
-            <p className="text-[11px] text-gray-400 font-medium text-center sm:text-right">
+            <p className="text-[11px] text-gray-600 font-medium text-center sm:text-right">
               &copy; {new Date().getFullYear()} Binq. Votre argent mobile. R&eacute;invent&eacute;.
             </p>
           </div>

@@ -64,7 +64,7 @@ function ConnexionForm() {
               mobile.
             </span>
           </h1>
-          <p className="text-gray-400 text-lg leading-relaxed font-medium">
+          <p className="text-gray-600 text-lg leading-relaxed font-medium">
             Connectez-vous pour accéder à votre portefeuille et gérer votre argent en toute sécurité.
           </p>
 
@@ -78,7 +78,7 @@ function ConnexionForm() {
                 <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 border ${item.color}`}>
                   <item.icon className="w-5 h-5" />
                 </div>
-                <span className="text-gray-400 font-medium text-sm">{item.text}</span>
+                <span className="text-gray-600 font-medium text-sm">{item.text}</span>
               </div>
             ))}
           </div>
@@ -99,7 +99,7 @@ function ConnexionForm() {
 
           <div className="mb-10 text-center lg:text-left">
             <h2 className="text-3xl font-black mb-2">Bienvenue</h2>
-            <p className="text-gray-500 text-[15px]">Entrez vos identifiants pour continuer</p>
+            <p className="text-gray-700 text-[15px]">Entrez vos identifiants pour continuer</p>
           </div>
 
           {error && (
@@ -111,9 +111,9 @@ function ConnexionForm() {
 
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="space-y-1.5">
-              <label className="block text-sm font-bold text-gray-400 ml-1">Adresse email</label>
+              <label className="block text-sm font-bold text-gray-600 ml-1">Adresse email</label>
               <div className="relative group">
-                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-emerald-600 transition-colors" />
+                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-600 group-focus-within:text-emerald-600 transition-colors" />
                 <input
                   type="email"
                   value={email}
@@ -126,9 +126,9 @@ function ConnexionForm() {
             </div>
 
             <div className="space-y-1.5">
-              <label className="block text-sm font-bold text-gray-400 ml-1">Mot de passe</label>
+              <label className="block text-sm font-bold text-gray-600 ml-1">Mot de passe</label>
               <div className="relative group">
-                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-emerald-600 transition-colors" />
+                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-600 group-focus-within:text-emerald-600 transition-colors" />
                 <input
                   type={showPassword ? "text" : "password"}
                   value={password}
@@ -140,7 +140,7 @@ function ConnexionForm() {
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-500 transition-colors p-1"
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-600 hover:text-gray-700 transition-colors p-1"
                 >
                   {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                 </button>
@@ -167,7 +167,7 @@ function ConnexionForm() {
           </form>
 
           <div className="mt-10 text-center font-medium">
-            <p className="text-gray-500 text-[15px]">
+            <p className="text-gray-700 text-[15px]">
               Nouveau sur l&apos;application ?{" "}
               <Link href="/inscription" className="text-emerald-600 hover:text-emerald-600 hover:underline transition-colors">
                 Créer un compte
@@ -176,7 +176,7 @@ function ConnexionForm() {
           </div>
 
           <div className="mt-8">
-            <Link href="/" className="inline-flex items-center justify-center w-full gap-2 py-3 text-sm font-bold text-gray-400 hover:text-gray-500 bg-gray-50/50 hover:bg-gray-50/80 rounded-xl transition-colors border border-gray-200/50">
+            <Link href="/" className="inline-flex items-center justify-center w-full gap-2 py-3 text-sm font-bold text-gray-600 hover:text-gray-700 bg-gray-50/50 hover:bg-gray-50/80 rounded-xl transition-colors border border-gray-200/50">
               ← Retour à l&apos;accueil
             </Link>
           </div>

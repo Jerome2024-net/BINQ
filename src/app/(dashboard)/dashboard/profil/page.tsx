@@ -123,7 +123,7 @@ export default function ProfilPage() {
                   </span>
                 )}
               </div>
-              <div className="flex items-center gap-3 text-sm text-gray-500 mt-1 flex-wrap">
+              <div className="flex items-center gap-3 text-sm text-gray-700 mt-1 flex-wrap">
                 {user.ville && (
                   <span className="flex items-center gap-1">
                     <MapPin className="w-3.5 h-3.5" />
@@ -164,13 +164,13 @@ export default function ProfilPage() {
       <div className="grid grid-cols-2 lg:grid-cols-3 gap-3">
         <div className="card py-4 text-center">
           <p className="text-2xl font-bold text-green-600">{formatMontant(wallet?.solde ?? 0)}</p>
-          <p className="text-xs text-gray-500 flex items-center justify-center gap-1 mt-1">
+          <p className="text-xs text-gray-700 flex items-center justify-center gap-1 mt-1">
             <CircleDollarSign className="w-3 h-3" /> Solde
           </p>
         </div>
         <div className="card py-4 text-center">
           <p className="text-2xl font-bold text-gray-900">{summary.nombreTransactions}</p>
-          <p className="text-xs text-gray-500 flex items-center justify-center gap-1 mt-1">
+          <p className="text-xs text-gray-700 flex items-center justify-center gap-1 mt-1">
             <TrendingUp className="w-3 h-3" /> Transactions
           </p>
         </div>
@@ -178,7 +178,7 @@ export default function ProfilPage() {
           <div className="flex justify-center">
             <ScoreFiabilite userId={user.id} size="md" />
           </div>
-          <p className="text-xs text-gray-500 flex items-center justify-center gap-1 mt-2">
+          <p className="text-xs text-gray-700 flex items-center justify-center gap-1 mt-2">
             <Star className="w-3 h-3" /> Fiabilité
           </p>
         </div>
@@ -197,7 +197,7 @@ export default function ProfilPage() {
             className={`flex-1 flex items-center justify-center gap-2 py-2.5 px-4 rounded-lg text-sm font-medium transition-all ${
               activeTab === tab.key
                 ? "bg-white text-gray-900 shadow-sm"
-                : "text-gray-500 hover:text-gray-700"
+                : "text-gray-700 hover:text-gray-900"
             }`}
           >
             <tab.icon className="w-4 h-4" />
@@ -248,7 +248,7 @@ export default function ProfilPage() {
                 className="input-field bg-gray-50 cursor-not-allowed"
                 disabled
               />
-              <p className="text-xs text-gray-400 mt-1">L&apos;email ne peut pas être modifié</p>
+              <p className="text-xs text-gray-600 mt-1">L&apos;email ne peut pas être modifié</p>
             </div>
 
             <div>
@@ -277,7 +277,7 @@ export default function ProfilPage() {
                 placeholder="Présentez-vous en quelques mots..."
                 maxLength={200}
               />
-              <p className="text-xs text-gray-400 mt-1">{formData.bio.length}/200 caractères</p>
+              <p className="text-xs text-gray-600 mt-1">{formData.bio.length}/200 caractères</p>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -434,7 +434,7 @@ export default function ProfilPage() {
                     <Mail className="w-5 h-5 text-gray-600" />
                     <div>
                       <p className="font-medium text-gray-900 text-sm">Notifications par email</p>
-                      <p className="text-xs text-gray-500">Recevoir les alertes par email</p>
+                      <p className="text-xs text-gray-700">Recevoir les alertes par email</p>
                     </div>
                   </div>
                   <div className="relative">
@@ -456,7 +456,7 @@ export default function ProfilPage() {
                     <Phone className="w-5 h-5 text-gray-600" />
                     <div>
                       <p className="font-medium text-gray-900 text-sm">Notifications SMS</p>
-                      <p className="text-xs text-gray-500">Recevoir les alertes par SMS</p>
+                      <p className="text-xs text-gray-700">Recevoir les alertes par SMS</p>
                     </div>
                   </div>
                   <div className="relative">
@@ -487,7 +487,7 @@ export default function ProfilPage() {
                   )}
                   <div>
                     <p className="font-medium text-gray-900 text-sm">Profil public</p>
-                    <p className="text-xs text-gray-500">
+                    <p className="text-xs text-gray-700">
                       {preferences.profilPublic
                         ? "Les autres membres peuvent voir votre profil complet"
                         : "Seuls votre nom et avatar sont visibles"}

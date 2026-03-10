@@ -23,7 +23,7 @@ export default function ConfirmModal({ isOpen, onClose, onConfirm, title, messag
             <AlertTriangle className={`w-8 h-8 ${danger ? "text-red-500" : "text-amber-500"}`} />
           </div>
           <h3 className="text-lg font-bold text-gray-900 mb-2">{title}</h3>
-          <p className="text-gray-500 text-sm">{message}</p>
+          <p className="text-gray-700 text-sm">{message}</p>
         </div>
         <div className="flex gap-3 p-6 pt-0">
           <button onClick={onClose} className="btn-secondary flex-1 text-sm">

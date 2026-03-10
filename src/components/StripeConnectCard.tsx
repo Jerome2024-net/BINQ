@@ -125,7 +125,7 @@ export default function StripeConnectCard() {
               className="p-2 rounded-lg border border-gray-200 hover:bg-white transition-colors"
               title="Rafraîchir le statut"
             >
-              <RefreshCw className={`w-4 h-4 text-gray-500 ${isRefreshing ? "animate-spin" : ""}`} />
+              <RefreshCw className={`w-4 h-4 text-gray-700 ${isRefreshing ? "animate-spin" : ""}`} />
             </button>
           )}
 
@@ -165,24 +165,24 @@ export default function StripeConnectCard() {
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
             <div className="bg-white/70 rounded-xl p-3 text-center">
               <CheckCircle2 className="w-5 h-5 text-green-500 mx-auto mb-1" />
-              <p className="text-xs text-gray-500">Identité</p>
+              <p className="text-xs text-gray-700">Identité</p>
               <p className="text-sm font-bold text-green-600">Vérifiée</p>
             </div>
             <div className="bg-white/70 rounded-xl p-3 text-center">
               <CreditCard className="w-5 h-5 text-green-500 mx-auto mb-1" />
-              <p className="text-xs text-gray-500">Paiements</p>
+              <p className="text-xs text-gray-700">Paiements</p>
               <p className="text-sm font-bold text-green-600">Activés</p>
             </div>
             <div className="bg-white/70 rounded-xl p-3 text-center">
               <Banknote className="w-5 h-5 text-green-500 mx-auto mb-1" />
-              <p className="text-xs text-gray-500">Solde disponible</p>
+              <p className="text-xs text-gray-700">Solde disponible</p>
               <p className="text-sm font-bold text-gray-900">
                 {connectAccount.balance.available.toLocaleString("fr-FR")} €
               </p>
             </div>
             <div className="bg-white/70 rounded-xl p-3 text-center">
               <UserCheck className="w-5 h-5 text-green-500 mx-auto mb-1" />
-              <p className="text-xs text-gray-500">En attente</p>
+              <p className="text-xs text-gray-700">En attente</p>
               <p className="text-sm font-bold text-gray-900">
                 {connectAccount.balance.pending.toLocaleString("fr-FR")} €
               </p>

@@ -48,7 +48,7 @@ export default function MotDePasseOubliePage() {
           <h1 className="text-4xl font-bold mb-4 tracking-tight leading-tight">
             Pas de panique !
           </h1>
-          <p className="text-gray-400 text-lg leading-relaxed">
+          <p className="text-gray-600 text-lg leading-relaxed">
             Réinitialisez votre mot de passe en quelques secondes.
             Un lien sécurisé vous sera envoyé par email.
           </p>
@@ -62,7 +62,7 @@ export default function MotDePasseOubliePage() {
                 <div className="w-5 h-5 bg-accent-500/20 rounded-full flex items-center justify-center flex-shrink-0">
                   <ArrowRight className="w-2.5 h-2.5 text-accent-400" />
                 </div>
-                <span className="text-gray-400 text-[15px]">{item}</span>
+                <span className="text-gray-600 text-[15px]">{item}</span>
               </div>
             ))}
           </div>
@@ -84,7 +84,7 @@ export default function MotDePasseOubliePage() {
                 <CheckCircle2 className="w-8 h-8 text-green-600" />
               </div>
               <h2 className="text-2xl font-bold text-gray-900 mb-2">Email envoyé !</h2>
-              <p className="text-gray-500 mb-6">
+              <p className="text-gray-700 mb-6">
                 Un lien de réinitialisation a été envoyé à{" "}
                 <span className="font-semibold text-gray-700">{email}</span>.
                 <br />Vérifiez votre boîte de réception et vos spams.
@@ -106,7 +106,7 @@ export default function MotDePasseOubliePage() {
             /* Form State */
             <>
               <h2 className="text-2xl font-bold text-gray-900 mb-1.5">Mot de passe oublié</h2>
-              <p className="text-gray-500 mb-8 text-[15px]">
+              <p className="text-gray-700 mb-8 text-[15px]">
                 Entrez votre adresse email et nous vous enverrons un lien pour réinitialiser votre mot de passe.
               </p>
 
@@ -122,7 +122,7 @@ export default function MotDePasseOubliePage() {
                     Adresse email
                   </label>
                   <div className="relative">
-                    <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-gray-400" />
+                    <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-gray-600" />
                     <input
                       type="email"
                       value={email}
@@ -166,7 +166,7 @@ export default function MotDePasseOubliePage() {
           )}
 
           <div className="mt-6">
-            <Link href="/" className="text-sm text-gray-400 hover:text-gray-600 flex items-center justify-center gap-1 transition-colors">
+            <Link href="/" className="text-sm text-gray-600 hover:text-gray-800 flex items-center justify-center gap-1 transition-colors">
               ← Retour à l&apos;accueil
             </Link>
           </div>
