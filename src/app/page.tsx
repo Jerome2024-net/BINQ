@@ -29,7 +29,7 @@ export default function HomePage() {
         <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2 sm:gap-2.5 group">
             <div className="w-8 h-8 sm:w-9 sm:h-9 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-xl sm:rounded-2xl flex items-center justify-center shadow-lg shadow-emerald-500/25">
-              <Star className="w-4 h-4 sm:w-5 sm:h-5 text-gray-900 fill-white" />
+              <Star className="w-4 h-4 sm:w-5 sm:h-5 text-white fill-white" />
             </div>
             <span className="font-black text-lg sm:text-xl tracking-tight">Binq</span>
           </Link>
@@ -267,7 +267,7 @@ export default function HomePage() {
               { step: "03", title: "Envoyez \u00e0 qui vous voulez", desc: "Transfert gratuit et imm\u00e9diat vers n\u2019importe quel utilisateur Binq.", color: "bg-violet-500", icon: SendHorizonal },
             ].map((item, i) => (
               <div key={i} className="flex items-center gap-3 sm:gap-5 p-4 sm:p-6 rounded-xl sm:rounded-2xl bg-gray-50/50 border border-gray-200/50 hover:bg-gray-50/80 transition-all group">
-                <div className={`w-10 h-10 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl ${item.color} text-gray-900 flex items-center justify-center font-black text-sm sm:text-lg shrink-0 group-hover:scale-110 transition-transform shadow-lg`}>
+                <div className={`w-10 h-10 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl ${item.color} text-white flex items-center justify-center font-black text-sm sm:text-lg shrink-0 group-hover:scale-110 transition-transform shadow-lg`}>
                   {item.step}
                 </div>
                 <div>
@@ -319,12 +319,12 @@ export default function HomePage() {
 
             <div className="relative z-10 p-6 sm:p-16 text-center">
               <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-2xl sm:rounded-3xl bg-white/20 backdrop-blur-sm flex items-center justify-center mx-auto mb-4 sm:mb-6 shadow-xl">
-                <Star className="w-6 h-6 sm:w-8 sm:h-8 text-gray-900 fill-white" />
+                <Star className="w-6 h-6 sm:w-8 sm:h-8 text-white fill-white" />
               </div>
-              <h2 className="text-2xl sm:text-4xl lg:text-5xl font-black text-gray-900 tracking-tight mb-4">
+              <h2 className="text-2xl sm:text-4xl lg:text-5xl font-black text-white tracking-tight mb-4">
                 Pr&ecirc;t &agrave; commencer ?
               </h2>
-              <p className="text-lg text-gray-500 max-w-lg mx-auto mb-8">
+              <p className="text-lg text-white/80 max-w-lg mx-auto mb-8">
                 Ouvrez votre compte Binq gratuitement en 30 secondes. Rejoignez la r&eacute;volution mobile money.
               </p>
               <Link href="/inscription" className="group inline-flex items-center justify-center gap-2 px-10 py-5 bg-white text-gray-900 font-black rounded-2xl hover:bg-gray-100 transition-all shadow-xl text-base">

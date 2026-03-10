@@ -65,7 +65,7 @@ export default function InscriptionPage() {
   };
 
   return (
-    <div className="min-h-screen bg-white text-white font-sans flex selection:bg-emerald-50">
+    <div className="min-h-screen bg-white text-gray-900 font-sans flex selection:bg-emerald-50">
 
       {/* ── Left Branding ── */}
       <div className="hidden lg:flex lg:w-1/2 p-12 items-center justify-center relative overflow-hidden border-r border-gray-200/50">
@@ -75,7 +75,7 @@ export default function InscriptionPage() {
         <div className="relative max-w-md z-10 w-full">
           <Link href="/" className="inline-flex items-center gap-3 group mb-12">
             <div className="w-10 h-10 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-xl flex items-center justify-center shadow-lg shadow-emerald-500/25">
-              <Star className="w-5 h-5 text-gray-900 fill-white" />
+              <Star className="w-5 h-5 text-white fill-white" />
             </div>
             <span className="font-black text-2xl tracking-tight text-gray-900 group-hover:text-emerald-600 transition-colors">Binq</span>
           </Link>
@@ -121,7 +121,7 @@ export default function InscriptionPage() {
           {/* Mobile Logo */}
           <Link href="/" className="lg:hidden flex items-center justify-center gap-3 group mb-10 mt-6">
             <div className="w-10 h-10 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-xl flex items-center justify-center shadow-lg shadow-emerald-500/25">
-              <Star className="w-5 h-5 text-gray-900 fill-white" />
+              <Star className="w-5 h-5 text-white fill-white" />
             </div>
             <span className="font-black text-2xl tracking-tight text-gray-900">Binq</span>
           </Link>
