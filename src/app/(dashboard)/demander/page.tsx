@@ -19,14 +19,13 @@ import {
   Trash2,
   Loader2,
   Plus,
-  ExternalLink,
   Clock,
   CheckCircle2,
   XCircle,
   X,
   Share2,
-  MessageSquare,
   QrCode,
+  Sparkles,
 } from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
 
@@ -44,11 +43,11 @@ interface PaymentLink {
   paye_at: string | null;
 }
 
-const statusConfig: Record<string, { label: string; color: string; icon: typeof Clock }> = {
-  actif: { label: "Actif", color: "text-emerald-600 bg-emerald-50", icon: Clock },
-  paye: { label: "Payé", color: "text-cyan-600 bg-cyan-50", icon: CheckCircle2 },
-  annule: { label: "Annulé", color: "text-red-500 bg-red-50", icon: XCircle },
-  expire: { label: "Expiré", color: "text-gray-500 bg-gray-50/80", icon: XCircle },
+const statusConfig: Record<string, { label: string; color: string; dot: string; icon: typeof Clock }> = {
+  actif: { label: "Actif", color: "text-emerald-700 bg-emerald-50 border-emerald-100", dot: "bg-emerald-500", icon: Clock },
+  paye: { label: "Pay\u00e9", color: "text-cyan-700 bg-cyan-50 border-cyan-100", dot: "bg-cyan-500", icon: CheckCircle2 },
+  annule: { label: "Annul\u00e9", color: "text-red-600 bg-red-50 border-red-100", dot: "bg-red-400", icon: XCircle },
+  expire: { label: "Expir\u00e9", color: "text-gray-600 bg-gray-100 border-gray-200", dot: "bg-gray-400", icon: XCircle },
 };
 
 export default function DemanderPage() {
@@ -62,7 +61,6 @@ export default function DemanderPage() {
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
 
-  // Form state
   const [montant, setMontant] = useState("");
   const [description, setDescription] = useState("");
   const [devise, setDevise] = useState<DeviseCode>(() => {
@@ -103,7 +101,7 @@ export default function DemanderPage() {
       await navigator.clipboard.writeText(url);
       setCopiedId(link.id);
       hapticMedium();
-      showToast("success", "Copié", "Lien copié dans le presse-papiers");
+      showToast("success", "Copi\u00e9", "Lien copi\u00e9 dans le presse-papiers");
       setTimeout(() => setCopiedId(null), 2000);
     } catch {
       showToast("error", "Erreur", "Impossible de copier le lien");
@@ -115,11 +113,11 @@ export default function DemanderPage() {
     const montantText = link.montant
       ? formatMontant(link.montant, link.devise as DeviseCode)
       : "montant libre";
-    const text = `${link.description || "Demande de paiement"} — ${montantText}`;
+    const text = `${link.description || "Demande de paiement"} \u2014 ${montantText}`;
 
     if (navigator.share) {
       try {
-        await navigator.share({ title: "Binq — Demande de paiement", text, url });
+        await navigator.share({ title: "Binq \u2014 Demande de paiement", text, url });
       } catch {
         /* user cancelled */
       }
@@ -157,18 +155,17 @@ export default function DemanderPage() {
       const data = await res.json();
 
       if (!res.ok) {
-        showToast("error", "Erreur", data.error || "Impossible de créer le lien");
+        showToast("error", "Erreur", data.error || "Impossible de cr\u00e9er le lien");
         return;
       }
 
       hapticSuccess();
-      showToast("success", "Lien créé", "Votre lien de demande est prêt !");
+      showToast("success", "Lien cr\u00e9\u00e9", "Votre demande de paiement est pr\u00eate !");
       setMontant("");
       setDescription("");
       setShowForm(false);
       fetchLinks();
 
-      // Auto-copy the new link
       const url = getShareUrl(data.link.code);
       try {
         await navigator.clipboard.writeText(url);
@@ -178,7 +175,7 @@ export default function DemanderPage() {
         /* ignore */
       }
     } catch {
-      showToast("error", "Erreur", "Erreur réseau");
+      showToast("error", "Erreur", "Erreur r\u00e9seau");
     } finally {
       setCreating(false);
     }
@@ -194,10 +191,10 @@ export default function DemanderPage() {
         return;
       }
       hapticMedium();
-      showToast("success", "Annulé", "Lien de paiement annulé");
+      showToast("success", "Annul\u00e9", "Demande de paiement annul\u00e9e");
       fetchLinks();
     } catch {
-      showToast("error", "Erreur", "Erreur réseau");
+      showToast("error", "Erreur", "Erreur r\u00e9seau");
     } finally {
       setDeletingId(null);
     }
@@ -206,60 +203,47 @@ export default function DemanderPage() {
   const activeLinks = links.filter((l) => l.statut === "actif");
   const pastLinks = links.filter((l) => l.statut !== "actif");
 
+  const totalPaye = links.filter((l) => l.statut === "paye").length;
+  const totalRecuMontant = links
+    .filter((l) => l.statut === "paye" && l.montant)
+    .reduce((acc, l) => acc + (l.montant || 0), 0);
+
   return (
-    <div className="space-y-6 pb-28">
-      {/* ── Header ── */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-xl font-black text-gray-900 tracking-tight">Demander</h1>
-          <p className="text-xs text-gray-700 mt-0.5">Créez un lien pour recevoir un paiement</p>
-        </div>
-        <button
-          onClick={() => setShowForm(!showForm)}
-          className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-emerald-500 text-white text-sm font-bold hover:bg-emerald-400 transition-all active:scale-95"
-        >
-          {showForm ? <X className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
-          {showForm ? "Annuler" : "Nouveau"}
-        </button>
+    <div className="space-y-5 pb-28">
+      {/* Header */}
+      <div>
+        <h1 className="text-2xl font-black text-gray-900 tracking-tight">Demander un paiement</h1>
+        <p className="text-sm text-gray-600 mt-1">Cr&eacute;ez un lien ou un QR pour recevoir de l&apos;argent</p>
       </div>
 
-      {/* ── Create Form ── */}
-      {showForm && (
-        <div className="rounded-2xl bg-gray-50/50 border border-gray-200/50 p-5 space-y-4 animate-in slide-in-from-top-2 duration-200">
-          <div className="flex items-center gap-2 mb-1">
-            <HandCoins className="w-5 h-5 text-emerald-600" />
-            <h2 className="text-sm font-bold text-gray-900">Nouvelle demande</h2>
-          </div>
-
-          {/* Devise */}
-          <div>
-            <label className="block text-xs font-semibold text-gray-700 mb-1.5">Devise</label>
-            <div className="flex gap-2">
-              {DEVISE_LIST.map((d) => {
-                const dc = DEVISES[d];
-                return (
-                  <button
-                    key={d}
-                    onClick={() => setDevise(d)}
-                    className={`flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-sm font-bold transition-all ${
-                      devise === d
-                        ? "bg-emerald-50 text-emerald-600 border border-emerald-200/60"
-                        : "bg-gray-50/50 text-gray-600 border border-gray-200/50 hover:bg-gray-100/50"
-                    }`}
-                  >
-                    <span>{dc.flag}</span>
-                    <span>{dc.code}</span>
-                  </button>
-                );
-              })}
+      {/* Primary CTA */}
+      {!showForm ? (
+        <button
+          onClick={() => setShowForm(true)}
+          className="w-full flex items-center justify-center gap-2.5 bg-gradient-to-r from-emerald-500 to-emerald-600 text-white py-4 rounded-2xl font-bold text-base hover:from-emerald-400 hover:to-emerald-500 transition-all active:scale-[0.98] shadow-lg shadow-emerald-500/20"
+        >
+          <Plus className="w-5 h-5" />
+          Cr\u00e9er une demande
+        </button>
+      ) : (
+        <div className="rounded-2xl bg-white border border-gray-200/60 p-5 space-y-5 shadow-sm animate-in slide-in-from-top-2 duration-200">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2.5">
+              <div className="w-9 h-9 rounded-xl bg-emerald-50 flex items-center justify-center">
+                <Sparkles className="w-4 h-4 text-emerald-600" />
+              </div>
+              <div>
+                <h2 className="text-sm font-bold text-gray-900">Nouvelle demande</h2>
+                <p className="text-[11px] text-gray-500">Remplissez et partagez en 3 secondes</p>
+              </div>
             </div>
+            <button onClick={() => setShowForm(false)} className="p-2 rounded-xl hover:bg-gray-100 text-gray-400 transition-colors">
+              <X className="w-4 h-4" />
+            </button>
           </div>
 
-          {/* Montant */}
           <div>
-            <label className="block text-xs font-semibold text-gray-700 mb-1.5">
-              Montant <span className="text-gray-600">(optionnel — laissez vide pour montant libre)</span>
-            </label>
+            <label className="block text-xs font-bold text-gray-700 mb-2 uppercase tracking-wider">Montant</label>
             <div className="relative">
               <input
                 type="number"
@@ -268,112 +252,154 @@ export default function DemanderPage() {
                 placeholder={deviseConfig.decimals === 0 ? "5 000" : "10.00"}
                 value={montant}
                 onChange={(e) => setMontant(e.target.value)}
-                className="w-full bg-gray-50/80 border border-gray-200/60 rounded-xl px-4 py-3 text-gray-900 text-lg font-bold placeholder-gray-400 outline-none focus:border-emerald-200 transition [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                className="w-full bg-gray-50/80 border border-gray-200/60 rounded-2xl px-5 py-4 text-gray-900 text-2xl font-black placeholder-gray-300 outline-none focus:border-emerald-300 focus:ring-2 focus:ring-emerald-100 transition [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
               />
-              <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-600 font-semibold text-sm">
+              <span className="absolute right-5 top-1/2 -translate-y-1/2 text-gray-500 font-bold text-sm">
                 {deviseConfig.symbol}
               </span>
             </div>
+            <p className="text-[11px] text-gray-400 mt-1.5 ml-1">Laissez vide pour montant libre</p>
           </div>
 
-          {/* Description */}
+          <div className="flex gap-2">
+            {DEVISE_LIST.map((d) => {
+              const dc = DEVISES[d];
+              return (
+                <button
+                  key={d}
+                  onClick={() => setDevise(d)}
+                  className={`flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-sm font-bold transition-all ${
+                    devise === d
+                      ? "bg-emerald-50 text-emerald-600 border border-emerald-200/60"
+                      : "bg-gray-50/80 text-gray-600 border border-gray-200/50 hover:bg-gray-100/50"
+                  }`}
+                >
+                  <span>{dc.flag}</span>
+                  <span>{dc.code}</span>
+                </button>
+              );
+            })}
+          </div>
+
           <div>
-            <label className="block text-xs font-semibold text-gray-700 mb-1.5">
-              Description <span className="text-gray-600">(optionnel)</span>
-            </label>
-            <div className="relative">
-              <MessageSquare className="absolute left-3 top-3 w-4 h-4 text-gray-600" />
-              <input
-                type="text"
-                maxLength={100}
-                placeholder="Ex: Remboursement restaurant"
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                className="w-full bg-gray-50/80 border border-gray-200/60 rounded-xl pl-9 pr-4 py-3 text-gray-900 placeholder-gray-400 outline-none focus:border-emerald-200 transition text-sm"
-              />
-            </div>
+            <label className="block text-xs font-bold text-gray-700 mb-2 uppercase tracking-wider">Description <span className="text-gray-400 normal-case font-medium">(optionnel)</span></label>
+            <input
+              type="text"
+              maxLength={100}
+              placeholder="Ex: Vente terminal, Remboursement..."
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              className="w-full bg-gray-50/80 border border-gray-200/60 rounded-xl px-4 py-3 text-gray-900 placeholder-gray-300 outline-none focus:border-emerald-300 focus:ring-2 focus:ring-emerald-100 transition text-sm"
+            />
           </div>
 
-          {/* Submit */}
           <button
             onClick={handleCreate}
             disabled={creating}
-            className="w-full flex items-center justify-center gap-2 bg-emerald-500 text-white py-3.5 rounded-xl font-bold hover:bg-emerald-400 transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full flex items-center justify-center gap-2.5 bg-gray-900 text-white py-4 rounded-2xl font-bold text-sm hover:bg-gray-800 transition-all active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {creating ? (
               <Loader2 className="w-5 h-5 animate-spin" />
             ) : (
               <Link2 className="w-5 h-5" />
             )}
-            {creating ? "Création..." : "Créer le lien"}
+            {creating ? "Cr\u00e9ation..." : "Cr\u00e9er le lien de paiement"}
           </button>
         </div>
       )}
 
-      {/* ── Active Links ── */}
-      <div>
-        <p className="text-xs font-bold text-gray-700 uppercase tracking-widest mb-3 px-1">
-          Liens actifs {activeLinks.length > 0 && `(${activeLinks.length})`}
-        </p>
-        {loading ? (
-          <div className="flex items-center justify-center py-12">
-            <Loader2 className="w-6 h-6 text-emerald-600 animate-spin" />
+      {/* Stats bar */}
+      {totalPaye > 0 && (
+        <div className="flex items-center gap-3 p-4 rounded-2xl bg-gradient-to-r from-emerald-50 to-cyan-50 border border-emerald-100/60">
+          <div className="w-10 h-10 rounded-xl bg-white flex items-center justify-center shadow-sm">
+            <CheckCircle2 className="w-5 h-5 text-emerald-600" />
           </div>
-        ) : activeLinks.length === 0 ? (
-          <div className="rounded-2xl bg-gray-50/50 border border-gray-200/50 p-8 text-center">
-            <div className="w-14 h-14 rounded-2xl bg-gray-50/50 flex items-center justify-center mx-auto mb-3">
-              <HandCoins className="w-7 h-7 text-gray-500" />
-            </div>
-            <p className="text-gray-600 font-bold text-sm mb-1">Aucun lien actif</p>
-            <p className="text-gray-600 text-xs">Créez un lien pour demander un paiement.</p>
-          </div>
-        ) : (
-          <div className="space-y-3">
-            {activeLinks.map((link) => (
-              <LinkCard
-                key={link.id}
-                link={link}
-                copiedId={copiedId}
-                deletingId={deletingId}
-                onCopy={handleCopy}
-                onShare={handleShare}
-                onDelete={handleDelete}
-              />
-            ))}
-          </div>
-        )}
-      </div>
-
-      {/* ── Past Links ── */}
-      {pastLinks.length > 0 && (
-        <div>
-          <p className="text-xs font-bold text-gray-700 uppercase tracking-widest mb-3 px-1">
-            Historique ({pastLinks.length})
-          </p>
-          <div className="space-y-3">
-            {pastLinks.map((link) => (
-              <LinkCard
-                key={link.id}
-                link={link}
-                copiedId={copiedId}
-                deletingId={deletingId}
-                onCopy={handleCopy}
-                onShare={handleShare}
-                onDelete={handleDelete}
-              />
-            ))}
+          <div className="flex-1">
+            <p className="text-xs font-bold text-emerald-700">
+              {totalPaye} paiement{totalPaye > 1 ? "s" : ""} re\u00e7u{totalPaye > 1 ? "s" : ""}
+            </p>
+            {totalRecuMontant > 0 && (
+              <p className="text-lg font-black text-gray-900 -mt-0.5">
+                {formatMontant(totalRecuMontant, devise)}
+                <span className="text-xs font-bold text-gray-500 ml-1">total re\u00e7u</span>
+              </p>
+            )}
           </div>
         </div>
+      )}
+
+      {/* Content */}
+      {loading ? (
+        <div className="flex items-center justify-center py-16">
+          <Loader2 className="w-6 h-6 text-emerald-600 animate-spin" />
+        </div>
+      ) : activeLinks.length === 0 && pastLinks.length === 0 ? (
+        <div className="rounded-2xl bg-gray-50/50 border border-gray-200/50 p-10 text-center">
+          <div className="w-16 h-16 rounded-2xl bg-emerald-50 flex items-center justify-center mx-auto mb-4">
+            <HandCoins className="w-8 h-8 text-emerald-600" />
+          </div>
+          <p className="text-gray-900 font-bold text-base mb-1">Aucune demande</p>
+          <p className="text-gray-500 text-sm mb-5">Cr\u00e9ez votre premi\u00e8re demande de paiement<br />et partagez-la en un clic.</p>
+          {!showForm && (
+            <button
+              onClick={() => setShowForm(true)}
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-emerald-500 text-white text-sm font-bold hover:bg-emerald-400 transition-all active:scale-95"
+            >
+              <Plus className="w-4 h-4" />
+              Cr\u00e9er une demande
+            </button>
+          )}
+        </div>
+      ) : (
+        <>
+          {activeLinks.length > 0 && (
+            <div>
+              <p className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-3 px-1">
+                En cours ({activeLinks.length})
+              </p>
+              <div className="space-y-3">
+                {activeLinks.map((link) => (
+                  <LinkCard
+                    key={link.id}
+                    link={link}
+                    copiedId={copiedId}
+                    deletingId={deletingId}
+                    devise={devise}
+                    onCopy={handleCopy}
+                    onShare={handleShare}
+                    onDelete={handleDelete}
+                  />
+                ))}
+              </div>
+            </div>
+          )}
+
+          {pastLinks.length > 0 && (
+            <div>
+              <p className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-3 px-1">
+                Historique ({pastLinks.length})
+              </p>
+              <div className="space-y-2">
+                {pastLinks.map((link) => (
+                  <PastLinkCard key={link.id} link={link} />
+                ))}
+              </div>
+            </div>
+          )}
+        </>
       )}
     </div>
   );
 }
 
-/* ── Link Card Component ── */
+/* ═══════════════════════════════════════════
+   Active Link Card — amount-first design
+   ═══════════════════════════════════════════ */
 function LinkCard({
   link,
   copiedId,
   deletingId,
+  devise,
   onCopy,
   onShare,
   onDelete,
@@ -381,133 +407,149 @@ function LinkCard({
   link: PaymentLink;
   copiedId: string | null;
   deletingId: string | null;
+  devise: DeviseCode;
   onCopy: (l: PaymentLink) => void;
   onShare: (l: PaymentLink) => void;
   onDelete: (id: string) => void;
 }) {
   const status = statusConfig[link.statut] || statusConfig.actif;
-  const StatusIcon = status.icon;
-  const isActive = link.statut === "actif";
   const [showQR, setShowQR] = useState(false);
   const linkUrl = typeof window !== "undefined" ? `${window.location.origin}/pay/${link.code}` : `/pay/${link.code}`;
 
+  const dateStr = new Date(link.created_at).toLocaleDateString("fr-FR", {
+    day: "numeric",
+    month: "short",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+
   return (
-    <div className="rounded-2xl bg-gray-50/50 border border-gray-200/50 p-4 space-y-3">
-      {/* Top row */}
-      <div className="flex items-start justify-between">
-        <div className="flex-1 min-w-0">
-          {link.description ? (
-            <p className="text-sm font-bold text-gray-900 truncate">{link.description}</p>
-          ) : (
-            <p className="text-sm font-bold text-gray-600 italic">Sans description</p>
+    <div className="rounded-2xl bg-white border border-gray-200/60 overflow-hidden shadow-sm">
+      <div className="p-4 pb-3">
+        <p className="text-2xl font-black text-gray-900 tracking-tight">
+          {link.montant
+            ? formatMontant(link.montant, (link.devise as DeviseCode) || "XOF")
+            : <span className="text-lg font-bold text-gray-500">Montant libre</span>}
+        </p>
+
+        <div className="flex items-center gap-2 mt-1 flex-wrap">
+          {link.description && (
+            <>
+              <p className="text-sm text-gray-600 font-medium truncate">{link.description}</p>
+              <span className="text-gray-300">&middot;</span>
+            </>
           )}
-          <p className="text-xs text-gray-600 mt-0.5">
-            {new Date(link.created_at).toLocaleDateString("fr-FR", {
-              day: "numeric",
-              month: "short",
-              year: "numeric",
-              hour: "2-digit",
-              minute: "2-digit",
-            })}
-          </p>
-        </div>
-        <div className={`flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-bold ${status.color}`}>
-          <StatusIcon className="w-3 h-3" />
-          {status.label}
+          <div className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold border ${status.color}`}>
+            <span className={`w-1.5 h-1.5 rounded-full ${status.dot}`} />
+            {status.label}
+          </div>
+          <span className="text-gray-300">&middot;</span>
+          <p className="text-xs text-gray-400 whitespace-nowrap">{dateStr}</p>
         </div>
       </div>
 
-      {/* Amount */}
-      <div className="flex items-center gap-2">
-        <div className="w-9 h-9 rounded-xl bg-emerald-50 flex items-center justify-center shrink-0">
-          <HandCoins className="w-4 h-4 text-emerald-600" />
-        </div>
-        <div>
-          <p className="text-lg font-black text-gray-900">
-            {link.montant
-              ? formatMontant(link.montant, (link.devise as DeviseCode) || "XOF")
-              : "Montant libre"}
-          </p>
-          <p className="text-[10px] text-gray-600 font-mono">{link.code}</p>
-        </div>
+      <div className="flex items-center border-t border-gray-100 divide-x divide-gray-100">
+        <button
+          onClick={() => onShare(link)}
+          className="flex-1 flex items-center justify-center gap-1.5 py-3 text-emerald-600 text-xs font-bold hover:bg-emerald-50/50 transition-colors active:scale-95"
+        >
+          <Share2 className="w-3.5 h-3.5" />
+          Partager
+        </button>
+        <button
+          onClick={() => setShowQR(!showQR)}
+          className={`flex-1 flex items-center justify-center gap-1.5 py-3 text-xs font-bold transition-colors active:scale-95 ${
+            showQR ? "text-emerald-600 bg-emerald-50/50" : "text-gray-600 hover:bg-gray-50"
+          }`}
+        >
+          <QrCode className="w-3.5 h-3.5" />
+          QR Code
+        </button>
+        <button
+          onClick={() => onCopy(link)}
+          className="flex-1 flex items-center justify-center gap-1.5 py-3 text-gray-600 text-xs font-bold hover:bg-gray-50 transition-colors active:scale-95"
+        >
+          {copiedId === link.id ? (
+            <>
+              <Check className="w-3.5 h-3.5 text-emerald-600" />
+              <span className="text-emerald-600">Copi\u00e9 !</span>
+            </>
+          ) : (
+            <>
+              <Copy className="w-3.5 h-3.5" />
+              Copier lien
+            </>
+          )}
+        </button>
+        <button
+          onClick={() => onDelete(link.id)}
+          disabled={deletingId === link.id}
+          className="px-4 flex items-center justify-center py-3 text-red-400 hover:bg-red-50/50 transition-colors active:scale-95 disabled:opacity-50"
+        >
+          {deletingId === link.id ? (
+            <Loader2 className="w-3.5 h-3.5 animate-spin" />
+          ) : (
+            <Trash2 className="w-3.5 h-3.5" />
+          )}
+        </button>
       </div>
 
-      {/* Actions */}
-      {isActive && (
-        <div className="flex items-center gap-2">
-          <button
-            onClick={() => onCopy(link)}
-            className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl bg-gray-50/80 hover:bg-gray-100 text-gray-700 text-xs font-bold transition-all active:scale-95"
-          >
-            {copiedId === link.id ? (
-              <>
-                <Check className="w-3.5 h-3.5 text-emerald-600" />
-                <span className="text-emerald-600">Copié !</span>
-              </>
-            ) : (
-              <>
-                <Copy className="w-3.5 h-3.5" />
-                Copier
-              </>
-            )}
-          </button>
-          <button
-            onClick={() => setShowQR(!showQR)}
-            className={`flex items-center justify-center w-10 h-10 rounded-xl transition-all active:scale-95 ${
-              showQR
-                ? "bg-emerald-50 text-emerald-600"
-                : "bg-gray-50/80 hover:bg-gray-100 text-gray-600"
-            }`}
-          >
-            <QrCode className="w-4 h-4" />
-          </button>
-          <button
-            onClick={() => onShare(link)}
-            className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl bg-emerald-50 hover:bg-emerald-100/60 text-emerald-600 text-xs font-bold transition-all active:scale-95"
-          >
-            <Share2 className="w-3.5 h-3.5" />
-            Partager
-          </button>
-          <button
-            onClick={() => onDelete(link.id)}
-            disabled={deletingId === link.id}
-            className="flex items-center justify-center w-10 h-10 rounded-xl bg-red-500/10 hover:bg-red-50 text-red-500 transition-all active:scale-95 disabled:opacity-50"
-          >
-            {deletingId === link.id ? (
-              <Loader2 className="w-4 h-4 animate-spin" />
-            ) : (
-              <Trash2 className="w-4 h-4" />
-            )}
-          </button>
-        </div>
-      )}
-
-      {/* QR Code */}
-      {isActive && showQR && (
-        <div className="flex flex-col items-center py-3 animate-in fade-in slide-in-from-top-2 duration-200">
-          <div className="bg-white rounded-xl p-4 mb-2">
+      {showQR && (
+        <div className="flex flex-col items-center py-5 border-t border-gray-100 bg-gray-50/30 animate-in fade-in slide-in-from-top-2 duration-200">
+          <div className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100">
             <QRCodeSVG
               value={linkUrl}
-              size={240}
+              size={200}
               bgColor="#FFFFFF"
               fgColor="#000000"
               level="M"
               includeMargin={true}
             />
           </div>
-          <p className="text-[10px] text-gray-600">Scannez pour payer</p>
+          <p className="text-[11px] text-gray-400 mt-3">Scannez pour payer</p>
         </div>
       )}
+    </div>
+  );
+}
 
-      {/* Link preview for active links */}
-      {isActive && (
-        <div className="flex items-center gap-2 bg-gray-50/50 rounded-lg px-3 py-2 border border-gray-200/50">
-          <ExternalLink className="w-3.5 h-3.5 text-gray-600 shrink-0" />
-          <p className="text-[11px] text-gray-700 font-mono truncate">
-            {linkUrl}
-          </p>
-        </div>
-      )}
+/* ═══════════════════════════════════════════
+   Past Link Card — compact, muted
+   ═══════════════════════════════════════════ */
+function PastLinkCard({ link }: { link: PaymentLink }) {
+  const status = statusConfig[link.statut] || statusConfig.expire;
+
+  const dateStr = new Date(link.created_at).toLocaleDateString("fr-FR", {
+    day: "numeric",
+    month: "short",
+  });
+
+  return (
+    <div className="flex items-center gap-3 px-4 py-3 rounded-xl bg-gray-50/50 border border-gray-200/40">
+      <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${
+        link.statut === "paye" ? "bg-cyan-50" : "bg-gray-100"
+      }`}>
+        {link.statut === "paye" ? (
+          <CheckCircle2 className="w-4 h-4 text-cyan-600" />
+        ) : (
+          <XCircle className="w-4 h-4 text-gray-400" />
+        )}
+      </div>
+
+      <div className="flex-1 min-w-0">
+        <p className="text-sm font-bold text-gray-900 truncate">
+          {link.montant
+            ? formatMontant(link.montant, (link.devise as DeviseCode) || "XOF")
+            : "Montant libre"}
+        </p>
+        <p className="text-[11px] text-gray-500 truncate">
+          {link.description || "Sans description"} &middot; {dateStr}
+        </p>
+      </div>
+
+      <span className={`text-[10px] font-bold px-2 py-1 rounded-full border ${status.color}`}>
+        {status.label}
+      </span>
     </div>
   );
 }
