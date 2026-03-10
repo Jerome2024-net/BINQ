@@ -201,7 +201,6 @@ export default function DemanderPage() {
   };
 
   const activeLinks = links.filter((l) => l.statut === "actif");
-  const pastLinks = links.filter((l) => l.statut !== "actif");
 
   const totalPaye = links.filter((l) => l.statut === "paye").length;
   const totalRecuMontant = links
@@ -333,7 +332,7 @@ export default function DemanderPage() {
         <div className="flex items-center justify-center py-16">
           <Loader2 className="w-6 h-6 text-emerald-600 animate-spin" />
         </div>
-      ) : activeLinks.length === 0 && pastLinks.length === 0 ? (
+      ) : activeLinks.length === 0 ? (
         <div className="rounded-2xl bg-gray-50/50 border border-gray-200/50 p-10 text-center">
           <div className="w-16 h-16 rounded-2xl bg-emerald-50 flex items-center justify-center mx-auto mb-4">
             <HandCoins className="w-8 h-8 text-emerald-600" />
@@ -374,18 +373,6 @@ export default function DemanderPage() {
             </div>
           )}
 
-          {pastLinks.length > 0 && (
-            <div>
-              <p className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-3 px-1">
-                Historique ({pastLinks.length})
-              </p>
-              <div className="space-y-2">
-                {pastLinks.map((link) => (
-                  <PastLinkCard key={link.id} link={link} deletingId={deletingId} onDelete={handleDelete} />
-                ))}
-              </div>
-            </div>
-          )}
         </>
       )}
     </div>
@@ -509,59 +496,6 @@ function LinkCard({
           <p className="text-[11px] text-gray-400 mt-3">Scannez pour payer</p>
         </div>
       )}
-    </div>
-  );
-}
-
-/* ═══════════════════════════════════════════
-   Past Link Card — compact, muted
-   ═══════════════════════════════════════════ */
-function PastLinkCard({ link, deletingId, onDelete }: { link: PaymentLink; deletingId: string | null; onDelete: (id: string) => void }) {
-  const status = statusConfig[link.statut] || statusConfig.expire;
-
-  const dateStr = new Date(link.created_at).toLocaleDateString("fr-FR", {
-    day: "numeric",
-    month: "short",
-  });
-
-  return (
-    <div className="flex items-center gap-3 px-4 py-3 rounded-xl bg-gray-50/50 border border-gray-200/40">
-      <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${
-        link.statut === "paye" ? "bg-cyan-50" : "bg-gray-100"
-      }`}>
-        {link.statut === "paye" ? (
-          <CheckCircle2 className="w-4 h-4 text-cyan-600" />
-        ) : (
-          <XCircle className="w-4 h-4 text-gray-400" />
-        )}
-      </div>
-
-      <div className="flex-1 min-w-0">
-        <p className="text-sm font-bold text-gray-900 truncate">
-          {link.montant
-            ? formatMontant(link.montant, (link.devise as DeviseCode) || "XOF")
-            : "Montant libre"}
-        </p>
-        <p className="text-[11px] text-gray-500 truncate">
-          {link.description || "Sans description"} &middot; {dateStr}
-        </p>
-      </div>
-
-      <span className={`text-[10px] font-bold px-2 py-1 rounded-full border ${status.color}`}>
-        {status.label}
-      </span>
-
-      <button
-        onClick={() => onDelete(link.id)}
-        disabled={deletingId === link.id}
-        className="p-2 rounded-lg text-gray-300 hover:text-red-400 hover:bg-red-50/50 transition-colors active:scale-95 disabled:opacity-50"
-      >
-        {deletingId === link.id ? (
-          <Loader2 className="w-3.5 h-3.5 animate-spin" />
-        ) : (
-          <Trash2 className="w-3.5 h-3.5" />
-        )}
-      </button>
     </div>
   );
 }
