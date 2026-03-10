@@ -308,6 +308,111 @@ export async function POST(request: Request) {
             { onConflict: "user_id" }
           );
         }
+
+        // ═══════════════════════════════════════
+        // PAIEMENT UNIVERSEL VIA CARTE (Stripe Checkout)
+        // ═══════════════════════════════════════
+        if (sessMeta?.type === "universal_payment" && sessMeta?.createur_id) {
+          const createurId = sessMeta.createur_id;
+          const montantOriginal = Number(sessMeta.montant_original) || 0;
+          const frais = Number(sessMeta.frais) || 0;
+          const devise = (sessMeta.devise === "EUR" || sessMeta.devise === "XOF") ? sessMeta.devise : "XOF";
+          const paymentCode = sessMeta.payment_code || "";
+          const linkId = sessMeta.link_id || "";
+
+          console.log(`💳 Paiement universel carte: ${montantOriginal} ${devise} pour ${createurId}`);
+
+          // Frais Binq = 2% pour paiement par carte
+          const fraisBinq = Math.ceil(montantOriginal * 0.02);
+          const montantNet = montantOriginal - fraisBinq;
+
+          // Récupérer ou créer le wallet du créateur
+          let { data: creatorWallet } = await supabaseAdmin
+            .from("wallets")
+            .select("*")
+            .eq("user_id", createurId)
+            .eq("devise", devise)
+            .single();
+
+          if (!creatorWallet) {
+            const { data: created } = await supabaseAdmin
+              .from("wallets")
+              .insert({ user_id: createurId, solde: 0, solde_bloque: 0, devise })
+              .select()
+              .single();
+            creatorWallet = created;
+          }
+
+          if (creatorWallet) {
+            const reference = `STR-UNI-${session.id.slice(-8).toUpperCase()}`;
+            const now = new Date().toISOString();
+            const newSolde = creatorWallet.solde + montantNet;
+
+            // Créditer le marchand
+            const { error: rpcErr } = await supabaseAdmin.rpc("update_wallet_balance", {
+              p_wallet_id: creatorWallet.id,
+              p_amount: montantNet,
+            });
+
+            if (rpcErr) {
+              await supabaseAdmin
+                .from("wallets")
+                .update({ solde: newSolde })
+                .eq("id", creatorWallet.id);
+            }
+
+            // Profil créateur
+            const { data: cProfile } = await supabaseAdmin
+              .from("profiles")
+              .select("prenom, nom")
+              .eq("id", createurId)
+              .single();
+            const cName = cProfile ? `${cProfile.prenom} ${cProfile.nom}`.trim() : "Marchand";
+
+            // Transaction
+            await supabaseAdmin.from("transactions").insert({
+              user_id: createurId,
+              wallet_id: creatorWallet.id,
+              type: "depot",
+              montant: montantNet,
+              solde_avant: creatorWallet.solde,
+              solde_apres: newSolde,
+              devise,
+              statut: "confirme",
+              reference,
+              description: `Paiement par carte reçu — Frais: ${fraisBinq} ${devise}`,
+              meta_methode: "card_stripe",
+              confirmed_at: now,
+            });
+
+            // Marquer le lien comme payé (si applicable)
+            if (linkId) {
+              const { data: link } = await supabaseAdmin
+                .from("payment_links")
+                .select("usage_unique")
+                .eq("id", linkId)
+                .single();
+
+              if (link?.usage_unique) {
+                await supabaseAdmin
+                  .from("payment_links")
+                  .update({ statut: "paye", paye_at: now })
+                  .eq("id", linkId);
+              }
+            }
+
+            // Notification
+            await supabaseAdmin.from("notifications").insert({
+              user_id: createurId,
+              titre: "Paiement carte reçu",
+              message: `Vous avez reçu ${montantNet} ${devise} par carte bancaire`,
+              lu: false,
+            });
+
+            console.log(`✅ Paiement universel carte: ${montantNet} ${devise} crédité à ${cName} (ref: ${reference})`);
+          }
+        }
+
         break;
       }
 
