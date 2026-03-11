@@ -33,7 +33,7 @@ const bottomTabs = [
   { href: "/dashboard", label: "Accueil", icon: LayoutDashboard },
   { href: "/deposer", label: "Déposer", icon: ArrowDownToLine },
   { href: "/envoyer", label: "Envoyer", icon: SendHorizonal },
-  { href: "/qrcode", label: "Terminal", icon: QrCode },
+  { href: "/qrcode", label: "QR Pay", icon: QrCode },
   { href: "/portefeuille", label: "Historique", icon: History },
 ];
 

@@ -570,7 +570,7 @@ export default function QRCodePage() {
     <div className="space-y-5 pb-28">
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-black text-gray-900 tracking-tight">Terminal QR</h1>
+        <h1 className="text-2xl font-black text-gray-900 tracking-tight">QR Pay</h1>
         <p className="text-xs text-gray-500 mt-0.5">Encaissez des paiements instantanément</p>
       </div>
 
@@ -580,7 +580,7 @@ export default function QRCodePage() {
           { key: "mon-qr" as Tab, icon: ArrowDownLeft, label: "Recevoir" },
           { key: "scanner" as Tab, icon: ScanLine, label: "Scanner" },
           { key: "encaisser" as Tab, icon: CreditCard, label: "Encaisser" },
-          { key: "terminaux" as Tab, icon: Store, label: "Terminal" },
+          { key: "terminaux" as Tab, icon: Store, label: "QR Pay" },
         ]).map((t) => (
           <button
             key={t.key}
