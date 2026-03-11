@@ -53,7 +53,7 @@ type PosStep = "amount" | "waiting" | "success";
 export default function QRCodePage() {
   const { user } = useAuth();
   const router = useRouter();
-  const [tab, setTab] = useState<Tab>("mon-qr");
+  const [tab, setTab] = useState<Tab>("scanner");
   const [copied, setCopied] = useState(false);
   const [scanning, setScanning] = useState(false);
   const [scanError, setScanError] = useState<string | null>(null);
@@ -577,8 +577,8 @@ export default function QRCodePage() {
       {/* Tabs */}
       <div className="flex gap-1 bg-gray-50/50 rounded-xl p-1 border border-gray-200/50">
         {([
-          { key: "mon-qr" as Tab, icon: ArrowDownLeft, label: "Recevoir" },
           { key: "scanner" as Tab, icon: ScanLine, label: "Scanner" },
+          { key: "mon-qr" as Tab, icon: ArrowDownLeft, label: "Recevoir" },
           { key: "encaisser" as Tab, icon: CreditCard, label: "Créer paiement" },
           { key: "terminaux" as Tab, icon: Store, label: "Terminal" },
         ]).map((t) => (
