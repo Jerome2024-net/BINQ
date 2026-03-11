@@ -580,7 +580,7 @@ export default function QRCodePage() {
           { key: "mon-qr" as Tab, icon: ArrowDownLeft, label: "Recevoir" },
           { key: "scanner" as Tab, icon: ScanLine, label: "Scanner" },
           { key: "encaisser" as Tab, icon: CreditCard, label: "Encaisser" },
-          { key: "terminaux" as Tab, icon: Store, label: "QR Pay" },
+          { key: "terminaux" as Tab, icon: Store, label: "Terminal" },
         ]).map((t) => (
           <button
             key={t.key}
