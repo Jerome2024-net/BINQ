@@ -33,11 +33,11 @@ interface Notification {
 }
 
 const bottomTabs = [
-  { href: "/dashboard", label: "Accueil", icon: ShoppingBag },
-  { href: "/ma-boutique", label: "Ma boutique", icon: Store },
-  { href: "/portefeuille", label: "Portefeuille", icon: Wallet },
-  { href: "/commandes", label: "Commandes", icon: Package },
-  { href: "/profil", label: "Profil", icon: User },
+  { href: "/dashboard", label: "Accueil", icon: ShoppingBag, isCenter: false },
+  { href: "/ma-boutique", label: "Boutique", icon: Store, isCenter: false },
+  { href: "/qrcode", label: "QR Pay", icon: QrCode, isCenter: true },
+  { href: "/commandes", label: "Commandes", icon: Package, isCenter: false },
+  { href: "/profil", label: "Profil", icon: User, isCenter: false },
 ];
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
@@ -240,6 +240,28 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           <div className="max-w-2xl mx-auto flex items-center justify-around h-16 px-2">
             {bottomTabs.map((tab) => {
               const isActive = pathname === tab.href || (tab.href !== "/dashboard" && pathname.startsWith(tab.href));
+
+              /* ── Center elevated QR Pay button ── */
+              if (tab.isCenter) {
+                return (
+                  <Link
+                    key={tab.href}
+                    href={tab.href}
+                    className="flex flex-col items-center justify-center -mt-7"
+                  >
+                    <div className={`w-14 h-14 rounded-2xl flex items-center justify-center shadow-lg transition-all duration-200 ${
+                      isActive
+                        ? "bg-gradient-to-br from-emerald-500 to-emerald-600 shadow-emerald-500/30 scale-105"
+                        : "bg-gradient-to-br from-emerald-400 to-emerald-600 shadow-emerald-500/25 hover:scale-105 active:scale-95"
+                    }`}>
+                      <tab.icon className="w-6 h-6 text-white" />
+                    </div>
+                    <span className={`text-[9px] sm:text-[10px] font-bold mt-1 ${isActive ? "text-emerald-600" : "text-gray-500"}`}>{tab.label}</span>
+                  </Link>
+                );
+              }
+
+              /* ── Regular tabs ── */
               return (
                 <Link
                   key={tab.href}
