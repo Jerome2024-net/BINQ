@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useAuth } from "@/contexts/AuthContext";
@@ -17,6 +17,7 @@ import {
   Package,
   Loader2,
   Camera,
+  ImagePlus,
   Save,
   X,
   AlertTriangle,
@@ -96,7 +97,12 @@ export default function MaBoutiquePage() {
   const [formCat, setFormCat] = useState("");
   const [formVille, setFormVille] = useState("");
   const [formTel, setFormTel] = useState("");
-  const [formWhatsapp, setFormWhatsapp] = useState("");
+  const [formLogo, setFormLogo] = useState<File | null>(null);
+  const [formBanner, setFormBanner] = useState<File | null>(null);
+  const [logoPreview, setLogoPreview] = useState<string | null>(null);
+  const [bannerPreview, setBannerPreview] = useState<string | null>(null);
+  const logoInputRef = useRef<HTMLInputElement>(null);
+  const bannerInputRef = useRef<HTMLInputElement>(null);
 
   // Formulaire ajout produit
   const [showAddProduct, setShowAddProduct] = useState(false);
@@ -131,6 +137,32 @@ export default function MaBoutiquePage() {
     load();
   }, []);
 
+  const handleLogoSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setFormLogo(file);
+    setLogoPreview(URL.createObjectURL(file));
+  };
+
+  const handleBannerSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setFormBanner(file);
+    setBannerPreview(URL.createObjectURL(file));
+  };
+
+  const uploadBoutiqueImage = async (file: File, type: "logo" | "banner", boutiqueId: string): Promise<string | null> => {
+    const fd = new FormData();
+    fd.append("file", file);
+    fd.append("type", type);
+    fd.append("boutiqueId", boutiqueId);
+    try {
+      const res = await fetch("/api/boutiques/upload", { method: "POST", body: fd });
+      const data = await res.json();
+      return res.ok ? data.url : null;
+    } catch { return null; }
+  };
+
   // Créer boutique
   const handleCreateBoutique = async () => {
     if (!formNom.trim()) { showToast("error", "Erreur", "Nom requis"); return; }
@@ -145,12 +177,30 @@ export default function MaBoutiquePage() {
           categorie_id: formCat || undefined,
           ville: formVille.trim() || undefined,
           telephone: formTel.trim() || undefined,
-          whatsapp: formWhatsapp.trim() || undefined,
         }),
       });
       const data = await res.json();
       if (!res.ok) { showToast("error", "Erreur", data.error); return; }
-      setBoutique(data.boutique);
+
+      // Upload images if selected
+      if (formLogo && data.boutique?.id) {
+        await uploadBoutiqueImage(formLogo, "logo", data.boutique.id);
+      }
+      if (formBanner && data.boutique?.id) {
+        await uploadBoutiqueImage(formBanner, "banner", data.boutique.id);
+      }
+
+      // Reload boutique data to get updated URLs
+      const meRes = await fetch("/api/boutiques/me");
+      const meData = await meRes.json();
+      if (meData.boutique) {
+        setBoutique(meData.boutique);
+        setProduits(meData.produits || []);
+        setStats(meData.stats || { totalProduits: 0, totalCommandes: 0, totalVentes: 0, vues: 0 });
+      } else {
+        setBoutique(data.boutique);
+      }
+
       setShowCreate(false);
       hapticSuccess();
       showToast("success", "Boutique créée !", "Ajoutez maintenant vos produits");
@@ -251,6 +301,56 @@ export default function MaBoutiquePage() {
           </div>
 
           <div className="space-y-3">
+            {/* Banner upload */}
+            <div>
+              <label className="text-xs font-semibold text-gray-700 mb-1 block">Photo de couverture</label>
+              <button
+                type="button"
+                onClick={() => bannerInputRef.current?.click()}
+                className="w-full h-28 rounded-xl border-2 border-dashed border-gray-200 hover:border-emerald-400 transition flex items-center justify-center overflow-hidden bg-gray-50 relative group"
+              >
+                {bannerPreview ? (
+                  <>
+                    <img src={bannerPreview} alt="" className="w-full h-full object-cover" />
+                    <div className="absolute inset-0 bg-black/30 flex items-center justify-center opacity-0 group-hover:opacity-100 transition">
+                      <Camera className="w-5 h-5 text-white" />
+                    </div>
+                  </>
+                ) : (
+                  <div className="text-center">
+                    <ImagePlus className="w-6 h-6 text-gray-300 mx-auto mb-1" />
+                    <p className="text-[11px] text-gray-400">Ajouter une couverture</p>
+                  </div>
+                )}
+              </button>
+              <input ref={bannerInputRef} type="file" accept="image/*" onChange={handleBannerSelect} className="hidden" />
+            </div>
+
+            {/* Logo upload */}
+            <div className="flex items-center gap-3">
+              <button
+                type="button"
+                onClick={() => logoInputRef.current?.click()}
+                className="w-16 h-16 rounded-2xl border-2 border-dashed border-gray-200 hover:border-emerald-400 transition flex items-center justify-center overflow-hidden bg-gray-50 flex-shrink-0 relative group"
+              >
+                {logoPreview ? (
+                  <>
+                    <img src={logoPreview} alt="" className="w-full h-full object-cover" />
+                    <div className="absolute inset-0 bg-black/30 flex items-center justify-center opacity-0 group-hover:opacity-100 transition">
+                      <Camera className="w-4 h-4 text-white" />
+                    </div>
+                  </>
+                ) : (
+                  <Camera className="w-5 h-5 text-gray-300" />
+                )}
+              </button>
+              <input ref={logoInputRef} type="file" accept="image/*" onChange={handleLogoSelect} className="hidden" />
+              <div className="flex-1">
+                <p className="text-xs font-semibold text-gray-700">Logo de la boutique</p>
+                <p className="text-[11px] text-gray-400 mt-0.5">Format carré recommandé</p>
+              </div>
+            </div>
+
             <div>
               <label className="text-xs font-semibold text-gray-700">Nom de la boutique *</label>
               <input value={formNom} onChange={(e) => setFormNom(e.target.value)} placeholder="Ex: Café Binq" className="w-full mt-1 bg-gray-50 border border-gray-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-emerald-500 transition" />
