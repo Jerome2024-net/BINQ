@@ -20,6 +20,8 @@ import {
   ChevronDown,
   Star,
   ShoppingBag,
+  Store,
+  Package,
 } from "lucide-react";
 
 interface Notification {
@@ -31,11 +33,11 @@ interface Notification {
 }
 
 const bottomTabs = [
-  { href: "/dashboard", label: "Accueil", icon: LayoutDashboard },
-  { href: "/deposer", label: "Déposer", icon: ArrowDownToLine },
-  { href: "/explorer", label: "Explorer", icon: ShoppingBag },
-  { href: "/qrcode", label: "QR Pay", icon: QrCode },
-  { href: "/portefeuille", label: "Historique", icon: History },
+  { href: "/dashboard", label: "Accueil", icon: ShoppingBag },
+  { href: "/ma-boutique", label: "Ma boutique", icon: Store },
+  { href: "/portefeuille", label: "Portefeuille", icon: Wallet },
+  { href: "/commandes", label: "Commandes", icon: Package },
+  { href: "/profil", label: "Profil", icon: User },
 ];
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
