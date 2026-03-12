@@ -237,27 +237,17 @@ export default function BoutiquePage() {
         </div>
 
         {/* ═══ 2. ACTIONS — Commerce first ═══ */}
-        <div className="px-4 pb-4 flex gap-2">
+        <div className="px-4 pb-4">
           {/* CTA Principal */}
           {produits.length > 0 && (
             <button
               onClick={scrollToProduits}
-              className="flex-1 flex items-center justify-center gap-2 bg-black text-white py-3 rounded-xl font-bold text-sm active:scale-[0.97] transition shadow-sm"
+              className="w-full flex items-center justify-center gap-2 bg-black text-white py-3 rounded-xl font-bold text-sm active:scale-[0.97] transition shadow-sm"
             >
               <ShoppingBag className="w-4 h-4" />
               Voir les produits
             </button>
           )}
-          {/* CTA Secondaire — Payer */}
-          <Link
-            href={`/pay/user/${boutique.user_id}`}
-            className={`flex items-center justify-center gap-2 bg-emerald-600 text-white py-3 rounded-xl font-bold text-sm active:scale-[0.97] transition shadow-sm ${
-              produits.length > 0 ? "flex-1" : "flex-1"
-            }`}
-          >
-            <CreditCard className="w-4 h-4" />
-            Payer
-          </Link>
         </div>
 
         {/* ═══ 3. RECHERCHE ═══ */}
