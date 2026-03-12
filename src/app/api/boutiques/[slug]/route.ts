@@ -23,8 +23,7 @@ export async function GET(
       .from("boutiques")
       .select(`
         *,
-        categorie:categories(nom, slug, icone),
-        owner:profiles!boutiques_user_id_fkey(prenom, nom, avatar_url)
+        categorie:categories(nom, slug, icone)
       `)
       .eq("slug", slug)
       .eq("is_active", true)
@@ -33,6 +32,18 @@ export async function GET(
     if (error || !boutique) {
       return NextResponse.json({ error: "Boutique introuvable" }, { status: 404 });
     }
+
+    // Fetch owner profile separately (profiles.id = boutiques.user_id, via auth.users)
+    const { data: ownerProfile } = await supabase
+      .from("profiles")
+      .select("prenom, nom, avatar")
+      .eq("id", boutique.user_id)
+      .single();
+
+    const boutiqueWithOwner = {
+      ...boutique,
+      owner: ownerProfile ? { prenom: ownerProfile.prenom, nom: ownerProfile.nom, avatar_url: ownerProfile.avatar } : null,
+    };
 
     // Increment views
     await supabase
@@ -49,7 +60,7 @@ export async function GET(
       .order("ordre", { ascending: true })
       .order("created_at", { ascending: false });
 
-    return NextResponse.json({ boutique, produits: produits || [] });
+    return NextResponse.json({ boutique: boutiqueWithOwner, produits: produits || [] });
   } catch (e: any) {
     return NextResponse.json({ error: e.message }, { status: 500 });
   }
