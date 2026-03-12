@@ -38,7 +38,16 @@ export async function GET(
       .update({ vues: (produit.vues || 0) + 1 })
       .eq("id", produit.id);
 
-    return NextResponse.json({ produit });
+    // Fetch QR code for this product
+    const { data: qrCode } = await supabase
+      .from("qr_codes")
+      .select("code")
+      .eq("produit_id", params.id)
+      .eq("type", "produit")
+      .eq("is_active", true)
+      .single();
+
+    return NextResponse.json({ produit, qr_code: qrCode?.code || null });
   } catch (e: any) {
     return NextResponse.json({ error: e.message }, { status: 500 });
   }

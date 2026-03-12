@@ -13,8 +13,6 @@ import {
   Store,
   MapPin,
   BadgeCheck,
-  MessageCircle,
-  Phone,
   Loader2,
   ArrowLeft,
   Share2,
@@ -25,7 +23,11 @@ import {
   Tag,
   LogIn,
   CreditCard,
+  QrCode,
+  Copy,
+  ExternalLink,
 } from "lucide-react";
+import { QRCodeSVG } from "qrcode.react";
 import { formatMontant } from "@/lib/currencies";
 import type { DeviseCode } from "@/lib/currencies";
 
@@ -48,8 +50,6 @@ interface Produit {
     logo_url: string | null;
     is_verified: boolean;
     ville: string | null;
-    whatsapp: string | null;
-    telephone: string | null;
     user_id: string;
   };
 }
@@ -62,11 +62,14 @@ export default function ProduitPage() {
   const produitId = params.id as string;
 
   const [produit, setProduit] = useState<Produit | null>(null);
+  const [qrCode, setQrCode] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [buying, setBuying] = useState(false);
   const [bought, setBought] = useState(false);
   const [boughtRef, setBoughtRef] = useState("");
+  const [showQR, setShowQR] = useState(false);
+  const [copied, setCopied] = useState(false);
 
   useEffect(() => {
     if (!produitId) return;
@@ -76,11 +79,15 @@ export default function ProduitPage() {
         const data = await res.json();
         if (!res.ok) { setError(data.error || "Produit introuvable"); return; }
         setProduit(data.produit);
+        setQrCode(data.qr_code || null);
       } catch { setError("Erreur de chargement"); }
       finally { setLoading(false); }
     };
     load();
   }, [produitId]);
+
+  const productUrl = typeof window !== "undefined" ? `${window.location.origin}/produit/${produitId}` : "";
+  const qrUrl = qrCode && typeof window !== "undefined" ? `${window.location.origin}/q/${qrCode}` : productUrl;
 
   const handleBuy = async () => {
     if (!produit || !user) return;
@@ -93,29 +100,34 @@ export default function ProduitPage() {
       });
       const data = await res.json();
       if (!res.ok) {
-        if (data.error?.includes("insuffisant")) {
-          showToast("error", "Solde insuffisant", `Votre solde: ${formatMontant(data.solde, (produit.devise as DeviseCode) || "XOF")}. Rechargez votre wallet.`);
-        } else {
-          showToast("error", "Erreur", data.error || "Erreur");
-        }
+        showToast("error", "Erreur", data.error || "Erreur");
         return;
       }
       setBought(true);
       setBoughtRef(data.reference);
       hapticSuccess();
-      showToast("success", "Achat effectué !", `${produit.nom} acheté avec succès`);
+      showToast("success", "Achat effectue !", `${produit.nom} achete avec succes`);
     } catch { hapticError(); showToast("error", "Erreur", "Erreur lors de l'achat"); }
     finally { setBuying(false); }
   };
 
   const handleShare = async () => {
     if (!produit) return;
-    const url = `${window.location.origin}/produit/${produit.id}`;
+    const url = qrUrl || productUrl;
     if (navigator.share) {
       try { await navigator.share({ title: produit.nom, text: `${produit.nom} — ${formatMontant(produit.prix, (produit.devise as DeviseCode) || "XOF")} sur Binq`, url }); } catch { /* cancelled */ }
     } else {
-      try { await navigator.clipboard.writeText(url); showToast("success", "Copié", "Lien copié"); } catch { /* ignore */ }
+      try { await navigator.clipboard.writeText(url); showToast("success", "Copie", "Lien copie"); } catch { /* ignore */ }
     }
+  };
+
+  const handleCopyLink = async () => {
+    try {
+      await navigator.clipboard.writeText(qrUrl || productUrl);
+      setCopied(true);
+      showToast("success", "Copie", "Lien produit copie");
+      setTimeout(() => setCopied(false), 2000);
+    } catch { /* ignore */ }
   };
 
   if (loading) {
@@ -155,13 +167,13 @@ export default function ProduitPage() {
           <div className="w-20 h-20 bg-emerald-50 rounded-full flex items-center justify-center mx-auto mb-4">
             <CheckCircle2 className="w-10 h-10 text-emerald-600" />
           </div>
-          <h1 className="text-2xl font-black text-gray-900 mb-1">Achat effectué !</h1>
+          <h1 className="text-2xl font-black text-gray-900 mb-1">Achat effectue !</h1>
           <p className="text-lg font-bold text-emerald-600 mb-1">{produit.nom}</p>
           <p className="text-2xl font-black text-gray-900 mb-4">{formatMontant(produit.prix, devise)}</p>
 
           <div className="bg-gray-50/50 rounded-xl p-3 mb-5 border border-gray-200/50 text-left space-y-1.5">
             <div className="flex justify-between text-xs"><span className="text-gray-500">Boutique</span><span className="text-gray-700 font-semibold">{produit.boutique.nom}</span></div>
-            <div className="flex justify-between text-xs"><span className="text-gray-500">Référence</span><span className="text-gray-700 font-mono">{boughtRef}</span></div>
+            <div className="flex justify-between text-xs"><span className="text-gray-500">Reference</span><span className="text-gray-700 font-mono">{boughtRef}</span></div>
             <div className="flex justify-between text-xs"><span className="text-gray-500">Paiement</span><span className="text-emerald-600 font-semibold">Carte / Mobile Money</span></div>
           </div>
 
@@ -185,7 +197,7 @@ export default function ProduitPage() {
         <button onClick={() => router.back()} className="p-1.5 rounded-lg hover:bg-gray-100 transition">
           <ArrowLeft className="w-5 h-5 text-gray-700" />
         </button>
-        <h1 className="font-bold text-gray-900 truncate flex-1">Détail produit</h1>
+        <h1 className="font-bold text-gray-900 truncate flex-1">{produit.nom}</h1>
         <button onClick={handleShare} className="p-1.5 rounded-lg hover:bg-gray-100 transition">
           <Share2 className="w-5 h-5 text-gray-700" />
         </button>
@@ -233,7 +245,7 @@ export default function ProduitPage() {
           {produit.stock !== null && produit.stock > 0 && <span className="flex items-center gap-1"><Tag className="w-3.5 h-3.5" />{produit.stock} en stock</span>}
         </div>
 
-        {/* Boutique info */}
+        {/* Vendeur info */}
         <Link
           href={`/boutique/${produit.boutique.slug}`}
           className="flex items-center gap-3 bg-gray-50 rounded-xl p-3 mt-5 border border-gray-100 hover:border-gray-200 transition"
@@ -254,8 +266,51 @@ export default function ProduitPage() {
               <span className="text-[11px] text-gray-500 flex items-center gap-0.5 mt-0.5"><MapPin className="w-3 h-3" />{produit.boutique.ville}</span>
             )}
           </div>
-          <span className="text-xs text-emerald-600 font-semibold">Voir</span>
+          <ExternalLink className="w-4 h-4 text-gray-300" />
         </Link>
+
+        {/* ═══ QR CODE PRODUIT ═══ */}
+        <div className="mt-5 bg-gray-50 rounded-2xl border border-gray-100 overflow-hidden">
+          <button
+            onClick={() => setShowQR(!showQR)}
+            className="w-full flex items-center justify-between px-4 py-3 hover:bg-gray-100/50 transition"
+          >
+            <div className="flex items-center gap-2.5">
+              <QrCode className="w-4 h-4 text-emerald-600" />
+              <span className="text-sm font-bold text-gray-900">QR Code produit</span>
+            </div>
+            <span className="text-xs text-emerald-600 font-semibold">{showQR ? "Masquer" : "Afficher"}</span>
+          </button>
+          {showQR && (
+            <div className="px-4 pb-4 text-center">
+              <div className="bg-white p-4 rounded-xl border border-gray-100 inline-block">
+                <QRCodeSVG
+                  value={qrUrl || productUrl}
+                  size={160}
+                  level="M"
+                  bgColor="#ffffff"
+                  fgColor="#000000"
+                />
+              </div>
+              <p className="text-[10px] text-gray-400 mt-2">Scannez pour acheter ce produit</p>
+              {/* Share actions */}
+              <div className="flex gap-2 mt-3">
+                <button
+                  onClick={handleCopyLink}
+                  className="flex-1 flex items-center justify-center gap-1.5 bg-gray-100 hover:bg-gray-200 text-gray-700 py-2.5 rounded-xl text-xs font-bold transition"
+                >
+                  <Copy className="w-3.5 h-3.5" />{copied ? "Copie !" : "Copier le lien"}
+                </button>
+                <button
+                  onClick={handleShare}
+                  className="flex-1 flex items-center justify-center gap-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 py-2.5 rounded-xl text-xs font-bold transition"
+                >
+                  <Share2 className="w-3.5 h-3.5" />Partager
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
 
         {/* Buy section */}
         <div className="mt-6">
@@ -290,8 +345,8 @@ export default function ProduitPage() {
 
           {user && !isOwnProduct && !outOfStock && (
             <div className="flex items-center justify-center gap-4 mt-3">
-              <span className="flex items-center gap-1 text-gray-400 text-[10px]"><Zap className="w-3 h-3" />Instantan&eacute;</span>
-              <span className="flex items-center gap-1 text-gray-400 text-[10px]"><Shield className="w-3 h-3" />S&eacute;curis&eacute;</span>
+              <span className="flex items-center gap-1 text-gray-400 text-[10px]"><Zap className="w-3 h-3" />Instantane</span>
+              <span className="flex items-center gap-1 text-gray-400 text-[10px]"><Shield className="w-3 h-3" />Securise</span>
               <span className="flex items-center gap-1 text-gray-400 text-[10px]"><CreditCard className="w-3 h-3" />Carte / Mobile Money</span>
             </div>
           )}

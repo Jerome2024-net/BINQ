@@ -60,7 +60,7 @@ export default function HomePage() {
           <div className="flex justify-center mb-6 sm:mb-8">
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-50 border border-emerald-200/40 text-emerald-600 text-xs font-bold backdrop-blur-sm">
               <Sparkles className="w-3.5 h-3.5" />
-              Marketplace + Paiement QR Code
+              Marketplace + QR Commerce
             </div>
           </div>
 
@@ -70,7 +70,7 @@ export default function HomePage() {
             </h1>
 
             <p className="text-base sm:text-xl text-gray-600 max-w-2xl mx-auto mb-8 sm:mb-10 leading-relaxed px-2">
-              Cr&eacute;ez votre boutique, g&eacute;n&eacute;rez un QR Code, vos clients paient avec leurs moyens habituels. Simple et rapide.
+              Cr&eacute;ez votre boutique, ajoutez vos produits, chaque produit g&eacute;n&egrave;re un QR. Partagez-le partout, vos clients scannent et paient.
             </p>
 
             <div className="flex flex-row items-center justify-center gap-3 sm:gap-4 px-4 max-w-[340px] sm:max-w-none mx-auto mb-10 sm:mb-14">
@@ -177,7 +177,7 @@ export default function HomePage() {
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-400">Simplement.</span>
             </h2>
             <p className="text-gray-600 text-base sm:text-lg max-w-xl mx-auto">
-              Une marketplace compl&egrave;te avec paiement int&eacute;gr&eacute;.
+              Une marketplace o&ugrave; chaque produit devient un terminal de paiement.
             </p>
           </div>
 
@@ -186,15 +186,15 @@ export default function HomePage() {
               {
                 icon: Store,
                 title: "Boutique en ligne",
-                desc: "Cr\u00e9ez votre vitrine, ajoutez vos produits, partagez votre lien. C\u2019est gratuit.",
+                desc: "Cr\u00e9ez votre vitrine en 30 secondes, ajoutez vos produits, chaque produit obtient son QR. C\u2019est gratuit.",
                 gradient: "from-emerald-500/20 to-emerald-500/5",
                 iconColor: "text-emerald-600",
                 border: "border-emerald-200/40",
               },
               {
                 icon: QrCode,
-                title: "Paiement par QR Code",
-                desc: "G\u00e9n\u00e9rez un QR, le client scanne et paie avec sa carte ou son mobile money.",
+                title: "QR Code par produit",
+                desc: "Chaque produit g\u00e9n\u00e8re automatiquement un QR. Collez-le en boutique, partagez-le sur les r\u00e9seaux, imprimez-le.",
                 gradient: "from-cyan-500/20 to-cyan-500/5",
                 iconColor: "text-cyan-600",
                 border: "border-cyan-500/20",
@@ -256,9 +256,9 @@ export default function HomePage() {
 
           <div className="space-y-4 sm:space-y-6">
             {[
-              { step: "01", title: "Cr\u00e9ez votre boutique", desc: "Inscription en 30 secondes. Ajoutez vos produits et c\u2019est parti.", color: "bg-emerald-500", icon: Store },
-              { step: "02", title: "Partagez votre QR Code", desc: "Affichez-le en boutique, envoyez-le par WhatsApp ou int\u00e9grez-le en ligne.", color: "bg-cyan-500", icon: QrCode },
-              { step: "03", title: "Encaissez instantan\u00e9ment", desc: "Le client scanne, paie avec sa carte ou son mobile money. Vous \u00eates notifi\u00e9.", color: "bg-violet-500", icon: Zap },
+              { step: "01", title: "Cr\u00e9ez votre boutique", desc: "Inscription en 30 secondes. Nom, photo, ville. Publiez.", color: "bg-emerald-500", icon: Store },
+              { step: "02", title: "Ajoutez vos produits", desc: "Photo, nom, prix. Chaque produit obtient son QR automatiquement.", color: "bg-cyan-500", icon: QrCode },
+              { step: "03", title: "Partagez & encaissez", desc: "Partagez le QR partout : rue, r\u00e9seaux, boutique. Le client scanne et paie.", color: "bg-violet-500", icon: Zap },
             ].map((item, i) => (
               <div key={i} className="flex items-center gap-3 sm:gap-5 p-4 sm:p-6 rounded-xl sm:rounded-2xl bg-gray-50/50 border border-gray-200/50 hover:bg-gray-50/80 transition-all group">
                 <div className={`w-10 h-10 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl ${item.color} text-white flex items-center justify-center font-black text-sm sm:text-lg shrink-0 group-hover:scale-110 transition-transform shadow-lg`}>

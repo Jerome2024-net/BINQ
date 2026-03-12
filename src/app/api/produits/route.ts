@@ -111,18 +111,21 @@ export async function POST(req: NextRequest) {
     if (error) throw error;
 
     // Auto-generate universal QR code for the product
+    let qr_code: string | null = null;
     if (produit) {
+      const code = generateQRCode();
       await supabase.from("qr_codes").insert({
-        code: generateQRCode(),
+        code,
         type: "produit",
         produit_id: produit.id,
         boutique_id: boutique.id,
         user_id: user.id,
         label: produit.nom,
       });
+      qr_code = code;
     }
 
-    return NextResponse.json({ produit }, { status: 201 });
+    return NextResponse.json({ produit, qr_code }, { status: 201 });
   } catch (e: any) {
     return NextResponse.json({ error: e.message }, { status: 500 });
   }

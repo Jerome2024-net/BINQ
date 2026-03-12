@@ -39,6 +39,29 @@ export async function GET() {
       .order("ordre", { ascending: true })
       .order("created_at", { ascending: false });
 
+    // Get QR codes for products
+    const produitIds = (produits || []).map((p: any) => p.id);
+    let qrMap: Record<string, string> = {};
+    if (produitIds.length > 0) {
+      const { data: qrCodes } = await supabase
+        .from("qr_codes")
+        .select("code, produit_id")
+        .in("produit_id", produitIds)
+        .eq("type", "produit")
+        .eq("is_active", true);
+      if (qrCodes) {
+        for (const qr of qrCodes) {
+          if (qr.produit_id) qrMap[qr.produit_id] = qr.code;
+        }
+      }
+    }
+
+    // Merge QR codes into products
+    const produitsWithQR = (produits || []).map((p: any) => ({
+      ...p,
+      qr_code: qrMap[p.id] || null,
+    }));
+
     // Get stats
     const { data: commandes, count } = await supabase
       .from("commandes")
@@ -50,9 +73,9 @@ export async function GET() {
 
     return NextResponse.json({
       boutique,
-      produits: produits || [],
+      produits: produitsWithQR,
       stats: {
-        totalProduits: produits?.length || 0,
+        totalProduits: produitsWithQR.length,
         totalCommandes: count || 0,
         totalVentes,
         vues: boutique.vues || 0,
