@@ -254,7 +254,7 @@ export default function PayUserPage() {
           </h2>
           <p className="text-gray-700 text-sm mt-1 flex items-center justify-center gap-1.5">
             <QrCode className="w-3.5 h-3.5" />
-            Passerelle de paiement
+            Paiement sécurisé
           </p>
         </div>
 

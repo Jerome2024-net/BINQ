@@ -70,7 +70,7 @@ export default function HomePage() {
             </h1>
 
             <p className="text-base sm:text-xl text-gray-600 max-w-2xl mx-auto mb-8 sm:mb-10 leading-relaxed px-2">
-              Cr&eacute;ez votre boutique, g&eacute;n&eacute;rez un QR Code, vos clients paient avec leurs moyens habituels. Binq est votre passerelle de paiement.
+              Cr&eacute;ez votre boutique, g&eacute;n&eacute;rez un QR Code, vos clients paient avec leurs moyens habituels. Simple et rapide.
             </p>
 
             <div className="flex flex-row items-center justify-center gap-3 sm:gap-4 px-4 max-w-[340px] sm:max-w-none mx-auto mb-10 sm:mb-14">
@@ -177,7 +177,7 @@ export default function HomePage() {
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-400">Simplement.</span>
             </h2>
             <p className="text-gray-600 text-base sm:text-lg max-w-xl mx-auto">
-              Une marketplace compl&egrave;te avec passerelle de paiement int&eacute;gr&eacute;e.
+              Une marketplace compl&egrave;te avec paiement int&eacute;gr&eacute;.
             </p>
           </div>
 
@@ -217,8 +217,8 @@ export default function HomePage() {
               },
               {
                 icon: ShieldCheck,
-                title: "Z\u00e9ro contrainte r\u00e9glementaire",
-                desc: "Binq ne d\u00e9tient pas vos fonds. Passerelle pure. Conforme et simple.",
+                title: "Paiement s\u00e9curis\u00e9",
+                desc: "Chaque transaction est prot\u00e9g\u00e9e. Vos clients paient en toute confiance.",
                 gradient: "from-emerald-500/20 to-emerald-500/5",
                 iconColor: "text-emerald-600",
                 border: "border-emerald-200/40",
@@ -341,7 +341,7 @@ export default function HomePage() {
               <span className="font-bold text-gray-600 tracking-tight">Binq</span>
             </div>
             <p className="text-[11px] text-gray-600 font-medium text-center sm:text-right">
-              &copy; {new Date().getFullYear()} Binq. Marketplace &amp; passerelle de paiement QR.
+              &copy; {new Date().getFullYear()} Binq. Marketplace &amp; paiement QR.
             </p>
           </div>
         </div>

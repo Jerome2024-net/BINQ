@@ -454,7 +454,7 @@ export default function QRCodePage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-black text-gray-900 tracking-tight">QR Pay</h1>
-          <p className="text-xs text-gray-500 mt-0.5">Passerelle de paiement QR Code</p>
+          <p className="text-xs text-gray-500 mt-0.5">Paiement QR Code</p>
         </div>
         <div className="flex items-center gap-1.5">
           {DEVISE_LIST.map((d) => (

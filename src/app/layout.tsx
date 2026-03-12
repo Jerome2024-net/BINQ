@@ -7,7 +7,7 @@ import NavigationProgress from "@/components/NavigationProgress";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Binq - Passerelle de paiement QR",
+  title: "Binq - Marketplace & Paiement QR",
   description:
     "Encaissez vos clients via QR Code. Paiements par carte et mobile money. Marketplace intégrée pour le commerce africain.",
   manifest: "/manifest.json",
