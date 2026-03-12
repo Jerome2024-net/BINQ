@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { useParams } from "next/navigation";
+import { useState, useEffect, useRef } from "react";
+import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { useAuth } from "@/contexts/AuthContext";
 import {
@@ -13,16 +13,17 @@ import {
   MessageCircle,
   Loader2,
   ArrowLeft,
-  Eye,
   Share2,
-  Star,
   Clock,
   Package,
-  ChevronRight,
   Search,
-  Grid3X3,
-  List,
+  QrCode,
+  CreditCard,
+  ShieldCheck,
+  ChevronDown,
+  Zap,
 } from "lucide-react";
+import { QRCodeSVG } from "qrcode.react";
 import { formatMontant } from "@/lib/currencies";
 import type { DeviseCode } from "@/lib/currencies";
 
@@ -39,6 +40,7 @@ interface Boutique {
   is_verified: boolean;
   vues: number;
   devise: string;
+  user_id: string;
   created_at: string;
   categorie: { nom: string; slug: string; icone: string } | null;
   owner: { prenom: string; nom: string; avatar_url: string | null } | null;
@@ -58,8 +60,10 @@ interface Produit {
 
 export default function BoutiquePage() {
   const params = useParams();
+  const router = useRouter();
   const slug = params.slug as string;
   const { user } = useAuth();
+  const produitsRef = useRef<HTMLDivElement>(null);
 
   const [boutique, setBoutique] = useState<Boutique | null>(null);
   const [produits, setProduits] = useState<Produit[]>([]);
@@ -68,6 +72,7 @@ export default function BoutiquePage() {
   const [search, setSearch] = useState("");
   const [selectedCat, setSelectedCat] = useState<string | null>(null);
   const [shared, setShared] = useState(false);
+  const [showQR, setShowQR] = useState(false);
 
   useEffect(() => {
     if (!slug) return;
@@ -94,6 +99,10 @@ export default function BoutiquePage() {
     }
   };
 
+  const scrollToProduits = () => {
+    produitsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+
   // Filter products
   const categories = Array.from(new Set(produits.map(p => p.categorie).filter(Boolean))) as string[];
   const filtered = produits.filter(p => {
@@ -104,14 +113,10 @@ export default function BoutiquePage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-white flex items-center justify-center">
         <div className="text-center">
-          <div className="relative">
-            <div className="w-16 h-16 rounded-2xl bg-black/5 flex items-center justify-center mx-auto">
-              <Loader2 className="w-7 h-7 text-black animate-spin" />
-            </div>
-          </div>
-          <p className="text-gray-400 text-sm mt-4 font-medium">Chargement de la boutique...</p>
+          <Loader2 className="w-8 h-8 text-black animate-spin mx-auto" />
+          <p className="text-gray-400 text-sm mt-3">Chargement...</p>
         </div>
       </div>
     );
@@ -119,15 +124,15 @@ export default function BoutiquePage() {
 
   if (error || !boutique) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
+      <div className="min-h-screen bg-white flex items-center justify-center px-4">
         <div className="text-center max-w-sm">
           <div className="w-20 h-20 rounded-full bg-gray-100 flex items-center justify-center mx-auto mb-4">
             <Store className="w-9 h-9 text-gray-300" />
           </div>
           <h2 className="text-lg font-bold text-gray-900 mb-1">Boutique introuvable</h2>
-          <p className="text-gray-500 text-sm mb-6">{error || "Cette boutique n'existe pas ou a ete desactivee."}</p>
-          <Link href="/explorer" className="inline-flex items-center gap-2 bg-black text-white px-5 py-2.5 rounded-xl font-semibold text-sm hover:bg-gray-800 transition">
-            <ArrowLeft className="w-4 h-4" />Explorer les boutiques
+          <p className="text-gray-500 text-sm mb-6">{error || "Cette boutique n&apos;existe pas ou a ete desactivee."}</p>
+          <Link href="/explorer" className="inline-flex items-center gap-2 bg-black text-white px-5 py-2.5 rounded-xl font-semibold text-sm">
+            <ArrowLeft className="w-4 h-4" />Explorer
           </Link>
         </div>
       </div>
@@ -135,33 +140,35 @@ export default function BoutiquePage() {
   }
 
   const devise = (boutique.devise as DeviseCode) || "XOF";
+  const ownerName = boutique.owner ? `${boutique.owner.prenom} ${boutique.owner.nom}` : null;
   const ownerInitials = boutique.owner
     ? `${boutique.owner.prenom?.[0] || ""}${boutique.owner.nom?.[0] || ""}`.toUpperCase()
     : "?";
   const memberSince = boutique.created_at
     ? new Date(boutique.created_at).toLocaleDateString("fr-FR", { month: "long", year: "numeric" })
     : null;
+  const payUrl = `${typeof window !== "undefined" ? window.location.origin : ""}/pay/user/${boutique.user_id}`;
 
   return (
-    <div className="min-h-screen bg-gray-50 pb-24">
-      {/* ── Floating header ── */}
-      <div className="sticky top-0 z-30 bg-white/90 backdrop-blur-xl border-b border-gray-100">
-        <div className="max-w-lg mx-auto flex items-center gap-3 px-4 py-3">
+    <div className="min-h-screen bg-gray-50">
+      {/* ── Header sticky ── */}
+      <div className="sticky top-0 z-30 bg-white/95 backdrop-blur-xl border-b border-gray-100">
+        <div className="max-w-lg mx-auto flex items-center gap-3 px-4 py-2.5">
           <Link href="/explorer" className="p-2 -ml-2 rounded-xl hover:bg-gray-100 transition active:scale-95">
             <ArrowLeft className="w-5 h-5 text-gray-700" />
           </Link>
           <div className="flex-1 min-w-0">
             <h1 className="font-bold text-gray-900 text-sm truncate">{boutique.nom}</h1>
-            {boutique.ville && <p className="text-[11px] text-gray-400 truncate">{boutique.ville}</p>}
+            <p className="text-[11px] text-gray-400 truncate">
+              {boutique.categorie ? `${boutique.categorie.nom}` : "Boutique"}
+              {boutique.ville ? ` • ${boutique.ville}` : ""}
+            </p>
           </div>
-          <button
-            onClick={handleShare}
-            className="p-2 rounded-xl hover:bg-gray-100 transition active:scale-95 relative"
-          >
-            <Share2 className="w-5 h-5 text-gray-700" />
+          <button onClick={handleShare} className="p-2 rounded-xl hover:bg-gray-100 transition active:scale-95 relative">
+            <Share2 className="w-5 h-5 text-gray-600" />
             {shared && (
-              <span className="absolute -top-1 -right-1 bg-emerald-500 text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full animate-bounce">
-                Copie!
+              <span className="absolute -top-1 -right-1 bg-black text-white text-[8px] font-bold px-1.5 py-0.5 rounded-full">
+                OK
               </span>
             )}
           </button>
@@ -169,183 +176,170 @@ export default function BoutiquePage() {
       </div>
 
       <div className="max-w-lg mx-auto">
-        {/* ── Hero Banner ── */}
+
+        {/* ═══ 1. HERO BOUTIQUE ═══ */}
         <div className="relative">
-          <div className="h-44 bg-gradient-to-br from-gray-900 via-gray-800 to-black overflow-hidden">
+          {/* Cover */}
+          <div className="h-48 overflow-hidden">
             {boutique.banner_url ? (
-              <img
-                src={boutique.banner_url}
-                alt=""
-                className="w-full h-full object-cover opacity-60"
-              />
+              <img src={boutique.banner_url} alt="" className="w-full h-full object-cover" />
             ) : (
-              <div className="w-full h-full bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-gray-700 via-gray-900 to-black" />
+              <div className="w-full h-full bg-gradient-to-br from-gray-900 via-gray-800 to-black" />
             )}
-            {/* Overlay gradient */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-black/10" />
           </div>
 
-          {/* ── Profile Card (overlapping banner) ── */}
-          <div className="relative -mt-16 mx-4">
-            <div className="bg-white rounded-2xl shadow-lg shadow-black/5 p-5 border border-gray-100">
-              <div className="flex items-start gap-4">
-                {/* Logo boutique */}
-                <div className="relative flex-shrink-0">
-                  <div className="w-[72px] h-[72px] rounded-2xl overflow-hidden ring-4 ring-white shadow-md bg-gray-100 flex items-center justify-center">
-                    {boutique.logo_url ? (
-                      <img src={boutique.logo_url} alt={boutique.nom} className="w-full h-full object-cover" />
-                    ) : (
-                      <Store className="w-8 h-8 text-gray-400" />
-                    )}
-                  </div>
-                  {boutique.is_verified && (
-                    <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center ring-2 ring-white">
-                      <BadgeCheck className="w-3.5 h-3.5 text-white" />
-                    </div>
-                  )}
+          {/* Info overlaid on cover */}
+          <div className="absolute bottom-0 left-0 right-0 p-4">
+            <div className="flex items-end gap-3">
+              {/* Logo */}
+              <div className="w-16 h-16 rounded-2xl overflow-hidden bg-white shadow-lg flex-shrink-0 flex items-center justify-center border-2 border-white">
+                {boutique.logo_url ? (
+                  <img src={boutique.logo_url} alt={boutique.nom} className="w-full h-full object-cover" />
+                ) : (
+                  <Store className="w-7 h-7 text-gray-400" />
+                )}
+              </div>
+              <div className="flex-1 min-w-0 pb-0.5">
+                <div className="flex items-center gap-1.5">
+                  <h2 className="text-xl font-black text-white truncate">{boutique.nom}</h2>
+                  {boutique.is_verified && <BadgeCheck className="w-5 h-5 text-blue-400 flex-shrink-0" />}
                 </div>
-
-                {/* Info */}
-                <div className="flex-1 min-w-0 pt-1">
-                  <div className="flex items-center gap-2">
-                    <h2 className="text-lg font-black text-gray-900 truncate">{boutique.nom}</h2>
-                  </div>
+                <div className="flex items-center gap-3 mt-0.5">
                   {boutique.categorie && (
-                    <p className="text-xs text-gray-500 mt-0.5 flex items-center gap-1">
-                      <span>{boutique.categorie.icone}</span>
-                      {boutique.categorie.nom}
-                    </p>
+                    <span className="text-white/80 text-xs">{boutique.categorie.icone} {boutique.categorie.nom}</span>
                   )}
                   {boutique.ville && (
-                    <p className="text-xs text-gray-400 mt-1 flex items-center gap-1">
+                    <span className="text-white/70 text-xs flex items-center gap-1">
                       <MapPin className="w-3 h-3" />{boutique.ville}
-                    </p>
+                    </span>
                   )}
-                </div>
-              </div>
-
-              {/* Description */}
-              {boutique.description && (
-                <p className="text-sm text-gray-600 mt-4 leading-relaxed">{boutique.description}</p>
-              )}
-
-              {/* Stats row */}
-              <div className="flex items-center gap-1 mt-4 pt-4 border-t border-gray-100">
-                <div className="flex-1 text-center">
-                  <p className="text-lg font-black text-gray-900">{produits.length}</p>
-                  <p className="text-[10px] text-gray-400 font-medium uppercase tracking-wide">Produits</p>
-                </div>
-                <div className="w-px h-8 bg-gray-100" />
-                <div className="flex-1 text-center">
-                  <p className="text-lg font-black text-gray-900">{boutique.vues}</p>
-                  <p className="text-[10px] text-gray-400 font-medium uppercase tracking-wide">Vues</p>
-                </div>
-                <div className="w-px h-8 bg-gray-100" />
-                <div className="flex-1 text-center">
-                  <p className="text-lg font-black text-gray-900">
-                    {produits.reduce((s, p) => s + (p.ventes || 0), 0)}
-                  </p>
-                  <p className="text-[10px] text-gray-400 font-medium uppercase tracking-wide">Ventes</p>
                 </div>
               </div>
             </div>
           </div>
         </div>
 
-        {/* ── Owner card ── */}
-        {boutique.owner && (
-          <div className="mx-4 mt-3">
-            <div className="bg-white rounded-2xl border border-gray-100 p-4 flex items-center gap-3">
-              <div className="w-11 h-11 rounded-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center overflow-hidden flex-shrink-0">
-                {boutique.owner.avatar_url ? (
-                  <img src={boutique.owner.avatar_url} alt="" className="w-full h-full object-cover" />
-                ) : (
-                  <span className="text-sm font-bold text-gray-500">{ownerInitials}</span>
-                )}
-              </div>
-              <div className="flex-1 min-w-0">
-                <p className="text-sm font-semibold text-gray-900">
-                  {boutique.owner.prenom} {boutique.owner.nom}
-                </p>
-                <p className="text-[11px] text-gray-400 flex items-center gap-1">
-                  <Clock className="w-3 h-3" />
-                  {memberSince ? `Membre depuis ${memberSince}` : "Vendeur Binq"}
-                </p>
-              </div>
-              {boutique.is_verified && (
-                <span className="flex items-center gap-1 bg-blue-50 text-blue-600 text-[10px] font-bold px-2 py-1 rounded-lg">
-                  <BadgeCheck className="w-3 h-3" />Verifie
-                </span>
-              )}
-            </div>
-          </div>
-        )}
-
-        {/* ── Search + Category filters ── */}
-        <div className="px-4 mt-5">
-          {/* Search bar */}
-          <div className="relative">
-            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-            <input
-              type="text"
-              placeholder="Rechercher un produit..."
-              value={search}
-              onChange={e => setSearch(e.target.value)}
-              className="w-full pl-10 pr-4 py-3 bg-white rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-black/10 focus:border-gray-300 transition placeholder:text-gray-400"
-            />
-          </div>
-
-          {/* Categories */}
-          {categories.length > 0 && (
-            <div className="flex gap-2 mt-3 overflow-x-auto pb-1 no-scrollbar">
-              <button
-                onClick={() => setSelectedCat(null)}
-                className={`flex-shrink-0 px-3.5 py-1.5 rounded-full text-xs font-semibold transition ${
-                  !selectedCat
-                    ? "bg-black text-white"
-                    : "bg-gray-100 text-gray-600 hover:bg-gray-200"
-                }`}
-              >
-                Tout
-              </button>
-              {categories.map(cat => (
-                <button
-                  key={cat}
-                  onClick={() => setSelectedCat(selectedCat === cat ? null : cat)}
-                  className={`flex-shrink-0 px-3.5 py-1.5 rounded-full text-xs font-semibold transition whitespace-nowrap ${
-                    selectedCat === cat
-                      ? "bg-black text-white"
-                      : "bg-gray-100 text-gray-600 hover:bg-gray-200"
-                  }`}
-                >
-                  {cat}
-                </button>
-              ))}
-            </div>
+        {/* Badges sous le hero */}
+        <div className="px-4 py-3 flex items-center gap-2 overflow-x-auto no-scrollbar">
+          <span className="flex-shrink-0 flex items-center gap-1.5 bg-emerald-50 text-emerald-700 text-[11px] font-semibold px-3 py-1.5 rounded-full">
+            <QrCode className="w-3 h-3" />Paiement QR disponible
+          </span>
+          {boutique.is_verified && (
+            <span className="flex-shrink-0 flex items-center gap-1.5 bg-blue-50 text-blue-600 text-[11px] font-semibold px-3 py-1.5 rounded-full">
+              <ShieldCheck className="w-3 h-3" />Vendeur verifie
+            </span>
+          )}
+          {produits.length > 0 && (
+            <span className="flex-shrink-0 flex items-center gap-1.5 bg-gray-100 text-gray-600 text-[11px] font-semibold px-3 py-1.5 rounded-full">
+              <Package className="w-3 h-3" />{produits.length} produit{produits.length > 1 ? "s" : ""}
+            </span>
           )}
         </div>
 
-        {/* ── Products header ── */}
-        <div className="px-4 mt-5 flex items-center justify-between">
-          <h3 className="font-bold text-gray-900 text-sm">
-            {search || selectedCat ? `${filtered.length} resultat${filtered.length > 1 ? "s" : ""}` : `${produits.length} produit${produits.length > 1 ? "s" : ""}`}
-          </h3>
+        {/* ═══ 2. ACTIONS — Commerce first ═══ */}
+        <div className="px-4 pb-4 flex gap-2">
+          {/* CTA Principal */}
+          {produits.length > 0 && (
+            <button
+              onClick={scrollToProduits}
+              className="flex-1 flex items-center justify-center gap-2 bg-black text-white py-3 rounded-xl font-bold text-sm active:scale-[0.97] transition shadow-sm"
+            >
+              <ShoppingBag className="w-4 h-4" />
+              Voir les produits
+            </button>
+          )}
+          {/* CTA Secondaire — Payer */}
+          <Link
+            href={`/pay/user/${boutique.user_id}`}
+            className={`flex items-center justify-center gap-2 bg-emerald-600 text-white py-3 rounded-xl font-bold text-sm active:scale-[0.97] transition shadow-sm ${
+              produits.length > 0 ? "flex-1" : "flex-1"
+            }`}
+          >
+            <CreditCard className="w-4 h-4" />
+            Payer
+          </Link>
+          {/* CTA Tertiaire — WhatsApp */}
+          {boutique.whatsapp && (
+            <a
+              href={`https://wa.me/${boutique.whatsapp.replace(/[^0-9]/g, "")}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex-shrink-0 w-12 flex items-center justify-center bg-gray-100 text-gray-600 py-3 rounded-xl active:scale-[0.97] transition"
+            >
+              <MessageCircle className="w-5 h-5" />
+            </a>
+          )}
+          {boutique.telephone && !boutique.whatsapp && (
+            <a
+              href={`tel:${boutique.telephone}`}
+              className="flex-shrink-0 w-12 flex items-center justify-center bg-gray-100 text-gray-600 py-3 rounded-xl active:scale-[0.97] transition"
+            >
+              <Phone className="w-5 h-5" />
+            </a>
+          )}
         </div>
 
-        {/* ── Product grid ── */}
-        <div className="px-4 mt-3 pb-4">
-          {filtered.length === 0 ? (
-            <div className="text-center py-16">
-              <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center mx-auto mb-3">
-                <Package className="w-7 h-7 text-gray-300" />
+        {/* ═══ 3. RECHERCHE ═══ */}
+        {produits.length > 0 && (
+          <div className="px-4 pb-3" ref={produitsRef}>
+            <div className="relative">
+              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+              <input
+                type="text"
+                placeholder="Rechercher un produit..."
+                value={search}
+                onChange={e => setSearch(e.target.value)}
+                className="w-full pl-10 pr-4 py-2.5 bg-white rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-black/10 focus:border-gray-300 transition placeholder:text-gray-400"
+              />
+            </div>
+
+            {/* Category pills */}
+            {categories.length > 0 && (
+              <div className="flex gap-2 mt-2.5 overflow-x-auto pb-1 no-scrollbar">
+                <button
+                  onClick={() => setSelectedCat(null)}
+                  className={`flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-semibold transition ${
+                    !selectedCat ? "bg-black text-white" : "bg-gray-100 text-gray-600"
+                  }`}
+                >
+                  Tout
+                </button>
+                {categories.map(cat => (
+                  <button
+                    key={cat}
+                    onClick={() => setSelectedCat(selectedCat === cat ? null : cat)}
+                    className={`flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-semibold transition whitespace-nowrap ${
+                      selectedCat === cat ? "bg-black text-white" : "bg-gray-100 text-gray-600"
+                    }`}
+                  >
+                    {cat}
+                  </button>
+                ))}
               </div>
-              <p className="text-gray-500 font-medium text-sm">
+            )}
+          </div>
+        )}
+
+        {/* ═══ 4. PRODUITS — Centre de la page ═══ */}
+        <div className="px-4 pt-2 pb-4">
+          <h3 className="font-bold text-gray-900 mb-3">
+            {search || selectedCat
+              ? `${filtered.length} resultat${filtered.length > 1 ? "s" : ""}`
+              : "Nos produits"
+            }
+          </h3>
+
+          {filtered.length === 0 ? (
+            <div className="text-center py-12 bg-white rounded-2xl border border-gray-100">
+              <Package className="w-10 h-10 text-gray-200 mx-auto mb-2" />
+              <p className="text-gray-400 text-sm font-medium">
                 {search || selectedCat ? "Aucun produit trouve" : "Aucun produit pour le moment"}
               </p>
               {(search || selectedCat) && (
                 <button
                   onClick={() => { setSearch(""); setSelectedCat(null); }}
-                  className="mt-3 text-xs text-black font-semibold underline"
+                  className="mt-2 text-xs text-black font-semibold underline"
                 >
                   Effacer les filtres
                 </button>
@@ -359,44 +353,45 @@ export default function BoutiquePage() {
                 const discount = hasPromo ? Math.round(((p.prix_barre! - p.prix) / p.prix_barre!) * 100) : 0;
 
                 return (
-                  <Link
+                  <div
                     key={p.id}
-                    href={`/produit/${p.id}`}
-                    className="bg-white rounded-2xl overflow-hidden border border-gray-100 hover:shadow-lg hover:shadow-black/5 hover:border-gray-200 transition-all duration-300 group active:scale-[0.98]"
+                    className="bg-white rounded-2xl overflow-hidden border border-gray-100 hover:border-gray-200 transition-all group"
                   >
-                    {/* Image */}
-                    <div className="aspect-square bg-gray-50 relative overflow-hidden">
-                      {p.image_url ? (
-                        <img
-                          src={p.image_url}
-                          alt={p.nom}
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                        />
-                      ) : (
-                        <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100">
-                          <ShoppingBag className="w-10 h-10 text-gray-200" />
-                        </div>
-                      )}
-                      {/* Promo badge */}
-                      {hasPromo && (
-                        <span className="absolute top-2 left-2 bg-red-500 text-white text-[10px] font-black px-2 py-0.5 rounded-lg shadow-sm">
-                          -{discount}%
-                        </span>
-                      )}
-                      {/* Sales badge */}
-                      {p.ventes > 0 && (
-                        <span className="absolute top-2 right-2 bg-black/70 backdrop-blur-sm text-white text-[9px] font-bold px-1.5 py-0.5 rounded-md">
-                          {p.ventes} vendu{p.ventes > 1 ? "s" : ""}
-                        </span>
-                      )}
-                    </div>
+                    {/* Image — clickable to detail */}
+                    <Link href={`/produit/${p.id}`}>
+                      <div className="aspect-square bg-gray-50 relative overflow-hidden">
+                        {p.image_url ? (
+                          <img
+                            src={p.image_url}
+                            alt={p.nom}
+                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                          />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100">
+                            <ShoppingBag className="w-10 h-10 text-gray-200" />
+                          </div>
+                        )}
+                        {hasPromo && (
+                          <span className="absolute top-2 left-2 bg-red-500 text-white text-[10px] font-black px-2 py-0.5 rounded-lg">
+                            -{discount}%
+                          </span>
+                        )}
+                        {p.ventes > 0 && (
+                          <span className="absolute top-2 right-2 bg-black/70 backdrop-blur-sm text-white text-[9px] font-bold px-1.5 py-0.5 rounded-md">
+                            {p.ventes} vendu{p.ventes > 1 ? "s" : ""}
+                          </span>
+                        )}
+                      </div>
+                    </Link>
 
-                    {/* Info */}
+                    {/* Info + Buy button */}
                     <div className="p-3">
-                      <p className="text-xs font-bold text-gray-900 line-clamp-2 leading-snug min-h-[2.25rem]">
-                        {p.nom}
-                      </p>
-                      <div className="flex items-baseline gap-1.5 mt-2">
+                      <Link href={`/produit/${p.id}`}>
+                        <p className="text-xs font-bold text-gray-900 line-clamp-2 leading-snug min-h-[2rem]">
+                          {p.nom}
+                        </p>
+                      </Link>
+                      <div className="flex items-baseline gap-1.5 mt-1.5">
                         <span className="text-sm font-black text-black">
                           {formatMontant(p.prix, pDevise)}
                         </span>
@@ -406,46 +401,151 @@ export default function BoutiquePage() {
                           </span>
                         )}
                       </div>
+                      {/* Acheter button */}
+                      <Link
+                        href={`/produit/${p.id}`}
+                        className="mt-2 w-full flex items-center justify-center gap-1.5 bg-black text-white py-2 rounded-lg text-xs font-bold active:scale-[0.97] transition"
+                      >
+                        <Zap className="w-3 h-3" />Acheter
+                      </Link>
                     </div>
-                  </Link>
+                  </div>
                 );
               })}
             </div>
           )}
         </div>
-      </div>
 
-      {/* ── Floating Contact Bar ── */}
-      {(boutique.whatsapp || boutique.telephone) && (
-        <div className="fixed bottom-0 left-0 right-0 z-20 bg-white/90 backdrop-blur-xl border-t border-gray-100 safe-area-bottom">
-          <div className="max-w-lg mx-auto px-4 py-3 flex gap-2">
-            {boutique.whatsapp && (
-              <a
-                href={`https://wa.me/${boutique.whatsapp.replace(/[^0-9]/g, "")}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex-1 flex items-center justify-center gap-2 bg-[#25D366] text-white py-3 rounded-xl font-bold text-sm hover:bg-[#1fb855] transition active:scale-[0.98] shadow-sm"
+        {/* ═══ 5. PAYER CETTE BOUTIQUE ═══ */}
+        <div className="px-4 pb-4">
+          <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden">
+            <div className="p-5 text-center">
+              <div className="w-12 h-12 rounded-full bg-emerald-50 flex items-center justify-center mx-auto mb-3">
+                <QrCode className="w-6 h-6 text-emerald-600" />
+              </div>
+              <h3 className="font-bold text-gray-900 text-base">Payer cette boutique</h3>
+              <p className="text-gray-500 text-xs mt-1">Scannez le QR ou payez en ligne</p>
+
+              {/* QR toggle */}
+              <button
+                onClick={() => setShowQR(!showQR)}
+                className="mt-4 inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-600 hover:text-emerald-700 transition"
               >
-                <MessageCircle className="w-4.5 h-4.5" />
-                WhatsApp
-              </a>
-            )}
-            {boutique.telephone && (
-              <a
-                href={`tel:${boutique.telephone}`}
-                className={`flex items-center justify-center gap-2 py-3 rounded-xl font-bold text-sm transition active:scale-[0.98] shadow-sm ${
-                  boutique.whatsapp
-                    ? "flex-shrink-0 w-14 bg-gray-100 text-gray-700 hover:bg-gray-200"
-                    : "flex-1 bg-black text-white hover:bg-gray-800"
-                }`}
+                <QrCode className="w-3.5 h-3.5" />
+                {showQR ? "Masquer le QR" : "Afficher le QR Code"}
+                <ChevronDown className={`w-3.5 h-3.5 transition-transform ${showQR ? "rotate-180" : ""}`} />
+              </button>
+
+              {showQR && (
+                <div className="mt-4 flex justify-center">
+                  <div className="bg-white p-4 rounded-2xl border border-gray-100 inline-block shadow-sm">
+                    <QRCodeSVG
+                      value={payUrl}
+                      size={180}
+                      level="M"
+                      bgColor="#ffffff"
+                      fgColor="#000000"
+                    />
+                    <p className="text-[10px] text-gray-400 mt-2 font-medium">Scanner pour payer</p>
+                  </div>
+                </div>
+              )}
+
+              {/* Pay button */}
+              <Link
+                href={`/pay/user/${boutique.user_id}`}
+                className="mt-4 w-full flex items-center justify-center gap-2 bg-emerald-600 text-white py-3.5 rounded-xl font-bold text-sm active:scale-[0.97] transition"
               >
-                <Phone className="w-4.5 h-4.5" />
-                {!boutique.whatsapp && "Appeler"}
-              </a>
-            )}
+                <CreditCard className="w-4 h-4" />
+                Payer maintenant
+              </Link>
+            </div>
           </div>
         </div>
-      )}
+
+        {/* ═══ 6. CONFIANCE VENDEUR ═══ */}
+        <div className="px-4 pb-6">
+          <div className="bg-white rounded-2xl border border-gray-100 p-4">
+            <div className="flex items-center gap-3">
+              <div className="w-11 h-11 rounded-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center overflow-hidden flex-shrink-0">
+                {boutique.owner?.avatar_url ? (
+                  <img src={boutique.owner.avatar_url} alt="" className="w-full h-full object-cover" />
+                ) : (
+                  <span className="text-sm font-bold text-gray-500">{ownerInitials}</span>
+                )}
+              </div>
+              <div className="flex-1 min-w-0">
+                {ownerName && (
+                  <p className="text-sm font-semibold text-gray-900">Vendu par {ownerName}</p>
+                )}
+                <div className="flex items-center gap-3 mt-0.5">
+                  {memberSince && (
+                    <span className="text-[11px] text-gray-400 flex items-center gap-1">
+                      <Clock className="w-3 h-3" />Membre depuis {memberSince}
+                    </span>
+                  )}
+                </div>
+              </div>
+            </div>
+            {/* Trust badges */}
+            <div className="flex items-center gap-2 mt-3 pt-3 border-t border-gray-50">
+              <span className="flex items-center gap-1 text-[11px] text-gray-500">
+                <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" />Paiement securise avec Binq
+              </span>
+              {boutique.is_verified && (
+                <span className="flex items-center gap-1 text-[11px] text-blue-600 font-medium">
+                  <BadgeCheck className="w-3.5 h-3.5" />Verifie
+                </span>
+              )}
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      {/* ═══ STICKY BOTTOM BAR ═══ */}
+      <div className="fixed bottom-0 left-0 right-0 z-20 bg-white/95 backdrop-blur-xl border-t border-gray-100 safe-area-bottom">
+        <div className="max-w-lg mx-auto px-4 py-2.5 flex gap-2">
+          {produits.length > 0 && (
+            <button
+              onClick={scrollToProduits}
+              className="flex-1 flex items-center justify-center gap-2 bg-black text-white py-3 rounded-xl font-bold text-sm active:scale-[0.97] transition"
+            >
+              <ShoppingBag className="w-4 h-4" />
+              Produits
+            </button>
+          )}
+          <Link
+            href={`/pay/user/${boutique.user_id}`}
+            className={`flex items-center justify-center gap-2 bg-emerald-600 text-white py-3 rounded-xl font-bold text-sm active:scale-[0.97] transition ${
+              produits.length > 0 ? "flex-1" : "flex-[2]"
+            }`}
+          >
+            <CreditCard className="w-4 h-4" />
+            Payer
+          </Link>
+          {boutique.whatsapp ? (
+            <a
+              href={`https://wa.me/${boutique.whatsapp.replace(/[^0-9]/g, "")}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex-shrink-0 w-12 flex items-center justify-center bg-gray-100 text-gray-600 py-3 rounded-xl active:scale-[0.97] transition"
+            >
+              <MessageCircle className="w-5 h-5" />
+            </a>
+          ) : boutique.telephone ? (
+            <a
+              href={`tel:${boutique.telephone}`}
+              className="flex-shrink-0 w-12 flex items-center justify-center bg-gray-100 text-gray-600 py-3 rounded-xl active:scale-[0.97] transition"
+            >
+              <Phone className="w-5 h-5" />
+            </a>
+          ) : null}
+        </div>
+      </div>
+
+      {/* Bottom spacer for sticky bar */}
+      <div className="h-20" />
     </div>
   );
 }
