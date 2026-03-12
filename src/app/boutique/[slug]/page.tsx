@@ -396,54 +396,7 @@ export default function BoutiquePage() {
           )}
         </div>
 
-        {/* ═══ 5. PAYER CETTE BOUTIQUE ═══ */}
-        <div className="px-4 pb-4">
-          <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden">
-            <div className="p-5 text-center">
-              <div className="w-12 h-12 rounded-full bg-emerald-50 flex items-center justify-center mx-auto mb-3">
-                <QrCode className="w-6 h-6 text-emerald-600" />
-              </div>
-              <h3 className="font-bold text-gray-900 text-base">Payer cette boutique</h3>
-              <p className="text-gray-500 text-xs mt-1">Scannez le QR ou payez en ligne</p>
-
-              {/* QR toggle */}
-              <button
-                onClick={() => setShowQR(!showQR)}
-                className="mt-4 inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-600 hover:text-emerald-700 transition"
-              >
-                <QrCode className="w-3.5 h-3.5" />
-                {showQR ? "Masquer le QR" : "Afficher le QR Code"}
-                <ChevronDown className={`w-3.5 h-3.5 transition-transform ${showQR ? "rotate-180" : ""}`} />
-              </button>
-
-              {showQR && (
-                <div className="mt-4 flex justify-center">
-                  <div className="bg-white p-4 rounded-2xl border border-gray-100 inline-block shadow-sm">
-                    <QRCodeSVG
-                      value={payUrl}
-                      size={180}
-                      level="M"
-                      bgColor="#ffffff"
-                      fgColor="#000000"
-                    />
-                    <p className="text-[10px] text-gray-400 mt-2 font-medium">Scanner pour payer</p>
-                  </div>
-                </div>
-              )}
-
-              {/* Pay button */}
-              <Link
-                href={`/pay/user/${boutique.user_id}`}
-                className="mt-4 w-full flex items-center justify-center gap-2 bg-emerald-600 text-white py-3.5 rounded-xl font-bold text-sm active:scale-[0.97] transition"
-              >
-                <CreditCard className="w-4 h-4" />
-                Payer maintenant
-              </Link>
-            </div>
-          </div>
-        </div>
-
-        {/* ═══ 6. CONFIANCE VENDEUR ═══ */}
+        {/* ═══ 5. CONFIANCE VENDEUR ═══ */}
         <div className="px-4 pb-6">
           <div className="bg-white rounded-2xl border border-gray-100 p-4">
             <div className="flex items-center gap-3">
@@ -484,28 +437,19 @@ export default function BoutiquePage() {
       </div>
 
       {/* ═══ STICKY BOTTOM BAR ═══ */}
-      <div className="fixed bottom-0 left-0 right-0 z-20 bg-white/95 backdrop-blur-xl border-t border-gray-100 safe-area-bottom">
-        <div className="max-w-lg mx-auto px-4 py-2.5 flex gap-2">
-          {produits.length > 0 && (
+      {produits.length > 0 && (
+        <div className="fixed bottom-0 left-0 right-0 z-20 bg-white/95 backdrop-blur-xl border-t border-gray-100 safe-area-bottom">
+          <div className="max-w-lg mx-auto px-4 py-2.5">
             <button
               onClick={scrollToProduits}
-              className="flex-1 flex items-center justify-center gap-2 bg-black text-white py-3 rounded-xl font-bold text-sm active:scale-[0.97] transition"
+              className="w-full flex items-center justify-center gap-2 bg-black text-white py-3 rounded-xl font-bold text-sm active:scale-[0.97] transition"
             >
               <ShoppingBag className="w-4 h-4" />
-              Produits
+              Voir les produits
             </button>
-          )}
-          <Link
-            href={`/pay/user/${boutique.user_id}`}
-            className={`flex items-center justify-center gap-2 bg-emerald-600 text-white py-3 rounded-xl font-bold text-sm active:scale-[0.97] transition ${
-              produits.length > 0 ? "flex-1" : "flex-[2]"
-            }`}
-          >
-            <CreditCard className="w-4 h-4" />
-            Payer
-          </Link>
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Bottom spacer for sticky bar */}
       <div className="h-20" />
