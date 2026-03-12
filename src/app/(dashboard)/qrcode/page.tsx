@@ -7,10 +7,7 @@ import { QRCodeSVG } from "qrcode.react";
 import {
   QrCode,
   ScanLine,
-  User,
   Share2,
-  Copy,
-  Check,
   Download,
   Camera,
   XCircle,
@@ -22,7 +19,6 @@ import {
   CheckCircle2,
   RefreshCw,
   Banknote,
-  ArrowDownLeft,
   Zap,
   ShieldCheck,
 } from "lucide-react";
@@ -32,7 +28,7 @@ import { hapticLight, hapticMedium, hapticError, hapticHeavy } from "@/lib/hapti
 import dynamic from "next/dynamic";
 const SuccessConfetti = dynamic(() => import("@/components/SuccessConfetti"), { ssr: false });
 
-type Tab = "mon-qr" | "scanner" | "encaisser" | "terminaux";
+type Tab = "scanner" | "encaisser" | "terminaux";
 
 interface Terminal {
   id: string;
@@ -56,7 +52,6 @@ export default function QRCodePage() {
   const { user } = useAuth();
   const router = useRouter();
   const [tab, setTab] = useState<Tab>("scanner");
-  const [copied, setCopied] = useState(false);
   const [scanning, setScanning] = useState(false);
   const [scanError, setScanError] = useState<string | null>(null);
   const scannerRef = useRef<HTMLDivElement>(null);
@@ -87,124 +82,7 @@ export default function QRCodePage() {
   const [copiedCode, setCopiedCode] = useState<string | null>(null);
   const [fullscreenTerminal, setFullscreenTerminal] = useState<Terminal | null>(null);
   const [deletingTerminalId, setDeletingTerminalId] = useState<string | null>(null);
-  const [preFillMontant, setPreFillMontant] = useState("");
-  const [showPreFill, setShowPreFill] = useState(false);
 
-  const origin = typeof window !== "undefined" ? window.location.origin : "";
-
-  const payUrl = typeof window !== "undefined" && user?.id
-    ? `${window.location.origin}/pay/user/${user.id}`
-    : "";
-
-  // Pre-filled payment link: if user sets a montant, we generate a payment-link-style URL
-  const [preFillCode, setPreFillCode] = useState("");
-  const [preFillLoading, setPreFillLoading] = useState(false);
-  const preFillUrl = preFillCode ? `${origin}/pay/${preFillCode}` : payUrl;
-
-  const initials = user
-    ? `${(user.prenom || "?")[0]}${(user.nom || "?")[0]}`.toUpperCase()
-    : "??";
-
-  // ── Personal QR handlers ──
-  const handleGeneratePreFill = async () => {
-    const montant = parseFloat(preFillMontant);
-    if (!montant || montant <= 0) return;
-    setPreFillLoading(true);
-    try {
-      const res = await fetch("/api/payment-links", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ montant, devise, description: `Demande ${formatMontant(montant, devise)}` }),
-      });
-      const data = await res.json();
-      if (data.link?.code) {
-        setPreFillCode(data.link.code);
-      }
-    } catch { /* ignore */ }
-    finally { setPreFillLoading(false); }
-  };
-
-  const handleResetPreFill = () => {
-    setPreFillCode("");
-    setPreFillMontant("");
-    setShowPreFill(false);
-  };
-
-  const handleCopy = async () => {
-    if (!payUrl) return;
-    try {
-      await navigator.clipboard.writeText(preFillUrl);
-      hapticMedium();
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    } catch { /* ignore */ }
-  };
-
-  const handleShare = async () => {
-    if (!payUrl && !preFillUrl) return;
-    if (navigator.share) {
-      try {
-        await navigator.share({
-          title: `Payer ${user?.prenom} ${user?.nom} sur Binq`,
-          text: preFillCode ? `Payez ${formatMontant(parseFloat(preFillMontant), devise)} via Binq` : `Envoyez-moi de l'argent via Binq`,
-          url: preFillUrl,
-        });
-      } catch { /* user cancelled */ }
-    } else {
-      handleCopy();
-    }
-  };
-
-  const handleDownload = () => {
-    const svg = document.getElementById("personal-qr-code");
-    if (!svg) return;
-
-    const svgData = new XMLSerializer().serializeToString(svg);
-    const canvas = document.createElement("canvas");
-    const ctx = canvas.getContext("2d");
-    const img = new Image();
-
-    img.onload = () => {
-      canvas.width = 1024;
-      canvas.height = 1200;
-      if (ctx) {
-        // Dark background
-        ctx.fillStyle = "#0a0a0a";
-        ctx.fillRect(0, 0, 1024, 1200);
-        // "Binq Pay" header
-        ctx.font = "bold 32px system-ui, sans-serif";
-        ctx.fillStyle = "#10b981";
-        ctx.textAlign = "center";
-        ctx.fillText("Binq Pay", 512, 60);
-        // White background for QR (quiet zone)
-        ctx.fillStyle = "#ffffff";
-        ctx.beginPath();
-        ctx.roundRect(112, 90, 800, 800, 32);
-        ctx.fill();
-        // Draw QR on white bg
-        ctx.drawImage(img, 152, 130, 720, 720);
-        // User name
-        ctx.fillStyle = "#ffffff";
-        ctx.font = "bold 42px system-ui, sans-serif";
-        ctx.fillText(`${user?.prenom || ""} ${user?.nom || ""}`, 512, 960);
-        // Subtitle
-        ctx.font = "26px system-ui, sans-serif";
-        ctx.fillStyle = "#6b7280";
-        ctx.fillText("Scannez pour payer", 512, 1010);
-        // URL
-        ctx.font = "20px monospace";
-        ctx.fillStyle = "#374151";
-        ctx.fillText(preFillUrl || payUrl, 512, 1060);
-      }
-
-      const link = document.createElement("a");
-      link.download = `binq-qr-${user?.prenom || "code"}.png`;
-      link.href = canvas.toDataURL("image/png");
-      link.click();
-    };
-
-    img.src = "data:image/svg+xml;base64," + btoa(unescape(encodeURIComponent(svgData)));
-  };
 
   // ── QR Scanner ──
   const [manualCode, setManualCode] = useState("");
@@ -601,7 +479,6 @@ export default function QRCodePage() {
       <div className="flex gap-1 bg-gray-50/50 rounded-xl p-1 border border-gray-200/50">
         {([
           { key: "scanner" as Tab, icon: ScanLine, label: "Scanner" },
-          { key: "mon-qr" as Tab, icon: ArrowDownLeft, label: "Recevoir" },
           { key: "encaisser" as Tab, icon: CreditCard, label: "Cr\u00e9er paiement" },
           { key: "terminaux" as Tab, icon: Store, label: "Terminal" },
         ]).map((t) => (
@@ -619,141 +496,6 @@ export default function QRCodePage() {
           </button>
         ))}
       </div>
-
-      {/* ═════════════════════════ */}
-      {/* ══ RECEVOIR TAB ══════════ */}
-      {/* ═════════════════════════ */}
-      {tab === "mon-qr" && (
-        <div className="space-y-3 animate-in fade-in duration-200">
-          {/* Identity Card */}
-          <div className="rounded-2xl bg-gradient-to-br from-emerald-500/10 via-white/[0.03] to-white/[0.02] border border-emerald-500/15 p-4">
-            <div className="flex items-center gap-3">
-              {user?.avatar ? (
-                <img src={user.avatar} alt={user.prenom} className="w-14 h-14 rounded-2xl object-cover ring-2 ring-emerald-200 shadow-lg shadow-emerald-500/10" />
-              ) : (
-                <div className="w-14 h-14 rounded-2xl bg-emerald-100 flex items-center justify-center ring-2 ring-emerald-200 shadow-lg shadow-emerald-500/10">
-                  <span className="text-lg font-black text-emerald-600">{initials}</span>
-                </div>
-              )}
-              <div className="flex-1 min-w-0">
-                <p className="text-base font-black text-gray-900 truncate">{user?.prenom} {user?.nom}</p>
-                <div className="flex items-center gap-1.5 mt-0.5">
-                  <div className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
-                  <p className="text-[11px] text-emerald-600/70 font-semibold">Identifiant de paiement Binq</p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* QR Code */}
-          <div className="rounded-2xl bg-gray-50/50 border border-gray-200/50 p-4">
-            {preFillCode && (
-              <div className="flex items-center justify-between mb-3 px-1">
-                <span className="text-xs font-bold text-emerald-600">{formatMontant(parseFloat(preFillMontant), devise)}</span>
-                <button onClick={handleResetPreFill} className="text-[10px] text-gray-700 hover:text-gray-800 font-semibold transition">Montant libre</button>
-              </div>
-            )}
-            <div className="flex flex-col items-center">
-              <p className="text-xs font-bold text-gray-700 mb-3">Montrez ce QR pour recevoir de l&apos;argent</p>
-              <div className="bg-white rounded-2xl p-5 mb-4">
-                {preFillUrl ? (
-                  <QRCodeSVG id="personal-qr-code" value={preFillUrl} size={280} bgColor="#FFFFFF" fgColor="#000000" level="M" includeMargin={true} />
-                ) : (
-                  <div className="w-[280px] h-[280px] flex items-center justify-center">
-                    <Loader2 className="w-6 h-6 text-gray-600 animate-spin" />
-                  </div>
-                )}
-              </div>
-              <div className="w-full grid grid-cols-3 gap-2">
-                <button onClick={handleShare} className="flex flex-col items-center gap-1 py-2.5 rounded-xl bg-emerald-50 hover:bg-emerald-100/60 text-emerald-600 text-xs font-bold transition-all active:scale-95">
-                  <Share2 className="w-4 h-4" /><span className="text-[10px]">Partager</span>
-                </button>
-                <button onClick={handleCopy} className="flex flex-col items-center gap-1 py-2.5 rounded-xl bg-gray-50/80 hover:bg-gray-100 text-gray-700 text-xs font-bold transition-all active:scale-95">
-                  {copied ? (<><Check className="w-4 h-4 text-emerald-600" /><span className="text-[10px] text-emerald-600">Copié !</span></>) : (<><Copy className="w-4 h-4" /><span className="text-[10px]">Copier</span></>)}
-                </button>
-                <button onClick={handleDownload} className="flex flex-col items-center gap-1 py-2.5 rounded-xl bg-gray-50/80 hover:bg-gray-100 text-gray-600 text-xs font-bold transition-all active:scale-95">
-                  <Download className="w-4 h-4" /><span className="text-[10px]">Image</span>
-                </button>
-              </div>
-            </div>
-          </div>
-
-          {/* Pre-fill amount */}
-          {!preFillCode && (
-            <div className="rounded-xl bg-gray-50/50 border border-gray-200/50 overflow-hidden">
-              {!showPreFill ? (
-                <button onClick={() => setShowPreFill(true)} className="w-full flex items-center justify-center gap-1.5 py-2.5 text-xs font-bold text-gray-600 hover:text-gray-700 transition">
-                  <Banknote className="w-3.5 h-3.5" />Définir un montant précis
-                </button>
-              ) : (
-                <div className="p-3 space-y-2">
-                  <div className="flex items-center gap-2">
-                    <div className="relative flex-1">
-                      <input
-                        type="number"
-                        min={DEVISES[devise].minTransfer}
-                        step={DEVISES[devise].decimals === 0 ? "1" : "0.01"}
-                        placeholder={DEVISES[devise].decimals === 0 ? "5 000" : "10.00"}
-                        value={preFillMontant}
-                        onChange={(e) => setPreFillMontant(e.target.value)}
-                        className="w-full bg-gray-50/80 border border-gray-200/60 rounded-lg px-3 py-2 text-gray-900 text-sm font-bold outline-none focus:border-emerald-200 transition-colors [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                      />
-                      <span className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-600 text-xs">{DEVISES[devise].symbol}</span>
-                    </div>
-                    <button
-                      onClick={handleGeneratePreFill}
-                      disabled={preFillLoading || !preFillMontant || parseFloat(preFillMontant) <= 0}
-                      className="px-3 py-2 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-white text-xs font-bold transition disabled:opacity-40 active:scale-95"
-                    >
-                      {preFillLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Générer"}
-                    </button>
-                  </div>
-                  <button onClick={() => { setShowPreFill(false); setPreFillMontant(""); }} className="w-full text-[10px] text-gray-600 hover:text-gray-700 transition">
-                    Annuler
-                  </button>
-                </div>
-              )}
-            </div>
-          )}
-
-          {/* Link preview */}
-          <div className="flex items-center gap-2 bg-gray-50/50 rounded-xl px-3 py-2 border border-gray-200/50">
-            <QrCode className="w-3.5 h-3.5 text-gray-600 shrink-0" />
-            <p className="text-[10px] text-gray-600 font-mono truncate">{preFillUrl}</p>
-          </div>
-
-          {/* How it works */}
-          <div className="rounded-2xl bg-emerald-500/5 border border-emerald-500/10 p-3">
-            <p className="text-[11px] text-emerald-600/80 font-semibold mb-1">Comment ça marche ?</p>
-            <div className="grid grid-cols-2 gap-2">
-              <div className="flex items-start gap-2">
-                <div className="w-5 h-5 rounded-md bg-emerald-50 flex items-center justify-center shrink-0 mt-0.5">
-                  <span className="text-[9px] font-black text-emerald-600">1</span>
-                </div>
-                <p className="text-[10px] text-gray-700">Montrez votre QR ou partagez le lien</p>
-              </div>
-              <div className="flex items-start gap-2">
-                <div className="w-5 h-5 rounded-md bg-emerald-50 flex items-center justify-center shrink-0 mt-0.5">
-                  <span className="text-[9px] font-black text-emerald-600">2</span>
-                </div>
-                <p className="text-[10px] text-gray-700">L&apos;envoyeur scanne avec Binq</p>
-              </div>
-              <div className="flex items-start gap-2">
-                <div className="w-5 h-5 rounded-md bg-emerald-50 flex items-center justify-center shrink-0 mt-0.5">
-                  <span className="text-[9px] font-black text-emerald-600">3</span>
-                </div>
-                <p className="text-[10px] text-gray-700">Il choisit le montant et valide</p>
-              </div>
-              <div className="flex items-start gap-2">
-                <div className="w-5 h-5 rounded-md bg-emerald-50 flex items-center justify-center shrink-0 mt-0.5">
-                  <span className="text-[9px] font-black text-emerald-600">4</span>
-                </div>
-                <p className="text-[10px] text-gray-700">Argent reçu instantanément</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
 
       {/* ═════════════════════ */}
       {/* ══ SCANNER TAB ════ */}
