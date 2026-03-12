@@ -1,0 +1,321 @@
+"use client";
+
+import { useState, useEffect } from "react";
+import { useParams, useRouter } from "next/navigation";
+import Link from "next/link";
+import { useAuth } from "@/contexts/AuthContext";
+import { useToast } from "@/contexts/ToastContext";
+import { hapticSuccess, hapticError } from "@/lib/haptics";
+import dynamic from "next/dynamic";
+const SuccessConfetti = dynamic(() => import("@/components/SuccessConfetti"), { ssr: false });
+import {
+  ShoppingBag,
+  Store,
+  MapPin,
+  BadgeCheck,
+  MessageCircle,
+  Phone,
+  Loader2,
+  ArrowLeft,
+  Share2,
+  Wallet,
+  CheckCircle2,
+  Zap,
+  Shield,
+  Eye,
+  Tag,
+  LogIn,
+} from "lucide-react";
+import { formatMontant } from "@/lib/currencies";
+import type { DeviseCode } from "@/lib/currencies";
+
+interface Produit {
+  id: string;
+  nom: string;
+  description: string | null;
+  prix: number;
+  prix_barre: number | null;
+  devise: string;
+  image_url: string | null;
+  categorie: string | null;
+  ventes: number;
+  vues: number;
+  stock: number | null;
+  boutique: {
+    id: string;
+    nom: string;
+    slug: string;
+    logo_url: string | null;
+    is_verified: boolean;
+    ville: string | null;
+    whatsapp: string | null;
+    telephone: string | null;
+    user_id: string;
+  };
+}
+
+export default function ProduitPage() {
+  const params = useParams();
+  const router = useRouter();
+  const { user } = useAuth();
+  const { showToast } = useToast();
+  const produitId = params.id as string;
+
+  const [produit, setProduit] = useState<Produit | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [buying, setBuying] = useState(false);
+  const [bought, setBought] = useState(false);
+  const [boughtRef, setBoughtRef] = useState("");
+
+  useEffect(() => {
+    if (!produitId) return;
+    const load = async () => {
+      try {
+        const res = await fetch(`/api/produits/${produitId}`);
+        const data = await res.json();
+        if (!res.ok) { setError(data.error || "Produit introuvable"); return; }
+        setProduit(data.produit);
+      } catch { setError("Erreur de chargement"); }
+      finally { setLoading(false); }
+    };
+    load();
+  }, [produitId]);
+
+  const handleBuy = async () => {
+    if (!produit || !user) return;
+    setBuying(true);
+    try {
+      const res = await fetch("/api/marketplace/acheter", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ produit_id: produit.id }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        if (data.error?.includes("insuffisant")) {
+          showToast("error", "Solde insuffisant", `Votre solde: ${formatMontant(data.solde, (produit.devise as DeviseCode) || "XOF")}. Rechargez votre wallet.`);
+        } else {
+          showToast("error", "Erreur", data.error || "Erreur");
+        }
+        return;
+      }
+      setBought(true);
+      setBoughtRef(data.reference);
+      hapticSuccess();
+      showToast("success", "Achat effectué !", `${produit.nom} acheté avec succès`);
+    } catch { hapticError(); showToast("error", "Erreur", "Erreur lors de l'achat"); }
+    finally { setBuying(false); }
+  };
+
+  const handleShare = async () => {
+    if (!produit) return;
+    const url = `${window.location.origin}/produit/${produit.id}`;
+    if (navigator.share) {
+      try { await navigator.share({ title: produit.nom, text: `${produit.nom} — ${formatMontant(produit.prix, (produit.devise as DeviseCode) || "XOF")} sur Binq`, url }); } catch { /* cancelled */ }
+    } else {
+      try { await navigator.clipboard.writeText(url); showToast("success", "Copié", "Lien copié"); } catch { /* ignore */ }
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <Loader2 className="w-8 h-8 text-emerald-600 animate-spin" />
+      </div>
+    );
+  }
+
+  if (error || !produit) {
+    return (
+      <div className="min-h-screen bg-white flex items-center justify-center px-4">
+        <div className="text-center">
+          <ShoppingBag className="w-12 h-12 text-gray-300 mx-auto mb-3" />
+          <p className="text-gray-600 font-medium">{error || "Produit introuvable"}</p>
+          <Link href="/explorer" className="mt-4 inline-flex items-center gap-2 text-emerald-600 font-semibold text-sm">
+            <ArrowLeft className="w-4 h-4" />Retour au marketplace
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
+  const devise = (produit.devise as DeviseCode) || "XOF";
+  const hasPromo = produit.prix_barre && produit.prix_barre > produit.prix;
+  const discount = hasPromo ? Math.round(((produit.prix_barre! - produit.prix) / produit.prix_barre!) * 100) : 0;
+  const isOwnProduct = user && produit.boutique.user_id === user.id;
+  const outOfStock = produit.stock !== null && produit.stock <= 0;
+
+  // ═══ SUCCESS ═══
+  if (bought) {
+    return (
+      <div className="min-h-screen bg-white flex items-center justify-center px-4">
+        <SuccessConfetti />
+        <div className="bg-gray-50/80 rounded-3xl p-8 max-w-md w-full text-center border border-gray-200/50 backdrop-blur-xl animate-in zoom-in-95 duration-300">
+          <div className="w-20 h-20 bg-emerald-50 rounded-full flex items-center justify-center mx-auto mb-4">
+            <CheckCircle2 className="w-10 h-10 text-emerald-600" />
+          </div>
+          <h1 className="text-2xl font-black text-gray-900 mb-1">Achat effectué !</h1>
+          <p className="text-lg font-bold text-emerald-600 mb-1">{produit.nom}</p>
+          <p className="text-2xl font-black text-gray-900 mb-4">{formatMontant(produit.prix, devise)}</p>
+
+          <div className="bg-gray-50/50 rounded-xl p-3 mb-5 border border-gray-200/50 text-left space-y-1.5">
+            <div className="flex justify-between text-xs"><span className="text-gray-500">Boutique</span><span className="text-gray-700 font-semibold">{produit.boutique.nom}</span></div>
+            <div className="flex justify-between text-xs"><span className="text-gray-500">Référence</span><span className="text-gray-700 font-mono">{boughtRef}</span></div>
+            <div className="flex justify-between text-xs"><span className="text-gray-500">Paiement</span><span className="text-emerald-600 font-semibold">Binq Wallet — 0%</span></div>
+          </div>
+
+          {/* Contact seller */}
+          {(produit.boutique.whatsapp || produit.boutique.telephone) && (
+            <div className="mb-4">
+              <p className="text-xs text-gray-500 mb-2">Contactez le vendeur pour la livraison :</p>
+              <div className="flex gap-2 justify-center">
+                {produit.boutique.whatsapp && (
+                  <a href={`https://wa.me/${produit.boutique.whatsapp.replace(/[^0-9]/g, "")}?text=Bonjour, je viens d'acheter "${produit.nom}" (ref: ${boughtRef}) sur Binq.`} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 bg-green-500 text-white px-4 py-2 rounded-xl text-sm font-bold hover:bg-green-400 transition">
+                    <MessageCircle className="w-4 h-4" />WhatsApp
+                  </a>
+                )}
+                {produit.boutique.telephone && (
+                  <a href={`tel:${produit.boutique.telephone}`} className="flex items-center gap-1.5 bg-gray-100 text-gray-700 px-4 py-2 rounded-xl text-sm font-bold hover:bg-gray-200 transition">
+                    <Phone className="w-4 h-4" />Appeler
+                  </a>
+                )}
+              </div>
+            </div>
+          )}
+
+          <div className="flex gap-2">
+            <Link href="/explorer" className="flex-1 inline-flex items-center justify-center gap-2 bg-emerald-500 text-white px-4 py-3 rounded-xl font-bold hover:bg-emerald-400 transition text-sm">
+              <ShoppingBag className="w-4 h-4" />Continuer
+            </Link>
+            <Link href="/portefeuille" className="inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-gray-100 text-gray-700 font-bold text-sm hover:bg-gray-200 transition">
+              <Wallet className="w-4 h-4" />
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-white pb-28">
+      {/* Header */}
+      <div className="sticky top-0 z-10 bg-white/80 backdrop-blur-xl border-b border-gray-100 px-4 py-3 flex items-center gap-3">
+        <button onClick={() => router.back()} className="p-1.5 rounded-lg hover:bg-gray-100 transition">
+          <ArrowLeft className="w-5 h-5 text-gray-700" />
+        </button>
+        <h1 className="font-bold text-gray-900 truncate flex-1">Détail produit</h1>
+        <button onClick={handleShare} className="p-1.5 rounded-lg hover:bg-gray-100 transition">
+          <Share2 className="w-5 h-5 text-gray-700" />
+        </button>
+      </div>
+
+      {/* Image */}
+      <div className="aspect-square bg-gray-100 relative">
+        {produit.image_url ? (
+          <img src={produit.image_url} alt={produit.nom} className="w-full h-full object-cover" />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center">
+            <ShoppingBag className="w-16 h-16 text-gray-300" />
+          </div>
+        )}
+        {hasPromo && (
+          <span className="absolute top-4 left-4 bg-red-500 text-white text-sm font-bold px-2.5 py-1 rounded-lg">
+            -{discount}%
+          </span>
+        )}
+        {outOfStock && (
+          <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
+            <span className="bg-white text-gray-900 font-bold px-4 py-2 rounded-xl">Rupture de stock</span>
+          </div>
+        )}
+      </div>
+
+      {/* Product info */}
+      <div className="px-4 pt-4">
+        <h2 className="text-xl font-black text-gray-900">{produit.nom}</h2>
+
+        <div className="flex items-baseline gap-2 mt-2">
+          <span className="text-2xl font-black text-emerald-600">{formatMontant(produit.prix, devise)}</span>
+          {hasPromo && (
+            <span className="text-sm text-gray-400 line-through">{formatMontant(produit.prix_barre!, devise)}</span>
+          )}
+        </div>
+
+        {produit.description && (
+          <p className="text-sm text-gray-600 mt-3 leading-relaxed">{produit.description}</p>
+        )}
+
+        <div className="flex items-center gap-4 mt-3 text-xs text-gray-400">
+          <span className="flex items-center gap-1"><Eye className="w-3.5 h-3.5" />{produit.vues} vues</span>
+          {produit.ventes > 0 && <span className="flex items-center gap-1"><ShoppingBag className="w-3.5 h-3.5" />{produit.ventes} vendus</span>}
+          {produit.stock !== null && produit.stock > 0 && <span className="flex items-center gap-1"><Tag className="w-3.5 h-3.5" />{produit.stock} en stock</span>}
+        </div>
+
+        {/* Boutique info */}
+        <Link
+          href={`/boutique/${produit.boutique.slug}`}
+          className="flex items-center gap-3 bg-gray-50 rounded-xl p-3 mt-5 border border-gray-100 hover:border-gray-200 transition"
+        >
+          <div className="w-10 h-10 bg-gray-200 rounded-xl flex items-center justify-center overflow-hidden shrink-0">
+            {produit.boutique.logo_url ? (
+              <img src={produit.boutique.logo_url} alt={produit.boutique.nom} className="w-full h-full object-cover" />
+            ) : (
+              <Store className="w-5 h-5 text-gray-400" />
+            )}
+          </div>
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-1.5">
+              <span className="font-bold text-gray-900 text-sm truncate">{produit.boutique.nom}</span>
+              {produit.boutique.is_verified && <BadgeCheck className="w-4 h-4 text-emerald-500 shrink-0" />}
+            </div>
+            {produit.boutique.ville && (
+              <span className="text-[11px] text-gray-500 flex items-center gap-0.5 mt-0.5"><MapPin className="w-3 h-3" />{produit.boutique.ville}</span>
+            )}
+          </div>
+          <span className="text-xs text-emerald-600 font-semibold">Voir</span>
+        </Link>
+
+        {/* Buy section */}
+        <div className="mt-6">
+          {!user ? (
+            <div className="text-center">
+              <p className="text-sm text-gray-500 mb-3">Connectez-vous pour acheter</p>
+              <Link href={`/connexion?redirect=/produit/${produit.id}`} className="w-full inline-flex items-center justify-center gap-2 bg-emerald-500 text-white py-3.5 rounded-xl font-bold hover:bg-emerald-400 transition">
+                <LogIn className="w-5 h-5" />Se connecter
+              </Link>
+            </div>
+          ) : isOwnProduct ? (
+            <div className="bg-gray-50 rounded-xl p-3 text-center border border-gray-200">
+              <p className="text-sm text-gray-500">C&apos;est votre produit</p>
+            </div>
+          ) : outOfStock ? (
+            <button disabled className="w-full bg-gray-200 text-gray-500 py-3.5 rounded-xl font-bold cursor-not-allowed">
+              Rupture de stock
+            </button>
+          ) : (
+            <button
+              onClick={handleBuy}
+              disabled={buying}
+              className="w-full flex items-center justify-center gap-2.5 bg-emerald-500 hover:bg-emerald-400 text-white py-4 rounded-2xl font-bold text-base transition-all disabled:opacity-50 active:scale-[0.98] shadow-lg shadow-emerald-500/20"
+            >
+              {buying ? (
+                <><Loader2 className="w-5 h-5 animate-spin" />Paiement en cours...</>
+              ) : (
+                <><Zap className="w-5 h-5" />Acheter — {formatMontant(produit.prix, devise)}</>
+              )}
+            </button>
+          )}
+
+          {user && !isOwnProduct && !outOfStock && (
+            <div className="flex items-center justify-center gap-4 mt-3">
+              <span className="flex items-center gap-1 text-gray-400 text-[10px]"><Zap className="w-3 h-3" />Instantané</span>
+              <span className="flex items-center gap-1 text-gray-400 text-[10px]"><Shield className="w-3 h-3" />0% frais</span>
+              <span className="flex items-center gap-1 text-gray-400 text-[10px]"><Wallet className="w-3 h-3" />Binq Wallet</span>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}

@@ -19,6 +19,7 @@ import {
   X,
   ChevronDown,
   Star,
+  ShoppingBag,
 } from "lucide-react";
 
 interface Notification {
@@ -32,7 +33,7 @@ interface Notification {
 const bottomTabs = [
   { href: "/dashboard", label: "Accueil", icon: LayoutDashboard },
   { href: "/deposer", label: "Déposer", icon: ArrowDownToLine },
-  { href: "/envoyer", label: "Envoyer", icon: SendHorizonal },
+  { href: "/explorer", label: "Explorer", icon: ShoppingBag },
   { href: "/qrcode", label: "QR Pay", icon: QrCode },
   { href: "/portefeuille", label: "Historique", icon: History },
 ];
