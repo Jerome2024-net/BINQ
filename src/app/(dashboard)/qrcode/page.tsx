@@ -93,13 +93,15 @@ export default function QRCodePage() {
   const handleDecodedQR = useCallback((decodedText: string) => {
     try {
       const url = new URL(decodedText);
-      if (url.pathname.startsWith("/pay/user/") || url.pathname.startsWith("/pay/")) {
+      const p = url.pathname;
+      if (p.startsWith("/q/") || p.startsWith("/pay/user/") || p.startsWith("/pay/")) {
         hapticMedium();
-        router.push(url.pathname);
+        router.push(p);
         return;
       }
     } catch {
-      if (decodedText.startsWith("/pay/")) { hapticMedium(); router.push(decodedText); return; }
+      const t = decodedText;
+      if (t.startsWith("/q/") || t.startsWith("/pay/")) { hapticMedium(); router.push(t); return; }
     }
     hapticError();
     setScanError("QR Code non reconnu. Scannez un QR Code Binq.");

@@ -3,6 +3,7 @@ import { getAuthenticatedUser } from "@/lib/api-auth";
 import { createClient } from "@supabase/supabase-js";
 import { type DeviseCode, DEVISES, DEFAULT_DEVISE } from "@/lib/currencies";
 import crypto from "crypto";
+import { generateQRCode } from "@/lib/qr-universal";
 
 function getServiceClient() {
   return createClient(
@@ -72,6 +73,17 @@ export async function POST(request: NextRequest) {
   if (error) {
     console.error("Erreur création payment link:", error);
     return NextResponse.json({ error: error.message }, { status: 500 });
+  }
+
+  // Auto-generate universal QR code for the payment link
+  if (data) {
+    await supabase.from("qr_codes").insert({
+      code: generateQRCode(),
+      type: "paiement",
+      payment_link_id: data.id,
+      user_id: user.id,
+      label: description || "Paiement",
+    });
   }
 
   return NextResponse.json({ link: data });

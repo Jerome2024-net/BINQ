@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import { getAuthenticatedUser } from "@/lib/api-auth";
+import { generateQRCode } from "@/lib/qr-universal";
 
 function getServiceClient() {
   return createClient(
@@ -131,6 +132,17 @@ export async function POST(req: NextRequest) {
       .single();
 
     if (error) throw error;
+
+    // Auto-generate universal QR code for the boutique
+    if (boutique) {
+      await supabase.from("qr_codes").insert({
+        code: generateQRCode(),
+        type: "boutique",
+        boutique_id: boutique.id,
+        user_id: user.id,
+        label: boutique.nom,
+      });
+    }
 
     return NextResponse.json({ boutique }, { status: 201 });
   } catch (e: any) {
