@@ -276,11 +276,6 @@ export default function MaBoutiquePage() {
                 <input value={formTel} onChange={(e) => setFormTel(e.target.value)} placeholder="+221..." className="w-full mt-1 bg-gray-50 border border-gray-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-emerald-500 transition" />
               </div>
             </div>
-            <div>
-              <label className="text-xs font-semibold text-gray-700">WhatsApp</label>
-              <input value={formWhatsapp} onChange={(e) => setFormWhatsapp(e.target.value)} placeholder="+221..." className="w-full mt-1 bg-gray-50 border border-gray-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-emerald-500 transition" />
-            </div>
-
             <button
               onClick={handleCreateBoutique}
               disabled={creating || !formNom.trim()}

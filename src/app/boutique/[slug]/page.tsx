@@ -9,8 +9,7 @@ import {
   ShoppingBag,
   MapPin,
   BadgeCheck,
-  Phone,
-  MessageCircle,
+
   Loader2,
   ArrowLeft,
   Share2,
@@ -259,25 +258,6 @@ export default function BoutiquePage() {
             <CreditCard className="w-4 h-4" />
             Payer
           </Link>
-          {/* CTA Tertiaire — WhatsApp */}
-          {boutique.whatsapp && (
-            <a
-              href={`https://wa.me/${boutique.whatsapp.replace(/[^0-9]/g, "")}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex-shrink-0 w-12 flex items-center justify-center bg-gray-100 text-gray-600 py-3 rounded-xl active:scale-[0.97] transition"
-            >
-              <MessageCircle className="w-5 h-5" />
-            </a>
-          )}
-          {boutique.telephone && !boutique.whatsapp && (
-            <a
-              href={`tel:${boutique.telephone}`}
-              className="flex-shrink-0 w-12 flex items-center justify-center bg-gray-100 text-gray-600 py-3 rounded-xl active:scale-[0.97] transition"
-            >
-              <Phone className="w-5 h-5" />
-            </a>
-          )}
         </div>
 
         {/* ═══ 3. RECHERCHE ═══ */}
@@ -524,23 +504,6 @@ export default function BoutiquePage() {
             <CreditCard className="w-4 h-4" />
             Payer
           </Link>
-          {boutique.whatsapp ? (
-            <a
-              href={`https://wa.me/${boutique.whatsapp.replace(/[^0-9]/g, "")}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex-shrink-0 w-12 flex items-center justify-center bg-gray-100 text-gray-600 py-3 rounded-xl active:scale-[0.97] transition"
-            >
-              <MessageCircle className="w-5 h-5" />
-            </a>
-          ) : boutique.telephone ? (
-            <a
-              href={`tel:${boutique.telephone}`}
-              className="flex-shrink-0 w-12 flex items-center justify-center bg-gray-100 text-gray-600 py-3 rounded-xl active:scale-[0.97] transition"
-            >
-              <Phone className="w-5 h-5" />
-            </a>
-          ) : null}
         </div>
       </div>
 

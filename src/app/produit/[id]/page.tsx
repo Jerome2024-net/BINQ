@@ -165,25 +165,6 @@ export default function ProduitPage() {
             <div className="flex justify-between text-xs"><span className="text-gray-500">Paiement</span><span className="text-emerald-600 font-semibold">Carte / Mobile Money</span></div>
           </div>
 
-          {/* Contact seller */}
-          {(produit.boutique.whatsapp || produit.boutique.telephone) && (
-            <div className="mb-4">
-              <p className="text-xs text-gray-500 mb-2">Contactez le vendeur pour la livraison :</p>
-              <div className="flex gap-2 justify-center">
-                {produit.boutique.whatsapp && (
-                  <a href={`https://wa.me/${produit.boutique.whatsapp.replace(/[^0-9]/g, "")}?text=Bonjour, je viens d'acheter "${produit.nom}" (ref: ${boughtRef}) sur Binq.`} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 bg-green-500 text-white px-4 py-2 rounded-xl text-sm font-bold hover:bg-green-400 transition">
-                    <MessageCircle className="w-4 h-4" />WhatsApp
-                  </a>
-                )}
-                {produit.boutique.telephone && (
-                  <a href={`tel:${produit.boutique.telephone}`} className="flex items-center gap-1.5 bg-gray-100 text-gray-700 px-4 py-2 rounded-xl text-sm font-bold hover:bg-gray-200 transition">
-                    <Phone className="w-4 h-4" />Appeler
-                  </a>
-                )}
-              </div>
-            </div>
-          )}
-
           <div className="flex gap-2">
             <Link href="/explorer" className="flex-1 inline-flex items-center justify-center gap-2 bg-emerald-500 text-white px-4 py-3 rounded-xl font-bold hover:bg-emerald-400 transition text-sm">
               <ShoppingBag className="w-4 h-4" />Continuer
