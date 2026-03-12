@@ -388,13 +388,6 @@ export default function BoutiquePage() {
                       >
                         <Zap className="w-3 h-3" />Acheter
                       </Link>
-                      {/* Payer button */}
-                      <Link
-                        href={`/pay/user/${boutique.user_id}`}
-                        className="mt-1.5 w-full flex items-center justify-center gap-1.5 bg-emerald-600 text-white py-2 rounded-lg text-xs font-bold active:scale-[0.97] transition"
-                      >
-                        <CreditCard className="w-3 h-3" />Payer
-                      </Link>
                     </div>
                   </div>
                 );
