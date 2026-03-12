@@ -65,7 +65,7 @@ function ConnexionForm() {
             </span>
           </h1>
           <p className="text-gray-600 text-lg leading-relaxed font-medium">
-            Connectez-vous pour accéder à votre portefeuille et gérer votre argent en toute sécurité.
+            Connectez-vous pour accéder à votre espace marchand et gérer vos paiements.
           </p>
 
           <div className="mt-12 space-y-3 border-t border-gray-200/50 pt-10">

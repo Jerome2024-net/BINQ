@@ -3,12 +3,11 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useAuth } from "@/contexts/AuthContext";
-import { useFinance } from "@/contexts/FinanceContext";
 import { useToast } from "@/contexts/ToastContext";
 import Avatar from "@/components/Avatar";
 import AvatarUpload from "@/components/AvatarUpload";
 import ScoreFiabilite from "@/components/ScoreFiabilite";
-import { formatMontant } from "@/lib/data";
+
 import {
   User as UserIcon,
   Mail,
@@ -16,7 +15,7 @@ import {
   Shield,
   Save,
   Camera,
-  CircleDollarSign,
+  ShoppingBag,
   Users,
   CheckCircle2,
   Loader2,
@@ -35,7 +34,6 @@ import {
 
 export default function ProfilPage() {
   const { user, updateProfile } = useAuth();
-  const { getFinancialSummary, wallet } = useFinance();
   const { showToast } = useToast();
   const [loading, setLoading] = useState(false);
 
@@ -62,7 +60,6 @@ export default function ProfilPage() {
     profilPublic: user?.profilPublic ?? true,
   });
 
-  const summary = getFinancialSummary();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -163,15 +160,15 @@ export default function ProfilPage() {
       {/* Stats rapides */}
       <div className="grid grid-cols-2 lg:grid-cols-3 gap-3">
         <div className="card py-4 text-center">
-          <p className="text-2xl font-bold text-green-600">{formatMontant(wallet?.solde ?? 0)}</p>
+          <p className="text-2xl font-bold text-emerald-600">Vendeur</p>
           <p className="text-xs text-gray-700 flex items-center justify-center gap-1 mt-1">
-            <CircleDollarSign className="w-3 h-3" /> Solde
+            <ShoppingBag className="w-3 h-3" /> Statut
           </p>
         </div>
         <div className="card py-4 text-center">
-          <p className="text-2xl font-bold text-gray-900">{summary.nombreTransactions}</p>
+          <p className="text-2xl font-bold text-gray-900">QR Pay</p>
           <p className="text-xs text-gray-700 flex items-center justify-center gap-1 mt-1">
-            <TrendingUp className="w-3 h-3" /> Transactions
+            <TrendingUp className="w-3 h-3" /> Paiements
           </p>
         </div>
         <div className="card py-4 text-center col-span-2 lg:col-span-1">

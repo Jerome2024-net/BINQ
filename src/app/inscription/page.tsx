@@ -91,13 +91,13 @@ export default function InscriptionPage() {
             </span>
           </h1>
           <p className="text-gray-600 text-lg leading-relaxed font-medium">
-            Créez votre compte en moins d&apos;une minute et accédez à votre portefeuille numérique sécurisé.
+            Créez votre compte en moins d&apos;une minute et commencez à encaisser via QR Code.
           </p>
 
           <div className="mt-12 space-y-5 border-t border-gray-200/50 pt-10">
             {[
-              { title: "Dépôt par carte", desc: "Alimentez votre portefeuille par Visa ou Mastercard.", icon: CreditCard, color: "text-emerald-600 bg-emerald-50" },
-              { title: "Transferts gratuits", desc: "Envoyez de l'argent entre utilisateurs Binq, sans frais.", icon: SendHorizonal, color: "text-cyan-600 bg-cyan-500/10" },
+              { title: "Encaissement QR Code", desc: "Générez un QR et recevez des paiements carte ou mobile money.", icon: CreditCard, color: "text-emerald-600 bg-emerald-50" },
+              { title: "Marketplace intégrée", desc: "Vendez vos produits sur la marketplace Binq, sans boutique physique.", icon: SendHorizonal, color: "text-cyan-600 bg-cyan-500/10" },
               { title: "Sécurité maximale", desc: "Chiffrement AES-256 et infrastructure certifiée.", icon: ShieldCheck, color: "text-violet-400 bg-violet-500/10" },
             ].map((item, i) => (
               <div key={i} className="flex items-start gap-4">

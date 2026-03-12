@@ -24,10 +24,10 @@ interface SubscriptionModalProps {
 }
 
 const avantages = [
-  { icon: Sparkles, label: "Transferts illimités", desc: "Envoyez et recevez sans limites" },
+  { icon: Sparkles, label: "Boutique en ligne", desc: "Vendez vos produits sans limites" },
   { icon: Users, label: "QR Code marchand", desc: "Encaissez vos clients par QR Code" },
-  { icon: BarChart3, label: "Tableau de bord", desc: "Suivi complet de vos transactions" },
-  { icon: Headphones, label: "Support prioritaire", desc: "Assistance dédiée 7j/7" },
+  { icon: BarChart3, label: "Tableau de bord", desc: "Suivi complet de vos ventes" },
+  { icon: Headphones, label: "Support prioritaire", desc: "Assistance 7j/7" },
 ];
 
 export default function SubscriptionModal({ isOpen, onClose }: SubscriptionModalProps) {

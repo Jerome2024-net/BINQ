@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback } from "react";
-import Link from "next/link";
 import { useAuth } from "@/contexts/AuthContext";
 import { useRouter } from "next/navigation";
 import { QRCodeSVG } from "qrcode.react";
@@ -24,11 +23,8 @@ import {
   RefreshCw,
   Banknote,
   ArrowDownLeft,
-  Wallet,
-  SendHorizonal,
-  ArrowDownToLine,
-  Eye,
-  EyeOff,
+  Zap,
+  ShieldCheck,
 } from "lucide-react";
 import { type DeviseCode, DEVISES, DEFAULT_DEVISE, formatMontant, DEVISE_LIST } from "@/lib/currencies";
 import { playPaymentSound } from "@/lib/sounds";
@@ -93,11 +89,6 @@ export default function QRCodePage() {
   const [deletingTerminalId, setDeletingTerminalId] = useState<string | null>(null);
   const [preFillMontant, setPreFillMontant] = useState("");
   const [showPreFill, setShowPreFill] = useState(false);
-
-  // ── Wallet state ──
-  const [solde, setSolde] = useState(0);
-  const [showSolde, setShowSolde] = useState(true);
-  const [walletLoading, setWalletLoading] = useState(true);
 
   const origin = typeof window !== "undefined" ? window.location.origin : "";
 
@@ -421,20 +412,6 @@ export default function QRCodePage() {
     if (user) fetchTerminals();
   }, [user, fetchTerminals]);
 
-  // ── Wallet: Fetch balance ──
-  const fetchWallet = useCallback(async () => {
-    try {
-      const res = await fetch(`/api/wallet?devise=${devise}`);
-      const data = await res.json();
-      if (data.wallet) setSolde(data.wallet.solde || 0);
-    } catch { /* ignore */ }
-    finally { setWalletLoading(false); }
-  }, [devise]);
-
-  useEffect(() => {
-    if (user) fetchWallet();
-  }, [user, fetchWallet]);
-
   useEffect(() => {
     return () => { if (pollingRef.current) clearInterval(pollingRef.current); };
   }, []);
@@ -593,50 +570,31 @@ export default function QRCodePage() {
 
   return (
     <div className="space-y-5 pb-28">
-      {/* ── Wallet Balance Hero ── */}
-      <div className="relative overflow-hidden rounded-2xl sm:rounded-3xl bg-gradient-to-br from-emerald-600 via-emerald-500 to-cyan-500 p-4 sm:p-5 shadow-xl shadow-emerald-500/25">
-        <div className="absolute inset-0 opacity-10" style={{ backgroundImage: "radial-gradient(circle, white 1px, transparent 1px)", backgroundSize: "16px 16px" }} />
-        <div className="relative z-10">
-          <div className="flex items-center justify-between mb-2">
-            <div className="flex items-center gap-2">
-              <div className="w-7 h-7 rounded-lg bg-white/20 backdrop-blur-sm flex items-center justify-center">
-                <Wallet className="w-3.5 h-3.5 text-white" />
-              </div>
-              <div className="flex items-center bg-white/10 rounded-lg overflow-hidden">
-                {DEVISE_LIST.map((d) => (
-                  <button key={d} onClick={() => { setDevise(d); localStorage.setItem("binq_devise", d); fetchWallet(); }} className={`px-2.5 py-1 text-[10px] font-bold transition-all ${devise === d ? "bg-white/30 text-white" : "text-white/60 hover:text-white/80"}`}>
-                    {DEVISES[d].flag} {d}
-                  </button>
-                ))}
-              </div>
-            </div>
-            <button onClick={() => setShowSolde(!showSolde)} className="p-2 rounded-xl bg-white/10 hover:bg-white/20 transition-colors">
-              {showSolde ? <EyeOff className="w-4 h-4 text-white/70" /> : <Eye className="w-4 h-4 text-white/70" />}
-            </button>
-          </div>
-          <p className="text-2xl sm:text-3xl font-black tracking-tight text-white mb-3">
-            {walletLoading ? "..." : showSolde ? formatMontant(solde, devise) : "\u2022\u2022\u2022\u2022\u2022\u2022"}
-          </p>
-          {/* Quick Actions */}
-          <div className="grid grid-cols-4 gap-2">
-            <Link href="/deposer" className="flex flex-col items-center gap-1 py-2 rounded-xl bg-white/15 backdrop-blur-sm hover:bg-white/25 transition-all active:scale-95 text-white">
-              <ArrowDownToLine className="w-4 h-4" />
-              <span className="text-[10px] font-bold">D&eacute;poser</span>
-            </Link>
-            <Link href="/envoyer" className="flex flex-col items-center gap-1 py-2 rounded-xl bg-white/15 backdrop-blur-sm hover:bg-white/25 transition-all active:scale-95 text-white">
-              <SendHorizonal className="w-4 h-4" />
-              <span className="text-[10px] font-bold">Envoyer</span>
-            </Link>
-            <button onClick={() => { hapticLight(); setTab("scanner"); }} className="flex flex-col items-center gap-1 py-2 rounded-xl bg-white/15 backdrop-blur-sm hover:bg-white/25 transition-all active:scale-95 text-white">
-              <ScanLine className="w-4 h-4" />
-              <span className="text-[10px] font-bold">Scanner</span>
-            </button>
-            <button onClick={() => { hapticLight(); setTab("mon-qr"); }} className="flex flex-col items-center gap-1 py-2 rounded-xl bg-white/15 backdrop-blur-sm hover:bg-white/25 transition-all active:scale-95 text-white">
-              <ArrowDownLeft className="w-4 h-4" />
-              <span className="text-[10px] font-bold">Recevoir</span>
-            </button>
-          </div>
+      {/* ── Header ── */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-black text-gray-900 tracking-tight">QR Pay</h1>
+          <p className="text-xs text-gray-500 mt-0.5">Passerelle de paiement QR Code</p>
         </div>
+        <div className="flex items-center gap-1.5">
+          {DEVISE_LIST.map((d) => (
+            <button key={d} onClick={() => { setDevise(d); localStorage.setItem("binq_devise", d); }} className={`px-2.5 py-1.5 rounded-lg text-xs font-bold transition-all ${devise === d ? "bg-emerald-50 text-emerald-600 ring-1 ring-emerald-200" : "bg-gray-50 text-gray-500 hover:text-gray-700"}`}>
+              {DEVISES[d].flag} {d}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* ── Gateway Info Strip ── */}
+      <div className="flex items-center gap-3 rounded-xl bg-emerald-50 border border-emerald-200/40 px-4 py-3">
+        <div className="w-8 h-8 rounded-lg bg-emerald-100 flex items-center justify-center shrink-0">
+          <ShieldCheck className="w-4 h-4 text-emerald-600" />
+        </div>
+        <div className="flex-1 min-w-0">
+          <p className="text-xs font-bold text-gray-900">Paiement direct &middot; sans interm&eacute;diaire</p>
+          <p className="text-[10px] text-gray-500 mt-0.5">L&apos;acheteur scanne et paye via ses moyens habituels. Vous recevez directement.</p>
+        </div>
+        <Zap className="w-4 h-4 text-emerald-500 shrink-0" />
       </div>
 
       {/* Tabs */}

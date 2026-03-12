@@ -16,13 +16,12 @@ import {
   Sparkles,
   X,
   Eye,
-  Wallet,
   ArrowRight,
   Flame,
   Tag,
 } from "lucide-react";
-import { formatMontant } from "@/lib/currencies";
 import { type DeviseCode, DEFAULT_DEVISE } from "@/lib/currencies";
+import { formatMontant } from "@/lib/currencies";
 
 interface Categorie {
   id: string;
@@ -79,7 +78,6 @@ export default function DashboardPage() {
   const [selectedCategorie, setSelectedCategorie] = useState<string | null>(null);
   const [viewMode, setViewMode] = useState<ViewMode>("produits");
   const [sort, setSort] = useState("recent");
-  const [solde, setSolde] = useState<number | null>(null);
   const [devise] = useState<DeviseCode>(() => {
     if (typeof window !== "undefined") {
       return (localStorage.getItem("binq_devise") as DeviseCode) || DEFAULT_DEVISE;
@@ -87,34 +85,26 @@ export default function DashboardPage() {
     return DEFAULT_DEVISE;
   });
 
-  // Load categories + initial data + wallet balance
+  // Load categories + initial data
   useEffect(() => {
     const load = async () => {
       try {
-        const fetches = [
+        const [catRes, prodRes, boutRes] = await Promise.all([
           fetch("/api/categories"),
           fetch("/api/produits?limit=20"),
           fetch("/api/boutiques?limit=10"),
-        ];
-        if (user) fetches.push(fetch(`/api/wallet?devise=${devise}`));
-
-        const responses = await Promise.all(fetches);
-        const [catData, prodData, boutData] = await Promise.all(
-          responses.slice(0, 3).map((r) => r.json())
-        );
+        ]);
+        const [catData, prodData, boutData] = await Promise.all([
+          catRes.json(), prodRes.json(), boutRes.json()
+        ]);
         setCategories(catData.categories || []);
         setProduits(prodData.produits || []);
         setBoutiques(boutData.boutiques || []);
-
-        if (user && responses[3]) {
-          const walletData = await responses[3].json();
-          if (walletData.wallet) setSolde(walletData.wallet.solde || 0);
-        }
       } catch { /* ignore */ }
       finally { setLoading(false); }
     };
     load();
-  }, [user, devise]);
+  }, []);
 
   // Search / filter
   useEffect(() => {
@@ -159,20 +149,12 @@ export default function DashboardPage() {
   return (
     <div className="space-y-4 pb-28">
 
-      {/* ── Greeting + Wallet Strip ── */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-xl font-black tracking-tight">
-            Salut, <span className="text-emerald-600">{user?.prenom || "là"}</span> 👋
-          </h1>
-          <p className="text-gray-500 text-xs mt-0.5">Trouvez les meilleurs produits locaux</p>
-        </div>
-        {user && solde !== null && (
-          <Link href="/portefeuille" className="flex items-center gap-2 px-3 py-2 rounded-xl bg-emerald-50 border border-emerald-100 hover:bg-emerald-100 transition-all active:scale-95">
-            <Wallet className="w-4 h-4 text-emerald-600" />
-            <span className="text-sm font-black text-emerald-700">{formatMontant(solde, devise)}</span>
-          </Link>
-        )}
+      {/* ── Greeting ── */}
+      <div>
+        <h1 className="text-xl font-black tracking-tight">
+          Salut, <span className="text-emerald-600">{user?.prenom || "là"}</span> 👋
+        </h1>
+        <p className="text-gray-500 text-xs mt-0.5">Trouvez les meilleurs produits locaux</p>
       </div>
 
       {/* ── Search ── */}

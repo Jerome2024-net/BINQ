@@ -7,9 +7,9 @@ import NavigationProgress from "@/components/NavigationProgress";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Binq - Mobile Money",
+  title: "Binq - Passerelle de paiement QR",
   description:
-    "Envoyez, recevez et déposez de l'argent instantanément. Portefeuille mobile sécurisé, transferts gratuits entre utilisateurs.",
+    "Encaissez vos clients via QR Code. Paiements par carte et mobile money. Marketplace intégrée pour le commerce africain.",
   manifest: "/manifest.json",
   themeColor: "#0a0a0a",
   icons: {

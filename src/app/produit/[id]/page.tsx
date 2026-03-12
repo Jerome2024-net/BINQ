@@ -18,13 +18,13 @@ import {
   Loader2,
   ArrowLeft,
   Share2,
-  Wallet,
   CheckCircle2,
   Zap,
   Shield,
   Eye,
   Tag,
   LogIn,
+  CreditCard,
 } from "lucide-react";
 import { formatMontant } from "@/lib/currencies";
 import type { DeviseCode } from "@/lib/currencies";
@@ -162,7 +162,7 @@ export default function ProduitPage() {
           <div className="bg-gray-50/50 rounded-xl p-3 mb-5 border border-gray-200/50 text-left space-y-1.5">
             <div className="flex justify-between text-xs"><span className="text-gray-500">Boutique</span><span className="text-gray-700 font-semibold">{produit.boutique.nom}</span></div>
             <div className="flex justify-between text-xs"><span className="text-gray-500">Référence</span><span className="text-gray-700 font-mono">{boughtRef}</span></div>
-            <div className="flex justify-between text-xs"><span className="text-gray-500">Paiement</span><span className="text-emerald-600 font-semibold">Binq Wallet — 0%</span></div>
+            <div className="flex justify-between text-xs"><span className="text-gray-500">Paiement</span><span className="text-emerald-600 font-semibold">Carte / Mobile Money</span></div>
           </div>
 
           {/* Contact seller */}
@@ -188,8 +188,8 @@ export default function ProduitPage() {
             <Link href="/explorer" className="flex-1 inline-flex items-center justify-center gap-2 bg-emerald-500 text-white px-4 py-3 rounded-xl font-bold hover:bg-emerald-400 transition text-sm">
               <ShoppingBag className="w-4 h-4" />Continuer
             </Link>
-            <Link href="/portefeuille" className="inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-gray-100 text-gray-700 font-bold text-sm hover:bg-gray-200 transition">
-              <Wallet className="w-4 h-4" />
+            <Link href="/commandes" className="inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-gray-100 text-gray-700 font-bold text-sm hover:bg-gray-200 transition">
+              Commandes
             </Link>
           </div>
         </div>
@@ -309,9 +309,9 @@ export default function ProduitPage() {
 
           {user && !isOwnProduct && !outOfStock && (
             <div className="flex items-center justify-center gap-4 mt-3">
-              <span className="flex items-center gap-1 text-gray-400 text-[10px]"><Zap className="w-3 h-3" />Instantané</span>
-              <span className="flex items-center gap-1 text-gray-400 text-[10px]"><Shield className="w-3 h-3" />0% frais</span>
-              <span className="flex items-center gap-1 text-gray-400 text-[10px]"><Wallet className="w-3 h-3" />Binq Wallet</span>
+              <span className="flex items-center gap-1 text-gray-400 text-[10px]"><Zap className="w-3 h-3" />Instantan&eacute;</span>
+              <span className="flex items-center gap-1 text-gray-400 text-[10px]"><Shield className="w-3 h-3" />S&eacute;curis&eacute;</span>
+              <span className="flex items-center gap-1 text-gray-400 text-[10px]"><CreditCard className="w-3 h-3" />Carte / Mobile Money</span>
             </div>
           )}
         </div>

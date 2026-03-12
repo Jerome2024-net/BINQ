@@ -2,22 +2,27 @@
 
 import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/contexts/ToastContext";
 import { hapticSuccess, hapticError } from "@/lib/haptics";
 import { type DeviseCode, DEVISES, DEVISE_LIST, DEFAULT_DEVISE, formatMontant } from "@/lib/currencies";
+import {
+  getAvailableMethods,
+  getPaymentMethod,
+  calculateFees,
+  type PaymentMethodId,
+} from "@/lib/payment-gateway";
 import Link from "next/link";
 import {
   Loader2,
   CheckCircle2,
   AlertTriangle,
-  LogIn,
-  Wallet,
+  CreditCard,
+  Smartphone,
   Send,
-  User,
   QrCode,
   MessageSquare,
   Share2,
+  ShieldCheck,
 } from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
 import dynamic from "next/dynamic";
@@ -33,7 +38,6 @@ interface UserPublic {
 export default function PayUserPage() {
   const params = useParams();
   const router = useRouter();
-  const { user } = useAuth();
   const { showToast } = useToast();
   const userId = params.id as string;
 
@@ -43,6 +47,7 @@ export default function PayUserPage() {
   const [montant, setMontant] = useState("");
   const [message, setMessage] = useState("");
   const [devise, setDevise] = useState<DeviseCode>(DEFAULT_DEVISE);
+  const [selectedMethod, setSelectedMethod] = useState<PaymentMethodId | null>(null);
   const [sending, setSending] = useState(false);
   const [sent, setSent] = useState(false);
   const [sentRef, setSentRef] = useState("");
@@ -50,6 +55,13 @@ export default function PayUserPage() {
   const [sentDate, setSentDate] = useState("");
 
   const deviseConfig = DEVISES[devise];
+  const methods = getAvailableMethods();
+
+  useEffect(() => {
+    if (methods.length > 0 && !selectedMethod) {
+      setSelectedMethod(methods[0].id);
+    }
+  }, [methods, selectedMethod]);
 
   useEffect(() => {
     if (!userId) return;
@@ -71,16 +83,15 @@ export default function PayUserPage() {
     fetchUser();
   }, [userId]);
 
-  const handleSend = async () => {
-    if (!user || !targetUser) return;
+  const parsedMontant = parseFloat(montant) || 0;
+  const fees = selectedMethod && parsedMontant > 0
+    ? calculateFees(parsedMontant, selectedMethod)
+    : null;
 
-    if (user.id === targetUser.id) {
-      showToast("error", "Erreur", "Vous ne pouvez pas vous envoyer de l\u2019argent");
-      return;
-    }
+  const handlePay = async () => {
+    if (!targetUser || !selectedMethod) return;
 
-    const parsedMontant = parseFloat(montant);
-    if (!parsedMontant || parsedMontant <= 0) {
+    if (parsedMontant <= 0) {
       showToast("error", "Erreur", "Veuillez saisir un montant valide");
       return;
     }
@@ -91,33 +102,42 @@ export default function PayUserPage() {
 
     setSending(true);
     try {
-      const res = await fetch("/api/transferts/send", {
+      const res = await fetch("/api/payments/create", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          destinataire_id: targetUser.id,
+          vendeur_id: targetUser.id,
           montant: parsedMontant,
           devise,
-          message: message.trim() || null,
+          methode: selectedMethod,
+          description: message.trim() || `Paiement a ${targetUser.prenom} ${targetUser.nom}`,
         }),
       });
 
       const data = await res.json();
 
       if (!res.ok) {
-        showToast("error", "Erreur", data.error || "Envoi échoué");
+        showToast("error", "Erreur", data.error || "Paiement echoue");
+        hapticError();
         return;
       }
 
+      // If payment gateway returns a redirect URL, go there
+      if (data.redirectUrl) {
+        window.location.href = data.redirectUrl;
+        return;
+      }
+
+      // Otherwise, show success
       setSent(true);
-      setSentRef(data.reference || data.transfert?.reference || "");
+      setSentRef(data.reference || "");
       setSentMontant(parsedMontant);
       setSentDate(new Date().toLocaleString("fr-FR", { dateStyle: "medium", timeStyle: "short" }));
       hapticSuccess();
-      showToast("success", "Envoyé", `${formatMontant(parsedMontant, devise)} envoyés avec succès`);
+      showToast("success", "Paiement initie", `${formatMontant(parsedMontant, devise)} en cours de traitement`);
     } catch {
       hapticError();
-      showToast("error", "Erreur", "Erreur réseau");
+      showToast("error", "Erreur", "Erreur reseau");
     } finally {
       setSending(false);
     }
@@ -149,7 +169,7 @@ export default function PayUserPage() {
             href="/dashboard"
             className="inline-flex items-center gap-2 bg-emerald-500 text-white px-6 py-3 rounded-xl font-semibold hover:bg-emerald-400 transition"
           >
-            Retour à l&apos;accueil
+            {"Retour a l'accueil"}
           </Link>
         </div>
       </div>
@@ -158,10 +178,10 @@ export default function PayUserPage() {
 
   // Success
   if (sent && targetUser) {
-    const receiptText = `Binq Pay — Envoi\n${formatMontant(sentMontant, devise)}\nÀ: ${targetUser.prenom} ${targetUser.nom}\nRéf: ${sentRef}\n${sentDate}`;
+    const receiptText = `Binq Pay\n${formatMontant(sentMontant, devise)}\nVendeur: ${targetUser.prenom} ${targetUser.nom}\nRef: ${sentRef}\n${sentDate}`;
     const handleShareReceipt = async () => {
       if (navigator.share) {
-        try { await navigator.share({ title: "Reçu Binq", text: receiptText }); } catch { /* cancelled */ }
+        try { await navigator.share({ title: "Recu Binq", text: receiptText }); } catch { /* cancelled */ }
       } else {
         try { await navigator.clipboard.writeText(receiptText); } catch { /* ignore */ }
       }
@@ -173,20 +193,20 @@ export default function PayUserPage() {
           <div className="w-20 h-20 bg-emerald-50 rounded-full flex items-center justify-center mx-auto mb-4 animate-in zoom-in duration-500">
             <CheckCircle2 className="w-10 h-10 text-emerald-600" />
           </div>
-          <h1 className="text-2xl font-black text-gray-900 mb-1">Envoi effectué !</h1>
+          <h1 className="text-2xl font-black text-gray-900 mb-1">Paiement effectue !</h1>
           <p className="text-3xl font-black text-emerald-600 mb-2">{formatMontant(sentMontant, devise)}</p>
           <p className="text-gray-600 text-sm mb-1">
-            À <span className="text-gray-900 font-semibold">{targetUser.prenom} {targetUser.nom}</span>
+            {"Vendeur : "}<span className="text-gray-900 font-semibold">{targetUser.prenom} {targetUser.nom}</span>
           </p>
 
           {/* Receipt */}
           <div className="bg-gray-50/50 rounded-xl p-3 my-4 border border-gray-200/50 text-left space-y-1.5">
-            <div className="flex justify-between text-xs"><span className="text-gray-700">Référence</span><span className="text-gray-700 font-mono">{sentRef}</span></div>
+            <div className="flex justify-between text-xs"><span className="text-gray-700">Reference</span><span className="text-gray-700 font-mono">{sentRef}</span></div>
             <div className="flex justify-between text-xs"><span className="text-gray-700">Date</span><span className="text-gray-700">{sentDate}</span></div>
-            <div className="flex justify-between text-xs"><span className="text-gray-700">Statut</span><span className="text-emerald-600 font-semibold">Confirmé</span></div>
+            <div className="flex justify-between text-xs"><span className="text-gray-700">Statut</span><span className="text-emerald-600 font-semibold">Confirme</span></div>
           </div>
 
-          {/* QR Receipt - scannable proof */}
+          {/* QR Receipt */}
           <div className="flex flex-col items-center my-3">
             <div className="bg-white rounded-lg p-2">
               <QRCodeSVG
@@ -198,22 +218,21 @@ export default function PayUserPage() {
                 includeMargin={true}
               />
             </div>
-            <p className="text-[9px] text-gray-600 mt-1.5 flex items-center gap-1"><QrCode className="w-2.5 h-2.5" />Preuve de paiement vérifiable</p>
+            <p className="text-[9px] text-gray-600 mt-1.5 flex items-center gap-1"><QrCode className="w-2.5 h-2.5" />Preuve de paiement</p>
           </div>
 
           <div className="flex items-center gap-2">
             <Link
-              href="/portefeuille"
+              href="/dashboard"
               className="flex-1 inline-flex items-center justify-center gap-2 bg-emerald-500 text-white px-4 py-3 rounded-xl font-bold hover:bg-emerald-400 transition text-sm"
             >
-              <Wallet className="w-4 h-4" />
-              Portefeuille
+              Accueil
             </Link>
             <button
               onClick={handleShareReceipt}
               className="flex items-center justify-center gap-1.5 px-4 py-3 rounded-xl bg-gray-50/80 hover:bg-gray-100 text-gray-700 font-bold text-sm transition active:scale-95"
             >
-              <Share2 className="w-4 h-4" />Reçu
+              <Share2 className="w-4 h-4" />Recu
             </button>
           </div>
         </div>
@@ -235,7 +254,7 @@ export default function PayUserPage() {
           </h2>
           <p className="text-gray-700 text-sm mt-1 flex items-center justify-center gap-1.5">
             <QrCode className="w-3.5 h-3.5" />
-            Paiement par QR Code
+            Passerelle de paiement
           </p>
         </div>
 
@@ -257,102 +276,145 @@ export default function PayUserPage() {
             <p className="text-lg font-semibold text-gray-900">
               {targetUser.prenom} {targetUser.nom}
             </p>
-            <p className="text-gray-600 text-sm">Envoyer de l&apos;argent</p>
+            <p className="text-gray-600 text-sm">Payer ce vendeur</p>
           </div>
 
-          {!user ? (
-            <div className="text-center">
-              <p className="text-gray-600 text-sm mb-4">
-                Connectez-vous pour envoyer de l&apos;argent
-              </p>
-              <Link
-                href={`/connexion?redirect=/pay/user/${userId}`}
-                className="w-full inline-flex items-center justify-center gap-2 bg-emerald-500 text-white px-6 py-3.5 rounded-xl font-bold hover:bg-emerald-400 transition"
-              >
-                <LogIn className="w-5 h-5" />
-                Se connecter
-              </Link>
-              <p className="text-xs text-gray-600 mt-3">
-                Pas encore de compte ?{" "}
-                <Link href={`/inscription?redirect=/pay/user/${userId}`} className="text-emerald-600 hover:underline">
-                  Créer un compte
-                </Link>
-              </p>
+          <div className="space-y-4">
+            {/* Devise */}
+            <div className="flex gap-2">
+              {DEVISE_LIST.map((d) => {
+                const dc = DEVISES[d];
+                return (
+                  <button
+                    key={d}
+                    onClick={() => { setDevise(d); setSelectedMethod(null); }}
+                    className={`flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-sm font-bold transition-all ${
+                      devise === d
+                        ? "bg-emerald-50 text-emerald-600 border border-emerald-200/60"
+                        : "bg-gray-50/50 text-gray-600 border border-gray-200/50 hover:bg-gray-100/50"
+                    }`}
+                  >
+                    <span>{dc.flag}</span>
+                    <span>{dc.code}</span>
+                  </button>
+                );
+              })}
             </div>
-          ) : (
-            <div className="space-y-4">
-              {/* Devise */}
-              <div className="flex gap-2">
-                {DEVISE_LIST.map((d) => {
-                  const dc = DEVISES[d];
+
+            {/* Montant */}
+            <div className="bg-gray-50/50 rounded-2xl p-5 text-center border border-gray-200/50">
+              <p className="text-sm text-gray-600 mb-3">Montant</p>
+              <div className="relative">
+                <input
+                  type="number"
+                  min={deviseConfig.minTransfer}
+                  step={deviseConfig.decimals === 0 ? "1" : "0.01"}
+                  placeholder={deviseConfig.decimals === 0 ? "5 000" : "10.00"}
+                  value={montant}
+                  onChange={(e) => setMontant(e.target.value)}
+                  className="w-full bg-transparent text-3xl font-black text-gray-900 text-center outline-none placeholder-gray-400 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                />
+                <span className="text-gray-600 text-lg absolute right-4 top-1/2 -translate-y-1/2">
+                  {deviseConfig.symbol}
+                </span>
+              </div>
+            </div>
+
+            {/* Payment methods */}
+            <div>
+              <p className="text-sm font-semibold text-gray-700 mb-2">Moyen de paiement</p>
+              <div className="grid grid-cols-1 gap-2">
+                {methods.map((m) => {
+                  const isActive = selectedMethod === m.id;
+                  const methodFees = parsedMontant > 0 ? calculateFees(parsedMontant, m.id) : null;
                   return (
                     <button
-                      key={d}
-                      onClick={() => setDevise(d)}
-                      className={`flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-sm font-bold transition-all ${
-                        devise === d
-                          ? "bg-emerald-50 text-emerald-600 border border-emerald-200/60"
-                          : "bg-gray-50/50 text-gray-600 border border-gray-200/50 hover:bg-gray-100/50"
+                      key={m.id}
+                      onClick={() => setSelectedMethod(m.id)}
+                      className={`flex items-center gap-3 p-3 rounded-xl border transition-all text-left ${
+                        isActive
+                          ? "border-emerald-300 bg-emerald-50/80"
+                          : "border-gray-200/60 bg-white hover:bg-gray-50"
                       }`}
                     >
-                      <span>{dc.flag}</span>
-                      <span>{dc.code}</span>
+                      <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${
+                        isActive ? "bg-emerald-100" : "bg-gray-100"
+                      }`}>
+                        {m.provider === "stripe" ? (
+                          <CreditCard className={`w-5 h-5 ${isActive ? "text-emerald-600" : "text-gray-600"}`} />
+                        ) : (
+                          <Smartphone className={`w-5 h-5 ${isActive ? "text-emerald-600" : "text-gray-600"}`} />
+                        )}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className={`text-sm font-semibold ${isActive ? "text-emerald-700" : "text-gray-900"}`}>{m.label}</p>
+                        {methodFees && (
+                          <p className="text-xs text-gray-500">
+                            Frais : {formatMontant(methodFees.frais, devise)}
+                          </p>
+                        )}
+                      </div>
+                      <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
+                        isActive ? "border-emerald-500" : "border-gray-300"
+                      }`}>
+                        {isActive && <div className="w-2.5 h-2.5 rounded-full bg-emerald-500" />}
+                      </div>
                     </button>
                   );
                 })}
               </div>
+            </div>
 
-              {/* Montant */}
-              <div className="bg-gray-50/50 rounded-2xl p-5 text-center border border-gray-200/50">
-                <p className="text-sm text-gray-600 mb-3">Montant à envoyer</p>
-                <div className="relative">
-                  <input
-                    type="number"
-                    min={deviseConfig.minTransfer}
-                    step={deviseConfig.decimals === 0 ? "1" : "0.01"}
-                    placeholder={deviseConfig.decimals === 0 ? "5 000" : "10.00"}
-                    value={montant}
-                    onChange={(e) => setMontant(e.target.value)}
-                    className="w-full bg-transparent text-3xl font-black text-gray-900 text-center outline-none placeholder-gray-400 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                  />
-                  <span className="text-gray-600 text-lg absolute right-4 top-1/2 -translate-y-1/2">
-                    {deviseConfig.symbol}
-                  </span>
+            {/* Fees summary */}
+            {fees && parsedMontant > 0 && (
+              <div className="bg-gray-50/50 rounded-xl p-3 border border-gray-200/50 space-y-1 text-sm">
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Montant</span>
+                  <span className="text-gray-900 font-medium">{formatMontant(parsedMontant, devise)}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Frais</span>
+                  <span className="text-gray-900 font-medium">{formatMontant(fees.frais, devise)}</span>
+                </div>
+                <div className="flex justify-between pt-1 border-t border-gray-200/50">
+                  <span className="text-gray-900 font-bold">Total</span>
+                  <span className="text-emerald-600 font-bold">{formatMontant(fees.totalPayeur, devise)}</span>
                 </div>
               </div>
+            )}
 
-              {/* Message */}
-              <div className="relative">
-                <MessageSquare className="absolute left-3 top-3 w-4 h-4 text-gray-600" />
-                <input
-                  type="text"
-                  maxLength={100}
-                  placeholder="Message (optionnel)"
-                  value={message}
-                  onChange={(e) => setMessage(e.target.value)}
-                  className="w-full bg-gray-50/80 border border-gray-200/60 rounded-xl pl-9 pr-4 py-3 text-gray-900 placeholder-gray-400 outline-none focus:border-emerald-200 transition text-sm"
-                />
-              </div>
-
-              {/* Send button */}
-              <button
-                onClick={handleSend}
-                disabled={sending || !montant || parseFloat(montant) <= 0}
-                className="w-full flex items-center justify-center gap-2 bg-emerald-500 text-white py-3.5 rounded-xl font-bold hover:bg-emerald-400 transition disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {sending ? (
-                  <Loader2 className="w-5 h-5 animate-spin" />
-                ) : (
-                  <Send className="w-5 h-5" />
-                )}
-                {sending ? "Envoi en cours..." : "Envoyer"}
-              </button>
+            {/* Message */}
+            <div className="relative">
+              <MessageSquare className="absolute left-3 top-3 w-4 h-4 text-gray-600" />
+              <input
+                type="text"
+                maxLength={100}
+                placeholder="Message (optionnel)"
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                className="w-full bg-gray-50/80 border border-gray-200/60 rounded-xl pl-9 pr-4 py-3 text-gray-900 placeholder-gray-400 outline-none focus:border-emerald-200 transition text-sm"
+              />
             </div>
-          )}
+
+            {/* Pay button */}
+            <button
+              onClick={handlePay}
+              disabled={sending || !montant || parsedMontant <= 0 || !selectedMethod}
+              className="w-full flex items-center justify-center gap-2 bg-emerald-500 text-white py-3.5 rounded-xl font-bold hover:bg-emerald-400 transition disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {sending ? (
+                <Loader2 className="w-5 h-5 animate-spin" />
+              ) : (
+                <Send className="w-5 h-5" />
+              )}
+              {sending ? "Paiement en cours..." : "Payer"}
+            </button>
+          </div>
         </div>
 
-        <p className="text-center text-xs text-gray-600 mt-6">
-          Paiement sécurisé via Binq. Vos fonds sont débités de votre portefeuille.
+        <p className="text-center text-xs text-gray-600 mt-6 flex items-center justify-center gap-1.5">
+          <ShieldCheck className="w-3.5 h-3.5" />
+          Paiement securise via Binq. Aucun fonds stocke.
         </p>
       </div>
     </div>

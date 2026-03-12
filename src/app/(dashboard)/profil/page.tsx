@@ -2,11 +2,10 @@
 
 import { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
-import { useFinance } from "@/contexts/FinanceContext";
 import { useToast } from "@/contexts/ToastContext";
 import { hapticSuccess, hapticMedium } from "@/lib/haptics";
 import AvatarUpload from "@/components/AvatarUpload";
-import { formatMontant } from "@/lib/currencies";
+
 import {
   User as UserIcon,
   Mail,
@@ -26,7 +25,7 @@ import {
   CheckCircle2,
   Loader2,
   ArrowLeft,
-  Wallet,
+  ShoppingBag,
   Copy,
   ChevronRight,
   Lock,
@@ -38,7 +37,6 @@ type TabKey = "infos" | "securite" | "preferences";
 
 export default function ProfilPage() {
   const { user, updateProfile } = useAuth();
-  const { wallet } = useFinance();
   const { showToast } = useToast();
   const [loading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState<TabKey>("infos");
@@ -263,9 +261,9 @@ export default function ProfilPage() {
       {/* Stats */}
       <div className="grid grid-cols-3 gap-3">
         <div className="bg-gray-50 border border-gray-200/50 rounded-2xl p-4 text-center">
-          <Wallet className="w-4 h-4 text-emerald-600 mx-auto mb-1.5" />
-          <p className="text-lg font-bold text-emerald-600">{formatMontant(wallet?.solde ?? 0, (wallet?.devise as "EUR" | "XOF") || "XOF")}</p>
-          <p className="text-[10px] text-gray-700 mt-0.5">Solde</p>
+          <ShoppingBag className="w-4 h-4 text-emerald-600 mx-auto mb-1.5" />
+          <p className="text-lg font-bold text-emerald-600">Vendeur</p>
+          <p className="text-[10px] text-gray-700 mt-0.5">Statut</p>
         </div>
         <div className="bg-gray-50 border border-gray-200/50 rounded-2xl p-4 text-center">
           <TrendingUp className="w-4 h-4 text-cyan-600 mx-auto mb-1.5" />

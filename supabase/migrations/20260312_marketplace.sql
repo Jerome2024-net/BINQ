@@ -87,7 +87,7 @@ CREATE TABLE IF NOT EXISTS commandes (
   montant NUMERIC NOT NULL,
   devise TEXT DEFAULT 'XOF',
   statut TEXT DEFAULT 'payee' CHECK (statut IN ('payee', 'confirmee', 'livree', 'annulee')),
-  methode_paiement TEXT DEFAULT 'binq_wallet',
+  methode_paiement TEXT DEFAULT 'carte',
   reference TEXT UNIQUE,
   note TEXT,
   created_at TIMESTAMPTZ DEFAULT now()
