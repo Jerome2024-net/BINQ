@@ -9,7 +9,6 @@ import {
   ShoppingBag,
   MapPin,
   BadgeCheck,
-
   Loader2,
   ArrowLeft,
   Share2,
@@ -21,6 +20,10 @@ import {
   ShieldCheck,
   ChevronDown,
   Zap,
+  Copy,
+  Check,
+  X,
+  ExternalLink,
 } from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
 import { formatMontant } from "@/lib/currencies";
@@ -72,6 +75,8 @@ export default function BoutiquePage() {
   const [selectedCat, setSelectedCat] = useState<string | null>(null);
   const [shared, setShared] = useState(false);
   const [showQR, setShowQR] = useState(false);
+  const [showQRModal, setShowQRModal] = useState(false);
+  const [copied, setCopied] = useState(false);
 
   useEffect(() => {
     if (!slug) return;
@@ -88,14 +93,35 @@ export default function BoutiquePage() {
     load();
   }, [slug]);
 
+  const boutiqueUrl = typeof window !== "undefined" ? `${window.location.origin}/boutique/${boutique?.slug || slug}` : "";
+
   const handleShare = async () => {
     if (!boutique) return;
-    const url = `${window.location.origin}/boutique/${boutique.slug}`;
     if (navigator.share) {
-      try { await navigator.share({ title: boutique.nom, text: `Decouvrez ${boutique.nom} sur Binq`, url }); } catch { /* cancelled */ }
+      try { await navigator.share({ title: boutique.nom, text: `Decouvrez ${boutique.nom} sur Binq`, url: boutiqueUrl }); } catch { /* cancelled */ }
     } else {
-      try { await navigator.clipboard.writeText(url); setShared(true); setTimeout(() => setShared(false), 2000); } catch { /* ignore */ }
+      try { await navigator.clipboard.writeText(boutiqueUrl); setShared(true); setTimeout(() => setShared(false), 2000); } catch { /* ignore */ }
     }
+  };
+
+  const handleCopyLink = async () => {
+    try {
+      await navigator.clipboard.writeText(boutiqueUrl);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch { /* ignore */ }
+  };
+
+  const shareToSocial = (platform: string) => {
+    const text = encodeURIComponent(`Decouvrez ${boutique?.nom} sur Binq`);
+    const url = encodeURIComponent(boutiqueUrl);
+    const urls: Record<string, string> = {
+      whatsapp: `https://wa.me/?text=${text}%20${url}`,
+      facebook: `https://www.facebook.com/sharer/sharer.php?u=${url}`,
+      twitter: `https://twitter.com/intent/tweet?text=${text}&url=${url}`,
+      telegram: `https://t.me/share/url?url=${url}&text=${text}`,
+    };
+    window.open(urls[platform], "_blank");
   };
 
   const scrollToProduits = () => {
@@ -163,6 +189,9 @@ export default function BoutiquePage() {
               {boutique.ville ? ` • ${boutique.ville}` : ""}
             </p>
           </div>
+          <button onClick={() => setShowQRModal(true)} className="p-2 rounded-xl hover:bg-gray-100 transition active:scale-95">
+            <QrCode className="w-5 h-5 text-gray-600" />
+          </button>
           <button onClick={handleShare} className="p-2 rounded-xl hover:bg-gray-100 transition active:scale-95 relative">
             <Share2 className="w-5 h-5 text-gray-600" />
             {shared && (
@@ -371,13 +400,29 @@ export default function BoutiquePage() {
                           </span>
                         )}
                       </div>
-                      {/* Acheter button */}
-                      <Link
-                        href={`/produit/${p.id}`}
-                        className="mt-2 w-full flex items-center justify-center gap-1.5 bg-black text-white py-2 rounded-lg text-xs font-bold active:scale-[0.97] transition"
-                      >
-                        <Zap className="w-3 h-3" />Acheter
-                      </Link>
+                      {/* Acheter + Partager */}
+                      <div className="flex gap-1.5 mt-2">
+                        <Link
+                          href={`/produit/${p.id}`}
+                          className="flex-1 flex items-center justify-center gap-1.5 bg-black text-white py-2 rounded-lg text-xs font-bold active:scale-[0.97] transition"
+                        >
+                          <Zap className="w-3 h-3" />Acheter
+                        </Link>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            const pUrl = `${window.location.origin}/produit/${p.id}`;
+                            if (navigator.share) {
+                              navigator.share({ title: p.nom, text: `${p.nom} — ${formatMontant(p.prix, pDevise)} sur Binq`, url: pUrl }).catch(() => {});
+                            } else {
+                              navigator.clipboard.writeText(pUrl).catch(() => {});
+                            }
+                          }}
+                          className="w-9 flex items-center justify-center bg-gray-100 hover:bg-gray-200 rounded-lg transition active:scale-95"
+                        >
+                          <Share2 className="w-3.5 h-3.5 text-gray-500" />
+                        </button>
+                      </div>
                     </div>
                   </div>
                 );
@@ -429,14 +474,73 @@ export default function BoutiquePage() {
       {/* ═══ STICKY BOTTOM BAR ═══ */}
       {produits.length > 0 && (
         <div className="fixed bottom-0 left-0 right-0 z-20 bg-white/95 backdrop-blur-xl border-t border-gray-100 safe-area-bottom">
-          <div className="max-w-lg mx-auto px-4 py-2.5">
+          <div className="max-w-lg mx-auto px-4 py-2.5 flex gap-2">
             <button
               onClick={scrollToProduits}
-              className="w-full flex items-center justify-center gap-2 bg-black text-white py-3 rounded-xl font-bold text-sm active:scale-[0.97] transition"
+              className="flex-1 flex items-center justify-center gap-2 bg-black text-white py-3 rounded-xl font-bold text-sm active:scale-[0.97] transition"
             >
               <ShoppingBag className="w-4 h-4" />
-              Voir les produits
+              Produits ({produits.length})
             </button>
+            <button
+              onClick={() => setShowQRModal(true)}
+              className="px-4 flex items-center justify-center gap-1.5 bg-emerald-50 text-emerald-700 py-3 rounded-xl font-bold text-sm transition"
+            >
+              <QrCode className="w-4 h-4" />QR
+            </button>
+            <button
+              onClick={handleShare}
+              className="px-4 flex items-center justify-center bg-gray-100 text-gray-700 py-3 rounded-xl font-bold text-sm transition"
+            >
+              <Share2 className="w-4 h-4" />
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* ═══ QR MODAL ═══ */}
+      {showQRModal && boutique && (
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4" onClick={() => setShowQRModal(false)}>
+          <div className="bg-white rounded-3xl max-w-sm w-full p-6 text-center relative" onClick={e => e.stopPropagation()}>
+            <button onClick={() => setShowQRModal(false)} className="absolute top-4 right-4 p-2 rounded-xl hover:bg-gray-100 transition">
+              <X className="w-5 h-5 text-gray-400" />
+            </button>
+
+            <div className="w-14 h-14 mx-auto mb-3 rounded-2xl bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center">
+              <QrCode className="w-7 h-7 text-white" />
+            </div>
+
+            <h3 className="text-lg font-black text-gray-900 mb-1">{boutique.nom}</h3>
+            <p className="text-xs text-gray-500 mb-5">Scannez ou partagez ce QR pour acceder a cette boutique</p>
+
+            <div className="bg-gray-50 rounded-2xl p-5 inline-block mb-5">
+              <QRCodeSVG value={boutiqueUrl} size={180} level="H" includeMargin />
+            </div>
+
+            <div className="space-y-2">
+              <button
+                onClick={handleCopyLink}
+                className="w-full py-3 bg-black text-white font-bold rounded-xl flex items-center justify-center gap-2 text-sm active:scale-[0.97] transition"
+              >
+                {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+                {copied ? "Lien copie !" : "Copier le lien"}
+              </button>
+
+              <div className="grid grid-cols-4 gap-2">
+                <button onClick={() => shareToSocial("whatsapp")} className="py-2.5 bg-green-50 text-green-700 font-semibold rounded-xl text-[11px] hover:bg-green-100 transition">
+                  WhatsApp
+                </button>
+                <button onClick={() => shareToSocial("facebook")} className="py-2.5 bg-blue-50 text-blue-700 font-semibold rounded-xl text-[11px] hover:bg-blue-100 transition">
+                  Facebook
+                </button>
+                <button onClick={() => shareToSocial("twitter")} className="py-2.5 bg-sky-50 text-sky-700 font-semibold rounded-xl text-[11px] hover:bg-sky-100 transition">
+                  Twitter
+                </button>
+                <button onClick={() => shareToSocial("telegram")} className="py-2.5 bg-cyan-50 text-cyan-700 font-semibold rounded-xl text-[11px] hover:bg-cyan-100 transition">
+                  Telegram
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       )}

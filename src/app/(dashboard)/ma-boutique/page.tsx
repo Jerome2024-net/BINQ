@@ -27,7 +27,10 @@ import {
   BarChart3,
   DollarSign,
   QrCode,
+  Check,
+  ChevronDown,
 } from "lucide-react";
+import { QRCodeSVG } from "qrcode.react";
 import { formatMontant } from "@/lib/currencies";
 import type { DeviseCode } from "@/lib/currencies";
 
@@ -92,6 +95,8 @@ export default function MaBoutiquePage() {
   const [saving, setSaving] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [expandedQR, setExpandedQR] = useState<string | null>(null);
+  const [showBoutiqueQR, setShowBoutiqueQR] = useState(false);
+  const [boutiqueUrlCopied, setBoutiqueUrlCopied] = useState(false);
 
   // Formulaire création boutique
   const [showCreate, setShowCreate] = useState(false);
@@ -424,6 +429,106 @@ export default function MaBoutiquePage() {
               </div>
             </div>
           </div>
+
+          {/* QR & Partage boutique */}
+          <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden">
+            <button
+              onClick={() => setShowBoutiqueQR(!showBoutiqueQR)}
+              className="w-full flex items-center justify-between px-4 py-3.5 hover:bg-gray-50 transition"
+            >
+              <div className="flex items-center gap-2.5">
+                <div className="w-9 h-9 rounded-xl bg-emerald-50 flex items-center justify-center">
+                  <QrCode className="w-4 h-4 text-emerald-600" />
+                </div>
+                <div className="text-left">
+                  <p className="text-sm font-bold text-gray-900">QR de votre boutique</p>
+                  <p className="text-[11px] text-gray-400">Partagez partout pour attirer des clients</p>
+                </div>
+              </div>
+              <ChevronDown className={`w-4 h-4 text-gray-400 transition-transform ${showBoutiqueQR ? "rotate-180" : ""}`} />
+            </button>
+
+            {showBoutiqueQR && (
+              <div className="px-4 pb-4 animate-in slide-in-from-top-1 duration-200">
+                <div className="bg-gray-50 rounded-xl p-4 text-center border border-gray-100">
+                  <div className="inline-block bg-white p-4 rounded-xl border border-gray-100 shadow-sm mb-3">
+                    <QRCodeSVG
+                      value={`${typeof window !== "undefined" ? window.location.origin : ""}/boutique/${boutique.slug}`}
+                      size={160}
+                      level="H"
+                      includeMargin
+                    />
+                  </div>
+                  <p className="text-[11px] text-gray-500 mb-3">Collez ce QR en boutique, partagez-le sur WhatsApp, Instagram, Facebook...</p>
+
+                  <div className="flex gap-2 mb-2">
+                    <button
+                      onClick={async () => {
+                        const url = `${window.location.origin}/boutique/${boutique.slug}`;
+                        if (navigator.share) {
+                          await navigator.share({ title: boutique.nom, text: `Decouvrez ${boutique.nom} sur Binq`, url }).catch(() => {});
+                        } else {
+                          await navigator.clipboard.writeText(url);
+                          setBoutiqueUrlCopied(true);
+                          setTimeout(() => setBoutiqueUrlCopied(false), 2000);
+                        }
+                      }}
+                      className="flex-1 flex items-center justify-center gap-1.5 bg-emerald-600 hover:bg-emerald-500 text-white py-2.5 rounded-xl text-xs font-bold transition"
+                    >
+                      <Share2 className="w-3.5 h-3.5" />Partager la boutique
+                    </button>
+                    <button
+                      onClick={async () => {
+                        await navigator.clipboard.writeText(`${window.location.origin}/boutique/${boutique.slug}`);
+                        setBoutiqueUrlCopied(true);
+                        setTimeout(() => setBoutiqueUrlCopied(false), 2000);
+                      }}
+                      className="px-3 flex items-center justify-center gap-1.5 bg-white hover:bg-gray-100 text-gray-700 py-2.5 rounded-xl text-xs font-bold transition border border-gray-200"
+                    >
+                      {boutiqueUrlCopied ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5" />}
+                      {boutiqueUrlCopied ? "Copie !" : "Copier"}
+                    </button>
+                  </div>
+
+                  <div className="grid grid-cols-4 gap-1.5">
+                    {[
+                      { name: "WhatsApp", color: "bg-green-50 text-green-700 hover:bg-green-100", platform: "whatsapp" },
+                      { name: "Facebook", color: "bg-blue-50 text-blue-700 hover:bg-blue-100", platform: "facebook" },
+                      { name: "Twitter", color: "bg-sky-50 text-sky-700 hover:bg-sky-100", platform: "twitter" },
+                      { name: "Telegram", color: "bg-cyan-50 text-cyan-700 hover:bg-cyan-100", platform: "telegram" },
+                    ].map((s) => (
+                      <button
+                        key={s.platform}
+                        onClick={() => {
+                          const text = encodeURIComponent(`Decouvrez ${boutique.nom} sur Binq`);
+                          const url = encodeURIComponent(`${window.location.origin}/boutique/${boutique.slug}`);
+                          const urls: Record<string, string> = {
+                            whatsapp: `https://wa.me/?text=${text}%20${url}`,
+                            facebook: `https://www.facebook.com/sharer/sharer.php?u=${url}`,
+                            twitter: `https://twitter.com/intent/tweet?text=${text}&url=${url}`,
+                            telegram: `https://t.me/share/url?url=${url}&text=${text}`,
+                          };
+                          window.open(urls[s.platform], "_blank");
+                        }}
+                        className={`py-2 rounded-lg text-[11px] font-semibold transition ${s.color}`}
+                      >
+                        {s.name}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Voir ma boutique link */}
+          <Link
+            href={`/boutique/${boutique.slug}`}
+            target="_blank"
+            className="w-full py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-semibold rounded-xl flex items-center justify-center gap-1.5 transition"
+          >
+            <ExternalLink className="w-3.5 h-3.5" />Voir ma boutique
+          </Link>
 
           {/* Add product button */}
           <button
