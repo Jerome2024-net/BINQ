@@ -19,6 +19,10 @@ import {
   ArrowRight,
   Flame,
   Tag,
+  Zap,
+  QrCode,
+  CreditCard,
+  Smartphone,
 } from "lucide-react";
 import { type DeviseCode, DEFAULT_DEVISE } from "@/lib/currencies";
 import { formatMontant } from "@/lib/currencies";
@@ -154,7 +158,7 @@ export default function DashboardPage() {
         <h1 className="text-xl font-black tracking-tight">
           Salut, <span className="text-emerald-600">{user?.prenom || "là"}</span> 👋
         </h1>
-        <p className="text-gray-500 text-xs mt-0.5">Trouvez les meilleurs produits locaux</p>
+        <p className="text-gray-500 text-xs mt-0.5">Encaissez vos clients et explorez le marketplace</p>
       </div>
 
       {/* ── Search ── */}
@@ -162,7 +166,7 @@ export default function DashboardPage() {
         <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-gray-400" />
         <input
           type="text"
-          placeholder="Rechercher produits, boutiques..."
+          placeholder="Rechercher produits, points de vente..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           className="w-full bg-gray-50 border border-gray-200 rounded-2xl pl-10 pr-4 py-3 text-sm text-gray-900 placeholder-gray-400 outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 transition"
@@ -236,20 +240,27 @@ export default function DashboardPage() {
         )}
       </div>
 
-      {/* ── Ma boutique CTA ── */}
+      {/* ── Point de vente CTA ── */}
       {user && (
         <Link
           href="/ma-boutique"
-          className="flex items-center gap-3 bg-gradient-to-r from-emerald-50 to-cyan-50 rounded-2xl p-3.5 border border-emerald-200/50 hover:border-emerald-300 transition-all group"
+          className="block bg-gradient-to-br from-emerald-50 via-cyan-50 to-emerald-50 rounded-2xl p-4 border border-emerald-200/60 hover:border-emerald-300 hover:shadow-lg transition-all group"
         >
-          <div className="w-11 h-11 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-xl flex items-center justify-center shadow-lg shadow-emerald-500/25">
-            <Store className="w-5 h-5 text-white" />
+          <div className="flex items-center gap-3 mb-3">
+            <div className="w-12 h-12 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-xl flex items-center justify-center shadow-lg shadow-emerald-500/25">
+              <Zap className="w-6 h-6 text-white" />
+            </div>
+            <div className="flex-1">
+              <p className="text-sm font-black text-gray-900">🏪 Créez votre point de vente</p>
+              <p className="text-[11px] text-gray-500">Encaissez vos clients via QR code, produits ou services</p>
+            </div>
+            <ChevronRight className="w-5 h-5 text-gray-400 group-hover:text-emerald-500 transition-colors" />
           </div>
-          <div className="flex-1">
-            <p className="text-sm font-bold text-gray-900">Ouvrir ma boutique</p>
-            <p className="text-[11px] text-gray-500">Vendez vos produits gratuitement</p>
+          <div className="flex flex-wrap gap-x-4 gap-y-1 pl-[60px]">
+            <span className="text-[11px] text-emerald-700 font-semibold">✔ Paiement instantané</span>
+            <span className="text-[11px] text-emerald-700 font-semibold">✔ QR code prêt en 30s</span>
+            <span className="text-[11px] text-emerald-700 font-semibold">✔ Mobile Money & carte</span>
           </div>
-          <ChevronRight className="w-4 h-4 text-gray-400 group-hover:text-emerald-500 transition-colors" />
         </Link>
       )}
 
@@ -258,13 +269,20 @@ export default function DashboardPage() {
         <div>
           {produits.length === 0 ? (
             <div className="text-center py-16">
-              <ShoppingBag className="w-14 h-14 text-gray-200 mx-auto mb-4" />
-              <p className="text-gray-500 font-bold text-sm">Aucun produit trouvé</p>
-              <p className="text-gray-400 text-xs mt-1">Soyez le premier à vendre !</p>
-              <Link href="/ma-boutique" className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-emerald-500 text-white text-sm font-bold hover:bg-emerald-400 transition-all active:scale-95 mt-4">
-                <Store className="w-4 h-4" />
-                Créer ma boutique
+              <div className="w-16 h-16 bg-emerald-50 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                <QrCode className="w-8 h-8 text-emerald-400" />
+              </div>
+              <p className="text-gray-800 font-black text-sm">Vous n&apos;avez pas encore de point de vente actif</p>
+              <p className="text-gray-400 text-xs mt-1.5 max-w-[240px] mx-auto">Créez votre espace et commencez à encaisser vos clients</p>
+              <Link href="/ma-boutique" className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-emerald-500 text-white text-sm font-bold hover:bg-emerald-400 transition-all active:scale-95 mt-5 shadow-lg shadow-emerald-500/20">
+                <Zap className="w-4 h-4" />
+                Créer mon point de vente
               </Link>
+              <div className="flex justify-center gap-4 mt-4">
+                <span className="text-[10px] text-gray-400 flex items-center gap-1"><Smartphone className="w-3 h-3" />Mobile Money</span>
+                <span className="text-[10px] text-gray-400 flex items-center gap-1"><CreditCard className="w-3 h-3" />Carte</span>
+                <span className="text-[10px] text-gray-400 flex items-center gap-1"><QrCode className="w-3 h-3" />QR Code</span>
+              </div>
             </div>
           ) : (
             <div className="grid grid-cols-2 gap-3">
@@ -330,9 +348,15 @@ export default function DashboardPage() {
         <div className="space-y-3">
           {boutiques.length === 0 ? (
             <div className="text-center py-16">
-              <Store className="w-14 h-14 text-gray-200 mx-auto mb-4" />
-              <p className="text-gray-500 font-bold text-sm">Aucune boutique trouvée</p>
-              <p className="text-gray-400 text-xs mt-1">Soyez le premier à vendre !</p>
+              <div className="w-16 h-16 bg-emerald-50 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                <Store className="w-8 h-8 text-emerald-400" />
+              </div>
+              <p className="text-gray-800 font-black text-sm">Aucun point de vente trouvé</p>
+              <p className="text-gray-400 text-xs mt-1.5">Créez le vôtre et commencez à encaisser</p>
+              <Link href="/ma-boutique" className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-emerald-500 text-white text-sm font-bold hover:bg-emerald-400 transition-all active:scale-95 mt-4 shadow-lg shadow-emerald-500/20">
+                <Zap className="w-4 h-4" />
+                Créer mon point de vente
+              </Link>
             </div>
           ) : (
             boutiques.map((b) => (

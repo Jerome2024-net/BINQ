@@ -18,6 +18,10 @@ import {
   X,
   Eye,
   Tag,
+  Zap,
+  QrCode,
+  CreditCard,
+  Smartphone,
 } from "lucide-react";
 import { formatMontant } from "@/lib/currencies";
 import type { DeviseCode } from "@/lib/currencies";
@@ -146,7 +150,7 @@ export default function ExplorerPage() {
       {/* Header */}
       <div>
         <h1 className="text-2xl font-black text-gray-900 tracking-tight">Explorer</h1>
-        <p className="text-xs text-gray-500 mt-0.5">Découvrez les boutiques et achetez en 1 tap</p>
+        <p className="text-xs text-gray-500 mt-0.5">Découvrez les points de vente et achetez en 1 tap</p>
       </div>
 
       {/* Search */}
@@ -154,7 +158,7 @@ export default function ExplorerPage() {
         <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-gray-400" />
         <input
           type="text"
-          placeholder="Rechercher produits, boutiques..."
+          placeholder="Rechercher produits, points de vente..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           className="w-full bg-gray-50 border border-gray-200 rounded-xl pl-10 pr-4 py-3 text-sm text-gray-900 placeholder-gray-400 outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500/20 transition"
@@ -228,20 +232,27 @@ export default function ExplorerPage() {
         )}
       </div>
 
-      {/* Ma boutique CTA */}
+      {/* Point de vente CTA */}
       {user && (
         <Link
           href="/ma-boutique"
-          className="flex items-center gap-3 bg-gradient-to-r from-emerald-50 to-emerald-100/50 rounded-xl p-3 border border-emerald-200/50 hover:border-emerald-300 transition"
+          className="block bg-gradient-to-br from-emerald-50 via-cyan-50 to-emerald-50 rounded-xl p-4 border border-emerald-200/60 hover:border-emerald-300 hover:shadow-lg transition-all group"
         >
-          <div className="w-10 h-10 bg-emerald-500 rounded-xl flex items-center justify-center">
-            <Store className="w-5 h-5 text-white" />
+          <div className="flex items-center gap-3 mb-3">
+            <div className="w-11 h-11 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-xl flex items-center justify-center shadow-lg shadow-emerald-500/25">
+              <Zap className="w-5 h-5 text-white" />
+            </div>
+            <div className="flex-1">
+              <p className="text-sm font-black text-gray-900">🏪 Mon point de vente</p>
+              <p className="text-[11px] text-gray-500">Encaissez et gérez vos ventes</p>
+            </div>
+            <ChevronRight className="w-4 h-4 text-gray-400 group-hover:text-emerald-500 transition" />
           </div>
-          <div className="flex-1">
-            <p className="text-sm font-bold text-gray-900">Ma boutique</p>
-            <p className="text-[11px] text-gray-500">Gérez vos produits et ventes</p>
+          <div className="flex flex-wrap gap-x-4 gap-y-1 pl-[56px]">
+            <span className="text-[11px] text-emerald-700 font-semibold">✔ Paiement instantané</span>
+            <span className="text-[11px] text-emerald-700 font-semibold">✔ QR code prêt en 30s</span>
+            <span className="text-[11px] text-emerald-700 font-semibold">✔ Mobile Money & carte</span>
           </div>
-          <ChevronRight className="w-4 h-4 text-gray-400" />
         </Link>
       )}
 
@@ -249,10 +260,16 @@ export default function ExplorerPage() {
       {viewMode === "produits" && (
         <div>
           {produits.length === 0 ? (
-            <div className="text-center py-12">
-              <ShoppingBag className="w-12 h-12 text-gray-300 mx-auto mb-3" />
-              <p className="text-gray-500 font-medium">Aucun produit trouvé</p>
-              <p className="text-gray-400 text-xs mt-1">Essayez une autre recherche</p>
+            <div className="text-center py-14">
+              <div className="w-14 h-14 bg-emerald-50 rounded-2xl flex items-center justify-center mx-auto mb-3">
+                <QrCode className="w-7 h-7 text-emerald-400" />
+              </div>
+              <p className="text-gray-800 font-black text-sm">Vous n&apos;avez pas encore de point de vente actif</p>
+              <p className="text-gray-400 text-xs mt-1.5 max-w-[240px] mx-auto">Créez votre espace et commencez à encaisser vos clients</p>
+              <Link href="/ma-boutique" className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-emerald-500 text-white text-sm font-bold hover:bg-emerald-400 transition-all active:scale-95 mt-4 shadow-lg shadow-emerald-500/20">
+                <Zap className="w-4 h-4" />
+                Créer mon point de vente
+              </Link>
             </div>
           ) : (
             <div className="grid grid-cols-2 gap-3">
@@ -312,9 +329,16 @@ export default function ExplorerPage() {
       {viewMode === "boutiques" && (
         <div className="space-y-3">
           {boutiques.length === 0 ? (
-            <div className="text-center py-12">
-              <Store className="w-12 h-12 text-gray-300 mx-auto mb-3" />
-              <p className="text-gray-500 font-medium">Aucune boutique trouvée</p>
+            <div className="text-center py-14">
+              <div className="w-14 h-14 bg-emerald-50 rounded-2xl flex items-center justify-center mx-auto mb-3">
+                <Store className="w-7 h-7 text-emerald-400" />
+              </div>
+              <p className="text-gray-800 font-black text-sm">Aucun point de vente trouvé</p>
+              <p className="text-gray-400 text-xs mt-1.5">Créez le vôtre et commencez à recevoir de l&apos;argent</p>
+              <Link href="/ma-boutique" className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-emerald-500 text-white text-sm font-bold hover:bg-emerald-400 transition-all active:scale-95 mt-4 shadow-lg shadow-emerald-500/20">
+                <Zap className="w-4 h-4" />
+                Créer mon point de vente
+              </Link>
             </div>
           ) : (
             boutiques.map((b) => (
