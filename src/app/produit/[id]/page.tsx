@@ -130,6 +130,18 @@ export default function ProduitPage() {
     } catch { /* ignore */ }
   };
 
+  const shareToSocial = (platform: string) => {
+    const url = qrUrl || productUrl;
+    const text = produit ? `${produit.nom} — ${formatMontant(produit.prix, (produit.devise as DeviseCode) || "XOF")} sur Binq` : "Decouvrez ce produit sur Binq";
+    const urls: Record<string, string> = {
+      whatsapp: `https://wa.me/?text=${encodeURIComponent(text + " " + url)}`,
+      facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`,
+      twitter: `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`,
+      telegram: `https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encodeURIComponent(text)}`,
+    };
+    if (urls[platform]) window.open(urls[platform], "_blank");
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-white flex items-center justify-center">
@@ -293,19 +305,26 @@ export default function ProduitPage() {
                 />
               </div>
               <p className="text-[10px] text-gray-400 mt-2">Scannez pour acheter ce produit</p>
-              {/* Share actions */}
-              <div className="flex gap-2 mt-3">
-                <button
-                  onClick={handleCopyLink}
-                  className="flex-1 flex items-center justify-center gap-1.5 bg-gray-100 hover:bg-gray-200 text-gray-700 py-2.5 rounded-xl text-xs font-bold transition"
-                >
-                  <Copy className="w-3.5 h-3.5" />{copied ? "Copie !" : "Copier le lien"}
+              {/* Copy link */}
+              <button
+                onClick={handleCopyLink}
+                className="mt-3 w-full flex items-center justify-center gap-1.5 bg-gray-100 hover:bg-gray-200 text-gray-700 py-2.5 rounded-xl text-xs font-bold transition"
+              >
+                <Copy className="w-3.5 h-3.5" />{copied ? "Copie !" : "Copier le lien"}
+              </button>
+              {/* Social share buttons */}
+              <div className="grid grid-cols-4 gap-2 mt-2">
+                <button onClick={() => shareToSocial("whatsapp")} className="py-2.5 bg-green-50 text-green-700 font-semibold rounded-xl text-[11px] hover:bg-green-100 transition">
+                  WhatsApp
                 </button>
-                <button
-                  onClick={handleShare}
-                  className="flex-1 flex items-center justify-center gap-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 py-2.5 rounded-xl text-xs font-bold transition"
-                >
-                  <Share2 className="w-3.5 h-3.5" />Partager
+                <button onClick={() => shareToSocial("facebook")} className="py-2.5 bg-blue-50 text-blue-700 font-semibold rounded-xl text-[11px] hover:bg-blue-100 transition">
+                  Facebook
+                </button>
+                <button onClick={() => shareToSocial("twitter")} className="py-2.5 bg-sky-50 text-sky-700 font-semibold rounded-xl text-[11px] hover:bg-sky-100 transition">
+                  X / Twitter
+                </button>
+                <button onClick={() => shareToSocial("telegram")} className="py-2.5 bg-cyan-50 text-cyan-700 font-semibold rounded-xl text-[11px] hover:bg-cyan-100 transition">
+                  Telegram
                 </button>
               </div>
             </div>
