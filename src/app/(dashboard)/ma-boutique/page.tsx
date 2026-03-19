@@ -119,6 +119,9 @@ export default function MaBoutiquePage() {
   const [prodPrix, setProdPrix] = useState("");
   const [prodPrixBarre, setProdPrixBarre] = useState("");
   const [prodImage, setProdImage] = useState("");
+  const [prodImageFile, setProdImageFile] = useState<File | null>(null);
+  const [prodImagePreview, setProdImagePreview] = useState<string | null>(null);
+  const prodImageRef = useRef<HTMLInputElement>(null);
   const [prodCategorie, setProdCategorie] = useState("");
   const [prodStock, setProdStock] = useState("");
 
@@ -221,6 +224,18 @@ export default function MaBoutiquePage() {
     if (!prodNom.trim() || !prodPrix) { showToast("error", "Erreur", "Nom et prix requis"); return; }
     setSaving(true);
     try {
+      // Upload product image if file selected
+      let imageUrl = prodImage.trim() || undefined;
+      if (prodImageFile) {
+        const formData = new FormData();
+        formData.append("file", prodImageFile);
+        const uploadRes = await fetch("/api/produits/upload", { method: "POST", body: formData });
+        const uploadData = await uploadRes.json();
+        if (uploadRes.ok && uploadData.url) {
+          imageUrl = uploadData.url;
+        }
+      }
+
       const res = await fetch("/api/produits", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -229,7 +244,7 @@ export default function MaBoutiquePage() {
           description: prodDesc.trim() || undefined,
           prix: parseFloat(prodPrix),
           prix_barre: prodPrixBarre ? parseFloat(prodPrixBarre) : undefined,
-          image_url: prodImage.trim() || undefined,
+          image_url: imageUrl,
           categorie: prodCategorie.trim() || undefined,
           stock: prodStock ? parseInt(prodStock) : undefined,
         }),
@@ -240,6 +255,7 @@ export default function MaBoutiquePage() {
       setStats((s) => ({ ...s, totalProduits: s.totalProduits + 1 }));
       setShowAddProduct(false);
       setProdNom(""); setProdDesc(""); setProdPrix(""); setProdPrixBarre(""); setProdImage(""); setProdCategorie(""); setProdStock("");
+      setProdImageFile(null); setProdImagePreview(null);
       hapticSuccess();
       showToast("success", "Produit ajouté !", "Visible sur le marketplace");
     } catch { hapticError(); showToast("error", "Erreur", "Erreur"); }
@@ -565,8 +581,43 @@ export default function MaBoutiquePage() {
                   </div>
                 </div>
                 <div>
-                  <label className="text-xs font-semibold text-gray-700">Image URL</label>
-                  <input value={prodImage} onChange={(e) => setProdImage(e.target.value)} placeholder="https://..." className="w-full mt-1 bg-gray-50 border border-gray-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-emerald-500 transition" />
+                  <label className="text-xs font-semibold text-gray-700">Photo du produit</label>
+                  <input
+                    ref={prodImageRef}
+                    type="file"
+                    accept="image/jpeg,image/png,image/webp"
+                    className="hidden"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (file) {
+                        if (file.size > 5 * 1024 * 1024) { showToast("error", "Erreur", "Image trop lourde (max 5 Mo)"); return; }
+                        setProdImageFile(file);
+                        setProdImagePreview(URL.createObjectURL(file));
+                        setProdImage("");
+                      }
+                    }}
+                  />
+                  {prodImagePreview ? (
+                    <div className="mt-1 relative">
+                      <img src={prodImagePreview} alt="Preview" className="w-full h-32 object-cover rounded-xl border border-gray-200" />
+                      <button
+                        type="button"
+                        onClick={() => { setProdImageFile(null); setProdImagePreview(null); if (prodImageRef.current) prodImageRef.current.value = ""; }}
+                        className="absolute top-1.5 right-1.5 bg-black/60 text-white rounded-full p-1 hover:bg-black/80 transition"
+                      >
+                        <X className="w-3 h-3" />
+                      </button>
+                    </div>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={() => prodImageRef.current?.click()}
+                      className="w-full mt-1 flex items-center justify-center gap-2 bg-gray-50 border-2 border-dashed border-gray-200 rounded-xl py-6 text-sm text-gray-500 hover:border-emerald-400 hover:text-emerald-600 transition"
+                    >
+                      <ImagePlus className="w-5 h-5" />
+                      Ajouter une photo
+                    </button>
+                  )}
                 </div>
                 <div className="grid grid-cols-2 gap-3">
                   <div>
