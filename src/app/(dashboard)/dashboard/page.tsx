@@ -78,9 +78,9 @@ export default function DashboardPage() {
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-[22px] font-black tracking-tight text-gray-900">
-            Salut, {user?.prenom || "l\u00e0"} \ud83d\udc4b
+            Salut, {user?.prenom || "là"} 👋
           </h1>
-          <p className="text-[13px] text-gray-400 mt-0.5">Commencez \u00e0 encaisser en quelques secondes</p>
+          <p className="text-[13px] text-gray-400 mt-0.5">Commencez à encaisser en quelques secondes</p>
         </div>
 
         {/* Grande carte CTA */}
@@ -93,22 +93,22 @@ export default function DashboardPage() {
               <Zap className="w-8 h-8 text-white" />
             </div>
             <div className="flex-1">
-              <p className="text-lg font-black text-gray-900">\ud83c\udfea Cr\u00e9ez votre point de vente</p>
+              <p className="text-lg font-black text-gray-900">🏪 Créez votre point de vente</p>
               <p className="text-[13px] text-gray-500 mt-1">Encaissez vos clients simplement</p>
             </div>
           </div>
           <span className="flex items-center justify-center gap-2 w-full py-4 bg-emerald-500 text-white font-black text-base rounded-2xl shadow-lg shadow-emerald-500/25 group-hover:bg-emerald-400 transition active:scale-[0.98]">
             <Zap className="w-5 h-5" />
-            Cr\u00e9er mon point de vente
+            Créer mon point de vente
           </span>
         </Link>
 
         {/* 3 avantages — ultra simple */}
         <div className="grid grid-cols-3 gap-3">
           {[
-            { icon: QrCode, label: "QR pr\u00eat en 30s" },
-            { icon: Zap, label: "Paiement instantan\u00e9" },
-            { icon: Package, label: "Produits illimit\u00e9s" },
+            { icon: QrCode, label: "QR prêt en 30s" },
+            { icon: Zap, label: "Paiement instantané" },
+            { icon: Package, label: "Produits illimités" },
           ].map((item, i) => (
             <div key={i} className="flex flex-col items-center gap-2 py-4 px-2 bg-white rounded-2xl border border-gray-100">
               <div className="w-10 h-10 bg-emerald-50 rounded-xl flex items-center justify-center">
@@ -132,14 +132,14 @@ export default function DashboardPage() {
       <div>
         <div className="flex items-center gap-2 mb-0.5">
           <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
-          <span className="text-[11px] font-bold text-emerald-600">En ligne \u00b7 Pr\u00eat \u00e0 encaisser</span>
+          <span className="text-[11px] font-bold text-emerald-600">En ligne · Prêt à encaisser</span>
         </div>
         <h1 className="text-[22px] font-black tracking-tight text-gray-900">
           {boutique.nom}
         </h1>
       </div>
 
-      {/* Acc\u00e8s rapide terminal */}
+      {/* Accès rapide terminal */}
       <Link
         href="/ma-boutique"
         className="block bg-gradient-to-br from-emerald-50 via-emerald-50/80 to-cyan-50/60 rounded-[20px] p-5 border border-emerald-200/50 hover:border-emerald-300 hover:shadow-xl transition-all group active:scale-[0.99]"
@@ -197,7 +197,7 @@ export default function DashboardPage() {
           <div className="w-10 h-10 bg-cyan-50 rounded-xl flex items-center justify-center shrink-0">
             <Package className="w-5 h-5 text-cyan-600" />
           </div>
-          <p className="text-sm font-bold text-gray-900 flex-1">G\u00e9rer mes produits</p>
+          <p className="text-sm font-bold text-gray-900 flex-1">Gérer mes produits</p>
           <ArrowRight className="w-4 h-4 text-gray-300" />
         </Link>
 

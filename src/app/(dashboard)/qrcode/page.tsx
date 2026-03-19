@@ -481,7 +481,7 @@ export default function QRCodePage() {
       <div className="flex gap-1 bg-gray-50/50 rounded-xl p-1 border border-gray-200/50">
         {([
           { key: "scanner" as Tab, icon: ScanLine, label: "Scanner" },
-          { key: "encaisser" as Tab, icon: CreditCard, label: "Cr\u00e9er paiement" },
+          { key: "encaisser" as Tab, icon: CreditCard, label: "Créer paiement" },
           { key: "terminaux" as Tab, icon: Store, label: "Terminal" },
         ]).map((t) => (
           <button

@@ -126,9 +126,9 @@ export default function HomePage() {
               {/* Recent orders */}
               <div className="space-y-2">
                 {[
-                  { name: "Robe Ankara", amount: "15 000 FCFA", time: "Il y a 2min", status: "Pay\u00e9e" },
-                  { name: "Coiffure tresses", amount: "8 000 FCFA", time: "Hier", status: "Livr\u00e9e" },
-                  { name: "Jus bissap x3", amount: "4 500 FCFA", time: "Lundi", status: "Pay\u00e9e" },
+                  { name: "Robe Ankara", amount: "15 000 FCFA", time: "Il y a 2min", status: "Payée" },
+                  { name: "Coiffure tresses", amount: "8 000 FCFA", time: "Hier", status: "Livrée" },
+                  { name: "Jus bissap x3", amount: "4 500 FCFA", time: "Lundi", status: "Payée" },
                 ].map((item, i) => (
                   <div key={i} className="flex items-center gap-2.5 sm:gap-3 px-2.5 sm:px-3 py-2 sm:py-2.5 rounded-lg sm:rounded-xl bg-gray-50/50">
                     <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center text-[9px] sm:text-[10px] font-bold bg-emerald-50 text-emerald-600">
@@ -149,10 +149,10 @@ export default function HomePage() {
           {/* Stats row */}
           <div className="mt-10 sm:mt-16 grid grid-cols-2 md:grid-cols-4 gap-2.5 sm:gap-4 max-w-3xl mx-auto">
             {[
-              { label: "Paiements", value: "Instantan\u00e9s", icon: Zap },
-              { label: "Moyens accept\u00e9s", value: "Carte + Mobile", icon: CreditCard },
+              { label: "Paiements", value: "Instantanés", icon: Zap },
+              { label: "Moyens acceptés", value: "Carte + Mobile", icon: CreditCard },
               { label: "Commission", value: "Transparente", icon: Percent },
-              { label: "S\u00e9curit\u00e9", value: "PCI-DSS", icon: Lock },
+              { label: "Sécurité", value: "PCI-DSS", icon: Lock },
             ].map((stat, i) => (
               <div key={i} className="flex flex-col items-center gap-1.5 sm:gap-2 py-3 sm:py-4 px-2.5 sm:px-3 rounded-xl sm:rounded-2xl bg-gray-50/50 border border-gray-200/50 backdrop-blur-sm">
                 <stat.icon className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-emerald-600" />
@@ -186,7 +186,7 @@ export default function HomePage() {
               {
                 icon: Store,
                 title: "Point de vente instant",
-                desc: "Cr\u00e9ez votre point de vente en 30 secondes, g\u00e9n\u00e9rez un QR et encaissez imm\u00e9diatement. C\u2019est gratuit.",
+                desc: "Créez votre point de vente en 30 secondes, générez un QR et encaissez immédiatement. C’est gratuit.",
                 gradient: "from-emerald-500/20 to-emerald-500/5",
                 iconColor: "text-emerald-600",
                 border: "border-emerald-200/40",
@@ -194,7 +194,7 @@ export default function HomePage() {
               {
                 icon: QrCode,
                 title: "QR Code par produit",
-                desc: "Chaque produit g\u00e9n\u00e8re automatiquement un QR. Collez-le en boutique, partagez-le sur les r\u00e9seaux, imprimez-le.",
+                desc: "Chaque produit génère automatiquement un QR. Collez-le en boutique, partagez-le sur les réseaux, imprimez-le.",
                 gradient: "from-cyan-500/20 to-cyan-500/5",
                 iconColor: "text-cyan-600",
                 border: "border-cyan-500/20",
@@ -202,7 +202,7 @@ export default function HomePage() {
               {
                 icon: CreditCard,
                 title: "Multi-moyens de paiement",
-                desc: "Carte bancaire, Orange Money, Wave, MTN\u2026 vos clients paient comme ils veulent.",
+                desc: "Carte bancaire, Orange Money, Wave, MTN… vos clients paient comme ils veulent.",
                 gradient: "from-violet-500/20 to-violet-500/5",
                 iconColor: "text-violet-400",
                 border: "border-violet-500/20",
@@ -210,15 +210,15 @@ export default function HomePage() {
               {
                 icon: Globe2,
                 title: "Multi-devises",
-                desc: "FCFA et EUR \u2014 vendez localement ou \u00e0 l\u2019international.",
+                desc: "FCFA et EUR — vendez localement ou à l’international.",
                 gradient: "from-orange-500/20 to-orange-500/5",
                 iconColor: "text-orange-600",
                 border: "border-orange-500/20",
               },
               {
                 icon: ShieldCheck,
-                title: "Paiement s\u00e9curis\u00e9",
-                desc: "Chaque transaction est prot\u00e9g\u00e9e. Vos clients paient en toute confiance.",
+                title: "Paiement sécurisé",
+                desc: "Chaque transaction est protégée. Vos clients paient en toute confiance.",
                 gradient: "from-emerald-500/20 to-emerald-500/5",
                 iconColor: "text-emerald-600",
                 border: "border-emerald-200/40",
@@ -226,7 +226,7 @@ export default function HomePage() {
               {
                 icon: Percent,
                 title: "Commission transparente",
-                desc: "Un seul frais par transaction. Pas d\u2019abonnement, pas de frais cach\u00e9s.",
+                desc: "Un seul frais par transaction. Pas d’abonnement, pas de frais cachés.",
                 gradient: "from-pink-500/20 to-pink-500/5",
                 iconColor: "text-pink-400",
                 border: "border-pink-500/20",
@@ -256,8 +256,8 @@ export default function HomePage() {
 
           <div className="space-y-4 sm:space-y-6">
             {[
-              { step: "01", title: "Cr\u00e9ez votre point de vente", desc: "Inscription en 30 secondes. Nom, photo, ville. Votre QR est pr\u00eat.", color: "bg-emerald-500", icon: Store },
-              { step: "02", title: "Encaissez imm\u00e9diatement", desc: "Votre QR code est g\u00e9n\u00e9r\u00e9 automatiquement. Partagez-le et recevez de l'argent.", color: "bg-cyan-500", icon: QrCode },
+              { step: "01", title: "Créez votre point de vente", desc: "Inscription en 30 secondes. Nom, photo, ville. Votre QR est prêt.", color: "bg-emerald-500", icon: Store },
+              { step: "02", title: "Encaissez immédiatement", desc: "Votre QR code est généré automatiquement. Partagez-le et recevez de l'argent.", color: "bg-cyan-500", icon: QrCode },
               { step: "03", title: "Ajoutez vos produits", desc: "Optionnel : ajoutez vos produits, chacun obtient son propre QR de paiement.", color: "bg-violet-500", icon: Zap },
             ].map((item, i) => (
               <div key={i} className="flex items-center gap-3 sm:gap-5 p-4 sm:p-6 rounded-xl sm:rounded-2xl bg-gray-50/50 border border-gray-200/50 hover:bg-gray-50/80 transition-all group">
