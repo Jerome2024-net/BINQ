@@ -301,12 +301,17 @@ export default function MaBoutiquePage() {
       <div className="fixed inset-0 z-50 bg-white flex flex-col items-center justify-center px-6">
         <div className="w-3 h-3 bg-emerald-500 rounded-full animate-pulse mb-4" />
         <h1 className="text-xl font-black text-gray-900 mb-1">{boutique.nom}</h1>
-        <p className="text-xs text-gray-400 mb-8">Mode caisse actif</p>
-        <div className="bg-white p-6 rounded-3xl border-2 border-gray-100 shadow-lg mb-4">
-          <QRCodeSVG value={boutiqueUrl} size={260} level="H" />
+        <p className="text-xs text-gray-400 mb-6">Mode caisse actif</p>
+        <div className="bg-white p-4 rounded-3xl border-[3px] border-gray-900 shadow-xl mb-4">
+          <QRCodeSVG value={boutiqueUrl} size={300} level="H" />
         </div>
-        <p className="text-lg font-bold text-gray-800 mb-1">Scannez pour payer</p>
-        <p className="text-sm text-gray-400 mb-10">Mobile Money · Carte</p>
+        <p className="text-2xl font-black text-gray-900 mb-1">💳 Payez ici</p>
+        <p className="text-sm text-gray-500 mb-3">Scannez et payez instantanément</p>
+        <p className="text-xs text-gray-400 mb-6">Mobile Money · Carte · QR</p>
+        <div className="flex items-center gap-2 mb-8 animate-pulse">
+          <div className="w-2.5 h-2.5 bg-emerald-500 rounded-full" />
+          <span className="text-sm font-semibold text-emerald-600">En attente de paiement...</span>
+        </div>
         <button
           onClick={() => setModeCaisse(false)}
           className="px-8 py-3 bg-gray-100 text-gray-700 rounded-xl font-bold text-sm hover:bg-gray-200 transition"
@@ -410,14 +415,18 @@ export default function MaBoutiquePage() {
     const qrValue = `${payUrl}?amount=${amount}`;
     return (
       <div className="min-h-screen bg-white flex flex-col items-center justify-center px-6">
-        <div className="bg-white p-5 rounded-3xl border-2 border-gray-100 shadow-lg mb-5">
-          <QRCodeSVG value={qrValue} size={220} level="H" />
+        <div className="bg-white p-4 rounded-3xl border-[3px] border-gray-900 shadow-xl mb-4 animate-in zoom-in-95 duration-300">
+          <QRCodeSVG value={qrValue} size={260} level="H" />
         </div>
         <p className="text-4xl font-black text-gray-900 mb-1">{formatMontant(amount, devise)}</p>
-        <p className="text-sm text-gray-500 mb-1">Scannez pour payer</p>
-        <p className="text-xs text-gray-400 mb-10">Mobile Money · Carte</p>
+        <p className="text-lg font-black text-gray-800 mb-0.5">💳 Payez ici</p>
+        <p className="text-sm text-gray-500 mb-3">Scannez et payez instantanément</p>
+        <div className="flex items-center gap-2 mb-8 animate-pulse">
+          <div className="w-2.5 h-2.5 bg-emerald-500 rounded-full" />
+          <span className="text-sm font-semibold text-emerald-600">En attente de paiement...</span>
+        </div>
         <button
-          onClick={resetEncaisser}
+          onClick={() => { hapticSuccess(); resetEncaisser(); }}
           className="w-full max-w-xs py-4 bg-emerald-500 hover:bg-emerald-400 text-white rounded-2xl font-black text-base transition active:scale-[0.98] shadow-lg shadow-emerald-500/20"
         >
           ✓ Nouvelle vente
@@ -455,9 +464,9 @@ export default function MaBoutiquePage() {
       {/* Tab pills */}
       <div className="flex gap-1.5 px-4 mb-5 overflow-x-auto" style={{ scrollbarWidth: "none" }}>
         {([
-          { id: "terminal" as const, label: "Terminal" },
+          { id: "terminal" as const, label: "Encaisser" },
           { id: "produits" as const, label: "Produits" },
-          { id: "historique" as const, label: "Historique" },
+          { id: "historique" as const, label: "Commandes" },
           { id: "reglages" as const, label: "Réglages" },
         ]).map((tab) => (
           <button
@@ -475,34 +484,33 @@ export default function MaBoutiquePage() {
         ))}
       </div>
 
-      {/* ═══ TAB: TERMINAL ═══ */}
+      {/* ═══ TAB: ENCAISSER (Terminal) ═══ */}
       {activeTab === "terminal" && (
-        <div className="flex flex-col items-center px-5">
-          {/* QR GRAND */}
-          <div className="bg-white p-5 rounded-3xl border-2 border-gray-100 shadow-sm mb-3">
-            <QRCodeSVG value={boutiqueUrl} size={200} level="H" />
+        <div className="flex flex-col items-center px-4">
+          {/* QR DOMINANT — impossible à ignorer */}
+          <div className="bg-white p-3 rounded-3xl border-[3px] border-gray-900 shadow-xl mb-3">
+            <QRCodeSVG value={boutiqueUrl} size={280} level="H" />
           </div>
-          <p className="text-sm font-bold text-gray-700 mb-0.5">Scannez pour payer</p>
-          <p className="text-[11px] text-gray-400 mb-8">Mobile Money · Carte · QR</p>
+          <p className="text-xl font-black text-gray-900 mb-0.5">💳 Payez ici</p>
+          <p className="text-sm text-gray-500 mb-2">Scannez et payez instantanément</p>
+          <p className="text-[11px] text-gray-400 mb-3">Mobile Money · Carte · QR</p>
 
-          {/* 2 ACTIONS — SEULEMENT 2 */}
-          <div className="w-full space-y-3">
-            <button
-              onClick={() => { setEncaisserMode(true); hapticMedium(); }}
-              className="w-full py-5 bg-emerald-500 hover:bg-emerald-400 text-white rounded-2xl font-black text-lg transition active:scale-[0.98] shadow-lg shadow-emerald-500/20 flex items-center justify-center gap-2.5"
-            >
-              <Zap className="w-5 h-5" />Encaisser
-            </button>
-            <button
-              onClick={() => { setActiveTab("produits"); hapticMedium(); }}
-              className="w-full py-5 bg-gray-100 hover:bg-gray-200 text-gray-900 rounded-2xl font-black text-lg transition active:scale-[0.98] flex items-center justify-center gap-2.5"
-            >
-              <Package className="w-5 h-5" />Produits
-            </button>
+          {/* État dynamique — toujours visible */}
+          <div className="flex items-center gap-2 mb-5 animate-pulse">
+            <div className="w-2.5 h-2.5 bg-emerald-500 rounded-full" />
+            <span className="text-sm font-semibold text-emerald-600">En attente de paiement...</span>
           </div>
+
+          {/* ENCAISSER — seul bouton principal, right under QR */}
+          <button
+            onClick={() => { setEncaisserMode(true); hapticMedium(); }}
+            className="w-full py-5 bg-emerald-500 hover:bg-emerald-400 text-white rounded-2xl font-black text-lg transition active:scale-[0.98] shadow-lg shadow-emerald-500/20 flex items-center justify-center gap-2.5 mb-4"
+          >
+            <Zap className="w-5 h-5" />Encaisser un montant
+          </button>
 
           {/* Partager + Mode caisse */}
-          <div className="flex items-center gap-4 mt-8">
+          <div className="flex items-center gap-4 mt-2">
             <button onClick={handleShare} className="flex items-center gap-1.5 text-gray-500 text-xs font-semibold hover:text-emerald-600 transition">
               <Share2 className="w-3.5 h-3.5" />Partager mon QR
             </button>
@@ -513,7 +521,7 @@ export default function MaBoutiquePage() {
           </div>
 
           {/* Mini stats — discret */}
-          <div className="w-full grid grid-cols-3 gap-2 mt-8">
+          <div className="w-full grid grid-cols-3 gap-2 mt-6">
             <div className="bg-gray-50 rounded-xl p-3 text-center">
               <p className="text-lg font-black text-gray-900">{stats.totalCommandes}</p>
               <p className="text-[10px] text-gray-500 font-medium">Ventes</p>
@@ -674,10 +682,10 @@ export default function MaBoutiquePage() {
         </div>
       )}
 
-      {/* ═══ TAB: HISTORIQUE ═══ */}
+      {/* ═══ TAB: COMMANDES ═══ */}
       {activeTab === "historique" && (
         <div className="px-4">
-          <h2 className="text-lg font-black text-gray-900 mb-1">Historique</h2>
+          <h2 className="text-lg font-black text-gray-900 mb-1">Commandes</h2>
           <p className="text-xs text-gray-400 mb-4">Vos paiements reçus</p>
           {loadingCommandes ? (
             <div className="text-center py-12"><Loader2 className="w-6 h-6 text-gray-300 animate-spin mx-auto" /></div>
