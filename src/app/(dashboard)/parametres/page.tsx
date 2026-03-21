@@ -111,14 +111,14 @@ export default function ParametresPage() {
             <ChevronRight className="w-4 h-4 text-gray-600" />
           </Link>
 
-          <Link href="/qrcode" className="flex items-center justify-between px-5 py-3.5 hover:bg-gray-50/50 transition-colors">
+          <Link href="/portefeuille" className="flex items-center justify-between px-5 py-3.5 hover:bg-gray-50/50 transition-colors">
             <div className="flex items-center gap-3">
               <div className="w-8 h-8 rounded-lg bg-cyan-50 flex items-center justify-center">
                 <CreditCard className="w-4 h-4 text-cyan-600" />
               </div>
               <div>
                 <p className="text-sm font-medium">Paiements</p>
-                <p className="text-[10px] text-gray-700">QR Code et historique des transactions</p>
+                <p className="text-[10px] text-gray-700">Portefeuille et historique des transactions</p>
               </div>
             </div>
             <ChevronRight className="w-4 h-4 text-gray-600" />
