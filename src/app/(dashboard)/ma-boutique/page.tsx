@@ -299,22 +299,18 @@ export default function MaBoutiquePage() {
   if (boutique && modeCaisse) {
     return (
       <div className="fixed inset-0 z-50 bg-white flex flex-col items-center justify-center px-6">
-        <div className="w-3 h-3 bg-emerald-500 rounded-full animate-pulse mb-4" />
-        <h1 className="text-xl font-black text-gray-900 mb-1">{boutique.nom}</h1>
-        <p className="text-xs text-gray-400 mb-6">Mode caisse actif</p>
-        <div className="bg-white p-4 rounded-3xl border-[3px] border-gray-900 shadow-xl mb-4">
+        <h1 className="text-lg font-black text-gray-900 mb-6">{boutique.nom}</h1>
+        <div className="bg-white p-4 rounded-3xl border-[3px] border-gray-900 shadow-xl mb-5">
           <QRCodeSVG value={boutiqueUrl} size={300} level="H" />
         </div>
-        <p className="text-2xl font-black text-gray-900 mb-1">💳 Payez ici</p>
-        <p className="text-sm text-gray-500 mb-3">Scannez et payez instantanément</p>
-        <p className="text-xs text-gray-400 mb-6">Mobile Money · Carte · QR</p>
-        <div className="flex items-center gap-2 mb-8 animate-pulse">
-          <div className="w-2.5 h-2.5 bg-emerald-500 rounded-full" />
-          <span className="text-sm font-semibold text-emerald-600">En attente de paiement...</span>
+        <p className="text-[15px] font-bold text-gray-900 mb-1">Scannez pour payer</p>
+        <div className="flex items-center gap-2 mt-3 mb-10 animate-pulse">
+          <div className="w-2 h-2 bg-emerald-500 rounded-full" />
+          <span className="text-[13px] font-semibold text-emerald-600">En attente de paiement</span>
         </div>
         <button
           onClick={() => setModeCaisse(false)}
-          className="px-8 py-3 bg-gray-100 text-gray-700 rounded-xl font-bold text-sm hover:bg-gray-200 transition"
+          className="px-8 py-3 text-gray-400 text-[13px] font-medium hover:text-gray-600 transition"
         >
           Quitter le mode caisse
         </button>
@@ -322,54 +318,47 @@ export default function MaBoutiquePage() {
     );
   }
 
-  // ═══ PAS DE BOUTIQUE → CRÉATION EN 30 SECONDES ═══
+  // ═══ PAS DE BOUTIQUE → CRÉATION MINIMALE ═══
   if (!boutique) {
     return (
-      <div className="min-h-screen bg-white flex items-center justify-center px-5">
-        <div className="w-full max-w-sm">
-          <div className="text-center mb-8">
-            <div className="w-20 h-20 bg-emerald-50 rounded-3xl flex items-center justify-center mx-auto mb-4">
-              <Store className="w-10 h-10 text-emerald-600" />
-            </div>
-            <h1 className="text-2xl font-black text-gray-900">Ouvrez votre boutique</h1>
-            <p className="text-sm text-gray-500 mt-2">Commencez à encaisser en 30 secondes</p>
-          </div>
-          <div className="space-y-4">
+      <div className="min-h-screen bg-white flex flex-col justify-center px-6">
+        <div className="w-full max-w-sm mx-auto">
+          <h1 className="text-[26px] font-black text-gray-900 tracking-tight mb-10">Créer ma boutique</h1>
+
+          <div className="space-y-6">
             <div>
-              <label className="text-sm font-bold text-gray-700 block mb-1.5">Nom de votre boutique</label>
+              <label className="text-[13px] font-semibold text-gray-500 block mb-2">Nom de la boutique</label>
               <input
                 value={formNom}
                 onChange={(e) => setFormNom(e.target.value)}
                 placeholder="Ex: Café Chez Mama"
-                className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3.5 text-base outline-none focus:border-emerald-500 transition"
+                className="w-full border border-gray-200 rounded-xl px-4 py-3.5 text-[15px] text-gray-900 outline-none focus:border-emerald-500 transition placeholder:text-gray-300"
                 autoFocus
               />
             </div>
+
             <div>
-              <label className="text-sm font-bold text-gray-700 block mb-1.5">Catégorie</label>
+              <label className="text-[13px] font-semibold text-gray-500 block mb-2">Catégorie <span className="text-gray-300">(optionnel)</span></label>
               <select
                 value={formCat}
                 onChange={(e) => setFormCat(e.target.value)}
-                className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3.5 text-base outline-none focus:border-emerald-500 transition"
+                className="w-full border border-gray-200 rounded-xl px-4 py-3.5 text-[15px] text-gray-900 outline-none focus:border-emerald-500 transition bg-white"
               >
-                <option value="">Choisir</option>
+                <option value="">Choisir une catégorie</option>
                 {categories.map((c) => (
                   <option key={c.id} value={c.id}>{c.icone} {c.nom}</option>
                 ))}
               </select>
             </div>
+
             <button
               onClick={handleCreateBoutique}
               disabled={creating || !formNom.trim()}
-              className="w-full flex items-center justify-center gap-2 bg-emerald-500 hover:bg-emerald-400 text-white py-4 rounded-xl font-black text-base transition disabled:opacity-50 active:scale-[0.98]"
+              className="w-full flex items-center justify-center py-4 bg-emerald-500 hover:bg-emerald-400 text-white font-bold text-[15px] rounded-2xl transition disabled:opacity-40 active:scale-[0.97] mt-2"
             >
-              {creating ? <Loader2 className="w-5 h-5 animate-spin" /> : null}
-              {creating ? "Création..." : "Créer ma boutique →"}
+              {creating ? <Loader2 className="w-5 h-5 animate-spin" /> : "Continuer"}
             </button>
           </div>
-          <p className="text-center text-[11px] text-gray-400 mt-6">
-            Gratuit · Sans engagement · Logo et détails modifiables après
-          </p>
         </div>
       </div>
     );
@@ -415,24 +404,23 @@ export default function MaBoutiquePage() {
     const qrValue = `${payUrl}?amount=${amount}`;
     return (
       <div className="min-h-screen bg-white flex flex-col items-center justify-center px-6">
-        <div className="bg-white p-4 rounded-3xl border-[3px] border-gray-900 shadow-xl mb-4 animate-in zoom-in-95 duration-300">
+        <div className="bg-white p-4 rounded-3xl border-[3px] border-gray-900 shadow-xl mb-5 animate-in zoom-in-95 duration-300">
           <QRCodeSVG value={qrValue} size={260} level="H" />
         </div>
-        <p className="text-4xl font-black text-gray-900 mb-1">{formatMontant(amount, devise)}</p>
-        <p className="text-lg font-black text-gray-800 mb-0.5">💳 Payez ici</p>
-        <p className="text-sm text-gray-500 mb-3">Scannez et payez instantanément</p>
-        <div className="flex items-center gap-2 mb-8 animate-pulse">
-          <div className="w-2.5 h-2.5 bg-emerald-500 rounded-full" />
-          <span className="text-sm font-semibold text-emerald-600">En attente de paiement...</span>
+        <p className="text-[36px] font-black text-gray-900 mb-1">{formatMontant(amount, devise)}</p>
+        <p className="text-[15px] font-bold text-gray-900 mb-1">Scannez pour payer</p>
+        <div className="flex items-center gap-2 mt-3 mb-10 animate-pulse">
+          <div className="w-2 h-2 bg-emerald-500 rounded-full" />
+          <span className="text-[13px] font-semibold text-emerald-600">En attente de paiement</span>
         </div>
         <button
           onClick={() => { hapticSuccess(); resetEncaisser(); }}
-          className="w-full max-w-xs py-4 bg-emerald-500 hover:bg-emerald-400 text-white rounded-2xl font-black text-base transition active:scale-[0.98] shadow-lg shadow-emerald-500/20"
+          className="w-full max-w-xs py-4 bg-emerald-500 hover:bg-emerald-400 text-white rounded-2xl font-bold text-[15px] transition active:scale-[0.97]"
         >
-          ✓ Nouvelle vente
+          Nouvelle vente
         </button>
-        <button onClick={() => setEncaisserQR(false)} className="mt-4 text-sm text-gray-500 font-semibold hover:text-gray-700">
-          ← Modifier le montant
+        <button onClick={() => setEncaisserQR(false)} className="mt-4 text-[13px] text-gray-400 font-medium hover:text-gray-600 transition">
+          Modifier le montant
         </button>
       </div>
     );
@@ -487,52 +475,58 @@ export default function MaBoutiquePage() {
       {/* ═══ TAB: ENCAISSER (Terminal) ═══ */}
       {activeTab === "terminal" && (
         <div className="flex flex-col items-center px-4">
-          {/* QR DOMINANT — impossible à ignorer */}
-          <div className="bg-white p-3 rounded-3xl border-[3px] border-gray-900 shadow-xl mb-3">
+          {/* Shop name */}
+          <p className="text-[13px] font-semibold text-gray-500 mb-5">{boutique.nom}</p>
+
+          {/* QR DOMINANT */}
+          <div className="bg-white p-3 rounded-3xl border-[3px] border-gray-900 shadow-xl mb-5">
             <QRCodeSVG value={boutiqueUrl} size={280} level="H" />
           </div>
-          <p className="text-xl font-black text-gray-900 mb-0.5">💳 Payez ici</p>
-          <p className="text-sm text-gray-500 mb-2">Scannez et payez instantanément</p>
-          <p className="text-[11px] text-gray-400 mb-3">Mobile Money · Carte · QR</p>
+          <p className="text-[15px] font-bold text-gray-900 mb-1">Scannez pour payer</p>
 
-          {/* État dynamique — toujours visible */}
-          <div className="flex items-center gap-2 mb-5 animate-pulse">
-            <div className="w-2.5 h-2.5 bg-emerald-500 rounded-full" />
-            <span className="text-sm font-semibold text-emerald-600">En attente de paiement...</span>
+          {/* État dynamique */}
+          <div className="flex items-center gap-2 mt-3 mb-8 animate-pulse">
+            <div className="w-2 h-2 bg-emerald-500 rounded-full" />
+            <span className="text-[13px] font-semibold text-emerald-600">En attente de paiement</span>
           </div>
 
-          {/* ENCAISSER — seul bouton principal, right under QR */}
+          {/* Actions */}
           <button
             onClick={() => { setEncaisserMode(true); hapticMedium(); }}
-            className="w-full py-5 bg-emerald-500 hover:bg-emerald-400 text-white rounded-2xl font-black text-lg transition active:scale-[0.98] shadow-lg shadow-emerald-500/20 flex items-center justify-center gap-2.5 mb-4"
+            className="w-full max-w-xs py-4 bg-emerald-500 hover:bg-emerald-400 text-white rounded-2xl font-bold text-[15px] transition active:scale-[0.97] mb-3"
           >
-            <Zap className="w-5 h-5" />Encaisser un montant
+            Encaisser un montant
+          </button>
+          <button
+            onClick={handleShare}
+            className="w-full max-w-xs py-3.5 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-2xl font-semibold text-[14px] transition active:scale-[0.97]"
+          >
+            Partager mon QR
           </button>
 
-          {/* Partager + Mode caisse */}
-          <div className="flex items-center gap-4 mt-2">
-            <button onClick={handleShare} className="flex items-center gap-1.5 text-gray-500 text-xs font-semibold hover:text-emerald-600 transition">
-              <Share2 className="w-3.5 h-3.5" />Partager mon QR
-            </button>
-            <span className="text-gray-200">|</span>
-            <button onClick={() => { setModeCaisse(true); hapticMedium(); }} className="flex items-center gap-1.5 text-gray-500 text-xs font-semibold hover:text-emerald-600 transition">
-              <QrCode className="w-3.5 h-3.5" />Mode caisse
-            </button>
-          </div>
+          {/* Mode caisse — discret */}
+          <button
+            onClick={() => { setModeCaisse(true); hapticMedium(); }}
+            className="mt-6 text-[12px] text-gray-400 font-medium hover:text-gray-600 transition"
+          >
+            Mode caisse plein écran
+          </button>
 
-          {/* Mini stats — discret */}
-          <div className="w-full grid grid-cols-3 gap-2 mt-6">
-            <div className="bg-gray-50 rounded-xl p-3 text-center">
+          {/* Mini stats */}
+          <div className="w-full flex items-center justify-center gap-6 mt-8 pt-6 border-t border-gray-100">
+            <div className="text-center">
               <p className="text-lg font-black text-gray-900">{stats.totalCommandes}</p>
-              <p className="text-[10px] text-gray-500 font-medium">Ventes</p>
+              <p className="text-[11px] text-gray-400">Ventes</p>
             </div>
-            <div className="bg-gray-50 rounded-xl p-3 text-center">
+            <div className="w-px h-5 bg-gray-200" />
+            <div className="text-center">
               <p className="text-sm font-black text-gray-900">{formatMontant(stats.totalVentes, devise)}</p>
-              <p className="text-[10px] text-gray-500 font-medium">Revenus</p>
+              <p className="text-[11px] text-gray-400">Revenus</p>
             </div>
-            <div className="bg-gray-50 rounded-xl p-3 text-center">
+            <div className="w-px h-5 bg-gray-200" />
+            <div className="text-center">
               <p className="text-lg font-black text-gray-900">{stats.totalProduits}</p>
-              <p className="text-[10px] text-gray-500 font-medium">Produits</p>
+              <p className="text-[11px] text-gray-400">Produits</p>
             </div>
           </div>
         </div>
