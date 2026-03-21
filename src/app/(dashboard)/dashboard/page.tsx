@@ -93,13 +93,13 @@ export default function DashboardPage() {
               <Zap className="w-8 h-8 text-white" />
             </div>
             <div className="flex-1">
-              <p className="text-lg font-black text-gray-900">🏪 Créez votre point de vente</p>
+              <p className="text-lg font-black text-gray-900">🏪 Créez votre boutique</p>
               <p className="text-[13px] text-gray-500 mt-1">Encaissez vos clients simplement</p>
             </div>
           </div>
           <span className="flex items-center justify-center gap-2 w-full py-4 bg-emerald-500 text-white font-black text-base rounded-2xl shadow-lg shadow-emerald-500/25 group-hover:bg-emerald-400 transition active:scale-[0.98]">
             <Zap className="w-5 h-5" />
-            Créer mon point de vente
+            Créer ma boutique
           </span>
         </Link>
 
