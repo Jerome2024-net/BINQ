@@ -168,8 +168,8 @@ export default function PayPage() {
     return (
       <div className="min-h-screen bg-white flex items-center justify-center">
         <div className="text-center">
-          <Loader2 className="w-10 h-10 text-emerald-600 animate-spin mx-auto mb-4" />
-          <p className="text-gray-600">Chargement du paiement...</p>
+          <Loader2 className="w-8 h-8 text-black animate-spin mx-auto" />
+          <p className="text-gray-400 text-sm mt-3">Chargement du paiement...</p>
         </div>
       </div>
     );
@@ -185,9 +185,12 @@ export default function PayPage() {
           </div>
           <h1 className="text-xl font-bold text-gray-900 mb-2">Lien non disponible</h1>
           <p className="text-gray-600 mb-6">{error}</p>
-          <Link href="/dashboard" className="inline-flex items-center gap-2 bg-emerald-500 text-white px-6 py-3 rounded-xl font-semibold hover:bg-emerald-400 transition">
-            Retour à l&apos;accueil
-          </Link>
+          <button
+            onClick={() => window.history.length > 1 ? router.back() : router.push("/")}
+            className="inline-flex items-center gap-2 bg-black text-white px-6 py-3 rounded-xl font-semibold hover:bg-gray-800 transition active:scale-95"
+          >
+            Retour
+          </button>
         </div>
       </div>
     );
@@ -233,11 +236,14 @@ export default function PayPage() {
           </div>
 
           <div className="flex items-center gap-2">
-            <Link href="/dashboard" className="flex-1 inline-flex items-center justify-center gap-2 bg-emerald-500 text-white px-4 py-3 rounded-xl font-bold hover:bg-emerald-400 transition text-sm">
-              Retour &agrave; l&apos;accueil
-            </Link>
+            <button
+              onClick={() => router.push("/")}
+              className="flex-1 inline-flex items-center justify-center gap-2 bg-black text-white px-4 py-3 rounded-xl font-bold hover:bg-gray-800 transition text-sm"
+            >
+              Fermer
+            </button>
             <button onClick={handleShareReceipt} className="flex items-center justify-center gap-1.5 px-4 py-3 rounded-xl bg-gray-50/80 hover:bg-gray-100 text-gray-700 font-bold text-sm transition active:scale-95">
-              <Share2 className="w-4 h-4" />Re&ccedil;u
+              <Share2 className="w-4 h-4" />Recu
             </button>
           </div>
         </div>
@@ -275,9 +281,12 @@ export default function PayPage() {
             </div>
             <h1 className="text-xl font-bold text-gray-900 mb-2">Lien non disponible</h1>
             <p className="text-gray-600 text-sm mb-6">Ce type de lien n&apos;est plus pris en charge.</p>
-            <Link href="/dashboard" className="inline-flex items-center gap-2 bg-emerald-500 text-white px-6 py-3 rounded-xl font-semibold hover:bg-emerald-400 transition">
-              Retour &agrave; l&apos;accueil
-            </Link>
+            <button
+              onClick={() => window.history.length > 1 ? router.back() : router.push("/")}
+              className="inline-flex items-center gap-2 bg-black text-white px-6 py-3 rounded-xl font-semibold hover:bg-gray-800 transition active:scale-95"
+            >
+              Retour
+            </button>
           </div>
         </div>
       </div>
@@ -295,10 +304,10 @@ export default function PayPage() {
         {/* Header */}
         <div className="text-center mb-6">
           <h2 className="text-2xl font-black text-gray-900 tracking-tight">
-            <span className="text-emerald-600">Binq</span> Pay
+            <span className="text-black">Binq</span> Pay
           </h2>
           <div className="flex items-center justify-center gap-1.5 mt-1">
-            <Shield className="w-3.5 h-3.5 text-emerald-500" />
+            <Shield className="w-3.5 h-3.5 text-gray-400" />
             <p className="text-gray-500 text-xs font-medium">Paiement sécurisé</p>
           </div>
         </div>
@@ -307,7 +316,7 @@ export default function PayPage() {
         <div className="bg-white rounded-3xl shadow-xl shadow-gray-200/50 border border-gray-100 overflow-hidden">
 
           {/* Creator header */}
-          <div className="bg-gradient-to-r from-emerald-500 to-emerald-600 px-6 py-5 text-white">
+          <div className="bg-gradient-to-r from-black to-gray-900 px-6 py-5 text-white">
             <div className="flex items-center gap-4">
               {link.createur.avatar_url ? (
                 <img src={link.createur.avatar_url} alt={link.createur.prenom} className="w-14 h-14 rounded-full object-cover ring-2 ring-white/30" />
@@ -318,7 +327,7 @@ export default function PayPage() {
               )}
               <div>
                 <p className="text-lg font-bold">{link.createur.prenom} {link.createur.nom}</p>
-                <p className="text-emerald-100 text-sm">{link.isMerchant ? "Marchand vérifié" : "Paiement sécurisé"}</p>
+                <p className="text-white/70 text-sm">{link.isMerchant ? "Marchand verifie" : "Paiement securise"}</p>
               </div>
               {link.isMerchant && <div className="ml-auto"><Store className="w-6 h-6 text-white/60" /></div>}
             </div>
@@ -354,7 +363,7 @@ export default function PayPage() {
 
             {/* Description */}
             {link.description && (
-              <div className="bg-emerald-50/50 rounded-xl p-3 mb-6 border border-emerald-100/50">
+              <div className="bg-gray-50 rounded-xl p-3 mb-6 border border-gray-200/50">
                 <p className="text-sm text-gray-700 italic">&ldquo;{link.description}&rdquo;</p>
               </div>
             )}
@@ -379,7 +388,7 @@ export default function PayPage() {
                         onClick={() => { setSelectedMethod(method.id); }}
                         className={`w-full flex items-center gap-3 p-3.5 rounded-xl border transition-all duration-200 text-left ${
                           isSelected
-                            ? "border-emerald-500 bg-emerald-50/50 ring-1 ring-emerald-500/20"
+                            ? "border-black bg-gray-50 ring-1 ring-black/10"
                             : "border-gray-200 hover:border-gray-300 hover:bg-gray-50/50"
                         }`}
                       >
@@ -399,7 +408,7 @@ export default function PayPage() {
                           ) : (
                             <p className="text-xs text-gray-400">{method.feePercent}%</p>
                           )}
-                          <ChevronRight className={`w-4 h-4 ml-auto mt-0.5 transition-colors ${isSelected ? "text-emerald-500" : "text-gray-300"}`} />
+                          <ChevronRight className={`w-4 h-4 ml-auto mt-0.5 transition-colors ${isSelected ? "text-black" : "text-gray-300"}`} />
                         </div>
                       </button>
                     );
@@ -417,7 +426,7 @@ export default function PayPage() {
                       placeholder="+221 7X XXX XX XX"
                       value={phoneNumber}
                       onChange={(e) => setPhoneNumber(e.target.value)}
-                      className="w-full mt-2 bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-gray-900 placeholder-gray-400 outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500/20 transition"
+                      className="w-full mt-2 bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-gray-900 placeholder-gray-400 outline-none focus:border-black focus:ring-1 focus:ring-black/10 transition"
                     />
                     <p className="text-[11px] text-gray-400 mt-1.5">Le numéro associé à votre compte {getPaymentMethod(selectedMethod)?.label}</p>
                   </div>
@@ -454,7 +463,7 @@ export default function PayPage() {
                 <button
                   onClick={handlePay}
                   disabled={paying || !selectedMethod || currentAmount <= 0 || (selectedMethod !== null && isMobileMoneyMethod(selectedMethod) && !phoneNumber.trim())}
-                  className="w-full flex items-center justify-center gap-2.5 bg-emerald-500 hover:bg-emerald-400 text-white py-4 rounded-2xl font-bold text-base transition-all disabled:opacity-40 disabled:cursor-not-allowed active:scale-[0.98] shadow-lg shadow-emerald-500/20"
+                  className="w-full flex items-center justify-center gap-2.5 bg-black hover:bg-gray-800 text-white py-4 rounded-2xl font-bold text-base transition-all disabled:opacity-40 disabled:cursor-not-allowed active:scale-[0.98] shadow-lg shadow-black/10"
                 >
                   {paying ? (
                     <><Loader2 className="w-5 h-5 animate-spin" />Traitement en cours...</>
@@ -469,9 +478,9 @@ export default function PayPage() {
 
                 {/* CTA "Inscription Binq" pour non-users */}
                 {!user && (
-                  <div className="mt-5 bg-gradient-to-r from-emerald-50 to-emerald-100/50 rounded-2xl p-4 border border-emerald-200/50 text-center">
+                  <div className="bg-gradient-to-r from-gray-50 to-gray-100/50 rounded-2xl p-4 border border-gray-200/50 text-center">
                     <div className="flex items-center justify-center gap-2 mb-2">
-                      <Zap className="w-5 h-5 text-emerald-600" />
+                      <Zap className="w-5 h-5 text-black" />
                       <p className="text-sm font-bold text-gray-900">Vous aussi, vendez avec Binq</p>
                     </div>
                     <p className="text-xs text-gray-600 mb-3">
@@ -479,7 +488,7 @@ export default function PayPage() {
                     </p>
                     <Link
                       href={`/inscription?redirect=/pay/${code}`}
-                      className="inline-flex items-center justify-center gap-2 bg-emerald-500 text-white px-5 py-2.5 rounded-xl font-bold text-sm hover:bg-emerald-400 transition active:scale-95"
+                      className="inline-flex items-center justify-center gap-2 bg-black text-white px-5 py-2.5 rounded-xl font-bold text-sm hover:bg-gray-800 transition active:scale-95"
                     >
                       <Download className="w-4 h-4" />
                       Cr&eacute;er mon compte &mdash; Gratuit
@@ -502,7 +511,7 @@ export default function PayPage() {
 
         {/* Footer */}
         <div className="text-center mt-5">
-          <p className="text-[11px] text-gray-400">Propulsé par Binq — Paiements universels pour l&apos;Afrique</p>
+          <p className="text-[11px] text-gray-300">Propulse par <span className="font-semibold text-gray-400">Binq</span></p>
         </div>
       </div>
     </div>

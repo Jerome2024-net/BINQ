@@ -148,8 +148,8 @@ export default function PayUserPage() {
     return (
       <div className="min-h-screen bg-white flex items-center justify-center">
         <div className="text-center">
-          <Loader2 className="w-10 h-10 text-emerald-600 animate-spin mx-auto mb-4" />
-          <p className="text-gray-600">Chargement...</p>
+          <Loader2 className="w-8 h-8 text-black animate-spin mx-auto" />
+          <p className="text-gray-400 text-sm mt-3">Chargement...</p>
         </div>
       </div>
     );
@@ -165,12 +165,12 @@ export default function PayUserPage() {
           </div>
           <h1 className="text-xl font-bold text-gray-900 mb-2">Utilisateur introuvable</h1>
           <p className="text-gray-600 mb-6">{error}</p>
-          <Link
-            href="/dashboard"
-            className="inline-flex items-center gap-2 bg-emerald-500 text-white px-6 py-3 rounded-xl font-semibold hover:bg-emerald-400 transition"
+          <button
+            onClick={() => window.history.length > 1 ? router.back() : router.push("/")}
+            className="inline-flex items-center gap-2 bg-black text-white px-6 py-3 rounded-xl font-semibold hover:bg-gray-800 transition active:scale-95"
           >
-            {"Retour a l'accueil"}
-          </Link>
+            {"Retour"}
+          </button>
         </div>
       </div>
     );
@@ -222,12 +222,12 @@ export default function PayUserPage() {
           </div>
 
           <div className="flex items-center gap-2">
-            <Link
-              href="/dashboard"
-              className="flex-1 inline-flex items-center justify-center gap-2 bg-emerald-500 text-white px-4 py-3 rounded-xl font-bold hover:bg-emerald-400 transition text-sm"
+            <button
+              onClick={() => router.push("/")}
+              className="flex-1 inline-flex items-center justify-center gap-2 bg-black text-white px-4 py-3 rounded-xl font-bold hover:bg-gray-800 transition text-sm"
             >
-              Accueil
-            </Link>
+              Fermer
+            </button>
             <button
               onClick={handleShareReceipt}
               className="flex items-center justify-center gap-1.5 px-4 py-3 rounded-xl bg-gray-50/80 hover:bg-gray-100 text-gray-700 font-bold text-sm transition active:scale-95"
@@ -250,7 +250,7 @@ export default function PayUserPage() {
         {/* Logo */}
         <div className="text-center mb-8">
           <h2 className="text-2xl font-black text-gray-900 tracking-tight">
-            <span className="text-emerald-600">Binq</span> Pay
+            <span className="text-black">Binq</span> Pay
           </h2>
           <p className="text-gray-700 text-sm mt-1 flex items-center justify-center gap-1.5">
             <QrCode className="w-3.5 h-3.5" />
@@ -266,11 +266,11 @@ export default function PayUserPage() {
               <img
                 src={targetUser.avatar_url}
                 alt={targetUser.prenom}
-                className="w-16 h-16 rounded-full object-cover mb-3 ring-2 ring-emerald-200"
+                className="w-16 h-16 rounded-full object-cover mb-3 ring-2 ring-gray-200"
               />
             ) : (
-              <div className="w-16 h-16 rounded-full bg-emerald-100 flex items-center justify-center mb-3 ring-2 ring-emerald-200">
-                <span className="text-lg font-bold text-emerald-600">{initials}</span>
+              <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center mb-3 ring-2 ring-gray-200">
+                <span className="text-lg font-bold text-gray-600">{initials}</span>
               </div>
             )}
             <p className="text-lg font-semibold text-gray-900">
@@ -290,7 +290,7 @@ export default function PayUserPage() {
                     onClick={() => { setDevise(d); setSelectedMethod(null); }}
                     className={`flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-sm font-bold transition-all ${
                       devise === d
-                        ? "bg-emerald-50 text-emerald-600 border border-emerald-200/60"
+                        ? "bg-black text-white border border-black"
                         : "bg-gray-50/50 text-gray-600 border border-gray-200/50 hover:bg-gray-100/50"
                     }`}
                   >
@@ -333,21 +333,21 @@ export default function PayUserPage() {
                       onClick={() => setSelectedMethod(m.id)}
                       className={`flex items-center gap-3 p-3 rounded-xl border transition-all text-left ${
                         isActive
-                          ? "border-emerald-300 bg-emerald-50/80"
+                          ? "border-black bg-gray-50/80"
                           : "border-gray-200/60 bg-white hover:bg-gray-50"
                       }`}
                     >
                       <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${
-                        isActive ? "bg-emerald-100" : "bg-gray-100"
+                        isActive ? "bg-gray-900" : "bg-gray-100"
                       }`}>
                         {m.provider === "stripe" ? (
-                          <CreditCard className={`w-5 h-5 ${isActive ? "text-emerald-600" : "text-gray-600"}`} />
+                          <CreditCard className={`w-5 h-5 ${isActive ? "text-white" : "text-gray-600"}`} />
                         ) : (
-                          <Smartphone className={`w-5 h-5 ${isActive ? "text-emerald-600" : "text-gray-600"}`} />
+                          <Smartphone className={`w-5 h-5 ${isActive ? "text-white" : "text-gray-600"}`} />
                         )}
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className={`text-sm font-semibold ${isActive ? "text-emerald-700" : "text-gray-900"}`}>{m.label}</p>
+                        <p className={`text-sm font-semibold ${isActive ? "text-gray-900" : "text-gray-900"}`}>{m.label}</p>
                         {methodFees && (
                           <p className="text-xs text-gray-500">
                             Frais : {formatMontant(methodFees.frais, devise)}
@@ -355,9 +355,9 @@ export default function PayUserPage() {
                         )}
                       </div>
                       <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
-                        isActive ? "border-emerald-500" : "border-gray-300"
+                        isActive ? "border-black" : "border-gray-300"
                       }`}>
-                        {isActive && <div className="w-2.5 h-2.5 rounded-full bg-emerald-500" />}
+                        {isActive && <div className="w-2.5 h-2.5 rounded-full bg-black" />}
                       </div>
                     </button>
                   );
@@ -378,7 +378,7 @@ export default function PayUserPage() {
                 </div>
                 <div className="flex justify-between pt-1 border-t border-gray-200/50">
                   <span className="text-gray-900 font-bold">Total</span>
-                  <span className="text-emerald-600 font-bold">{formatMontant(fees.totalPayeur, devise)}</span>
+                  <span className="text-black font-bold">{formatMontant(fees.totalPayeur, devise)}</span>
                 </div>
               </div>
             )}
@@ -392,7 +392,7 @@ export default function PayUserPage() {
                 placeholder="Message (optionnel)"
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
-                className="w-full bg-gray-50/80 border border-gray-200/60 rounded-xl pl-9 pr-4 py-3 text-gray-900 placeholder-gray-400 outline-none focus:border-emerald-200 transition text-sm"
+                className="w-full bg-gray-50/80 border border-gray-200/60 rounded-xl pl-9 pr-4 py-3 text-gray-900 placeholder-gray-400 outline-none focus:border-black transition text-sm"
               />
             </div>
 
@@ -400,7 +400,7 @@ export default function PayUserPage() {
             <button
               onClick={handlePay}
               disabled={sending || !montant || parsedMontant <= 0 || !selectedMethod}
-              className="w-full flex items-center justify-center gap-2 bg-emerald-500 text-white py-3.5 rounded-xl font-bold hover:bg-emerald-400 transition disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full flex items-center justify-center gap-2 bg-black text-white py-3.5 rounded-xl font-bold hover:bg-gray-800 transition disabled:opacity-50 disabled:cursor-not-allowed active:scale-[0.98]"
             >
               {sending ? (
                 <Loader2 className="w-5 h-5 animate-spin" />
@@ -412,9 +412,9 @@ export default function PayUserPage() {
           </div>
         </div>
 
-        <p className="text-center text-xs text-gray-600 mt-6 flex items-center justify-center gap-1.5">
+        <p className="text-center text-[11px] text-gray-300 mt-6 flex items-center justify-center gap-1.5">
           <ShieldCheck className="w-3.5 h-3.5" />
-          Paiement securise via Binq. Aucun fonds stocke.
+          Propulse par <span className="font-semibold text-gray-400 ml-0.5">Binq</span>
         </p>
       </div>
     </div>

@@ -145,7 +145,10 @@ export default function ProduitPage() {
   if (loading) {
     return (
       <div className="min-h-screen bg-white flex items-center justify-center">
-        <Loader2 className="w-8 h-8 text-emerald-600 animate-spin" />
+        <div className="text-center">
+          <Loader2 className="w-8 h-8 text-black animate-spin mx-auto" />
+          <p className="text-gray-400 text-sm mt-3">Chargement...</p>
+        </div>
       </div>
     );
   }
@@ -156,9 +159,12 @@ export default function ProduitPage() {
         <div className="text-center">
           <ShoppingBag className="w-12 h-12 text-gray-300 mx-auto mb-3" />
           <p className="text-gray-600 font-medium">{error || "Produit introuvable"}</p>
-          <Link href="/explorer" className="mt-4 inline-flex items-center gap-2 text-emerald-600 font-semibold text-sm">
-            <ArrowLeft className="w-4 h-4" />Retour au marketplace
-          </Link>
+          <button
+            onClick={() => window.history.length > 1 ? router.back() : router.push("/")}
+            className="mt-4 inline-flex items-center gap-2 text-black font-semibold text-sm"
+          >
+            <ArrowLeft className="w-4 h-4" />Retour
+          </button>
         </div>
       </div>
     );
@@ -190,11 +196,8 @@ export default function ProduitPage() {
           </div>
 
           <div className="flex gap-2">
-            <Link href="/explorer" className="flex-1 inline-flex items-center justify-center gap-2 bg-emerald-500 text-white px-4 py-3 rounded-xl font-bold hover:bg-emerald-400 transition text-sm">
-              <ShoppingBag className="w-4 h-4" />Continuer
-            </Link>
-            <Link href="/commandes" className="inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-gray-100 text-gray-700 font-bold text-sm hover:bg-gray-200 transition">
-              Commandes
+            <Link href={`/boutique/${produit.boutique.slug}`} className="flex-1 inline-flex items-center justify-center gap-2 bg-black text-white px-4 py-3 rounded-xl font-bold hover:bg-gray-800 transition text-sm">
+              <Store className="w-4 h-4" />Retour a la boutique
             </Link>
           </div>
         </div>
@@ -206,7 +209,7 @@ export default function ProduitPage() {
     <div className="min-h-screen bg-white pb-28">
       {/* Header */}
       <div className="sticky top-0 z-10 bg-white/80 backdrop-blur-xl border-b border-gray-100 px-4 py-3 flex items-center gap-3">
-        <button onClick={() => router.back()} className="p-1.5 rounded-lg hover:bg-gray-100 transition">
+        <button onClick={() => router.push(`/boutique/${produit.boutique.slug}`)} className="p-1.5 rounded-lg hover:bg-gray-100 transition">
           <ArrowLeft className="w-5 h-5 text-gray-700" />
         </button>
         <h1 className="font-bold text-gray-900 truncate flex-1">{produit.nom}</h1>
@@ -288,10 +291,10 @@ export default function ProduitPage() {
             className="w-full flex items-center justify-between px-4 py-3 hover:bg-gray-100/50 transition"
           >
             <div className="flex items-center gap-2.5">
-              <QrCode className="w-4 h-4 text-emerald-600" />
+              <QrCode className="w-4 h-4 text-black" />
               <span className="text-sm font-bold text-gray-900">QR Code produit</span>
             </div>
-            <span className="text-xs text-emerald-600 font-semibold">{showQR ? "Masquer" : "Afficher"}</span>
+            <span className="text-xs text-black font-semibold">{showQR ? "Masquer" : "Afficher"}</span>
           </button>
           {showQR && (
             <div className="px-4 pb-4 text-center">
@@ -336,7 +339,7 @@ export default function ProduitPage() {
           {!user ? (
             <div className="text-center">
               <p className="text-sm text-gray-500 mb-3">Connectez-vous pour acheter</p>
-              <Link href={`/connexion?redirect=/produit/${produit.id}`} className="w-full inline-flex items-center justify-center gap-2 bg-emerald-500 text-white py-3.5 rounded-xl font-bold hover:bg-emerald-400 transition">
+              <Link href={`/connexion?redirect=/produit/${produit.id}`} className="w-full inline-flex items-center justify-center gap-2 bg-black text-white py-3.5 rounded-xl font-bold hover:bg-gray-800 transition">
                 <LogIn className="w-5 h-5" />Se connecter
               </Link>
             </div>
@@ -352,7 +355,7 @@ export default function ProduitPage() {
             <button
               onClick={handleBuy}
               disabled={buying}
-              className="w-full flex items-center justify-center gap-2.5 bg-emerald-500 hover:bg-emerald-400 text-white py-4 rounded-2xl font-bold text-base transition-all disabled:opacity-50 active:scale-[0.98] shadow-lg shadow-emerald-500/20"
+              className="w-full flex items-center justify-center gap-2.5 bg-black hover:bg-gray-800 text-white py-4 rounded-2xl font-bold text-base transition-all disabled:opacity-50 active:scale-[0.98] shadow-lg shadow-black/10"
             >
               {buying ? (
                 <><Loader2 className="w-5 h-5 animate-spin" />Paiement en cours...</>
@@ -369,6 +372,11 @@ export default function ProduitPage() {
               <span className="flex items-center gap-1 text-gray-400 text-[10px]"><CreditCard className="w-3 h-3" />Carte / Mobile Money</span>
             </div>
           )}
+        </div>
+
+        {/* Footer Binq */}
+        <div className="text-center pt-6 pb-4">
+          <p className="text-[11px] text-gray-300">Propulse par <span className="font-semibold text-gray-400">Binq</span></p>
         </div>
       </div>
     </div>

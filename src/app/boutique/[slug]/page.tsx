@@ -16,14 +16,11 @@ import {
   Package,
   Search,
   QrCode,
-  CreditCard,
   ShieldCheck,
-  ChevronDown,
   Zap,
   Copy,
   Check,
   X,
-  ExternalLink,
 } from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
 import { formatMontant } from "@/lib/currencies";
@@ -74,7 +71,6 @@ export default function BoutiquePage() {
   const [search, setSearch] = useState("");
   const [selectedCat, setSelectedCat] = useState<string | null>(null);
   const [shared, setShared] = useState(false);
-  const [showQR, setShowQR] = useState(false);
   const [showQRModal, setShowQRModal] = useState(false);
   const [copied, setCopied] = useState(false);
 
@@ -155,10 +151,13 @@ export default function BoutiquePage() {
             <Store className="w-9 h-9 text-gray-300" />
           </div>
           <h2 className="text-lg font-bold text-gray-900 mb-1">Boutique introuvable</h2>
-          <p className="text-gray-500 text-sm mb-6">{error || "Cette boutique n&apos;existe pas ou a ete desactivee."}</p>
-          <Link href="/explorer" className="inline-flex items-center gap-2 bg-black text-white px-5 py-2.5 rounded-xl font-semibold text-sm">
-            <ArrowLeft className="w-4 h-4" />Explorer
-          </Link>
+          <p className="text-gray-500 text-sm mb-6">{error || "Cette boutique n'existe pas ou a ete desactivee."}</p>
+          <button
+            onClick={() => window.history.length > 1 ? router.back() : router.push("/")}
+            className="inline-flex items-center gap-2 bg-black text-white px-5 py-2.5 rounded-xl font-semibold text-sm active:scale-95 transition"
+          >
+            <ArrowLeft className="w-4 h-4" />Retour
+          </button>
         </div>
       </div>
     );
@@ -172,16 +171,19 @@ export default function BoutiquePage() {
   const memberSince = boutique.created_at
     ? new Date(boutique.created_at).toLocaleDateString("fr-FR", { month: "long", year: "numeric" })
     : null;
-  const payUrl = `${typeof window !== "undefined" ? window.location.origin : ""}/pay/user/${boutique.user_id}`;
+
 
   return (
     <div className="min-h-screen bg-gray-50">
       {/* ── Header sticky ── */}
       <div className="sticky top-0 z-30 bg-white/95 backdrop-blur-xl border-b border-gray-100">
         <div className="max-w-lg mx-auto flex items-center gap-3 px-4 py-2.5">
-          <Link href="/explorer" className="p-2 -ml-2 rounded-xl hover:bg-gray-100 transition active:scale-95">
+          <button
+            onClick={() => window.history.length > 1 ? router.back() : router.push("/")}
+            className="p-2 -ml-2 rounded-xl hover:bg-gray-100 transition active:scale-95"
+          >
             <ArrowLeft className="w-5 h-5 text-gray-700" />
-          </Link>
+          </button>
           <div className="flex-1 min-w-0">
             <h1 className="font-bold text-gray-900 text-sm truncate">{boutique.nom}</h1>
             <p className="text-[11px] text-gray-400 truncate">
@@ -251,7 +253,7 @@ export default function BoutiquePage() {
         {/* Badges sous le hero */}
         <div className="px-4 py-3 flex items-center gap-2 overflow-x-auto no-scrollbar">
           <span className="flex-shrink-0 flex items-center gap-1.5 bg-emerald-50 text-emerald-700 text-[11px] font-semibold px-3 py-1.5 rounded-full">
-            <QrCode className="w-3 h-3" />Paiement QR disponible
+            <ShieldCheck className="w-3 h-3" />Paiement securise
           </span>
           {boutique.is_verified && (
             <span className="flex-shrink-0 flex items-center gap-1.5 bg-blue-50 text-blue-600 text-[11px] font-semibold px-3 py-1.5 rounded-full">
@@ -265,21 +267,7 @@ export default function BoutiquePage() {
           )}
         </div>
 
-        {/* ═══ 2. ACTIONS — Commerce first ═══ */}
-        <div className="px-4 pb-4">
-          {/* CTA Principal */}
-          {produits.length > 0 && (
-            <button
-              onClick={scrollToProduits}
-              className="w-full flex items-center justify-center gap-2 bg-black text-white py-3 rounded-xl font-bold text-sm active:scale-[0.97] transition shadow-sm"
-            >
-              <ShoppingBag className="w-4 h-4" />
-              Voir les produits
-            </button>
-          )}
-        </div>
-
-        {/* ═══ 3. RECHERCHE ═══ */}
+        {/* ═══ 2. RECHERCHE ═══ */}
         {produits.length > 0 && (
           <div className="px-4 pb-3" ref={produitsRef}>
             <div className="relative">
@@ -352,79 +340,41 @@ export default function BoutiquePage() {
                 const discount = hasPromo ? Math.round(((p.prix_barre! - p.prix) / p.prix_barre!) * 100) : 0;
 
                 return (
-                  <div
+                  <Link
                     key={p.id}
-                    className="bg-white rounded-2xl overflow-hidden border border-gray-100 hover:border-gray-200 transition-all group"
+                    href={`/produit/${p.id}`}
+                    className="bg-white rounded-2xl overflow-hidden border border-gray-100 hover:border-gray-200 transition-all group block"
                   >
-                    {/* Image — clickable to detail */}
-                    <Link href={`/produit/${p.id}`}>
-                      <div className="aspect-square bg-gray-50 relative overflow-hidden">
-                        {p.image_url ? (
-                          <img
-                            src={p.image_url}
-                            alt={p.nom}
-                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                          />
-                        ) : (
-                          <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100">
-                            <ShoppingBag className="w-10 h-10 text-gray-200" />
-                          </div>
-                        )}
-                        {hasPromo && (
-                          <span className="absolute top-2 left-2 bg-red-500 text-white text-[10px] font-black px-2 py-0.5 rounded-lg">
-                            -{discount}%
-                          </span>
-                        )}
-                        {p.ventes > 0 && (
-                          <span className="absolute top-2 right-2 bg-black/70 backdrop-blur-sm text-white text-[9px] font-bold px-1.5 py-0.5 rounded-md">
-                            {p.ventes} vendu{p.ventes > 1 ? "s" : ""}
-                          </span>
-                        )}
-                      </div>
-                    </Link>
-
-                    {/* Info + Buy button */}
-                    <div className="p-3">
-                      <Link href={`/produit/${p.id}`}>
-                        <p className="text-xs font-bold text-gray-900 line-clamp-2 leading-snug min-h-[2rem]">
-                          {p.nom}
-                        </p>
-                      </Link>
-                      <div className="flex items-baseline gap-1.5 mt-1.5">
-                        <span className="text-sm font-black text-black">
-                          {formatMontant(p.prix, pDevise)}
+                    <div className="aspect-square bg-gray-50 relative overflow-hidden">
+                      {p.image_url ? (
+                        <img src={p.image_url} alt={p.nom} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100">
+                          <ShoppingBag className="w-10 h-10 text-gray-200" />
+                        </div>
+                      )}
+                      {hasPromo && (
+                        <span className="absolute top-2 left-2 bg-red-500 text-white text-[10px] font-black px-2 py-0.5 rounded-lg">-{discount}%</span>
+                      )}
+                      {p.ventes > 0 && (
+                        <span className="absolute top-2 right-2 bg-black/70 backdrop-blur-sm text-white text-[9px] font-bold px-1.5 py-0.5 rounded-md">
+                          {p.ventes} vendu{p.ventes > 1 ? "s" : ""}
                         </span>
+                      )}
+                    </div>
+                    <div className="p-3">
+                      <p className="text-xs font-bold text-gray-900 line-clamp-2 leading-snug min-h-[2rem]">{p.nom}</p>
+                      <div className="flex items-baseline gap-1.5 mt-1.5">
+                        <span className="text-sm font-black text-black">{formatMontant(p.prix, pDevise)}</span>
                         {hasPromo && (
-                          <span className="text-[10px] text-gray-400 line-through">
-                            {formatMontant(p.prix_barre!, pDevise)}
-                          </span>
+                          <span className="text-[10px] text-gray-400 line-through">{formatMontant(p.prix_barre!, pDevise)}</span>
                         )}
                       </div>
-                      {/* Acheter + Partager */}
-                      <div className="flex gap-1.5 mt-2">
-                        <Link
-                          href={`/produit/${p.id}`}
-                          className="flex-1 flex items-center justify-center gap-1.5 bg-black text-white py-2 rounded-lg text-xs font-bold active:scale-[0.97] transition"
-                        >
-                          <Zap className="w-3 h-3" />Acheter
-                        </Link>
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            const pUrl = `${window.location.origin}/produit/${p.id}`;
-                            if (navigator.share) {
-                              navigator.share({ title: p.nom, text: `${p.nom} — ${formatMontant(p.prix, pDevise)} sur Binq`, url: pUrl }).catch(() => {});
-                            } else {
-                              navigator.clipboard.writeText(pUrl).catch(() => {});
-                            }
-                          }}
-                          className="w-9 flex items-center justify-center bg-gray-100 hover:bg-gray-200 rounded-lg transition active:scale-95"
-                        >
-                          <Share2 className="w-3.5 h-3.5 text-gray-500" />
-                        </button>
+                      <div className="mt-2 flex items-center justify-center gap-1.5 bg-black text-white py-2 rounded-lg text-xs font-bold">
+                        <Zap className="w-3 h-3" />Voir
                       </div>
                     </div>
-                  </div>
+                  </Link>
                 );
               })}
             </div>
@@ -484,9 +434,9 @@ export default function BoutiquePage() {
             </button>
             <button
               onClick={() => setShowQRModal(true)}
-              className="px-4 flex items-center justify-center gap-1.5 bg-emerald-50 text-emerald-700 py-3 rounded-xl font-bold text-sm transition"
+              className="px-4 flex items-center justify-center gap-1.5 bg-gray-100 text-gray-700 py-3 rounded-xl font-bold text-sm transition active:scale-95"
             >
-              <QrCode className="w-4 h-4" />QR
+              <QrCode className="w-4 h-4" />
             </button>
             <button
               onClick={handleShare}
@@ -506,7 +456,7 @@ export default function BoutiquePage() {
               <X className="w-5 h-5 text-gray-400" />
             </button>
 
-            <div className="w-14 h-14 mx-auto mb-3 rounded-2xl bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center">
+            <div className="w-14 h-14 mx-auto mb-3 rounded-2xl bg-black flex items-center justify-center">
               <QrCode className="w-7 h-7 text-white" />
             </div>
 
@@ -545,7 +495,11 @@ export default function BoutiquePage() {
         </div>
       )}
 
-      {/* Bottom spacer for sticky bar */}
+      {/* Footer Binq */}
+      <div className="text-center pb-24 pt-2">
+        <p className="text-[11px] text-gray-300">Propulse par <span className="font-semibold text-gray-400">Binq</span></p>
+      </div>
+
       <div className="h-20" />
     </div>
   );
