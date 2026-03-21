@@ -126,40 +126,27 @@ export default function DashboardPage() {
         <h1 className="text-[22px] font-black tracking-tight text-gray-900">
           Salut, {user?.prenom || "là"} 👋
         </h1>
-        <div className="flex items-center gap-1.5">
-          <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
-          <span className="text-[11px] font-semibold text-emerald-600">En ligne</span>
+        <div className="flex items-center gap-1">
+          <div className="w-1.5 h-1.5 bg-emerald-400 rounded-full" />
+          <span className="text-[10px] font-medium text-gray-400">en ligne</span>
         </div>
       </div>
 
-      {/* Montant central — solde wallet */}
-      <Link href="/portefeuille" className="block mt-12 text-center active:scale-[0.98] transition-transform">
-        <p className="text-[42px] font-black tracking-tight text-gray-900 leading-none">
+      {/* Montant central */}
+      <Link href="/portefeuille" className="block mt-16 text-center active:scale-[0.98] transition-transform">
+        <p className="text-[44px] font-black tracking-tight text-gray-900 leading-none">
           {formatMontant(walletSolde, devise)}
         </p>
-        <p className="text-[13px] text-gray-500 font-medium mt-2">Solde disponible</p>
+        <p className="text-[13px] text-gray-400 font-medium mt-3">Aujourd&apos;hui</p>
       </Link>
 
-      {/* Stats inline */}
-      <div className="flex items-center justify-center gap-8 mt-6">
-        <div className="text-center">
-          <p className="text-lg font-black text-gray-900">{stats.totalCommandes}</p>
-          <p className="text-[11px] text-gray-400">Ventes</p>
-        </div>
-        <div className="w-px h-5 bg-gray-200" />
-        <div className="text-center">
-          <p className="text-lg font-black text-gray-900">{stats.totalProduits}</p>
-          <p className="text-[11px] text-gray-400">Produits</p>
-        </div>
-      </div>
-
       {/* CTA */}
-      <div className="mt-10 flex justify-center">
+      <div className="mt-14 flex justify-center">
         <Link
           href="/ma-boutique"
           className="w-full max-w-[280px] flex items-center justify-center py-4 bg-emerald-500 text-white font-bold text-[15px] rounded-2xl hover:bg-emerald-400 transition-all active:scale-[0.97]"
         >
-          Encaisser
+          Encaisser maintenant
         </Link>
       </div>
 
