@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useAuth } from "@/contexts/AuthContext";
-import { Loader2, ArrowRight, ChevronRight } from "lucide-react";
+import { ChevronRight, ShoppingBag } from "lucide-react";
 import { type DeviseCode, DEFAULT_DEVISE, formatMontant } from "@/lib/currencies";
 
 interface BoutiqueInfo {
@@ -11,6 +11,16 @@ interface BoutiqueInfo {
   nom: string;
   slug: string;
   logo_url: string | null;
+  categorie?: { nom: string; slug: string; icone: string } | null;
+}
+
+interface ProduitInfo {
+  id: string;
+  nom: string;
+  prix: number;
+  devise: string;
+  image_url: string | null;
+  boutique?: { nom: string; slug: string } | null;
 }
 
 interface Stats {
@@ -23,6 +33,8 @@ export default function DashboardPage() {
   const { user } = useAuth();
   const [boutique, setBoutique] = useState<BoutiqueInfo | null>(null);
   const [stats, setStats] = useState<Stats>({ totalProduits: 0, totalCommandes: 0, totalVentes: 0 });
+  const [boutiques, setBoutiques] = useState<BoutiqueInfo[]>([]);
+  const [produits, setProduits] = useState<ProduitInfo[]>([]);
   const [loading, setLoading] = useState(true);
   const [devise] = useState<DeviseCode>(() => {
     if (typeof window !== "undefined") {
@@ -34,16 +46,27 @@ export default function DashboardPage() {
   useEffect(() => {
     const load = async () => {
       try {
-        const res = await fetch("/api/ma-boutique");
-        const data = await res.json();
-        if (data.boutique) {
-          setBoutique(data.boutique);
+        const [meRes, boutiquesRes, produitsRes] = await Promise.all([
+          fetch("/api/boutiques/me"),
+          fetch("/api/boutiques?limit=10"),
+          fetch("/api/produits?limit=10"),
+        ]);
+        const [meData, boutiquesData, produitsData] = await Promise.all([
+          meRes.json(),
+          boutiquesRes.json(),
+          produitsRes.json(),
+        ]);
+
+        if (meData.boutique) {
+          setBoutique(meData.boutique);
           setStats({
-            totalProduits: data.stats?.totalProduits || 0,
-            totalCommandes: data.stats?.totalCommandes || 0,
-            totalVentes: data.stats?.totalVentes || 0,
+            totalProduits: meData.stats?.totalProduits || 0,
+            totalCommandes: meData.stats?.totalCommandes || 0,
+            totalVentes: meData.stats?.totalVentes || 0,
           });
         }
+        setBoutiques(boutiquesData.boutiques || []);
+        setProduits(produitsData.produits || []);
       } catch { /* ignore */ }
       finally { setLoading(false); }
     };
@@ -53,7 +76,7 @@ export default function DashboardPage() {
   if (loading) {
     return (
       <div className="min-h-[60vh] flex items-center justify-center">
-        <Loader2 className="w-6 h-6 text-gray-300 animate-spin" />
+        <div className="w-6 h-6 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
@@ -63,38 +86,39 @@ export default function DashboardPage() {
   // ═══════════════════════════════════════════
   if (!boutique) {
     return (
-      <div className="px-4 pt-8 pb-28 flex flex-col items-center">
-        {/* Header */}
-        <h1 className="text-[22px] font-black tracking-tight text-gray-900 self-start">
+      <div className="px-5 pt-10 pb-28">
+        <h1 className="text-[22px] font-black tracking-tight text-gray-900">
           Salut, {user?.prenom || "là"} 👋
         </h1>
 
-        {/* Montant central */}
-        <div className="mt-20 mb-2 text-center">
+        <div className="mt-20 text-center">
           <p className="text-[44px] font-black tracking-tight text-gray-900 leading-none">0 FCFA</p>
           <p className="text-[13px] text-gray-500 font-semibold mt-3">Aujourd&apos;hui</p>
         </div>
 
-        {/* CTA */}
-        <Link
-          href="/ma-boutique"
-          className="mt-14 w-full max-w-[280px] flex items-center justify-center py-4 bg-emerald-500 text-white font-bold text-[15px] rounded-2xl hover:bg-emerald-400 transition-all active:scale-[0.97]"
-        >
-          Créer ma boutique
-        </Link>
+        <div className="mt-14 flex justify-center">
+          <Link
+            href="/ma-boutique"
+            className="w-full max-w-[280px] flex items-center justify-center py-4 bg-emerald-500 text-white font-bold text-[15px] rounded-2xl hover:bg-emerald-400 transition-all active:scale-[0.97]"
+          >
+            Créer ma boutique
+          </Link>
+        </div>
       </div>
     );
   }
 
   // ═══════════════════════════════════════════
-  // A UNE BOUTIQUE → Dashboard épuré
+  // A UNE BOUTIQUE → Dashboard + Découverte
   // ═══════════════════════════════════════════
+  const otherBoutiques = boutiques.filter((b) => b.id !== boutique.id);
+
   return (
-    <div className="px-4 pt-8 pb-28">
+    <div className="px-5 pt-10 pb-28">
       {/* Header */}
-      <div className="flex items-center justify-between mb-1">
+      <div className="flex items-center justify-between">
         <h1 className="text-[22px] font-black tracking-tight text-gray-900">
-          {boutique.nom}
+          Salut, {user?.prenom || "là"} 👋
         </h1>
         <div className="flex items-center gap-1.5">
           <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
@@ -103,27 +127,27 @@ export default function DashboardPage() {
       </div>
 
       {/* Montant central */}
-      <div className="mt-12 mb-1 text-center">
+      <div className="mt-12 text-center">
         <p className="text-[42px] font-black tracking-tight text-gray-900 leading-none">
           {formatMontant(stats.totalVentes, devise)}
         </p>
-        <p className="text-[13px] text-gray-400 font-medium mt-2">Revenus</p>
+        <p className="text-[13px] text-gray-500 font-medium mt-2">Revenus</p>
       </div>
 
       {/* Stats inline */}
-      <div className="flex items-center justify-center gap-6 mt-6">
+      <div className="flex items-center justify-center gap-8 mt-6">
         <div className="text-center">
           <p className="text-lg font-black text-gray-900">{stats.totalCommandes}</p>
           <p className="text-[11px] text-gray-400">Ventes</p>
         </div>
-        <div className="w-px h-6 bg-gray-200" />
+        <div className="w-px h-5 bg-gray-200" />
         <div className="text-center">
           <p className="text-lg font-black text-gray-900">{stats.totalProduits}</p>
           <p className="text-[11px] text-gray-400">Produits</p>
         </div>
       </div>
 
-      {/* CTA principal */}
+      {/* CTA */}
       <div className="mt-10 flex justify-center">
         <Link
           href="/ma-boutique"
@@ -133,9 +157,10 @@ export default function DashboardPage() {
         </Link>
       </div>
 
-      {/* Actions */}
-      <div className="mt-10 space-y-1">
+      {/* Actions rapides */}
+      <div className="mt-10 space-y-0">
         {[
+          { href: "/ma-boutique", label: "Mon terminal" },
           { href: "/ma-boutique", label: "Gérer mes produits" },
           { href: "/commandes", label: "Mes commandes" },
           { href: `/boutique/${boutique.slug}`, label: "Voir ma boutique", external: true },
@@ -151,6 +176,61 @@ export default function DashboardPage() {
           </Link>
         ))}
       </div>
+
+      {/* ─── Découverte ─── */}
+
+      {/* Boutiques */}
+      {otherBoutiques.length > 0 && (
+        <div className="mt-12">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-[16px] font-bold text-gray-900">Boutiques</h2>
+            <Link href="/explorer" className="text-[12px] font-semibold text-emerald-600">Voir tout</Link>
+          </div>
+          <div className="flex gap-3 overflow-x-auto pb-2" style={{ scrollbarWidth: "none" }}>
+            {otherBoutiques.slice(0, 8).map((b) => (
+              <Link key={b.id} href={`/boutique/${b.slug}`} className="flex-shrink-0 w-[72px] text-center">
+                <div className="w-16 h-16 mx-auto rounded-2xl bg-gray-50 border border-gray-100 flex items-center justify-center overflow-hidden">
+                  {b.logo_url ? (
+                    <img src={b.logo_url} alt="" className="w-full h-full object-cover" />
+                  ) : (
+                    <span className="text-xl">{b.categorie?.icone || "🏪"}</span>
+                  )}
+                </div>
+                <p className="text-[11px] font-semibold text-gray-600 mt-1.5 truncate">{b.nom}</p>
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Produits récents */}
+      {produits.length > 0 && (
+        <div className="mt-10">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-[16px] font-bold text-gray-900">Produits récents</h2>
+            <Link href="/explorer" className="text-[12px] font-semibold text-emerald-600">Voir tout</Link>
+          </div>
+          <div className="flex gap-3 overflow-x-auto pb-2" style={{ scrollbarWidth: "none" }}>
+            {produits.slice(0, 10).map((p) => (
+              <Link key={p.id} href={`/produit/${p.id}`} className="flex-shrink-0 w-36 rounded-2xl border border-gray-100 overflow-hidden bg-white">
+                <div className="aspect-square bg-gray-50 flex items-center justify-center overflow-hidden">
+                  {p.image_url ? (
+                    <img src={p.image_url} alt="" className="w-full h-full object-cover" />
+                  ) : (
+                    <ShoppingBag className="w-6 h-6 text-gray-200" />
+                  )}
+                </div>
+                <div className="p-2.5">
+                  <p className="text-[12px] font-semibold text-gray-900 truncate">{p.nom}</p>
+                  <p className="text-[12px] font-bold text-emerald-600 mt-0.5">
+                    {p.prix?.toLocaleString("fr-FR")} {p.devise || "FCFA"}
+                  </p>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
