@@ -501,7 +501,7 @@ export default function MaBoutiquePage() {
             onClick={handleShare}
             className="w-full max-w-xs py-3.5 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-2xl font-semibold text-[14px] transition active:scale-[0.97]"
           >
-            Partager mon QR
+            Partager ma boutique
           </button>
 
           {/* Mode caisse — discret */}
