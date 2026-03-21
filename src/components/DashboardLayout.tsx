@@ -33,8 +33,8 @@ const bottomTabs = [
   { href: "/dashboard", label: "Accueil", icon: ShoppingBag, isCenter: false },
   { href: "/ma-boutique", label: "Boutique", icon: Store, isCenter: false },
   { href: "/qrcode", label: "QR Pay", icon: QrCode, isCenter: true },
-  { href: "/portefeuille", label: "Portefeuille", icon: Wallet, isCenter: false },
-  { href: "/profil", label: "Profil", icon: User, isCenter: false },
+  { href: "/portefeuille", label: "Wallet", icon: Wallet, isCenter: false },
+  { href: "/commandes", label: "Commandes", icon: Package, isCenter: false },
 ];
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
