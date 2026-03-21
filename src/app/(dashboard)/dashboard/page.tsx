@@ -70,20 +70,18 @@ export default function DashboardPage() {
         </h1>
 
         {/* Montant central */}
-        <div className="mt-16 mb-2 text-center">
-          <p className="text-[42px] font-black tracking-tight text-gray-900 leading-none">0 FCFA</p>
-          <p className="text-[13px] text-gray-400 font-medium mt-2">Aujourd&apos;hui</p>
+        <div className="mt-20 mb-2 text-center">
+          <p className="text-[44px] font-black tracking-tight text-gray-900 leading-none">0 FCFA</p>
+          <p className="text-[13px] text-gray-500 font-semibold mt-3">Aujourd&apos;hui</p>
         </div>
 
         {/* CTA */}
         <Link
           href="/ma-boutique"
-          className="mt-10 w-full max-w-[280px] flex items-center justify-center py-4 bg-gray-900 text-white font-bold text-[15px] rounded-2xl hover:bg-gray-800 transition-all active:scale-[0.98]"
+          className="mt-14 w-full max-w-[280px] flex items-center justify-center py-4 bg-emerald-500 text-white font-bold text-[15px] rounded-2xl hover:bg-emerald-400 transition-all active:scale-[0.97]"
         >
           Créer ma boutique
         </Link>
-
-        <p className="text-[12px] text-gray-400 mt-4">Encaissez vos clients par QR code</p>
       </div>
     );
   }
@@ -129,7 +127,7 @@ export default function DashboardPage() {
       <div className="mt-10 flex justify-center">
         <Link
           href="/ma-boutique"
-          className="w-full max-w-[280px] flex items-center justify-center py-4 bg-gray-900 text-white font-bold text-[15px] rounded-2xl hover:bg-gray-800 transition-all active:scale-[0.98]"
+          className="w-full max-w-[280px] flex items-center justify-center py-4 bg-emerald-500 text-white font-bold text-[15px] rounded-2xl hover:bg-emerald-400 transition-all active:scale-[0.97]"
         >
           Encaisser
         </Link>
