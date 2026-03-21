@@ -33,6 +33,7 @@ export default function DashboardPage() {
   const { user } = useAuth();
   const [boutique, setBoutique] = useState<BoutiqueInfo | null>(null);
   const [stats, setStats] = useState<Stats>({ totalProduits: 0, totalCommandes: 0, totalVentes: 0 });
+  const [walletSolde, setWalletSolde] = useState<number>(0);
   const [boutiques, setBoutiques] = useState<BoutiqueInfo[]>([]);
   const [produits, setProduits] = useState<ProduitInfo[]>([]);
   const [loading, setLoading] = useState(true);
@@ -46,15 +47,17 @@ export default function DashboardPage() {
   useEffect(() => {
     const load = async () => {
       try {
-        const [meRes, boutiquesRes, produitsRes] = await Promise.all([
+        const [meRes, boutiquesRes, produitsRes, walletRes] = await Promise.all([
           fetch("/api/boutiques/me"),
           fetch("/api/boutiques?limit=10"),
           fetch("/api/produits?limit=10"),
+          fetch(`/api/wallet?devise=${devise}`),
         ]);
-        const [meData, boutiquesData, produitsData] = await Promise.all([
+        const [meData, boutiquesData, produitsData, walletData] = await Promise.all([
           meRes.json(),
           boutiquesRes.json(),
           produitsRes.json(),
+          walletRes.json(),
         ]);
 
         if (meData.boutique) {
@@ -65,13 +68,16 @@ export default function DashboardPage() {
             totalVentes: meData.stats?.totalVentes || 0,
           });
         }
+        if (walletData.wallet) {
+          setWalletSolde(walletData.wallet.solde || 0);
+        }
         setBoutiques(boutiquesData.boutiques || []);
         setProduits(produitsData.produits || []);
       } catch { /* ignore */ }
       finally { setLoading(false); }
     };
     load();
-  }, []);
+  }, [devise]);
 
   if (loading) {
     return (
@@ -126,13 +132,13 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {/* Montant central */}
-      <div className="mt-12 text-center">
+      {/* Montant central — solde wallet */}
+      <Link href="/portefeuille" className="block mt-12 text-center active:scale-[0.98] transition-transform">
         <p className="text-[42px] font-black tracking-tight text-gray-900 leading-none">
-          {formatMontant(stats.totalVentes, devise)}
+          {formatMontant(walletSolde, devise)}
         </p>
-        <p className="text-[13px] text-gray-500 font-medium mt-2">Revenus</p>
-      </div>
+        <p className="text-[13px] text-gray-500 font-medium mt-2">Solde disponible</p>
+      </Link>
 
       {/* Stats inline */}
       <div className="flex items-center justify-center gap-8 mt-6">
