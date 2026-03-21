@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useAuth } from "@/contexts/AuthContext";
-import { ChevronRight, ShoppingBag } from "lucide-react";
+import { ShoppingBag } from "lucide-react";
 import { type DeviseCode, DEFAULT_DEVISE, formatMontant } from "@/lib/currencies";
 
 interface BoutiqueInfo {
@@ -155,26 +155,6 @@ export default function DashboardPage() {
         >
           Encaisser
         </Link>
-      </div>
-
-      {/* Actions rapides */}
-      <div className="mt-10 space-y-0">
-        {[
-          { href: "/ma-boutique", label: "Mon terminal" },
-          { href: "/ma-boutique", label: "Gérer mes produits" },
-          { href: "/commandes", label: "Mes commandes" },
-          { href: `/boutique/${boutique.slug}`, label: "Voir ma boutique", external: true },
-        ].map((action) => (
-          <Link
-            key={action.label}
-            href={action.href}
-            target={action.external ? "_blank" : undefined}
-            className="flex items-center justify-between py-3.5 border-b border-gray-100 group"
-          >
-            <span className="text-[14px] font-semibold text-gray-700 group-hover:text-gray-900 transition">{action.label}</span>
-            <ChevronRight className="w-4 h-4 text-gray-300 group-hover:text-gray-500 transition" />
-          </Link>
-        ))}
       </div>
 
       {/* ─── Découverte ─── */}
