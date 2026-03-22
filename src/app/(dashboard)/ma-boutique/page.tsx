@@ -24,6 +24,14 @@ import {
   Check,
   ArrowLeft,
   Zap,
+  Calendar,
+  MapPin,
+  Clock,
+  Ticket,
+  Users,
+  ScanLine,
+  ChevronRight,
+  Eye,
 } from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
 import { formatMontant } from "@/lib/currencies";
@@ -108,7 +116,7 @@ export default function MaBoutiquePage() {
   const [prodStock, setProdStock] = useState("");
 
   // POS Terminal
-  const [activeTab, setActiveTab] = useState<"terminal" | "produits" | "historique" | "reglages">("terminal");
+  const [activeTab, setActiveTab] = useState<"terminal" | "produits" | "evenements" | "historique" | "reglages">("terminal");
   const [encaisserMode, setEncaisserMode] = useState(false);
   const [encaisserMontant, setEncaisserMontant] = useState("");
   const [encaisserQR, setEncaisserQR] = useState(false);
@@ -116,6 +124,29 @@ export default function MaBoutiquePage() {
   const [copied, setCopied] = useState(false);
   const [commandes, setCommandes] = useState<any[]>([]);
   const [loadingCommandes, setLoadingCommandes] = useState(false);
+
+  // Billetterie
+  const [events, setEvents] = useState<any[]>([]);
+  const [loadingEvents, setLoadingEvents] = useState(false);
+  const [showAddEvent, setShowAddEvent] = useState(false);
+  const [evtNom, setEvtNom] = useState("");
+  const [evtDesc, setEvtDesc] = useState("");
+  const [evtDateDebut, setEvtDateDebut] = useState("");
+  const [evtHeureDebut, setEvtHeureDebut] = useState("");
+  const [evtLieu, setEvtLieu] = useState("");
+  const [evtVille, setEvtVille] = useState("");
+  const [evtTypeName, setEvtTypeName] = useState("Standard");
+  const [evtTypePrix, setEvtTypePrix] = useState("");
+  const [evtTypeQty, setEvtTypeQty] = useState("100");
+  const [savingEvent, setSavingEvent] = useState(false);
+  const [selectedEvent, setSelectedEvent] = useState<any>(null);
+  const [eventTickets, setEventTickets] = useState<any[]>([]);
+  const [loadingTickets, setLoadingTickets] = useState(false);
+  const [scanMode, setScanMode] = useState(false);
+  const [scanCode, setScanCode] = useState("");
+  const [scanResult, setScanResult] = useState<any>(null);
+  const [scanning, setScanning] = useState(false);
+  const [deletingEventId, setDeletingEventId] = useState<string | null>(null);
 
   // Réglages
   const logoInputRef = useRef<HTMLInputElement>(null);
@@ -277,6 +308,98 @@ export default function MaBoutiquePage() {
       if (res.ok) { setBoutique((b) => b ? { ...b, banner_url: data.url } : b); hapticSuccess(); showToast("success", "Couverture mise à jour", ""); }
     } catch { hapticError(); }
     finally { setUploadingBanner(false); }
+  };
+
+  // ═══ BILLETTERIE HANDLERS ═══
+
+  const loadEvents = async () => {
+    if (!boutique) return;
+    setLoadingEvents(true);
+    try {
+      const res = await fetch(`/api/events?boutique_id=${boutique.id}`);
+      const data = await res.json();
+      setEvents(Array.isArray(data) ? data : []);
+    } catch { /* ignore */ }
+    finally { setLoadingEvents(false); }
+  };
+
+  const handleCreateEvent = async () => {
+    if (!evtNom.trim() || !evtDateDebut || !evtLieu.trim() || !boutique) return;
+    setSavingEvent(true);
+    try {
+      const res = await fetch("/api/events", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          boutique_id: boutique.id,
+          nom: evtNom.trim(),
+          description: evtDesc.trim() || undefined,
+          date_debut: evtDateDebut,
+          heure_debut: evtHeureDebut || undefined,
+          lieu: evtLieu.trim(),
+          ville: evtVille.trim() || undefined,
+          devise: boutique.devise || "XOF",
+          ticket_types: [{
+            nom: evtTypeName.trim() || "Standard",
+            prix: evtTypePrix || "0",
+            quantite_total: evtTypeQty || "100",
+          }],
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error);
+      setEvents((prev) => [...prev, data]);
+      setShowAddEvent(false);
+      setEvtNom(""); setEvtDesc(""); setEvtDateDebut(""); setEvtHeureDebut(""); setEvtLieu(""); setEvtVille("");
+      setEvtTypeName("Standard"); setEvtTypePrix(""); setEvtTypeQty("100");
+      hapticSuccess();
+      showToast("success", "Événement créé !");
+    } catch (err: any) {
+      hapticError();
+      showToast("error", "Erreur", err.message || "Impossible de créer");
+    } finally { setSavingEvent(false); }
+  };
+
+  const handleDeleteEvent = async (eventId: string) => {
+    setDeletingEventId(eventId);
+    try {
+      const res = await fetch(`/api/events/${eventId}`, { method: "DELETE" });
+      if (res.ok) {
+        setEvents((prev) => prev.filter((e) => e.id !== eventId));
+        if (selectedEvent?.id === eventId) setSelectedEvent(null);
+        hapticSuccess();
+        showToast("success", "Événement supprimé");
+      }
+    } catch { hapticError(); }
+    finally { setDeletingEventId(null); }
+  };
+
+  const loadEventTickets = async (eventId: string) => {
+    setLoadingTickets(true);
+    try {
+      const res = await fetch(`/api/events/${eventId}/tickets`);
+      const data = await res.json();
+      setEventTickets(Array.isArray(data) ? data : []);
+    } catch { /* ignore */ }
+    finally { setLoadingTickets(false); }
+  };
+
+  const handleScanTicket = async () => {
+    if (!scanCode.trim()) return;
+    setScanning(true);
+    setScanResult(null);
+    try {
+      const res = await fetch("/api/tickets/validate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ qr_code: scanCode.trim() }),
+      });
+      const data = await res.json();
+      setScanResult(data);
+      if (data.valid) { hapticSuccess(); }
+      else { hapticError(); }
+    } catch { hapticError(); setScanResult({ valid: false, error: "Erreur réseau" }); }
+    finally { setScanning(false); setScanCode(""); }
   };
 
   // ═══════════════════════════════════════════════
@@ -454,6 +577,7 @@ export default function MaBoutiquePage() {
         {([
           { id: "terminal" as const, label: "Encaisser" },
           { id: "produits" as const, label: "Produits" },
+          { id: "evenements" as const, label: "Événements" },
           { id: "historique" as const, label: "Commandes" },
           { id: "reglages" as const, label: "Réglages" },
         ]).map((tab) => (
@@ -462,6 +586,7 @@ export default function MaBoutiquePage() {
             onClick={() => {
               setActiveTab(tab.id);
               if (tab.id === "historique" && commandes.length === 0) loadCommandes();
+              if (tab.id === "evenements" && events.length === 0) loadEvents();
             }}
             className={`px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap transition ${
               activeTab === tab.id ? "bg-gray-900 text-white" : "bg-gray-100 text-gray-600 hover:bg-gray-200"
@@ -673,6 +798,368 @@ export default function MaBoutiquePage() {
             </div>
           )}
           <p className="text-center text-[10px] text-gray-400 mt-4">{produits.length}/20 produits</p>
+        </div>
+      )}
+
+      {/* ═══ TAB: ÉVÉNEMENTS (Billetterie) ═══ */}
+      {activeTab === "evenements" && (
+        <div className="px-4">
+          {/* Scanner mode */}
+          {scanMode ? (
+            <div className="animate-in slide-in-from-top-2 duration-200">
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-lg font-black text-gray-900">Scanner un billet</h2>
+                <button onClick={() => { setScanMode(false); setScanResult(null); setScanCode(""); }}>
+                  <X className="w-5 h-5 text-gray-400" />
+                </button>
+              </div>
+
+              <div className="mb-4">
+                <label className="text-xs font-semibold text-gray-700 mb-1 block">Code du billet</label>
+                <div className="flex gap-2">
+                  <input
+                    value={scanCode}
+                    onChange={(e) => setScanCode(e.target.value)}
+                    placeholder="Entrez ou scannez le code QR"
+                    className="flex-1 bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm outline-none focus:border-gray-900 transition font-mono"
+                    onKeyDown={(e) => e.key === "Enter" && handleScanTicket()}
+                    autoFocus
+                  />
+                  <button
+                    onClick={handleScanTicket}
+                    disabled={scanning || !scanCode.trim()}
+                    className="px-5 py-3 bg-gray-900 text-white rounded-xl font-bold text-sm transition hover:bg-gray-800 active:scale-[0.97] disabled:opacity-50"
+                  >
+                    {scanning ? <Loader2 className="w-4 h-4 animate-spin" /> : <ScanLine className="w-4 h-4" />}
+                  </button>
+                </div>
+              </div>
+
+              {/* Résultat du scan */}
+              {scanResult && (
+                <div className={`rounded-2xl p-5 mb-4 animate-in zoom-in-95 duration-200 ${
+                  scanResult.valid
+                    ? "bg-emerald-50 border-2 border-emerald-200"
+                    : "bg-red-50 border-2 border-red-200"
+                }`}>
+                  <div className="flex items-center gap-3 mb-3">
+                    <div className={`w-12 h-12 rounded-full flex items-center justify-center ${
+                      scanResult.valid ? "bg-emerald-500" : "bg-red-500"
+                    }`}>
+                      {scanResult.valid ? <Check className="w-6 h-6 text-white" /> : <X className="w-6 h-6 text-white" />}
+                    </div>
+                    <div>
+                      <p className={`font-black text-lg ${scanResult.valid ? "text-emerald-700" : "text-red-700"}`}>
+                        {scanResult.valid ? "Billet valide ✓" : scanResult.error || "Billet invalide"}
+                      </p>
+                      {scanResult.ticket && (
+                        <p className="text-sm text-gray-600">{scanResult.ticket.buyer_name}</p>
+                      )}
+                    </div>
+                  </div>
+                  {scanResult.ticket && (
+                    <div className="space-y-1.5 mt-3 pt-3 border-t border-gray-200/50">
+                      <div className="flex justify-between">
+                        <span className="text-xs text-gray-500">Réf</span>
+                        <span className="text-xs font-bold text-gray-900 font-mono">{scanResult.ticket.reference}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-xs text-gray-500">Type</span>
+                        <span className="text-xs font-bold text-gray-900">{scanResult.ticket.type}</span>
+                      </div>
+                      {scanResult.ticket.event && (
+                        <div className="flex justify-between">
+                          <span className="text-xs text-gray-500">Événement</span>
+                          <span className="text-xs font-bold text-gray-900">{scanResult.ticket.event}</span>
+                        </div>
+                      )}
+                      {scanResult.ticket.scanned_at && (
+                        <div className="flex justify-between">
+                          <span className="text-xs text-gray-500">Scanné le</span>
+                          <span className="text-xs font-bold text-gray-900">
+                            {new Date(scanResult.ticket.scanned_at).toLocaleString("fr-FR", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+              )}
+
+              <button
+                onClick={() => { setScanResult(null); setScanCode(""); }}
+                className="w-full py-3.5 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl font-bold text-sm transition"
+              >
+                Scanner un autre billet
+              </button>
+            </div>
+          ) : selectedEvent ? (
+            /* ═══ DÉTAIL D'UN ÉVÉNEMENT ═══ */
+            <div className="animate-in slide-in-from-right-2 duration-200">
+              <button onClick={() => { setSelectedEvent(null); setEventTickets([]); }} className="flex items-center gap-1 text-sm text-gray-500 font-semibold mb-4 hover:text-gray-700 transition">
+                <ArrowLeft className="w-4 h-4" /> Retour
+              </button>
+
+              <div className="flex items-start justify-between mb-4">
+                <div>
+                  <h2 className="text-lg font-black text-gray-900">{selectedEvent.nom}</h2>
+                  <p className="text-xs text-gray-400 mt-0.5">
+                    {new Date(selectedEvent.date_debut + "T00:00:00").toLocaleDateString("fr-FR", { weekday: "short", day: "numeric", month: "long" })}
+                    {selectedEvent.heure_debut ? ` · ${selectedEvent.heure_debut.slice(0, 5)}` : ""}
+                  </p>
+                  <p className="text-xs text-gray-400">{selectedEvent.lieu}</p>
+                </div>
+                <button
+                  onClick={() => handleDeleteEvent(selectedEvent.id)}
+                  disabled={deletingEventId === selectedEvent.id}
+                  className="p-2 rounded-lg hover:bg-red-50 text-gray-400 hover:text-red-500 transition"
+                >
+                  {deletingEventId === selectedEvent.id ? <Loader2 className="w-4 h-4 animate-spin" /> : <Trash2 className="w-4 h-4" />}
+                </button>
+              </div>
+
+              {/* Stats rapides */}
+              <div className="grid grid-cols-3 gap-2 mb-4">
+                <div className="bg-gray-50 rounded-xl p-3 text-center">
+                  <p className="text-lg font-black text-gray-900">{selectedEvent.total_vendu || 0}</p>
+                  <p className="text-[10px] text-gray-400">Billets vendus</p>
+                </div>
+                <div className="bg-gray-50 rounded-xl p-3 text-center">
+                  <p className="text-sm font-black text-gray-900">{formatMontant(parseFloat(selectedEvent.revenus) || 0, devise)}</p>
+                  <p className="text-[10px] text-gray-400">Revenus</p>
+                </div>
+                <div className="bg-gray-50 rounded-xl p-3 text-center">
+                  <p className="text-lg font-black text-gray-900">
+                    {selectedEvent.ticket_types?.reduce((a: number, t: any) => a + (t.quantite_total - t.quantite_vendue), 0) || 0}
+                  </p>
+                  <p className="text-[10px] text-gray-400">Restants</p>
+                </div>
+              </div>
+
+              {/* Actions */}
+              <div className="grid grid-cols-2 gap-2 mb-4">
+                <button
+                  onClick={() => { setScanMode(true); setScanResult(null); setScanCode(""); }}
+                  className="flex items-center justify-center gap-2 bg-gray-900 text-white py-3.5 rounded-xl font-bold text-sm transition hover:bg-gray-800 active:scale-[0.97]"
+                >
+                  <ScanLine className="w-4 h-4" /> Scanner
+                </button>
+                <button
+                  onClick={() => {
+                    const url = `${window.location.origin}/evenement/${selectedEvent.id}`;
+                    if (navigator.share) { navigator.share({ title: selectedEvent.nom, url }).catch(() => {}); }
+                    else { navigator.clipboard.writeText(url).then(() => showToast("success", "Lien copié")); }
+                  }}
+                  className="flex items-center justify-center gap-2 bg-gray-100 text-gray-700 py-3.5 rounded-xl font-bold text-sm transition hover:bg-gray-200 active:scale-[0.97]"
+                >
+                  <Share2 className="w-4 h-4" /> Partager
+                </button>
+              </div>
+
+              {/* Lien public */}
+              <a
+                href={`/evenement/${selectedEvent.id}`}
+                target="_blank"
+                className="w-full flex items-center justify-center gap-2 bg-emerald-50 text-emerald-700 py-3 rounded-xl font-bold text-sm mb-5 transition hover:bg-emerald-100 border border-emerald-200/50"
+              >
+                <Eye className="w-4 h-4" /> Voir la page publique
+              </a>
+
+              {/* Types de billets */}
+              {selectedEvent.ticket_types && selectedEvent.ticket_types.length > 0 && (
+                <div className="mb-5">
+                  <h3 className="text-sm font-bold text-gray-700 mb-2">Types de billets</h3>
+                  <div className="space-y-2">
+                    {selectedEvent.ticket_types.map((tt: any) => (
+                      <div key={tt.id} className="bg-white rounded-xl border border-gray-100 p-3 flex items-center justify-between">
+                        <div>
+                          <p className="text-sm font-bold text-gray-900">{tt.nom}</p>
+                          <p className="text-xs text-gray-400">{tt.quantite_vendue}/{tt.quantite_total} vendus</p>
+                        </div>
+                        <p className="text-sm font-black text-gray-900">
+                          {tt.prix > 0 ? formatMontant(tt.prix, devise) : "Gratuit"}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Liste des billets vendus */}
+              <div>
+                <div className="flex items-center justify-between mb-2">
+                  <h3 className="text-sm font-bold text-gray-700">Billets vendus</h3>
+                  {!loadingTickets && (
+                    <button onClick={() => loadEventTickets(selectedEvent.id)} className="text-xs text-emerald-600 font-semibold">
+                      Rafraîchir
+                    </button>
+                  )}
+                </div>
+                {loadingTickets ? (
+                  <div className="text-center py-8"><Loader2 className="w-5 h-5 text-gray-300 animate-spin mx-auto" /></div>
+                ) : eventTickets.length === 0 ? (
+                  <div className="text-center py-8">
+                    <Ticket className="w-8 h-8 text-gray-200 mx-auto mb-2" />
+                    <p className="text-xs text-gray-400">Aucun billet vendu</p>
+                  </div>
+                ) : (
+                  <div className="space-y-2">
+                    {eventTickets.map((t: any) => (
+                      <div key={t.id} className="flex items-center justify-between bg-white rounded-xl border border-gray-100 p-3">
+                        <div>
+                          <p className="text-sm font-bold text-gray-900">{t.buyer_name}</p>
+                          <p className="text-[11px] text-gray-400 font-mono">{t.reference}</p>
+                          {t.ticket_types?.nom && <p className="text-[10px] text-gray-400">{t.ticket_types.nom}</p>}
+                        </div>
+                        <span className={`text-xs font-bold px-2.5 py-1 rounded-lg ${
+                          t.statut === "valid" ? "bg-emerald-50 text-emerald-600" :
+                          t.statut === "used" ? "bg-gray-100 text-gray-500" :
+                          "bg-red-50 text-red-500"
+                        }`}>
+                          {t.statut === "valid" ? "✓ Valide" : t.statut === "used" ? "Utilisé" : t.statut}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          ) : (
+            /* ═══ LISTE DES ÉVÉNEMENTS ═══ */
+            <div>
+              <button
+                onClick={() => { hapticMedium(); setShowAddEvent(true); }}
+                className="w-full flex items-center justify-center gap-2 bg-emerald-50 hover:bg-emerald-100 text-emerald-600 py-3.5 rounded-xl font-bold text-sm transition border border-emerald-200/50 mb-4"
+              >
+                <Plus className="w-4 h-4" /> Créer un événement
+              </button>
+
+              {/* Scanner rapide */}
+              <button
+                onClick={() => { setScanMode(true); setScanResult(null); setScanCode(""); hapticMedium(); }}
+                className="w-full flex items-center justify-center gap-2 bg-gray-900 text-white py-3.5 rounded-xl font-bold text-sm transition hover:bg-gray-800 active:scale-[0.97] mb-4"
+              >
+                <ScanLine className="w-4 h-4" /> Scanner un billet
+              </button>
+
+              {/* Formulaire création événement */}
+              {showAddEvent && (
+                <div className="bg-white rounded-2xl border border-gray-100 p-5 shadow-sm mb-4 animate-in slide-in-from-top-2 duration-200">
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="font-bold text-gray-900">Nouvel événement</h3>
+                    <button onClick={() => setShowAddEvent(false)}><X className="w-4 h-4 text-gray-400" /></button>
+                  </div>
+                  <div className="space-y-3">
+                    <div>
+                      <label className="text-xs font-semibold text-gray-700">Nom de l&apos;événement *</label>
+                      <input value={evtNom} onChange={(e) => setEvtNom(e.target.value)} placeholder="Ex: Concert Live 2026"
+                        className="w-full mt-1 bg-gray-50 border border-gray-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-gray-900 transition" />
+                    </div>
+                    <div className="grid grid-cols-2 gap-3">
+                      <div>
+                        <label className="text-xs font-semibold text-gray-700">Date *</label>
+                        <input type="date" value={evtDateDebut} onChange={(e) => setEvtDateDebut(e.target.value)}
+                          className="w-full mt-1 bg-gray-50 border border-gray-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-gray-900 transition" />
+                      </div>
+                      <div>
+                        <label className="text-xs font-semibold text-gray-700">Heure</label>
+                        <input type="time" value={evtHeureDebut} onChange={(e) => setEvtHeureDebut(e.target.value)}
+                          className="w-full mt-1 bg-gray-50 border border-gray-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-gray-900 transition" />
+                      </div>
+                    </div>
+                    <div>
+                      <label className="text-xs font-semibold text-gray-700">Lieu *</label>
+                      <input value={evtLieu} onChange={(e) => setEvtLieu(e.target.value)} placeholder="Ex: Palais de la Culture"
+                        className="w-full mt-1 bg-gray-50 border border-gray-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-gray-900 transition" />
+                    </div>
+                    <div>
+                      <label className="text-xs font-semibold text-gray-700">Ville</label>
+                      <input value={evtVille} onChange={(e) => setEvtVille(e.target.value)} placeholder="Abidjan"
+                        className="w-full mt-1 bg-gray-50 border border-gray-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-gray-900 transition" />
+                    </div>
+                    <div>
+                      <label className="text-xs font-semibold text-gray-700">Description <span className="text-gray-400">(optionnel)</span></label>
+                      <textarea value={evtDesc} onChange={(e) => setEvtDesc(e.target.value)} rows={2} placeholder="Décrivez votre événement..."
+                        className="w-full mt-1 bg-gray-50 border border-gray-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-gray-900 transition resize-none" />
+                    </div>
+
+                    {/* Type de billet */}
+                    <div className="pt-2 border-t border-gray-100">
+                      <p className="text-xs font-bold text-gray-700 mb-2">Type de billet</p>
+                      <div className="grid grid-cols-2 gap-3">
+                        <div>
+                          <label className="text-xs font-semibold text-gray-700">Nom</label>
+                          <input value={evtTypeName} onChange={(e) => setEvtTypeName(e.target.value)} placeholder="Standard"
+                            className="w-full mt-1 bg-gray-50 border border-gray-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-gray-900 transition" />
+                        </div>
+                        <div>
+                          <label className="text-xs font-semibold text-gray-700">Prix</label>
+                          <input type="number" inputMode="numeric" value={evtTypePrix} onChange={(e) => setEvtTypePrix(e.target.value)} placeholder="0 = Gratuit"
+                            className="w-full mt-1 bg-gray-50 border border-gray-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-gray-900 transition" />
+                        </div>
+                      </div>
+                      <div className="mt-2">
+                        <label className="text-xs font-semibold text-gray-700">Places disponibles</label>
+                        <input type="number" value={evtTypeQty} onChange={(e) => setEvtTypeQty(e.target.value)} placeholder="100"
+                          className="w-full mt-1 bg-gray-50 border border-gray-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-gray-900 transition" />
+                      </div>
+                    </div>
+
+                    <button onClick={handleCreateEvent} disabled={savingEvent || !evtNom.trim() || !evtDateDebut || !evtLieu.trim()}
+                      className="w-full flex items-center justify-center gap-2 bg-gray-900 hover:bg-gray-800 text-white py-3.5 rounded-xl font-bold transition disabled:opacity-50 active:scale-[0.98]"
+                    >
+                      {savingEvent ? <Loader2 className="w-4 h-4 animate-spin" /> : <Calendar className="w-4 h-4" />}
+                      {savingEvent ? "Création..." : "Créer l\u0027événement"}
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* Liste événements */}
+              {loadingEvents ? (
+                <div className="text-center py-12"><Loader2 className="w-6 h-6 text-gray-300 animate-spin mx-auto" /></div>
+              ) : events.length === 0 ? (
+                <div className="text-center py-12">
+                  <Calendar className="w-12 h-12 text-gray-200 mx-auto mb-3" />
+                  <p className="text-sm font-semibold text-gray-500">Aucun événement</p>
+                  <p className="text-xs text-gray-400 mt-1">Créez votre premier événement et vendez des billets</p>
+                </div>
+              ) : (
+                <div className="space-y-2">
+                  {events.map((evt: any) => {
+                    const dateStr = new Date(evt.date_debut + "T00:00:00").toLocaleDateString("fr-FR", { day: "numeric", month: "short" });
+                    return (
+                      <button
+                        key={evt.id}
+                        onClick={() => { setSelectedEvent(evt); loadEventTickets(evt.id); }}
+                        className="w-full bg-white rounded-xl border border-gray-100 p-3.5 flex items-center gap-3 text-left hover:border-gray-200 transition active:scale-[0.99]"
+                      >
+                        <div className="w-12 h-12 bg-gray-900 rounded-xl flex flex-col items-center justify-center shrink-0">
+                          <span className="text-[10px] font-bold text-gray-400 uppercase leading-none">
+                            {new Date(evt.date_debut + "T00:00:00").toLocaleDateString("fr-FR", { month: "short" })}
+                          </span>
+                          <span className="text-lg font-black text-white leading-none">
+                            {new Date(evt.date_debut + "T00:00:00").getDate()}
+                          </span>
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-bold text-gray-900 truncate">{evt.nom}</p>
+                          <p className="text-xs text-gray-400 truncate">{evt.lieu}{evt.ville ? ` · ${evt.ville}` : ""}</p>
+                          <div className="flex items-center gap-3 mt-1">
+                            <span className="text-[10px] text-emerald-600 font-bold">{evt.total_vendu || 0} vendu{(evt.total_vendu || 0) > 1 ? "s" : ""}</span>
+                            {parseFloat(evt.revenus) > 0 && (
+                              <span className="text-[10px] text-gray-400 font-semibold">{formatMontant(parseFloat(evt.revenus), devise)}</span>
+                            )}
+                          </div>
+                        </div>
+                        <ChevronRight className="w-4 h-4 text-gray-300" />
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+          )}
         </div>
       )}
 
