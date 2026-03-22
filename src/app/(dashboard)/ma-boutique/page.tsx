@@ -136,6 +136,12 @@ export default function MaBoutiquePage() {
   const [evtLieu, setEvtLieu] = useState("");
   const [evtVille, setEvtVille] = useState("");
   const [evtTicketTypes, setEvtTicketTypes] = useState<Array<{nom: string; prix: string; qty: string}>>([{nom: "Standard", prix: "", qty: "100"}]);
+  const [evtLogoFile, setEvtLogoFile] = useState<File | null>(null);
+  const [evtLogoPreview, setEvtLogoPreview] = useState<string | null>(null);
+  const [evtCoverFile, setEvtCoverFile] = useState<File | null>(null);
+  const [evtCoverPreview, setEvtCoverPreview] = useState<string | null>(null);
+  const evtFormLogoRef = useRef<HTMLInputElement>(null);
+  const evtFormCoverRef = useRef<HTMLInputElement>(null);
   const [savingEvent, setSavingEvent] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState<any>(null);
   const [eventTickets, setEventTickets] = useState<any[]>([]);
@@ -332,7 +338,7 @@ export default function MaBoutiquePage() {
   };
 
   const handleCreateEvent = async () => {
-    if (!evtNom.trim() || !evtDateDebut || !evtLieu.trim() || !boutique) return;
+    if (!evtNom.trim() || !evtDateDebut || !evtLieu.trim() || !boutique || !evtLogoFile || !evtCoverFile) return;
     setSavingEvent(true);
     try {
       const res = await fetch("/api/events", {
@@ -356,10 +362,34 @@ export default function MaBoutiquePage() {
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error);
-      setEvents((prev) => [...prev, data]);
+
+      // Upload logo + cover en parallèle
+      const eventId = data.id;
+      const uploads: Promise<any>[] = [];
+      for (const { file, type } of [{ file: evtLogoFile, type: "logo" }, { file: evtCoverFile, type: "cover" }]) {
+        if (file) {
+          const fd = new FormData();
+          fd.append("file", file);
+          fd.append("event_id", eventId);
+          fd.append("type", type);
+          uploads.push(
+            fetch("/api/events/upload", { method: "POST", body: fd })
+              .then(r => r.json())
+              .then(d => ({ type, url: d.url }))
+          );
+        }
+      }
+      const results = await Promise.all(uploads);
+      let updatedEvent = data;
+      for (const r of results) {
+        if (r.url) updatedEvent = { ...updatedEvent, [`${r.type}_url`]: r.url };
+      }
+
+      setEvents((prev) => [...prev, updatedEvent]);
       setShowAddEvent(false);
       setEvtNom(""); setEvtDesc(""); setEvtDateDebut(""); setEvtHeureDebut(""); setEvtLieu(""); setEvtVille("");
       setEvtTicketTypes([{nom: "Standard", prix: "", qty: "100"}]);
+      setEvtLogoFile(null); setEvtLogoPreview(null); setEvtCoverFile(null); setEvtCoverPreview(null);
       hapticSuccess();
       showToast("success", "Événement créé !");
     } catch (err: any) {
@@ -1134,6 +1164,65 @@ export default function MaBoutiquePage() {
                     </button>
                   </div>
 
+                  {/* Images — Logo + Cover (obligatoire) */}
+                  <div className="bg-white rounded-2xl border border-gray-100 p-4 shadow-sm mb-2">
+                    <p className="text-xs font-black text-gray-900 uppercase tracking-wide mb-3">Visuels</p>
+
+                    {/* Cover */}
+                    <button
+                      type="button"
+                      onClick={() => evtFormCoverRef.current?.click()}
+                      className={`w-full h-28 rounded-2xl border-2 border-dashed flex items-center justify-center overflow-hidden transition relative group mb-3 ${
+                        evtCoverPreview ? "border-transparent" : "border-gray-200 hover:border-gray-400 bg-gray-50"
+                      }`}
+                    >
+                      {evtCoverPreview ? (
+                        <>
+                          <img src={evtCoverPreview} alt="" className="w-full h-full object-cover" />
+                          <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition flex items-center justify-center">
+                            <Camera className="w-5 h-5 text-white" />
+                            <span className="text-white text-xs font-bold ml-2">Changer</span>
+                          </div>
+                        </>
+                      ) : (
+                        <div className="text-center">
+                          <ImagePlus className="w-6 h-6 text-gray-300 mx-auto mb-1" />
+                          <p className="text-xs text-gray-400 font-semibold">Cover de l&apos;événement *</p>
+                        </div>
+                      )}
+                    </button>
+                    <input ref={evtFormCoverRef} type="file" accept="image/*" className="hidden"
+                      onChange={(e) => { const f = e.target.files?.[0]; if (f) { setEvtCoverFile(f); setEvtCoverPreview(URL.createObjectURL(f)); } e.target.value = ""; }} />
+
+                    {/* Logo */}
+                    <div className="flex items-center gap-3">
+                      <button
+                        type="button"
+                        onClick={() => evtFormLogoRef.current?.click()}
+                        className={`w-16 h-16 rounded-2xl border-2 border-dashed flex items-center justify-center overflow-hidden transition relative group shrink-0 ${
+                          evtLogoPreview ? "border-transparent" : "border-gray-200 hover:border-gray-400 bg-gray-50"
+                        }`}
+                      >
+                        {evtLogoPreview ? (
+                          <>
+                            <img src={evtLogoPreview} alt="" className="w-full h-full object-cover" />
+                            <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition flex items-center justify-center">
+                              <Camera className="w-4 h-4 text-white" />
+                            </div>
+                          </>
+                        ) : (
+                          <ImagePlus className="w-5 h-5 text-gray-300" />
+                        )}
+                      </button>
+                      <input ref={evtFormLogoRef} type="file" accept="image/*" className="hidden"
+                        onChange={(e) => { const f = e.target.files?.[0]; if (f) { setEvtLogoFile(f); setEvtLogoPreview(URL.createObjectURL(f)); } e.target.value = ""; }} />
+                      <div>
+                        <p className="text-xs font-bold text-gray-700">Logo / Photo de profil *</p>
+                        <p className="text-[10px] text-gray-400">Visible sur la page et les billets</p>
+                      </div>
+                    </div>
+                  </div>
+
                   {/* Block 1 — Événement */}
                   <div className="bg-white rounded-2xl border border-gray-100 p-4 shadow-sm mb-2">
                     <input value={evtNom} onChange={(e) => setEvtNom(e.target.value)} placeholder="Nom de l&apos;événement"
@@ -1215,7 +1304,7 @@ export default function MaBoutiquePage() {
                   </div>
 
                   {/* Sticky CTA */}
-                  <button onClick={handleCreateEvent} disabled={savingEvent || !evtNom.trim() || !evtDateDebut || !evtLieu.trim()}
+                  <button onClick={handleCreateEvent} disabled={savingEvent || !evtNom.trim() || !evtDateDebut || !evtLieu.trim() || !evtLogoFile || !evtCoverFile}
                     className="w-full flex items-center justify-center gap-2.5 bg-gray-900 hover:bg-gray-800 text-white py-4 rounded-2xl font-black text-[15px] transition disabled:opacity-40 active:scale-[0.97] shadow-lg shadow-gray-900/20"
                   >
                     {savingEvent ? <Loader2 className="w-5 h-5 animate-spin" /> : <Ticket className="w-5 h-5" />}
