@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/contexts/ToastContext";
-import { hapticSuccess, hapticError, hapticMedium } from "@/lib/haptics";
+import { hapticSuccess, hapticError, hapticMedium, hapticLight } from "@/lib/haptics";
 import {
   Store,
   Plus,
@@ -135,9 +135,7 @@ export default function MaBoutiquePage() {
   const [evtHeureDebut, setEvtHeureDebut] = useState("");
   const [evtLieu, setEvtLieu] = useState("");
   const [evtVille, setEvtVille] = useState("");
-  const [evtTypeName, setEvtTypeName] = useState("Standard");
-  const [evtTypePrix, setEvtTypePrix] = useState("");
-  const [evtTypeQty, setEvtTypeQty] = useState("100");
+  const [evtTicketTypes, setEvtTicketTypes] = useState<Array<{nom: string; prix: string; qty: string}>>([{nom: "Standard", prix: "", qty: "100"}]);
   const [savingEvent, setSavingEvent] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState<any>(null);
   const [eventTickets, setEventTickets] = useState<any[]>([]);
@@ -345,11 +343,11 @@ export default function MaBoutiquePage() {
           lieu: evtLieu.trim(),
           ville: evtVille.trim() || undefined,
           devise: boutique.devise || "XOF",
-          ticket_types: [{
-            nom: evtTypeName.trim() || "Standard",
-            prix: evtTypePrix || "0",
-            quantite_total: evtTypeQty || "100",
-          }],
+          ticket_types: evtTicketTypes.map(t => ({
+            nom: t.nom.trim() || "Standard",
+            prix: t.prix || "0",
+            quantite_total: t.qty || "100",
+          })),
         }),
       });
       const data = await res.json();
@@ -357,7 +355,7 @@ export default function MaBoutiquePage() {
       setEvents((prev) => [...prev, data]);
       setShowAddEvent(false);
       setEvtNom(""); setEvtDesc(""); setEvtDateDebut(""); setEvtHeureDebut(""); setEvtLieu(""); setEvtVille("");
-      setEvtTypeName("Standard"); setEvtTypePrix(""); setEvtTypeQty("100");
+      setEvtTicketTypes([{nom: "Standard", prix: "", qty: "100"}]);
       hapticSuccess();
       showToast("success", "Événement créé !");
     } catch (err: any) {
@@ -1048,76 +1046,108 @@ export default function MaBoutiquePage() {
                 <ScanLine className="w-4 h-4" /> Scanner un billet
               </button>
 
-              {/* Formulaire création événement */}
+              {/* Création rapide événement — block-based */}
               {showAddEvent && (
-                <div className="bg-white rounded-2xl border border-gray-100 p-5 shadow-sm mb-4 animate-in slide-in-from-top-2 duration-200">
-                  <div className="flex items-center justify-between mb-4">
-                    <h3 className="font-bold text-gray-900">Nouvel événement</h3>
-                    <button onClick={() => setShowAddEvent(false)}><X className="w-4 h-4 text-gray-400" /></button>
-                  </div>
-                  <div className="space-y-3">
+                <div className="mb-4 animate-in slide-in-from-top-2 duration-200">
+                  {/* Header */}
+                  <div className="flex items-center justify-between mb-3">
                     <div>
-                      <label className="text-xs font-semibold text-gray-700">Nom de l&apos;événement *</label>
-                      <input value={evtNom} onChange={(e) => setEvtNom(e.target.value)} placeholder="Ex: Concert Live 2026"
-                        className="w-full mt-1 bg-gray-50 border border-gray-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-gray-900 transition" />
+                      <h3 className="text-lg font-black text-gray-900">Nouvel événement</h3>
+                      <p className="text-[11px] text-gray-400">Vendez des billets en quelques secondes</p>
                     </div>
-                    <div className="grid grid-cols-2 gap-3">
-                      <div>
-                        <label className="text-xs font-semibold text-gray-700">Date *</label>
-                        <input type="date" value={evtDateDebut} onChange={(e) => setEvtDateDebut(e.target.value)}
-                          className="w-full mt-1 bg-gray-50 border border-gray-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-gray-900 transition" />
-                      </div>
-                      <div>
-                        <label className="text-xs font-semibold text-gray-700">Heure</label>
-                        <input type="time" value={evtHeureDebut} onChange={(e) => setEvtHeureDebut(e.target.value)}
-                          className="w-full mt-1 bg-gray-50 border border-gray-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-gray-900 transition" />
-                      </div>
-                    </div>
-                    <div>
-                      <label className="text-xs font-semibold text-gray-700">Lieu *</label>
-                      <input value={evtLieu} onChange={(e) => setEvtLieu(e.target.value)} placeholder="Ex: Palais de la Culture"
-                        className="w-full mt-1 bg-gray-50 border border-gray-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-gray-900 transition" />
-                    </div>
-                    <div>
-                      <label className="text-xs font-semibold text-gray-700">Ville</label>
-                      <input value={evtVille} onChange={(e) => setEvtVille(e.target.value)} placeholder="Abidjan"
-                        className="w-full mt-1 bg-gray-50 border border-gray-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-gray-900 transition" />
-                    </div>
-                    <div>
-                      <label className="text-xs font-semibold text-gray-700">Description <span className="text-gray-400">(optionnel)</span></label>
-                      <textarea value={evtDesc} onChange={(e) => setEvtDesc(e.target.value)} rows={2} placeholder="Décrivez votre événement..."
-                        className="w-full mt-1 bg-gray-50 border border-gray-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-gray-900 transition resize-none" />
-                    </div>
-
-                    {/* Type de billet */}
-                    <div className="pt-2 border-t border-gray-100">
-                      <p className="text-xs font-bold text-gray-700 mb-2">Type de billet</p>
-                      <div className="grid grid-cols-2 gap-3">
-                        <div>
-                          <label className="text-xs font-semibold text-gray-700">Nom</label>
-                          <input value={evtTypeName} onChange={(e) => setEvtTypeName(e.target.value)} placeholder="Standard"
-                            className="w-full mt-1 bg-gray-50 border border-gray-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-gray-900 transition" />
-                        </div>
-                        <div>
-                          <label className="text-xs font-semibold text-gray-700">Prix</label>
-                          <input type="number" inputMode="numeric" value={evtTypePrix} onChange={(e) => setEvtTypePrix(e.target.value)} placeholder="0 = Gratuit"
-                            className="w-full mt-1 bg-gray-50 border border-gray-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-gray-900 transition" />
-                        </div>
-                      </div>
-                      <div className="mt-2">
-                        <label className="text-xs font-semibold text-gray-700">Places disponibles</label>
-                        <input type="number" value={evtTypeQty} onChange={(e) => setEvtTypeQty(e.target.value)} placeholder="100"
-                          className="w-full mt-1 bg-gray-50 border border-gray-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-gray-900 transition" />
-                      </div>
-                    </div>
-
-                    <button onClick={handleCreateEvent} disabled={savingEvent || !evtNom.trim() || !evtDateDebut || !evtLieu.trim()}
-                      className="w-full flex items-center justify-center gap-2 bg-gray-900 hover:bg-gray-800 text-white py-3.5 rounded-xl font-bold transition disabled:opacity-50 active:scale-[0.98]"
-                    >
-                      {savingEvent ? <Loader2 className="w-4 h-4 animate-spin" /> : <Calendar className="w-4 h-4" />}
-                      {savingEvent ? "Création..." : "Créer l\u0027événement"}
+                    <button onClick={() => setShowAddEvent(false)} className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center">
+                      <X className="w-4 h-4 text-gray-500" />
                     </button>
                   </div>
+
+                  {/* Block 1 — Événement */}
+                  <div className="bg-white rounded-2xl border border-gray-100 p-4 shadow-sm mb-2">
+                    <input value={evtNom} onChange={(e) => setEvtNom(e.target.value)} placeholder="Nom de l&apos;événement"
+                      className="w-full bg-transparent text-base font-bold text-gray-900 placeholder:text-gray-300 outline-none mb-3" autoFocus />
+                    <div className="flex items-center gap-2 mb-2">
+                      <MapPin className="w-3.5 h-3.5 text-gray-400 shrink-0" />
+                      <input value={evtLieu} onChange={(e) => setEvtLieu(e.target.value)} placeholder="Lieu (ex: Palais de la Culture)"
+                        className="flex-1 bg-transparent text-sm text-gray-700 placeholder:text-gray-300 outline-none" />
+                    </div>
+                    <div className="flex items-center gap-2 mb-2">
+                      <MapPin className="w-3.5 h-3.5 text-gray-400 shrink-0 opacity-0" />
+                      <input value={evtVille} onChange={(e) => setEvtVille(e.target.value)} placeholder="Ville (ex: Abidjan)"
+                        className="flex-1 bg-transparent text-sm text-gray-700 placeholder:text-gray-300 outline-none" />
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Calendar className="w-3.5 h-3.5 text-gray-400 shrink-0" />
+                      <input type="date" value={evtDateDebut} onChange={(e) => setEvtDateDebut(e.target.value)}
+                        className="flex-1 bg-transparent text-sm text-gray-700 outline-none" />
+                      <Clock className="w-3.5 h-3.5 text-gray-400 shrink-0 ml-1" />
+                      <input type="time" value={evtHeureDebut} onChange={(e) => setEvtHeureDebut(e.target.value)}
+                        className="w-24 bg-transparent text-sm text-gray-700 outline-none" />
+                    </div>
+                  </div>
+
+                  {/* Block 2 — Billets (multi) */}
+                  <div className="bg-white rounded-2xl border border-gray-100 p-4 shadow-sm mb-2">
+                    <div className="flex items-center justify-between mb-3">
+                      <p className="text-xs font-black text-gray-900 uppercase tracking-wide">Billets</p>
+                      <span className="text-[10px] text-gray-400">{evtTicketTypes.length} type{evtTicketTypes.length > 1 ? "s" : ""}</span>
+                    </div>
+
+                    <div className="space-y-2">
+                      {evtTicketTypes.map((ticket, idx) => (
+                        <div key={idx} className="flex items-center gap-2 bg-gray-50 rounded-xl p-2.5">
+                          <input value={ticket.nom} onChange={(e) => { const arr = [...evtTicketTypes]; arr[idx] = {...arr[idx], nom: e.target.value}; setEvtTicketTypes(arr); }}
+                            placeholder="Type" className="flex-1 min-w-0 bg-transparent text-sm font-semibold text-gray-900 placeholder:text-gray-300 outline-none" />
+                          <div className="flex items-center gap-1 shrink-0">
+                            <input type="number" inputMode="numeric" value={ticket.prix} onChange={(e) => { const arr = [...evtTicketTypes]; arr[idx] = {...arr[idx], prix: e.target.value}; setEvtTicketTypes(arr); }}
+                              placeholder="0" className="w-20 bg-white border border-gray-200 rounded-lg px-2 py-1.5 text-sm text-right font-bold text-gray-900 placeholder:text-gray-300 outline-none focus:border-gray-900 transition" />
+                            <span className="text-[10px] text-gray-400 font-semibold">{devise}</span>
+                          </div>
+                          <input type="number" inputMode="numeric" value={ticket.qty} onChange={(e) => { const arr = [...evtTicketTypes]; arr[idx] = {...arr[idx], qty: e.target.value}; setEvtTicketTypes(arr); }}
+                            placeholder="Qty" className="w-16 bg-white border border-gray-200 rounded-lg px-2 py-1.5 text-sm text-center text-gray-700 placeholder:text-gray-300 outline-none focus:border-gray-900 transition" />
+                          {evtTicketTypes.length > 1 && (
+                            <button onClick={() => { const arr = evtTicketTypes.filter((_, i) => i !== idx); setEvtTicketTypes(arr); }}
+                              className="w-7 h-7 rounded-lg flex items-center justify-center text-gray-300 hover:text-red-500 hover:bg-red-50 transition shrink-0">
+                              <X className="w-3.5 h-3.5" />
+                            </button>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+
+                    <button onClick={() => { setEvtTicketTypes([...evtTicketTypes, {nom: "", prix: "", qty: "100"}]); hapticLight(); }}
+                      className="w-full mt-2 flex items-center justify-center gap-1.5 text-xs font-bold text-emerald-600 py-2 rounded-xl border border-dashed border-emerald-200 hover:bg-emerald-50 transition">
+                      <Plus className="w-3.5 h-3.5" /> Ajouter un billet
+                    </button>
+
+                    {/* Column hints */}
+                    <div className="flex items-center gap-2 mt-2 px-2.5">
+                      <span className="flex-1 text-[9px] text-gray-300">Nom</span>
+                      <span className="w-20 text-[9px] text-gray-300 text-right">Prix</span>
+                      <span className="w-16 text-[9px] text-gray-300 text-center">Places</span>
+                      {evtTicketTypes.length > 1 && <span className="w-7" />}
+                    </div>
+                  </div>
+
+                  {/* Block 3 — Description (optionnel, collapsed) */}
+                  <div className="bg-white rounded-2xl border border-gray-100 shadow-sm mb-3 overflow-hidden">
+                    <button onClick={() => { const el = document.getElementById("evt-desc-block"); if(el) el.classList.toggle("hidden"); }}
+                      className="w-full flex items-center justify-between p-4 text-left">
+                      <span className="text-xs font-semibold text-gray-500">Description <span className="text-gray-300">(optionnel)</span></span>
+                      <ChevronRight className="w-3.5 h-3.5 text-gray-300" />
+                    </button>
+                    <div id="evt-desc-block" className="hidden px-4 pb-4 -mt-1">
+                      <textarea value={evtDesc} onChange={(e) => setEvtDesc(e.target.value)} rows={2} placeholder="Décrivez votre événement..."
+                        className="w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-gray-900 transition resize-none" />
+                    </div>
+                  </div>
+
+                  {/* Sticky CTA */}
+                  <button onClick={handleCreateEvent} disabled={savingEvent || !evtNom.trim() || !evtDateDebut || !evtLieu.trim()}
+                    className="w-full flex items-center justify-center gap-2.5 bg-gray-900 hover:bg-gray-800 text-white py-4 rounded-2xl font-black text-[15px] transition disabled:opacity-40 active:scale-[0.97] shadow-lg shadow-gray-900/20"
+                  >
+                    {savingEvent ? <Loader2 className="w-5 h-5 animate-spin" /> : <Ticket className="w-5 h-5" />}
+                    {savingEvent ? "Création..." : "Créer mon événement"}
+                  </button>
+                  <p className="text-center text-[10px] text-gray-300 mt-2">Vos billets seront en vente immédiatement</p>
                 </div>
               )}
 
