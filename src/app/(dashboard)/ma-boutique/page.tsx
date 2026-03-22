@@ -213,7 +213,7 @@ export default function MaBoutiquePage() {
         setStats(meData.stats || { totalProduits: 0, totalCommandes: 0, totalVentes: 0, vues: 0 });
       } else { setBoutique(data.boutique); }
       hapticSuccess();
-      showToast("success", "Espace créé !", "Créez votre premier événement");
+      showToast("success", "C'est parti !", "Créez votre premier événement");
     } catch { hapticError(); showToast("error", "Erreur", "Erreur de création"); }
     finally { setCreating(false); }
   };
@@ -270,7 +270,7 @@ export default function MaBoutiquePage() {
     if (!boutique) return;
     const url = `${window.location.origin}/boutique/${boutique.slug}`;
     if (navigator.share) {
-      try { await navigator.share({ title: boutique.nom, text: `${boutique.nom} sur Binq`, url }); } catch {}
+      try { await navigator.share({ title: boutique.nom, text: `Découvre mes événements sur Binq`, url }); } catch {}
     } else {
       try { await navigator.clipboard.writeText(url); showToast("success", "Copié", "Lien copié"); } catch {}
     }
@@ -588,11 +588,11 @@ export default function MaBoutiquePage() {
     return (
       <div className="min-h-screen bg-white flex flex-col justify-center px-6">
         <div className="w-full max-w-sm mx-auto">
-          <h1 className="text-[26px] font-black text-gray-900 tracking-tight mb-10">Créer mon espace</h1>
+          <h1 className="text-[26px] font-black text-gray-900 tracking-tight mb-10">Commencer</h1>
 
           <div className="space-y-6">
             <div>
-              <label className="text-[13px] font-semibold text-gray-500 block mb-2">Nom de votre organisation</label>
+              <label className="text-[13px] font-semibold text-gray-500 block mb-2">Nom de votre espace</label>
               <input
                 value={formNom}
                 onChange={(e) => setFormNom(e.target.value)}
@@ -704,7 +704,7 @@ export default function MaBoutiquePage() {
               <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
               <span className="text-xs font-semibold text-emerald-600">En ligne · Prêt</span>
             </div>
-            <h1 className="text-2xl font-black text-gray-900">{boutique.nom}</h1>
+            <h1 className="text-2xl font-black text-gray-900">Mes événements</h1>
           </div>
           {boutique.logo_url && (
             <div className="w-10 h-10 rounded-xl overflow-hidden border border-gray-100">
@@ -718,16 +718,12 @@ export default function MaBoutiquePage() {
       <div className="flex gap-1.5 px-4 mb-5 overflow-x-auto" style={{ scrollbarWidth: "none" }}>
         {([
           { id: "evenements" as const, label: "Événements" },
-          { id: "terminal" as const, label: "Encaisser" },
-          { id: "produits" as const, label: "Produits" },
-          { id: "historique" as const, label: "Commandes" },
           { id: "reglages" as const, label: "Réglages" },
         ]).map((tab) => (
           <button
             key={tab.id}
             onClick={() => {
               setActiveTab(tab.id);
-              if (tab.id === "historique" && commandes.length === 0) loadCommandes();
               if (tab.id === "evenements" && events.length === 0) loadEvents();
             }}
             className={`px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap transition ${
@@ -768,7 +764,7 @@ export default function MaBoutiquePage() {
             onClick={handleShare}
             className="w-full max-w-xs py-3.5 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-2xl font-semibold text-[14px] transition active:scale-[0.97]"
           >
-            Partager ma boutique
+            Partager mon lien
           </button>
 
           {/* Mode caisse — discret */}
@@ -1536,7 +1532,7 @@ export default function MaBoutiquePage() {
         <div className="px-4">
           <h2 className="text-lg font-black text-gray-900 mb-4">Réglages</h2>
 
-          {/* Infos boutique */}
+          {/* Infos */}
           <div className="bg-white rounded-2xl border border-gray-100 p-4 mb-4">
             <div className="flex items-center gap-3 mb-4">
               <div className="w-14 h-14 bg-gray-100 rounded-xl flex items-center justify-center overflow-hidden shrink-0">
@@ -1548,7 +1544,7 @@ export default function MaBoutiquePage() {
               </div>
               <div className="flex-1 min-w-0">
                 <p className="font-bold text-gray-900 truncate">{boutique.nom}</p>
-                <p className="text-xs text-gray-400 truncate">binq.app/boutique/{boutique.slug}</p>
+                <p className="text-xs text-gray-400 truncate">binq.app/{boutique.slug}</p>
               </div>
             </div>
 
@@ -1584,7 +1580,7 @@ export default function MaBoutiquePage() {
 
           {/* QR de la boutique */}
           <div className="bg-white rounded-2xl border border-gray-100 p-4 mb-4 text-center">
-            <p className="text-xs font-bold text-gray-700 mb-3">QR de votre boutique</p>
+            <p className="text-xs font-bold text-gray-700 mb-3">QR de votre espace</p>
             <div className="inline-block bg-white p-3 rounded-xl border border-gray-100">
               <QRCodeSVG value={boutiqueUrl} size={140} level="H" />
             </div>
@@ -1611,7 +1607,7 @@ export default function MaBoutiquePage() {
                 { name: "Telegram", color: "bg-cyan-50 text-cyan-700 hover:bg-cyan-100", platform: "telegram" },
               ].map((s) => (
                 <button key={s.platform} onClick={() => {
-                  const text = encodeURIComponent(`${boutique.nom} sur Binq`);
+                  const text = encodeURIComponent(`Découvre mes événements sur Binq`);
                   const url = encodeURIComponent(boutiqueUrl);
                   const urls: Record<string, string> = {
                     whatsapp: `https://wa.me/?text=${text}%20${url}`,
@@ -1628,7 +1624,7 @@ export default function MaBoutiquePage() {
           {/* Voir ma boutique */}
           <Link href={`/boutique/${boutique.slug}`} target="_blank"
             className="w-full py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-semibold rounded-xl flex items-center justify-center gap-2 transition"
-          ><ExternalLink className="w-4 h-4" />Voir ma boutique</Link>
+          ><ExternalLink className="w-4 h-4" />Voir ma page</Link>
         </div>
       )}
     </div>
