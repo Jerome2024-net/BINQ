@@ -271,7 +271,7 @@ export default function PayPage() {
         <div className="max-w-md w-full">
           <div className="text-center mb-8">
             <h2 className="text-2xl font-black text-gray-900 tracking-tight">
-              <span className="text-emerald-600">Binq</span> Pay
+              <span className="text-black">Binq</span> Pay
             </h2>
           </div>
 
@@ -327,7 +327,7 @@ export default function PayPage() {
               )}
               <div>
                 <p className="text-lg font-bold">{link.createur.prenom} {link.createur.nom}</p>
-                <p className="text-white/70 text-sm">{link.isMerchant ? "Marchand verifie" : "Paiement securise"}</p>
+                <p className="text-white/70 text-sm">{link.isMerchant ? "Marchand vérifié" : "Paiement sécurisé"}</p>
               </div>
               {link.isMerchant && <div className="ml-auto"><Store className="w-6 h-6 text-white/60" /></div>}
             </div>
@@ -478,7 +478,7 @@ export default function PayPage() {
 
                 {/* CTA "Inscription Binq" pour non-users */}
                 {!user && (
-                  <div className="bg-gradient-to-r from-gray-50 to-gray-100/50 rounded-2xl p-4 border border-gray-200/50 text-center">
+                  <div className="mt-5 bg-gray-50 rounded-2xl p-4 border border-gray-200 text-center">
                     <div className="flex items-center justify-center gap-2 mb-2">
                       <Zap className="w-5 h-5 text-black" />
                       <p className="text-sm font-bold text-gray-900">Vous aussi, vendez avec Binq</p>
@@ -499,7 +499,7 @@ export default function PayPage() {
                 {/* Trust badges */}
                 <div className="flex items-center justify-center gap-4 mt-5">
                   <div className="flex items-center gap-1 text-gray-400">
-                    <Shield className="w-3.5 h-3.5" /><span className="text-[10px] font-medium">S&eacute;curis&eacute;</span>
+                    <Shield className="w-3.5 h-3.5" /><span className="text-[10px] font-medium">Securise</span>
                   </div>
                   <div className="flex items-center gap-1 text-gray-400">
                     <Globe className="w-3.5 h-3.5" /><span className="text-[10px] font-medium">Universel</span>
@@ -511,7 +511,7 @@ export default function PayPage() {
 
         {/* Footer */}
         <div className="text-center mt-5">
-          <p className="text-[11px] text-gray-300">Propulse par <span className="font-semibold text-gray-400">Binq</span></p>
+          <p className="text-[11px] text-gray-400">Propulse par Binq — Paiements universels</p>
         </div>
       </div>
     </div>
