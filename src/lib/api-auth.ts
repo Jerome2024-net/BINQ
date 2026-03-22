@@ -16,8 +16,14 @@ export async function getAuthenticatedUser() {
         getAll() {
           return cookieStore.getAll();
         },
-        setAll() {
-          // API routes ne peuvent pas set de cookies
+        setAll(cookiesToSet) {
+          try {
+            cookiesToSet.forEach(({ name, value, options }) => {
+              cookieStore.set(name, value, options);
+            });
+          } catch {
+            // Peut échouer dans certains contextes (Server Components)
+          }
         },
       },
     }
