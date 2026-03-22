@@ -32,6 +32,8 @@ import {
   ScanLine,
   ChevronRight,
   Eye,
+  Settings,
+  TrendingUp,
 } from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
 import { formatMontant } from "@/lib/currencies";
@@ -696,44 +698,53 @@ export default function MaBoutiquePage() {
   // ═══════════════════════════════════════════════
   return (
     <div className="pb-28">
-      {/* Header */}
-      <div className="px-4 pt-4 pb-3">
+      {/* Header — épuré */}
+      <div className="px-4 pt-4 pb-2">
         <div className="flex items-center justify-between">
           <div>
-            <div className="flex items-center gap-2 mb-0.5">
-              <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
-              <span className="text-xs font-semibold text-emerald-600">En ligne · Prêt</span>
+            <h1 className="text-xl font-black text-gray-900">Mes événements</h1>
+            <div className="flex items-center gap-1.5 mt-0.5">
+              <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full" />
+              <span className="text-[11px] text-gray-400">{events.length} événement{events.length > 1 ? "s" : ""}</span>
             </div>
-            <h1 className="text-2xl font-black text-gray-900">Mes événements</h1>
           </div>
-          {boutique.logo_url && (
-            <div className="w-10 h-10 rounded-xl overflow-hidden border border-gray-100">
-              <img src={boutique.logo_url} alt="" className="w-full h-full object-cover" />
-            </div>
-          )}
+          <button
+            onClick={() => setActiveTab(activeTab === "reglages" ? "evenements" : "reglages")}
+            className={`w-9 h-9 rounded-xl flex items-center justify-center transition ${
+              activeTab === "reglages" ? "bg-gray-900 text-white" : "bg-gray-100 text-gray-400 hover:bg-gray-200"
+            }`}
+          >
+            <Settings className="w-4 h-4" />
+          </button>
         </div>
       </div>
 
-      {/* Tab pills */}
-      <div className="flex gap-1.5 px-4 mb-5 overflow-x-auto" style={{ scrollbarWidth: "none" }}>
-        {([
-          { id: "evenements" as const, label: "Événements" },
-          { id: "reglages" as const, label: "Réglages" },
-        ]).map((tab) => (
-          <button
-            key={tab.id}
-            onClick={() => {
-              setActiveTab(tab.id);
-              if (tab.id === "evenements" && events.length === 0) loadEvents();
-            }}
-            className={`px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap transition ${
-              activeTab === tab.id ? "bg-gray-900 text-white" : "bg-gray-100 text-gray-600 hover:bg-gray-200"
-            }`}
-          >
-            {tab.label}
-          </button>
-        ))}
-      </div>
+      {/* Stats business — toujours visible */}
+      {activeTab === "evenements" && (
+        <div className="px-4 mb-4 mt-1">
+          <div className="flex gap-2">
+            <div className="flex-1 bg-gray-900 rounded-2xl p-3.5">
+              <div className="flex items-center gap-1.5 mb-1">
+                <TrendingUp className="w-3 h-3 text-emerald-400" />
+                <span className="text-[10px] text-gray-400 font-semibold uppercase tracking-wide">Revenus</span>
+              </div>
+              <p className="text-lg font-black text-white">
+                {formatMontant(events.reduce((sum: number, e: any) => sum + (parseFloat(e.revenus) || 0), 0), devise)}
+              </p>
+            </div>
+            <div className="flex-1 bg-gray-50 rounded-2xl p-3.5 border border-gray-100">
+              <div className="flex items-center gap-1.5 mb-1">
+                <Ticket className="w-3 h-3 text-gray-400" />
+                <span className="text-[10px] text-gray-400 font-semibold uppercase tracking-wide">Vendus</span>
+              </div>
+              <p className="text-lg font-black text-gray-900">
+                {events.reduce((sum: number, e: any) => sum + (e.total_vendu || 0), 0)}
+                <span className="text-xs text-gray-400 font-semibold ml-1">billets</span>
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* ═══ TAB: ENCAISSER (Terminal) ═══ */}
       {activeTab === "terminal" && (
@@ -1263,20 +1274,21 @@ export default function MaBoutiquePage() {
           ) : (
             /* ═══ LISTE DES ÉVÉNEMENTS ═══ */
             <div>
-              <button
-                onClick={() => { hapticMedium(); setShowAddEvent(true); }}
-                className="w-full flex items-center justify-center gap-2 bg-emerald-50 hover:bg-emerald-100 text-emerald-600 py-3.5 rounded-xl font-bold text-sm transition border border-emerald-200/50 mb-4"
-              >
-                <Plus className="w-4 h-4" /> Créer un événement
-              </button>
-
-              {/* Scanner rapide */}
-              <button
-                onClick={() => { setScanMode(true); setScanResult(null); setScanCode(""); hapticMedium(); setTimeout(() => startCamera(), 300); }}
-                className="w-full flex items-center justify-center gap-2 bg-gray-900 text-white py-3.5 rounded-xl font-bold text-sm transition hover:bg-gray-800 active:scale-[0.97] mb-4"
-              >
-                <ScanLine className="w-4 h-4" /> Scanner un billet
-              </button>
+              {/* CTAs — Créer (primary) + Scanner (secondary) */}
+              <div className="flex gap-2 mb-4">
+                <button
+                  onClick={() => { hapticMedium(); setShowAddEvent(true); }}
+                  className="flex-1 flex items-center justify-center gap-2 bg-gray-900 hover:bg-gray-800 text-white py-3.5 rounded-xl font-bold text-sm transition active:scale-[0.97]"
+                >
+                  <Plus className="w-4 h-4" /> Créer
+                </button>
+                <button
+                  onClick={() => { setScanMode(true); setScanResult(null); setScanCode(""); hapticMedium(); setTimeout(() => startCamera(), 300); }}
+                  className="flex items-center justify-center gap-2 bg-white border-2 border-gray-200 text-gray-700 px-5 py-3.5 rounded-xl font-bold text-sm transition hover:border-gray-300 active:scale-[0.97]"
+                >
+                  <ScanLine className="w-4 h-4" /> Scanner
+                </button>
+              </div>
 
               {/* Création rapide événement — block-based */}
               {showAddEvent && (
@@ -1452,38 +1464,60 @@ export default function MaBoutiquePage() {
                   <p className="text-xs text-gray-400 mt-1">Créez votre premier événement et vendez des billets</p>
                 </div>
               ) : (
-                <div className="space-y-2">
+                <div className="space-y-2.5">
                   {events.map((evt: any) => {
-                    const dateStr = new Date(evt.date_debut + "T00:00:00").toLocaleDateString("fr-FR", { day: "numeric", month: "short" });
+                    const evtDate = new Date(evt.date_debut + "T00:00:00");
+                    const now = new Date();
+                    const isPast = evtDate < new Date(now.getFullYear(), now.getMonth(), now.getDate());
+                    const isToday = evtDate.toDateString() === now.toDateString();
                     return (
                       <button
                         key={evt.id}
                         onClick={() => { setSelectedEvent(evt); loadEventTickets(evt.id); }}
-                        className="w-full bg-white rounded-xl border border-gray-100 p-3.5 flex items-center gap-3 text-left hover:border-gray-200 transition active:scale-[0.99]"
+                        className="w-full bg-white rounded-2xl border border-gray-100 p-3.5 flex items-center gap-3 text-left hover:border-gray-200 hover:shadow-sm transition active:scale-[0.99]"
                       >
+                        {/* Date badge ou logo */}
                         {evt.logo_url ? (
-                          <img src={evt.logo_url} alt="" className="w-12 h-12 rounded-xl object-cover shrink-0" />
+                          <div className="relative shrink-0">
+                            <img src={evt.logo_url} alt="" className="w-14 h-14 rounded-xl object-cover" />
+                            {isToday && <div className="absolute -top-1 -right-1 w-3 h-3 bg-emerald-500 rounded-full border-2 border-white" />}
+                          </div>
                         ) : (
-                          <div className="w-12 h-12 bg-gray-900 rounded-xl flex flex-col items-center justify-center shrink-0">
-                            <span className="text-[10px] font-bold text-gray-400 uppercase leading-none">
-                              {new Date(evt.date_debut + "T00:00:00").toLocaleDateString("fr-FR", { month: "short" })}
+                          <div className={`w-14 h-14 rounded-xl flex flex-col items-center justify-center shrink-0 ${
+                            isPast ? "bg-gray-200" : isToday ? "bg-emerald-500" : "bg-gray-900"
+                          }`}>
+                            <span className={`text-[10px] font-bold uppercase leading-none ${
+                              isPast ? "text-gray-500" : isToday ? "text-emerald-100" : "text-gray-400"
+                            }`}>
+                              {evtDate.toLocaleDateString("fr-FR", { month: "short" })}
                             </span>
-                            <span className="text-lg font-black text-white leading-none">
-                              {new Date(evt.date_debut + "T00:00:00").getDate()}
+                            <span className={`text-lg font-black leading-none ${
+                              isPast ? "text-gray-600" : "text-white"
+                            }`}>
+                              {evtDate.getDate()}
                             </span>
                           </div>
                         )}
+
                         <div className="flex-1 min-w-0">
-                          <p className="text-sm font-bold text-gray-900 truncate">{evt.nom}</p>
-                          <p className="text-xs text-gray-400 truncate">{evt.lieu}{evt.ville ? ` · ${evt.ville}` : ""}</p>
-                          <div className="flex items-center gap-3 mt-1">
-                            <span className="text-[10px] text-emerald-600 font-bold">{evt.total_vendu || 0} vendu{(evt.total_vendu || 0) > 1 ? "s" : ""}</span>
+                          <div className="flex items-center gap-2">
+                            <p className="text-sm font-bold text-gray-900 truncate">{evt.nom}</p>
+                            {/* Status badge */}
+                            {isPast ? (
+                              <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-md bg-gray-100 text-gray-400 shrink-0">Terminé</span>
+                            ) : isToday ? (
+                              <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-md bg-emerald-50 text-emerald-600 shrink-0">Aujourd&apos;hui</span>
+                            ) : null}
+                          </div>
+                          <p className="text-xs text-gray-400 truncate mt-0.5">{evt.lieu}{evt.ville ? ` · ${evt.ville}` : ""}</p>
+                          <div className="flex items-center gap-3 mt-1.5">
+                            <span className="text-[11px] text-emerald-600 font-bold">{evt.total_vendu || 0} billet{(evt.total_vendu || 0) > 1 ? "s" : ""}</span>
                             {parseFloat(evt.revenus) > 0 && (
-                              <span className="text-[10px] text-gray-400 font-semibold">{formatMontant(parseFloat(evt.revenus), devise)}</span>
+                              <span className="text-[11px] text-gray-900 font-black">{formatMontant(parseFloat(evt.revenus), devise)}</span>
                             )}
                           </div>
                         </div>
-                        <ChevronRight className="w-4 h-4 text-gray-300" />
+                        <ChevronRight className="w-4 h-4 text-gray-300 shrink-0" />
                       </button>
                     );
                   })}
