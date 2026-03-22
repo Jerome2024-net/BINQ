@@ -378,8 +378,12 @@ export default function MaBoutiquePage() {
           fd.append("type", type);
           uploads.push(
             fetch("/api/events/upload", { method: "POST", body: fd })
-              .then(r => r.json())
-              .then(d => ({ type, url: d.url }))
+              .then(async (r) => {
+                const d = await r.json();
+                if (!r.ok) { console.error(`Upload ${type} failed:`, d.error); return { type, url: null }; }
+                return { type, url: d.url };
+              })
+              .catch((err) => { console.error(`Upload ${type} error:`, err); return { type, url: null }; })
           );
         }
       }
@@ -395,7 +399,8 @@ export default function MaBoutiquePage() {
       setEvtTicketTypes([{nom: "Standard", prix: "", qty: "100"}]);
       setEvtLogoFile(null); setEvtLogoPreview(null); setEvtCoverFile(null); setEvtCoverPreview(null);
       hapticSuccess();
-      showToast("success", "Événement créé !");
+      const uploadFailed = results.some((r: any) => !r.url);
+      showToast("success", "Événement créé !", uploadFailed ? "Les images seront à re-uploader" : "");
     } catch (err: any) {
       hapticError();
       showToast("error", "Erreur", err.message || "Impossible de créer");

@@ -9,12 +9,19 @@ const supabaseAdmin = createClient(
 
 async function ensureBucket() {
   const { data: buckets } = await supabaseAdmin.storage.listBuckets();
-  const exists = buckets?.some((b) => b.name === "events");
-  if (!exists) {
+  const bucket = buckets?.find((b) => b.name === "events");
+  if (!bucket) {
     await supabaseAdmin.storage.createBucket("events", {
       public: true,
       fileSizeLimit: 5 * 1024 * 1024,
-      allowedMimeTypes: ["image/jpeg", "image/png", "image/webp"],
+      allowedMimeTypes: ["image/jpeg", "image/png", "image/webp", "image/heic", "image/heif"],
+    });
+  } else if (!bucket.public) {
+    // Force le bucket en public si il existe déjà en privé
+    await supabaseAdmin.storage.updateBucket("events", {
+      public: true,
+      fileSizeLimit: 5 * 1024 * 1024,
+      allowedMimeTypes: ["image/jpeg", "image/png", "image/webp", "image/heic", "image/heif"],
     });
   }
 }
@@ -71,10 +78,15 @@ export async function POST(req: NextRequest) {
 
     // Mettre à jour l'événement
     const updateField = type === "logo" ? "logo_url" : "cover_url";
-    await supabaseAdmin
+    const { error: updateError } = await supabaseAdmin
       .from("events")
       .update({ [updateField]: urlData.publicUrl, updated_at: new Date().toISOString() })
       .eq("id", event_id);
+
+    if (updateError) {
+      console.error("DB update error for event image:", updateError);
+      throw new Error(`Erreur de mise à jour: ${updateError.message}`);
+    }
 
     return NextResponse.json({ url: urlData.publicUrl });
   } catch (err: any) {
