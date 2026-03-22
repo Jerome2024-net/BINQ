@@ -45,16 +45,22 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Type doit être cover ou logo" }, { status: 400 });
     }
 
-    // Vérifier propriété
-    const { data: event } = await supabaseAdmin
+    // Vérifier que l'événement existe (sans filtrer par user_id pour éviter les problèmes d'auth)
+    const { data: event, error: fetchError } = await supabaseAdmin
       .from("events")
       .select("id, user_id")
       .eq("id", event_id)
-      .eq("user_id", user.id)
       .single();
 
-    if (!event) {
+    if (fetchError || !event) {
+      console.error("Event lookup failed:", { event_id, fetchError });
       return NextResponse.json({ error: "Événement non trouvé" }, { status: 404 });
+    }
+
+    // Vérifier la propriété
+    if (event.user_id !== user.id) {
+      console.error("User mismatch:", { eventUser: event.user_id, authUser: user.id });
+      return NextResponse.json({ error: "Non autorisé" }, { status: 403 });
     }
 
     await ensureBucket();
@@ -72,7 +78,10 @@ export async function POST(req: NextRequest) {
         upsert: true,
       });
 
-    if (uploadError) throw uploadError;
+    if (uploadError) {
+      console.error("Storage upload error:", uploadError);
+      throw new Error(`Upload échoué: ${uploadError.message}`);
+    }
 
     const { data: urlData } = supabaseAdmin.storage.from("events").getPublicUrl(fileName);
 
