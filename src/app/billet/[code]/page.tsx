@@ -47,6 +47,7 @@ interface TicketData {
     lieu: string;
     adresse: string | null;
     ville: string | null;
+    logo_url: string | null;
     cover_url: string | null;
     devise: string;
   };
@@ -58,8 +59,10 @@ export default function BilletPage() {
   const [ticket, setTicket] = useState<TicketData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    setMounted(true);
     loadTicket();
   }, []);
 
@@ -96,7 +99,10 @@ export default function BilletPage() {
     cancelled: { label: "Annulé", color: "text-red-400", icon: X, bg: "bg-red-500/10 border-red-500/20" },
     expired: { label: "Expiré", color: "text-yellow-400", icon: AlertCircle, bg: "bg-yellow-500/10 border-yellow-500/20" },
   };
-
+  const status = ticket ? (statusConfig[ticket.statut] || statusConfig.valid) : statusConfig.valid;
+  const StatusIcon = status.icon;
+  const devise = (ticket?.devise || "XOF") as DeviseCode;
+  const qrValue = mounted && ticket ? `${window.location.origin}/billet/${ticket.qr_code}` : ticket?.qr_code || "";
   // ═══ LOADING ═══
   if (loading) {
     return (
@@ -120,10 +126,7 @@ export default function BilletPage() {
     );
   }
 
-  const status = statusConfig[ticket.statut] || statusConfig.valid;
-  const StatusIcon = status.icon;
-  const devise = (ticket.devise || "XOF") as DeviseCode;
-  const qrValue = `${typeof window !== "undefined" ? window.location.origin : ""}/billet/${ticket.qr_code}`;
+  if (!ticket) return null;
 
   return (
     <div className="min-h-screen bg-black">
@@ -192,29 +195,27 @@ export default function BilletPage() {
               <span className={`text-xs font-bold ${status.color}`}>{status.label}</span>
             </div>
 
-            {/* QR Code */}
-            {ticket.statut === "valid" && (
-              <div className="flex justify-center mb-5">
-                <div className="bg-white p-3 rounded-2xl border-2 border-gray-100">
-                  <QRCodeSVG value={qrValue} size={200} level="H" />
+            {/* QR Code — toujours visible */}
+            <div className="flex justify-center mb-5">
+              <div className="relative">
+                <div className={`bg-white p-3 rounded-2xl border-2 border-gray-100 ${ticket.statut !== "valid" ? "opacity-20" : ""}`}>
+                  {qrValue ? (
+                    <QRCodeSVG value={qrValue} size={200} level="H" includeMargin />
+                  ) : (
+                    <div className="w-[200px] h-[200px] flex items-center justify-center">
+                      <Loader2 className="w-6 h-6 text-gray-300 animate-spin" />
+                    </div>
+                  )}
                 </div>
-              </div>
-            )}
-
-            {ticket.statut === "used" && (
-              <div className="flex justify-center mb-5">
-                <div className="relative">
-                  <div className="opacity-20">
-                    <QRCodeSVG value={qrValue} size={200} level="H" />
-                  </div>
-                  <div className="absolute inset-0 flex items-center justify-center">
+                {ticket.statut === "used" && (
+                  <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
                     <div className="bg-gray-100 rounded-full p-4">
                       <Check className="w-10 h-10 text-gray-400" />
                     </div>
                   </div>
-                </div>
+                )}
               </div>
-            )}
+            </div>
 
             {/* Infos */}
             <div className="space-y-2.5">

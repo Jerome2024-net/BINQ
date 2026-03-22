@@ -450,10 +450,15 @@ export default function MaBoutiquePage() {
     setScanning(true);
     setScanResult(null);
     try {
+      // Extraire le code QR brut — supporte URL complète ou code brut
+      let code = scanCode.trim();
+      if (code.includes("/billet/")) {
+        code = code.split("/billet/").pop()?.split("?")[0]?.split("#")[0] || code;
+      }
       const res = await fetch("/api/tickets/validate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ qr_code: scanCode.trim() }),
+        body: JSON.stringify({ qr_code: code }),
       });
       const data = await res.json();
       setScanResult(data);

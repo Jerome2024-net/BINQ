@@ -20,7 +20,7 @@ export async function GET(req: NextRequest, { params }: { params: { code: string
       .select(`
         *,
         ticket_types(nom, description, prix),
-        events(id, nom, description, date_debut, heure_debut, date_fin, lieu, adresse, ville, cover_url, devise)
+        events(id, nom, description, date_debut, heure_debut, date_fin, lieu, adresse, ville, logo_url, cover_url, devise)
       `)
       .eq("qr_code", code)
       .single();
