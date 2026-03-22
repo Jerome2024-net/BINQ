@@ -43,6 +43,7 @@ interface Event {
   adresse: string | null;
   ville: string | null;
   cover_url: string | null;
+  logo_url: string | null;
   devise: string;
   is_active: boolean;
   ticket_types: TicketType[];
@@ -236,7 +237,12 @@ export default function EvenementPage() {
 
       {/* Event info */}
       <div className="px-5 -mt-8 relative z-10">
-        <h1 className="text-2xl font-black text-white mb-3">{event.nom}</h1>
+        <div className="flex items-center gap-3 mb-3">
+          {event.logo_url && (
+            <img src={event.logo_url} alt="" className="w-14 h-14 rounded-2xl object-cover border-2 border-black shrink-0 shadow-lg" />
+          )}
+          <h1 className="text-2xl font-black text-white">{event.nom}</h1>
+        </div>
 
         {/* Date */}
         <div className="flex items-start gap-3 mb-3">

@@ -20,9 +20,14 @@ export async function POST(req: NextRequest) {
     const formData = await req.formData();
     const file = formData.get("file") as File;
     const event_id = formData.get("event_id") as string;
+    const type = (formData.get("type") as string) || "cover"; // "cover" or "logo"
 
     if (!file || !event_id) {
       return NextResponse.json({ error: "Fichier et event_id requis" }, { status: 400 });
+    }
+
+    if (type !== "cover" && type !== "logo") {
+      return NextResponse.json({ error: "Type doit être cover ou logo" }, { status: 400 });
     }
 
     // Vérifier propriété
@@ -38,7 +43,7 @@ export async function POST(req: NextRequest) {
     }
 
     const ext = file.name.split(".").pop() || "jpg";
-    const fileName = `events/${event_id}/cover_${Date.now()}.${ext}`;
+    const fileName = `events/${event_id}/${type}_${Date.now()}.${ext}`;
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
 
@@ -54,9 +59,10 @@ export async function POST(req: NextRequest) {
     const { data: urlData } = supabase.storage.from("images").getPublicUrl(fileName);
 
     // Mettre à jour l'événement
+    const updateField = type === "logo" ? "logo_url" : "cover_url";
     await supabase
       .from("events")
-      .update({ cover_url: urlData.publicUrl, updated_at: new Date().toISOString() })
+      .update({ [updateField]: urlData.publicUrl, updated_at: new Date().toISOString() })
       .eq("id", event_id);
 
     return NextResponse.json({ url: urlData.publicUrl });

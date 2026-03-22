@@ -16,6 +16,7 @@ CREATE TABLE IF NOT EXISTS events (
   lieu TEXT NOT NULL,
   adresse TEXT,
   ville TEXT,
+  logo_url TEXT,
   cover_url TEXT,
   is_active BOOLEAN NOT NULL DEFAULT true,
   is_published BOOLEAN NOT NULL DEFAULT false,

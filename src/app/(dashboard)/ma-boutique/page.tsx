@@ -145,6 +145,10 @@ export default function MaBoutiquePage() {
   const [scanResult, setScanResult] = useState<any>(null);
   const [scanning, setScanning] = useState(false);
   const [deletingEventId, setDeletingEventId] = useState<string | null>(null);
+  const [uploadingEvtLogo, setUploadingEvtLogo] = useState(false);
+  const [uploadingEvtCover, setUploadingEvtCover] = useState(false);
+  const evtLogoInputRef = useRef<HTMLInputElement>(null);
+  const evtCoverInputRef = useRef<HTMLInputElement>(null);
 
   // Réglages
   const logoInputRef = useRef<HTMLInputElement>(null);
@@ -376,6 +380,29 @@ export default function MaBoutiquePage() {
       }
     } catch { hapticError(); }
     finally { setDeletingEventId(null); }
+  };
+
+  const handleUploadEventImage = async (file: File, eventId: string, type: "logo" | "cover") => {
+    const setUploading = type === "logo" ? setUploadingEvtLogo : setUploadingEvtCover;
+    setUploading(true);
+    try {
+      const fd = new FormData();
+      fd.append("file", file);
+      fd.append("event_id", eventId);
+      fd.append("type", type);
+      const res = await fetch("/api/events/upload", { method: "POST", body: fd });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error);
+      // Update selectedEvent and events list
+      const field = type === "logo" ? "logo_url" : "cover_url";
+      setSelectedEvent((prev: any) => prev ? { ...prev, [field]: data.url } : prev);
+      setEvents((prev) => prev.map((e) => e.id === eventId ? { ...e, [field]: data.url } : e));
+      hapticSuccess();
+      showToast("success", type === "logo" ? "Logo ajouté" : "Cover ajoutée");
+    } catch (err: any) {
+      hapticError();
+      showToast("error", "Erreur", err.message || "Impossible d\u0027uploader");
+    } finally { setUploading(false); }
   };
 
   const loadEventTickets = async (eventId: string) => {
@@ -905,13 +932,35 @@ export default function MaBoutiquePage() {
               </button>
 
               <div className="flex items-start justify-between mb-4">
-                <div>
-                  <h2 className="text-lg font-black text-gray-900">{selectedEvent.nom}</h2>
-                  <p className="text-xs text-gray-400 mt-0.5">
-                    {new Date(selectedEvent.date_debut + "T00:00:00").toLocaleDateString("fr-FR", { weekday: "short", day: "numeric", month: "long" })}
-                    {selectedEvent.heure_debut ? ` · ${selectedEvent.heure_debut.slice(0, 5)}` : ""}
-                  </p>
-                  <p className="text-xs text-gray-400">{selectedEvent.lieu}</p>
+                <div className="flex items-center gap-3">
+                  {/* Logo */}
+                  <button
+                    onClick={() => evtLogoInputRef.current?.click()}
+                    className="w-14 h-14 rounded-2xl bg-gray-100 border-2 border-dashed border-gray-200 flex items-center justify-center shrink-0 overflow-hidden hover:border-gray-400 transition relative group"
+                  >
+                    {uploadingEvtLogo ? (
+                      <Loader2 className="w-5 h-5 text-gray-400 animate-spin" />
+                    ) : selectedEvent.logo_url ? (
+                      <>
+                        <img src={selectedEvent.logo_url} alt="Logo" className="w-full h-full object-cover" />
+                        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition flex items-center justify-center">
+                          <Camera className="w-4 h-4 text-white" />
+                        </div>
+                      </>
+                    ) : (
+                      <ImagePlus className="w-5 h-5 text-gray-300" />
+                    )}
+                  </button>
+                  <input ref={evtLogoInputRef} type="file" accept="image/*" className="hidden"
+                    onChange={(e) => { const f = e.target.files?.[0]; if (f) handleUploadEventImage(f, selectedEvent.id, "logo"); e.target.value = ""; }} />
+                  <div>
+                    <h2 className="text-lg font-black text-gray-900">{selectedEvent.nom}</h2>
+                    <p className="text-xs text-gray-400 mt-0.5">
+                      {new Date(selectedEvent.date_debut + "T00:00:00").toLocaleDateString("fr-FR", { weekday: "short", day: "numeric", month: "long" })}
+                      {selectedEvent.heure_debut ? ` \u00b7 ${selectedEvent.heure_debut.slice(0, 5)}` : ""}
+                    </p>
+                    <p className="text-xs text-gray-400">{selectedEvent.lieu}</p>
+                  </div>
                 </div>
                 <button
                   onClick={() => handleDeleteEvent(selectedEvent.id)}
@@ -921,6 +970,31 @@ export default function MaBoutiquePage() {
                   {deletingEventId === selectedEvent.id ? <Loader2 className="w-4 h-4 animate-spin" /> : <Trash2 className="w-4 h-4" />}
                 </button>
               </div>
+
+              {/* Cover */}
+              <button
+                onClick={() => evtCoverInputRef.current?.click()}
+                className="w-full h-32 rounded-2xl bg-gray-50 border-2 border-dashed border-gray-200 flex items-center justify-center mb-4 overflow-hidden hover:border-gray-400 transition relative group"
+              >
+                {uploadingEvtCover ? (
+                  <Loader2 className="w-5 h-5 text-gray-400 animate-spin" />
+                ) : selectedEvent.cover_url ? (
+                  <>
+                    <img src={selectedEvent.cover_url} alt="Cover" className="w-full h-full object-cover" />
+                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition flex items-center justify-center">
+                      <Camera className="w-5 h-5 text-white" />
+                      <span className="text-white text-xs font-bold ml-2">Changer la cover</span>
+                    </div>
+                  </>
+                ) : (
+                  <div className="text-center">
+                    <ImagePlus className="w-6 h-6 text-gray-300 mx-auto mb-1" />
+                    <p className="text-xs text-gray-400 font-semibold">Ajouter une cover</p>
+                  </div>
+                )}
+              </button>
+              <input ref={evtCoverInputRef} type="file" accept="image/*" className="hidden"
+                onChange={(e) => { const f = e.target.files?.[0]; if (f) handleUploadEventImage(f, selectedEvent.id, "cover"); e.target.value = ""; }} />
 
               {/* Stats rapides */}
               <div className="grid grid-cols-3 gap-2 mb-4">
@@ -1170,14 +1244,18 @@ export default function MaBoutiquePage() {
                         onClick={() => { setSelectedEvent(evt); loadEventTickets(evt.id); }}
                         className="w-full bg-white rounded-xl border border-gray-100 p-3.5 flex items-center gap-3 text-left hover:border-gray-200 transition active:scale-[0.99]"
                       >
-                        <div className="w-12 h-12 bg-gray-900 rounded-xl flex flex-col items-center justify-center shrink-0">
-                          <span className="text-[10px] font-bold text-gray-400 uppercase leading-none">
-                            {new Date(evt.date_debut + "T00:00:00").toLocaleDateString("fr-FR", { month: "short" })}
-                          </span>
-                          <span className="text-lg font-black text-white leading-none">
-                            {new Date(evt.date_debut + "T00:00:00").getDate()}
-                          </span>
-                        </div>
+                        {evt.logo_url ? (
+                          <img src={evt.logo_url} alt="" className="w-12 h-12 rounded-xl object-cover shrink-0" />
+                        ) : (
+                          <div className="w-12 h-12 bg-gray-900 rounded-xl flex flex-col items-center justify-center shrink-0">
+                            <span className="text-[10px] font-bold text-gray-400 uppercase leading-none">
+                              {new Date(evt.date_debut + "T00:00:00").toLocaleDateString("fr-FR", { month: "short" })}
+                            </span>
+                            <span className="text-lg font-black text-white leading-none">
+                              {new Date(evt.date_debut + "T00:00:00").getDate()}
+                            </span>
+                          </div>
+                        )}
                         <div className="flex-1 min-w-0">
                           <p className="text-sm font-bold text-gray-900 truncate">{evt.nom}</p>
                           <p className="text-xs text-gray-400 truncate">{evt.lieu}{evt.ville ? ` · ${evt.ville}` : ""}</p>
