@@ -115,8 +115,8 @@ export default function MaBoutiquePage() {
   const [prodCategorie, setProdCategorie] = useState("");
   const [prodStock, setProdStock] = useState("");
 
-  // POS Terminal
-  const [activeTab, setActiveTab] = useState<"terminal" | "produits" | "evenements" | "historique" | "reglages">("terminal");
+  // Tabs — Événements first
+  const [activeTab, setActiveTab] = useState<"evenements" | "terminal" | "produits" | "historique" | "reglages">("evenements");
   const [encaisserMode, setEncaisserMode] = useState(false);
   const [encaisserMontant, setEncaisserMontant] = useState("");
   const [encaisserQR, setEncaisserQR] = useState(false);
@@ -167,6 +167,12 @@ export default function MaBoutiquePage() {
           setBoutique(meData.boutique);
           setProduits(meData.produits || []);
           setStats(meData.stats || { totalProduits: 0, totalCommandes: 0, totalVentes: 0, vues: 0 });
+          // Charger les événements au démarrage (event-first)
+          try {
+            const evtRes = await fetch(`/api/events?boutique_id=${meData.boutique.id}`);
+            const evtData = await evtRes.json();
+            setEvents(Array.isArray(evtData) ? evtData : []);
+          } catch { /* ignore */ }
         }
       } catch { /* ignore */ }
       finally { setLoading(false); }
@@ -195,7 +201,7 @@ export default function MaBoutiquePage() {
         setStats(meData.stats || { totalProduits: 0, totalCommandes: 0, totalVentes: 0, vues: 0 });
       } else { setBoutique(data.boutique); }
       hapticSuccess();
-      showToast("success", "Boutique créée !", "Vous pouvez encaisser maintenant");
+      showToast("success", "Espace créé !", "Créez votre premier événement");
     } catch { hapticError(); showToast("error", "Erreur", "Erreur de création"); }
     finally { setCreating(false); }
   };
@@ -446,15 +452,15 @@ export default function MaBoutiquePage() {
     return (
       <div className="min-h-screen bg-white flex flex-col justify-center px-6">
         <div className="w-full max-w-sm mx-auto">
-          <h1 className="text-[26px] font-black text-gray-900 tracking-tight mb-10">Créer ma boutique</h1>
+          <h1 className="text-[26px] font-black text-gray-900 tracking-tight mb-10">Créer mon espace</h1>
 
           <div className="space-y-6">
             <div>
-              <label className="text-[13px] font-semibold text-gray-500 block mb-2">Nom de la boutique</label>
+              <label className="text-[13px] font-semibold text-gray-500 block mb-2">Nom de votre organisation</label>
               <input
                 value={formNom}
                 onChange={(e) => setFormNom(e.target.value)}
-                placeholder="Ex: Café Chez Mama"
+                placeholder="Ex: Événements Abidjan"
                 className="w-full border border-gray-200 rounded-xl px-4 py-3.5 text-[15px] text-gray-900 outline-none focus:border-emerald-500 transition placeholder:text-gray-300"
                 autoFocus
               />
@@ -560,7 +566,7 @@ export default function MaBoutiquePage() {
           <div>
             <div className="flex items-center gap-2 mb-0.5">
               <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
-              <span className="text-xs font-semibold text-emerald-600">Ouvert · Prêt à encaisser</span>
+              <span className="text-xs font-semibold text-emerald-600">En ligne · Prêt</span>
             </div>
             <h1 className="text-2xl font-black text-gray-900">{boutique.nom}</h1>
           </div>
@@ -575,9 +581,9 @@ export default function MaBoutiquePage() {
       {/* Tab pills */}
       <div className="flex gap-1.5 px-4 mb-5 overflow-x-auto" style={{ scrollbarWidth: "none" }}>
         {([
+          { id: "evenements" as const, label: "Événements" },
           { id: "terminal" as const, label: "Encaisser" },
           { id: "produits" as const, label: "Produits" },
-          { id: "evenements" as const, label: "Événements" },
           { id: "historique" as const, label: "Commandes" },
           { id: "reglages" as const, label: "Réglages" },
         ]).map((tab) => (

@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useAuth } from "@/contexts/AuthContext";
-import { ShoppingBag } from "lucide-react";
+import { Calendar, Ticket, MapPin, ChevronRight, Plus } from "lucide-react";
 import { type DeviseCode, DEFAULT_DEVISE, formatMontant } from "@/lib/currencies";
 
 interface BoutiqueInfo {
@@ -14,13 +14,17 @@ interface BoutiqueInfo {
   categorie?: { nom: string; slug: string; icone: string } | null;
 }
 
-interface ProduitInfo {
+interface EventInfo {
   id: string;
   nom: string;
-  prix: number;
-  devise: string;
-  image_url: string | null;
-  boutique?: { nom: string; slug: string } | null;
+  date_debut: string;
+  heure_debut: string | null;
+  lieu: string;
+  ville: string | null;
+  total_vendu: number;
+  revenus: string;
+  is_published: boolean;
+  ticket_types: any[];
 }
 
 interface Stats {
@@ -34,8 +38,7 @@ export default function DashboardPage() {
   const [boutique, setBoutique] = useState<BoutiqueInfo | null>(null);
   const [stats, setStats] = useState<Stats>({ totalProduits: 0, totalCommandes: 0, totalVentes: 0 });
   const [walletSolde, setWalletSolde] = useState<number>(0);
-  const [boutiques, setBoutiques] = useState<BoutiqueInfo[]>([]);
-  const [produits, setProduits] = useState<ProduitInfo[]>([]);
+  const [events, setEvents] = useState<EventInfo[]>([]);
   const [loading, setLoading] = useState(true);
   const [devise] = useState<DeviseCode>(() => {
     if (typeof window !== "undefined") {
@@ -47,18 +50,11 @@ export default function DashboardPage() {
   useEffect(() => {
     const load = async () => {
       try {
-        const [meRes, boutiquesRes, produitsRes, walletRes] = await Promise.all([
+        const [meRes, walletRes] = await Promise.all([
           fetch("/api/boutiques/me"),
-          fetch("/api/boutiques?limit=10"),
-          fetch("/api/produits?limit=10"),
           fetch(`/api/wallet?devise=${devise}`),
         ]);
-        const [meData, boutiquesData, produitsData, walletData] = await Promise.all([
-          meRes.json(),
-          boutiquesRes.json(),
-          produitsRes.json(),
-          walletRes.json(),
-        ]);
+        const [meData, walletData] = await Promise.all([meRes.json(), walletRes.json()]);
 
         if (meData.boutique) {
           setBoutique(meData.boutique);
@@ -67,12 +63,16 @@ export default function DashboardPage() {
             totalCommandes: meData.stats?.totalCommandes || 0,
             totalVentes: meData.stats?.totalVentes || 0,
           });
+          // Charger les événements
+          try {
+            const evtRes = await fetch(`/api/events?boutique_id=${meData.boutique.id}`);
+            const evtData = await evtRes.json();
+            setEvents(Array.isArray(evtData) ? evtData : []);
+          } catch { /* ignore */ }
         }
         if (walletData.wallet) {
           setWalletSolde(walletData.wallet.solde || 0);
         }
-        setBoutiques(boutiquesData.boutiques || []);
-        setProduits(produitsData.produits || []);
       } catch { /* ignore */ }
       finally { setLoading(false); }
     };
@@ -88,7 +88,7 @@ export default function DashboardPage() {
   }
 
   // ═══════════════════════════════════════════
-  // PAS DE BOUTIQUE → Onboarding épuré
+  // PAS DE BOUTIQUE → Onboarding
   // ═══════════════════════════════════════════
   if (!boutique) {
     return (
@@ -107,18 +107,25 @@ export default function DashboardPage() {
             href="/ma-boutique"
             className="w-full max-w-[280px] flex items-center justify-center py-4 bg-emerald-500 text-white font-bold text-[15px] rounded-2xl hover:bg-emerald-400 transition-all active:scale-[0.97]"
           >
-            Créer ma boutique
+            Commencer
           </Link>
         </div>
       </div>
     );
   }
 
-  // ═══════════════════════════════════════════
-  // A UNE BOUTIQUE → Dashboard + Découverte
-  // ═══════════════════════════════════════════
-  const otherBoutiques = boutiques.filter((b) => b.id !== boutique.id);
+  // Événements à venir (triés par date)
+  const now = new Date().toISOString().split("T")[0];
+  const upcomingEvents = events
+    .filter((e) => e.date_debut >= now && e.is_published)
+    .sort((a, b) => a.date_debut.localeCompare(b.date_debut))
+    .slice(0, 3);
+  const totalBilletsVendus = events.reduce((sum, e) => sum + (e.total_vendu || 0), 0);
+  const totalRevenus = events.reduce((sum, e) => sum + (parseFloat(e.revenus) || 0), 0);
 
+  // ═══════════════════════════════════════════
+  // DASHBOARD EVENT-FIRST
+  // ═══════════════════════════════════════════
   return (
     <div className="px-5 pt-10 pb-28">
       {/* Header */}
@@ -132,76 +139,86 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {/* Montant central */}
-      <Link href="/portefeuille" className="block mt-16 text-center active:scale-[0.98] transition-transform">
+      {/* Montant central — wallet */}
+      <Link href="/portefeuille" className="block mt-14 text-center active:scale-[0.98] transition-transform">
         <p className="text-[44px] font-black tracking-tight text-gray-900 leading-none">
           {formatMontant(walletSolde, devise)}
         </p>
-        <p className="text-[13px] text-gray-400 font-medium mt-3">Aujourd&apos;hui</p>
+        <p className="text-[13px] text-gray-400 font-medium mt-3">Solde wallet</p>
       </Link>
 
-      {/* CTA */}
-      <div className="mt-14 flex justify-center">
+      {/* Stats billets */}
+      <div className="flex items-center justify-center gap-6 mt-6">
+        <div className="text-center">
+          <p className="text-lg font-black text-gray-900">{totalBilletsVendus}</p>
+          <p className="text-[10px] text-gray-400">Billets vendus</p>
+        </div>
+        <div className="w-px h-5 bg-gray-200" />
+        <div className="text-center">
+          <p className="text-sm font-black text-gray-900">{formatMontant(totalRevenus, devise)}</p>
+          <p className="text-[10px] text-gray-400">Revenus billets</p>
+        </div>
+        <div className="w-px h-5 bg-gray-200" />
+        <div className="text-center">
+          <p className="text-lg font-black text-gray-900">{events.length}</p>
+          <p className="text-[10px] text-gray-400">Événements</p>
+        </div>
+      </div>
+
+      {/* CTA principal */}
+      <div className="mt-10 flex justify-center">
         <Link
           href="/ma-boutique"
-          className="w-full max-w-[280px] flex items-center justify-center py-4 bg-emerald-500 text-white font-bold text-[15px] rounded-2xl hover:bg-emerald-400 transition-all active:scale-[0.97]"
+          className="w-full max-w-[300px] flex items-center justify-center gap-2 py-4 bg-gray-900 text-white font-bold text-[15px] rounded-2xl hover:bg-gray-800 transition-all active:scale-[0.97]"
         >
-          Encaisser maintenant
+          <Plus className="w-5 h-5" />
+          Créer un événement
         </Link>
       </div>
 
-      {/* ─── Découverte ─── */}
-
-      {/* Boutiques */}
-      {otherBoutiques.length > 0 && (
-        <div className="mt-12">
+      {/* Événements à venir */}
+      {upcomingEvents.length > 0 && (
+        <div className="mt-10">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-[16px] font-bold text-gray-900">Boutiques</h2>
-            <Link href="/explorer" className="text-[12px] font-semibold text-emerald-600">Voir tout</Link>
+            <h2 className="text-[16px] font-bold text-gray-900">Prochains événements</h2>
+            <Link href="/ma-boutique" className="text-[12px] font-semibold text-emerald-600">Voir tout</Link>
           </div>
-          <div className="flex gap-3 overflow-x-auto pb-2" style={{ scrollbarWidth: "none" }}>
-            {otherBoutiques.slice(0, 8).map((b) => (
-              <Link key={b.id} href={`/boutique/${b.slug}`} className="flex-shrink-0 w-[72px] text-center">
-                <div className="w-16 h-16 mx-auto rounded-2xl bg-gray-50 border border-gray-100 flex items-center justify-center overflow-hidden">
-                  {b.logo_url ? (
-                    <img src={b.logo_url} alt="" className="w-full h-full object-cover" />
-                  ) : (
-                    <span className="text-xl">{b.categorie?.icone || "🏪"}</span>
-                  )}
+          <div className="space-y-2">
+            {upcomingEvents.map((evt) => (
+              <Link
+                key={evt.id}
+                href="/ma-boutique"
+                className="flex items-center gap-3 bg-white rounded-xl border border-gray-100 p-3.5 hover:border-gray-200 transition active:scale-[0.99]"
+              >
+                <div className="w-12 h-12 bg-gray-900 rounded-xl flex flex-col items-center justify-center shrink-0">
+                  <span className="text-[10px] font-bold text-gray-400 uppercase leading-none">
+                    {new Date(evt.date_debut + "T00:00:00").toLocaleDateString("fr-FR", { month: "short" })}
+                  </span>
+                  <span className="text-lg font-black text-white leading-none">
+                    {new Date(evt.date_debut + "T00:00:00").getDate()}
+                  </span>
                 </div>
-                <p className="text-[11px] font-semibold text-gray-600 mt-1.5 truncate">{b.nom}</p>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-bold text-gray-900 truncate">{evt.nom}</p>
+                  <div className="flex items-center gap-1 mt-0.5">
+                    <MapPin className="w-3 h-3 text-gray-400" />
+                    <p className="text-xs text-gray-400 truncate">{evt.lieu}</p>
+                  </div>
+                  <span className="text-[10px] text-emerald-600 font-bold">{evt.total_vendu || 0} billet{(evt.total_vendu || 0) > 1 ? "s" : ""}</span>
+                </div>
+                <ChevronRight className="w-4 h-4 text-gray-300" />
               </Link>
             ))}
           </div>
         </div>
       )}
 
-      {/* Produits récents */}
-      {produits.length > 0 && (
-        <div className="mt-10">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-[16px] font-bold text-gray-900">Produits récents</h2>
-            <Link href="/explorer" className="text-[12px] font-semibold text-emerald-600">Voir tout</Link>
-          </div>
-          <div className="flex gap-3 overflow-x-auto pb-2" style={{ scrollbarWidth: "none" }}>
-            {produits.slice(0, 10).map((p) => (
-              <Link key={p.id} href={`/produit/${p.id}`} className="flex-shrink-0 w-36 rounded-2xl border border-gray-100 overflow-hidden bg-white">
-                <div className="aspect-square bg-gray-50 flex items-center justify-center overflow-hidden">
-                  {p.image_url ? (
-                    <img src={p.image_url} alt="" className="w-full h-full object-cover" />
-                  ) : (
-                    <ShoppingBag className="w-6 h-6 text-gray-200" />
-                  )}
-                </div>
-                <div className="p-2.5">
-                  <p className="text-[12px] font-semibold text-gray-900 truncate">{p.nom}</p>
-                  <p className="text-[12px] font-bold text-emerald-600 mt-0.5">
-                    {p.prix?.toLocaleString("fr-FR")} {p.devise || "FCFA"}
-                  </p>
-                </div>
-              </Link>
-            ))}
-          </div>
+      {/* Pas d'événements */}
+      {events.length === 0 && (
+        <div className="mt-12 text-center py-8">
+          <Calendar className="w-12 h-12 text-gray-200 mx-auto mb-3" />
+          <p className="text-sm font-semibold text-gray-500">Aucun événement encore</p>
+          <p className="text-xs text-gray-400 mt-1">Créez votre premier événement et vendez des billets</p>
         </div>
       )}
     </div>
