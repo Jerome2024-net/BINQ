@@ -495,7 +495,7 @@ export default function MaBoutiquePage() {
   const stopCamera = useCallback(() => {
     if (scannerRef.current) {
       scannerRef.current.stop().catch(() => {});
-      scannerRef.current.clear().catch(() => {});
+      scannerRef.current.clear();
       scannerRef.current = null;
     }
     setCameraActive(false);
@@ -516,7 +516,7 @@ export default function MaBoutiquePage() {
         { fps: 10, qrbox: { width: 220, height: 220 }, aspectRatio: 1 },
         (decodedText) => {
           scanner.stop().catch(() => {});
-          scanner.clear().catch(() => {});
+          scanner.clear();
           scannerRef.current = null;
           setCameraActive(false);
           hapticSuccess();
