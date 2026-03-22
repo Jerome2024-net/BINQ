@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useAuth } from "@/contexts/AuthContext";
@@ -150,6 +150,10 @@ export default function MaBoutiquePage() {
   const [scanCode, setScanCode] = useState("");
   const [scanResult, setScanResult] = useState<any>(null);
   const [scanning, setScanning] = useState(false);
+  const [cameraActive, setCameraActive] = useState(false);
+  const [manualMode, setManualMode] = useState(false);
+  const scannerRef = useRef<any>(null);
+  const scannerDivRef = useRef<HTMLDivElement>(null);
   const [deletingEventId, setDeletingEventId] = useState<string | null>(null);
   const [uploadingEvtLogo, setUploadingEvtLogo] = useState(false);
   const [uploadingEvtCover, setUploadingEvtCover] = useState(false);
@@ -467,6 +471,73 @@ export default function MaBoutiquePage() {
     } catch { hapticError(); setScanResult({ valid: false, error: "Erreur réseau" }); }
     finally { setScanning(false); setScanCode(""); }
   };
+
+  const validateScannedCode = useCallback(async (rawCode: string) => {
+    setScanning(true);
+    setScanResult(null);
+    try {
+      let code = rawCode.trim();
+      if (code.includes("/billet/")) {
+        code = code.split("/billet/").pop()?.split("?")[0]?.split("#")[0] || code;
+      }
+      const res = await fetch("/api/tickets/validate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ qr_code: code }),
+      });
+      const data = await res.json();
+      setScanResult(data);
+      if (data.valid) { hapticSuccess(); } else { hapticError(); }
+    } catch { hapticError(); setScanResult({ valid: false, error: "Erreur réseau" }); }
+    finally { setScanning(false); }
+  }, []);
+
+  const stopCamera = useCallback(() => {
+    if (scannerRef.current) {
+      scannerRef.current.stop().catch(() => {});
+      scannerRef.current.clear().catch(() => {});
+      scannerRef.current = null;
+    }
+    setCameraActive(false);
+  }, []);
+
+  const startCamera = useCallback(async () => {
+    setScanResult(null);
+    setCameraActive(true);
+    try {
+      const { Html5Qrcode } = await import("html5-qrcode");
+      // Petit délai pour que le div soit monté
+      await new Promise(r => setTimeout(r, 100));
+      if (!scannerDivRef.current) return;
+      const scanner = new Html5Qrcode("qr-scanner-region");
+      scannerRef.current = scanner;
+      await scanner.start(
+        { facingMode: "environment" },
+        { fps: 10, qrbox: { width: 220, height: 220 }, aspectRatio: 1 },
+        (decodedText) => {
+          scanner.stop().catch(() => {});
+          scanner.clear().catch(() => {});
+          scannerRef.current = null;
+          setCameraActive(false);
+          hapticSuccess();
+          validateScannedCode(decodedText);
+        },
+        () => {} // ignore scan failures
+      );
+    } catch {
+      setCameraActive(false);
+      hapticError();
+      showToast("error", "Caméra", "Impossible d\u0027accéder à la caméra");
+    }
+  }, [validateScannedCode]);
+
+  const closeScanMode = useCallback(() => {
+    stopCamera();
+    setScanMode(false);
+    setScanResult(null);
+    setScanCode("");
+    setManualMode(false);
+  }, [stopCamera]);
 
   // ═══════════════════════════════════════════════
   // RENDER
@@ -870,94 +941,145 @@ export default function MaBoutiquePage() {
       {/* ═══ TAB: ÉVÉNEMENTS (Billetterie) ═══ */}
       {activeTab === "evenements" && (
         <div className="px-4">
-          {/* Scanner mode */}
+          {/* Scanner mode — Caméra */}
           {scanMode ? (
             <div className="animate-in slide-in-from-top-2 duration-200">
               <div className="flex items-center justify-between mb-4">
                 <h2 className="text-lg font-black text-gray-900">Scanner un billet</h2>
-                <button onClick={() => { setScanMode(false); setScanResult(null); setScanCode(""); }}>
+                <button onClick={closeScanMode}>
                   <X className="w-5 h-5 text-gray-400" />
                 </button>
               </div>
 
-              <div className="mb-4">
-                <label className="text-xs font-semibold text-gray-700 mb-1 block">Code du billet</label>
-                <div className="flex gap-2">
-                  <input
-                    value={scanCode}
-                    onChange={(e) => setScanCode(e.target.value)}
-                    placeholder="Entrez ou scannez le code QR"
-                    className="flex-1 bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm outline-none focus:border-gray-900 transition font-mono"
-                    onKeyDown={(e) => e.key === "Enter" && handleScanTicket()}
-                    autoFocus
-                  />
+              {/* Résultat du scan */}
+              {scanResult ? (
+                <div>
+                  <div className={`rounded-2xl p-5 mb-4 animate-in zoom-in-95 duration-200 ${
+                    scanResult.valid
+                      ? "bg-emerald-50 border-2 border-emerald-200"
+                      : "bg-red-50 border-2 border-red-200"
+                  }`}>
+                    <div className="flex items-center gap-3 mb-3">
+                      <div className={`w-14 h-14 rounded-full flex items-center justify-center ${
+                        scanResult.valid ? "bg-emerald-500" : "bg-red-500"
+                      }`}>
+                        {scanResult.valid ? <Check className="w-7 h-7 text-white" /> : <X className="w-7 h-7 text-white" />}
+                      </div>
+                      <div>
+                        <p className={`font-black text-lg ${scanResult.valid ? "text-emerald-700" : "text-red-700"}`}>
+                          {scanResult.valid ? "Billet valide ✓" : scanResult.error || "Billet invalide"}
+                        </p>
+                        {scanResult.ticket && (
+                          <p className="text-sm text-gray-600">{scanResult.ticket.buyer_name}</p>
+                        )}
+                      </div>
+                    </div>
+                    {scanResult.ticket && (
+                      <div className="space-y-1.5 mt-3 pt-3 border-t border-gray-200/50">
+                        <div className="flex justify-between">
+                          <span className="text-xs text-gray-500">Réf</span>
+                          <span className="text-xs font-bold text-gray-900 font-mono">{scanResult.ticket.reference}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-xs text-gray-500">Type</span>
+                          <span className="text-xs font-bold text-gray-900">{scanResult.ticket.type}</span>
+                        </div>
+                        {scanResult.ticket.event && (
+                          <div className="flex justify-between">
+                            <span className="text-xs text-gray-500">Événement</span>
+                            <span className="text-xs font-bold text-gray-900">{scanResult.ticket.event}</span>
+                          </div>
+                        )}
+                        {scanResult.ticket.scanned_at && (
+                          <div className="flex justify-between">
+                            <span className="text-xs text-gray-500">Scanné le</span>
+                            <span className="text-xs font-bold text-gray-900">
+                              {new Date(scanResult.ticket.scanned_at).toLocaleString("fr-FR", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}
+                            </span>
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </div>
                   <button
-                    onClick={handleScanTicket}
-                    disabled={scanning || !scanCode.trim()}
-                    className="px-5 py-3 bg-gray-900 text-white rounded-xl font-bold text-sm transition hover:bg-gray-800 active:scale-[0.97] disabled:opacity-50"
+                    onClick={() => { setScanResult(null); startCamera(); }}
+                    className="w-full py-4 bg-gray-900 text-white rounded-2xl font-bold text-sm transition hover:bg-gray-800 active:scale-[0.97] flex items-center justify-center gap-2"
                   >
-                    {scanning ? <Loader2 className="w-4 h-4 animate-spin" /> : <ScanLine className="w-4 h-4" />}
+                    <ScanLine className="w-5 h-5" /> Scanner un autre billet
                   </button>
                 </div>
-              </div>
-
-              {/* Résultat du scan */}
-              {scanResult && (
-                <div className={`rounded-2xl p-5 mb-4 animate-in zoom-in-95 duration-200 ${
-                  scanResult.valid
-                    ? "bg-emerald-50 border-2 border-emerald-200"
-                    : "bg-red-50 border-2 border-red-200"
-                }`}>
-                  <div className="flex items-center gap-3 mb-3">
-                    <div className={`w-12 h-12 rounded-full flex items-center justify-center ${
-                      scanResult.valid ? "bg-emerald-500" : "bg-red-500"
-                    }`}>
-                      {scanResult.valid ? <Check className="w-6 h-6 text-white" /> : <X className="w-6 h-6 text-white" />}
-                    </div>
-                    <div>
-                      <p className={`font-black text-lg ${scanResult.valid ? "text-emerald-700" : "text-red-700"}`}>
-                        {scanResult.valid ? "Billet valide ✓" : scanResult.error || "Billet invalide"}
-                      </p>
-                      {scanResult.ticket && (
-                        <p className="text-sm text-gray-600">{scanResult.ticket.buyer_name}</p>
-                      )}
-                    </div>
-                  </div>
-                  {scanResult.ticket && (
-                    <div className="space-y-1.5 mt-3 pt-3 border-t border-gray-200/50">
-                      <div className="flex justify-between">
-                        <span className="text-xs text-gray-500">Réf</span>
-                        <span className="text-xs font-bold text-gray-900 font-mono">{scanResult.ticket.reference}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-xs text-gray-500">Type</span>
-                        <span className="text-xs font-bold text-gray-900">{scanResult.ticket.type}</span>
-                      </div>
-                      {scanResult.ticket.event && (
-                        <div className="flex justify-between">
-                          <span className="text-xs text-gray-500">Événement</span>
-                          <span className="text-xs font-bold text-gray-900">{scanResult.ticket.event}</span>
+              ) : (
+                <div>
+                  {/* Zone caméra */}
+                  {cameraActive && (
+                    <div className="mb-4">
+                      <div className="relative rounded-2xl overflow-hidden bg-black aspect-square max-w-sm mx-auto">
+                        <div id="qr-scanner-region" ref={scannerDivRef} className="w-full h-full" />
+                        {/* Overlay cadre */}
+                        <div className="absolute inset-0 pointer-events-none flex items-center justify-center">
+                          <div className="w-56 h-56 border-2 border-white/30 rounded-2xl">
+                            <div className="absolute top-0 left-0 w-8 h-8 border-t-4 border-l-4 border-white rounded-tl-xl" />
+                            <div className="absolute top-0 right-0 w-8 h-8 border-t-4 border-r-4 border-white rounded-tr-xl" />
+                            <div className="absolute bottom-0 left-0 w-8 h-8 border-b-4 border-l-4 border-white rounded-bl-xl" />
+                            <div className="absolute bottom-0 right-0 w-8 h-8 border-b-4 border-r-4 border-white rounded-br-xl" />
+                          </div>
                         </div>
-                      )}
-                      {scanResult.ticket.scanned_at && (
-                        <div className="flex justify-between">
-                          <span className="text-xs text-gray-500">Scanné le</span>
-                          <span className="text-xs font-bold text-gray-900">
-                            {new Date(scanResult.ticket.scanned_at).toLocaleString("fr-FR", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}
-                          </span>
+                        {scanning && (
+                          <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
+                            <Loader2 className="w-8 h-8 text-white animate-spin" />
+                          </div>
+                        )}
+                      </div>
+                      <p className="text-center text-xs text-gray-400 mt-3">Placez le QR code du billet devant la caméra</p>
+                    </div>
+                  )}
+
+                  {/* Bouton lancer la caméra */}
+                  {!cameraActive && (
+                    <button
+                      onClick={startCamera}
+                      className="w-full py-16 bg-gray-900 text-white rounded-2xl font-bold transition hover:bg-gray-800 active:scale-[0.97] flex flex-col items-center justify-center gap-3 mb-4"
+                    >
+                      <div className="w-16 h-16 bg-white/10 rounded-full flex items-center justify-center">
+                        <Camera className="w-8 h-8 text-white" />
+                      </div>
+                      <span className="text-base font-black">Ouvrir la caméra</span>
+                      <span className="text-xs text-gray-400 font-normal">Scannez le QR code du billet</span>
+                    </button>
+                  )}
+
+                  {/* Saisie manuelle — collapsible */}
+                  {!cameraActive && (
+                    <div>
+                      <button
+                        onClick={() => setManualMode(!manualMode)}
+                        className="w-full text-center text-xs text-gray-400 font-semibold py-2 hover:text-gray-600 transition"
+                      >
+                        {manualMode ? "Masquer la saisie manuelle" : "Saisir le code manuellement"}
+                      </button>
+                      {manualMode && (
+                        <div className="flex gap-2 mt-2 animate-in slide-in-from-top-1 duration-150">
+                          <input
+                            value={scanCode}
+                            onChange={(e) => setScanCode(e.target.value)}
+                            placeholder="Code ou URL du billet"
+                            className="flex-1 bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm outline-none focus:border-gray-900 transition font-mono"
+                            onKeyDown={(e) => e.key === "Enter" && handleScanTicket()}
+                            autoFocus
+                          />
+                          <button
+                            onClick={handleScanTicket}
+                            disabled={scanning || !scanCode.trim()}
+                            className="px-5 py-3 bg-gray-900 text-white rounded-xl font-bold text-sm transition hover:bg-gray-800 active:scale-[0.97] disabled:opacity-50"
+                          >
+                            {scanning ? <Loader2 className="w-4 h-4 animate-spin" /> : <Check className="w-4 h-4" />}
+                          </button>
                         </div>
                       )}
                     </div>
                   )}
                 </div>
               )}
-
-              <button
-                onClick={() => { setScanResult(null); setScanCode(""); }}
-                className="w-full py-3.5 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl font-bold text-sm transition"
-              >
-                Scanner un autre billet
-              </button>
             </div>
           ) : selectedEvent ? (
             /* ═══ DÉTAIL D'UN ÉVÉNEMENT ═══ */
@@ -1052,7 +1174,7 @@ export default function MaBoutiquePage() {
               {/* Actions */}
               <div className="grid grid-cols-2 gap-2 mb-4">
                 <button
-                  onClick={() => { setScanMode(true); setScanResult(null); setScanCode(""); }}
+                  onClick={() => { setScanMode(true); setScanResult(null); setScanCode(""); setTimeout(() => startCamera(), 300); }}
                   className="flex items-center justify-center gap-2 bg-gray-900 text-white py-3.5 rounded-xl font-bold text-sm transition hover:bg-gray-800 active:scale-[0.97]"
                 >
                   <ScanLine className="w-4 h-4" /> Scanner
@@ -1149,7 +1271,7 @@ export default function MaBoutiquePage() {
 
               {/* Scanner rapide */}
               <button
-                onClick={() => { setScanMode(true); setScanResult(null); setScanCode(""); hapticMedium(); }}
+                onClick={() => { setScanMode(true); setScanResult(null); setScanCode(""); hapticMedium(); setTimeout(() => startCamera(), 300); }}
                 className="w-full flex items-center justify-center gap-2 bg-gray-900 text-white py-3.5 rounded-xl font-bold text-sm transition hover:bg-gray-800 active:scale-[0.97] mb-4"
               >
                 <ScanLine className="w-4 h-4" /> Scanner un billet
