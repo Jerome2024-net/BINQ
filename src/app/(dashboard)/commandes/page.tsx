@@ -105,13 +105,13 @@ export default function CommandesPage() {
         <div className="text-center py-20">
           <Package className="w-12 h-12 text-gray-200 mx-auto mb-4" />
           <p className="text-[14px] font-semibold text-gray-900 mb-1">Aucune vente</p>
-          <p className="text-[13px] text-gray-500 mb-6">Partagez votre boutique pour recevoir des commandes</p>
+          <p className="text-[13px] text-gray-500 mb-6">Partagez vos événements pour recevoir des ventes</p>
           <Link
-            href="/ma-boutique"
+            href="/evenements"
             className="inline-flex items-center gap-2 px-6 py-3 rounded-2xl bg-emerald-500 text-white text-[14px] font-bold hover:bg-emerald-400 transition-all active:scale-[0.97]"
           >
             <Store className="w-4 h-4" />
-            Ma boutique
+            Mes événements
           </Link>
         </div>
       ) : (

@@ -606,10 +606,10 @@ export default function ProfilPage() {
                 </span>
                 <ChevronRight className="w-4 h-4 text-gray-600" />
               </Link>
-              <Link href="/ma-boutique" className="flex items-center justify-between p-3 bg-gray-50/50 border border-gray-200/50 rounded-xl hover:bg-gray-100/50 transition-colors group">
+              <Link href="/evenements" className="flex items-center justify-between p-3 bg-gray-50/50 border border-gray-200/50 rounded-xl hover:bg-gray-100/50 transition-colors group">
                 <span className="text-sm text-gray-700 group-hover:text-gray-800 flex items-center gap-2">
                   <Globe className="w-4 h-4" />
-                  Ma boutique
+                  Mes événements
                 </span>
                 <ChevronRight className="w-4 h-4 text-gray-600" />
               </Link>

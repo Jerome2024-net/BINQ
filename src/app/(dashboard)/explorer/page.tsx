@@ -235,7 +235,7 @@ export default function ExplorerPage() {
       {/* Boutique CTA */}
       {user && (
         <Link
-          href="/ma-boutique"
+          href="/evenements"
           className="block bg-gradient-to-br from-emerald-50 via-cyan-50 to-emerald-50 rounded-xl p-4 border border-emerald-200/60 hover:border-emerald-300 hover:shadow-lg transition-all group"
         >
           <div className="flex items-center gap-3 mb-3">
@@ -264,11 +264,11 @@ export default function ExplorerPage() {
               <div className="w-14 h-14 bg-emerald-50 rounded-2xl flex items-center justify-center mx-auto mb-3">
                 <QrCode className="w-7 h-7 text-emerald-400" />
               </div>
-              <p className="text-gray-800 font-black text-sm">Vous n&apos;avez pas encore de boutique active</p>
-              <p className="text-gray-400 text-xs mt-1.5 max-w-[240px] mx-auto">Créez votre espace et commencez à encaisser vos clients</p>
-              <Link href="/ma-boutique" className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-emerald-500 text-white text-sm font-bold hover:bg-emerald-400 transition-all active:scale-95 mt-4 shadow-lg shadow-emerald-500/20">
+              <p className="text-gray-800 font-black text-sm">Vous n&apos;avez pas encore d&apos;espace</p>
+              <p className="text-gray-400 text-xs mt-1.5 max-w-[240px] mx-auto">Créez votre espace et commencez à vendre des billets</p>
+              <Link href="/evenements" className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-emerald-500 text-white text-sm font-bold hover:bg-emerald-400 transition-all active:scale-95 mt-4 shadow-lg shadow-emerald-500/20">
                 <Zap className="w-4 h-4" />
-                Créer ma boutique
+                Commencer
               </Link>
             </div>
           ) : (
@@ -333,11 +333,11 @@ export default function ExplorerPage() {
               <div className="w-14 h-14 bg-emerald-50 rounded-2xl flex items-center justify-center mx-auto mb-3">
                 <Store className="w-7 h-7 text-emerald-400" />
               </div>
-              <p className="text-gray-800 font-black text-sm">Aucune boutique trouvée</p>
-              <p className="text-gray-400 text-xs mt-1.5">Créez la vôtre et commencez à recevoir de l&apos;argent</p>
-              <Link href="/ma-boutique" className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-emerald-500 text-white text-sm font-bold hover:bg-emerald-400 transition-all active:scale-95 mt-4 shadow-lg shadow-emerald-500/20">
+              <p className="text-gray-800 font-black text-sm">Aucun espace trouvé</p>
+              <p className="text-gray-400 text-xs mt-1.5">Créez le vôtre et commencez à vendre des billets</p>
+              <Link href="/evenements" className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-emerald-500 text-white text-sm font-bold hover:bg-emerald-400 transition-all active:scale-95 mt-4 shadow-lg shadow-emerald-500/20">
                 <Zap className="w-4 h-4" />
-                Créer ma boutique
+                Commencer
               </Link>
             </div>
           ) : (

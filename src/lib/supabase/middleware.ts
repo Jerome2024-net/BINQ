@@ -2,7 +2,7 @@ import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
 // Routes qui nécessitent d'être connecté
-const protectedRoutes = ["/dashboard", "/ma-boutique", "/tontines", "/paiements", "/portefeuille", "/transactions", "/membres"];
+const protectedRoutes = ["/dashboard", "/evenements", "/ventes", "/ma-boutique", "/tontines", "/paiements", "/portefeuille", "/transactions", "/membres"];
 // Routes accessibles uniquement quand NON connecté
 const authRoutes = ["/connexion", "/inscription"];
 

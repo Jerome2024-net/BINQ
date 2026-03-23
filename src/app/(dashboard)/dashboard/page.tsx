@@ -3,15 +3,13 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useAuth } from "@/contexts/AuthContext";
-import { Calendar, Ticket, MapPin, ChevronRight, Plus } from "lucide-react";
+import { Calendar, MapPin, ChevronRight, Plus } from "lucide-react";
 import { type DeviseCode, DEFAULT_DEVISE, formatMontant } from "@/lib/currencies";
 
 interface BoutiqueInfo {
   id: string;
   nom: string;
   slug: string;
-  logo_url: string | null;
-  categorie?: { nom: string; slug: string; icone: string } | null;
 }
 
 interface EventInfo {
@@ -24,19 +22,12 @@ interface EventInfo {
   total_vendu: number;
   revenus: string;
   is_published: boolean;
-  ticket_types: any[];
-}
-
-interface Stats {
-  totalProduits: number;
-  totalCommandes: number;
-  totalVentes: number;
+  logo_url: string | null;
 }
 
 export default function DashboardPage() {
   const { user } = useAuth();
   const [boutique, setBoutique] = useState<BoutiqueInfo | null>(null);
-  const [stats, setStats] = useState<Stats>({ totalProduits: 0, totalCommandes: 0, totalVentes: 0 });
   const [walletSolde, setWalletSolde] = useState<number>(0);
   const [events, setEvents] = useState<EventInfo[]>([]);
   const [loading, setLoading] = useState(true);
@@ -58,12 +49,6 @@ export default function DashboardPage() {
 
         if (meData.boutique) {
           setBoutique(meData.boutique);
-          setStats({
-            totalProduits: meData.stats?.totalProduits || 0,
-            totalCommandes: meData.stats?.totalCommandes || 0,
-            totalVentes: meData.stats?.totalVentes || 0,
-          });
-          // Charger les événements
           try {
             const evtRes = await fetch(`/api/events?boutique_id=${meData.boutique.id}`);
             const evtData = await evtRes.json();
@@ -104,7 +89,7 @@ export default function DashboardPage() {
 
         <div className="mt-14 flex justify-center">
           <Link
-            href="/ma-boutique"
+            href="/evenements"
             className="w-full max-w-[280px] flex items-center justify-center py-4 bg-emerald-500 text-white font-bold text-[15px] rounded-2xl hover:bg-emerald-400 transition-all active:scale-[0.97]"
           >
             Commencer
@@ -114,14 +99,12 @@ export default function DashboardPage() {
     );
   }
 
-  // Événements à venir (triés par date)
+  // Prochains événements
   const now = new Date().toISOString().split("T")[0];
   const upcomingEvents = events
     .filter((e) => e.date_debut >= now && e.is_published)
     .sort((a, b) => a.date_debut.localeCompare(b.date_debut))
     .slice(0, 3);
-  const totalBilletsVendus = events.reduce((sum, e) => sum + (e.total_vendu || 0), 0);
-  const totalRevenus = events.reduce((sum, e) => sum + (parseFloat(e.revenus) || 0), 0);
 
   // ═══════════════════════════════════════════
   // DASHBOARD EVENT-FIRST
@@ -147,28 +130,10 @@ export default function DashboardPage() {
         <p className="text-[13px] text-gray-400 font-medium mt-3">Solde wallet</p>
       </Link>
 
-      {/* Stats billets */}
-      <div className="flex items-center justify-center gap-6 mt-6">
-        <div className="text-center">
-          <p className="text-lg font-black text-gray-900">{totalBilletsVendus}</p>
-          <p className="text-[10px] text-gray-400">Billets vendus</p>
-        </div>
-        <div className="w-px h-5 bg-gray-200" />
-        <div className="text-center">
-          <p className="text-sm font-black text-gray-900">{formatMontant(totalRevenus, devise)}</p>
-          <p className="text-[10px] text-gray-400">Revenus billets</p>
-        </div>
-        <div className="w-px h-5 bg-gray-200" />
-        <div className="text-center">
-          <p className="text-lg font-black text-gray-900">{events.length}</p>
-          <p className="text-[10px] text-gray-400">Événements</p>
-        </div>
-      </div>
-
       {/* CTA principal */}
       <div className="mt-10 flex justify-center">
         <Link
-          href="/ma-boutique?action=create"
+          href="/evenements?action=create"
           className="w-full max-w-[300px] flex items-center justify-center gap-2 py-4 bg-gray-900 text-white font-bold text-[15px] rounded-2xl hover:bg-gray-800 transition-all active:scale-[0.97]"
         >
           <Plus className="w-5 h-5" />
@@ -181,23 +146,27 @@ export default function DashboardPage() {
         <div className="mt-10">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-[16px] font-bold text-gray-900">Prochains événements</h2>
-            <Link href="/ma-boutique" className="text-[12px] font-semibold text-emerald-600">Voir tout</Link>
+            <Link href="/evenements" className="text-[12px] font-semibold text-emerald-600">Voir tout</Link>
           </div>
           <div className="space-y-2">
             {upcomingEvents.map((evt) => (
               <Link
                 key={evt.id}
-                href="/ma-boutique"
+                href="/evenements"
                 className="flex items-center gap-3 bg-white rounded-xl border border-gray-100 p-3.5 hover:border-gray-200 transition active:scale-[0.99]"
               >
-                <div className="w-12 h-12 bg-gray-900 rounded-xl flex flex-col items-center justify-center shrink-0">
-                  <span className="text-[10px] font-bold text-gray-400 uppercase leading-none">
-                    {new Date(evt.date_debut + "T00:00:00").toLocaleDateString("fr-FR", { month: "short" })}
-                  </span>
-                  <span className="text-lg font-black text-white leading-none">
-                    {new Date(evt.date_debut + "T00:00:00").getDate()}
-                  </span>
-                </div>
+                {evt.logo_url ? (
+                  <img src={evt.logo_url} alt="" className="w-12 h-12 rounded-xl object-cover shrink-0" />
+                ) : (
+                  <div className="w-12 h-12 bg-gray-900 rounded-xl flex flex-col items-center justify-center shrink-0">
+                    <span className="text-[10px] font-bold text-gray-400 uppercase leading-none">
+                      {new Date(evt.date_debut + "T00:00:00").toLocaleDateString("fr-FR", { month: "short" })}
+                    </span>
+                    <span className="text-lg font-black text-white leading-none">
+                      {new Date(evt.date_debut + "T00:00:00").getDate()}
+                    </span>
+                  </div>
+                )}
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-bold text-gray-900 truncate">{evt.nom}</p>
                   <div className="flex items-center gap-1 mt-0.5">

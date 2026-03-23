@@ -18,6 +18,7 @@ import {
   Wallet,
   Calendar,
   Ticket,
+  TrendingUp,
 } from "lucide-react";
 
 interface Notification {
@@ -30,9 +31,9 @@ interface Notification {
 
 const bottomTabs = [
   { href: "/dashboard", label: "Accueil", icon: ShoppingBag, isCenter: false },
-  { href: "/ma-boutique", label: "Événements", icon: Ticket, isCenter: false },
+  { href: "/evenements", label: "Événements", icon: Calendar, isCenter: false },
   { href: "/portefeuille", label: "Wallet", icon: Wallet, isCenter: false },
-  { href: "/commandes", label: "Ventes", icon: Package, isCenter: false },
+  { href: "/ventes", label: "Ventes", icon: TrendingUp, isCenter: false },
 ];
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
