@@ -14,6 +14,9 @@ import {
   AlertCircle,
   Share2,
   Shield,
+  Heart,
+  Send,
+  Users,
 } from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
 import { formatMontant } from "@/lib/currencies";
@@ -256,12 +259,45 @@ export default function BilletPage() {
       </div>
 
       {/* Security note */}
-      <div className="px-5 mt-6 mb-4">
+      <div className="px-5 mt-6 mb-3">
         <div className="flex items-center gap-2 justify-center">
           <Shield className="w-3.5 h-3.5 text-gray-600" />
           <p className="text-[11px] text-gray-600">Présentez ce QR code à l&apos;entrée</p>
         </div>
       </div>
+
+      {/* ═══ Social Invite — "Partager avec mes amis" ═══ */}
+      {ticket.statut === "valid" && (
+        <div className="px-5 mb-6">
+          <button
+            onClick={() => {
+              const baseUrl = window.location.origin;
+              const shareUrl = `${baseUrl}/evenement/${ticket.events.id}?ref=${encodeURIComponent(ticket.buyer_name)}`;
+              const shareText = `Je vais à ${ticket.events.nom} 🎉 Rejoins-moi !`;
+              
+              if (navigator.share) {
+                navigator.share({
+                  title: ticket.events.nom,
+                  text: shareText,
+                  url: shareUrl,
+                }).catch(() => {});
+              } else {
+                navigator.clipboard.writeText(`${shareText}\n${shareUrl}`);
+              }
+            }}
+            className="w-full bg-gradient-to-r from-purple-600/20 to-pink-600/20 border border-purple-500/30 rounded-2xl p-4 flex items-center gap-3 transition active:scale-[0.98] hover:from-purple-600/30 hover:to-pink-600/30"
+          >
+            <div className="w-10 h-10 bg-gradient-to-br from-purple-600 to-pink-600 rounded-full flex items-center justify-center shrink-0">
+              <Heart className="w-5 h-5 text-white" />
+            </div>
+            <div className="text-left flex-1">
+              <p className="text-sm font-bold text-white">Partager avec mes amis</p>
+              <p className="text-xs text-gray-400">Les meilleurs moments se vivent ensemble</p>
+            </div>
+            <Send className="w-4 h-4 text-purple-400" />
+          </button>
+        </div>
+      )}
 
       {/* Footer */}
       <div className="text-center pb-8">

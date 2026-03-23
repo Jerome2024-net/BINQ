@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import {
   Calendar,
   MapPin,
@@ -15,6 +15,9 @@ import {
   Plus,
   Check,
   AlertCircle,
+  Heart,
+  Sparkles,
+  Send,
 } from "lucide-react";
 import { formatMontant } from "@/lib/currencies";
 import type { DeviseCode } from "@/lib/currencies";
@@ -46,15 +49,21 @@ interface Event {
   logo_url: string | null;
   devise: string;
   is_active: boolean;
+  total_vendu: number;
   ticket_types: TicketType[];
 }
 
 export default function EvenementPage() {
   const params = useParams();
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [event, setEvent] = useState<Event | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [mounted, setMounted] = useState(false);
+
+  // Referral
+  const referrer = searchParams.get("ref");
 
   // Achat
   const [selectedType, setSelectedType] = useState<string | null>(null);
@@ -65,8 +74,10 @@ export default function EvenementPage() {
   const [buying, setBuying] = useState(false);
   const [success, setSuccess] = useState(false);
   const [ticketCodes, setTicketCodes] = useState<string[]>([]);
+  const [justBoughtName, setJustBoughtName] = useState("");
 
   useEffect(() => {
+    setMounted(true);
     loadEvent();
   }, []);
 
@@ -104,11 +115,29 @@ export default function EvenementPage() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Erreur");
       setTicketCodes(data.tickets.map((t: any) => t.qr_code));
+      setJustBoughtName(buyerName.trim());
       setSuccess(true);
     } catch (err: any) {
       setError(err.message);
     } finally {
       setBuying(false);
+    }
+  }
+
+  function handleInviteFriends() {
+    if (!event || !mounted) return;
+    const baseUrl = window.location.origin;
+    const shareUrl = `${baseUrl}/evenement/${event.id}?ref=${encodeURIComponent(justBoughtName || buyerName.trim())}`;
+    const shareText = `Je vais à ${event.nom} 🎉 Rejoins-moi !`;
+    
+    if (navigator.share) {
+      navigator.share({
+        title: event.nom,
+        text: shareText,
+        url: shareUrl,
+      }).catch(() => {});
+    } else {
+      navigator.clipboard.writeText(`${shareText}\n${shareUrl}`);
     }
   }
 
@@ -129,6 +158,11 @@ export default function EvenementPage() {
   const selectedTicketType = event?.ticket_types.find((t) => t.id === selectedType);
   const total = selectedTicketType ? selectedTicketType.prix * qty : 0;
   const devise = (event?.devise || "XOF") as DeviseCode;
+
+  // Social proof — total participants & capacity
+  const totalParticipants = event?.total_vendu || event?.ticket_types.reduce((sum, tt) => sum + tt.quantite_vendue, 0) || 0;
+  const totalCapacity = event?.ticket_types.reduce((sum, tt) => sum + tt.quantite_total, 0) || 0;
+  const fillPercent = totalCapacity > 0 ? Math.min(100, Math.round((totalParticipants / totalCapacity) * 100)) : 0;
 
   // ═══ LOADING ═══
   if (loading) {
@@ -155,19 +189,21 @@ export default function EvenementPage() {
 
   if (!event) return null;
 
-  // ═══ SUCCESS — Billets achetés ═══
+  // ═══ SUCCESS — Billet confirmé + Invite tes amis ═══
   if (success && ticketCodes.length > 0) {
     return (
       <div className="min-h-screen bg-black flex flex-col items-center justify-center px-6">
-        <div className="w-16 h-16 bg-emerald-500 rounded-full flex items-center justify-center mb-6 animate-in zoom-in-75 duration-300">
-          <Check className="w-8 h-8 text-white" />
+        {/* Confirmation */}
+        <div className="w-20 h-20 bg-emerald-500 rounded-full flex items-center justify-center mb-5 animate-in zoom-in-75 duration-300">
+          <Check className="w-10 h-10 text-white" />
         </div>
-        <h1 className="text-2xl font-black text-white mb-2">Billet{ticketCodes.length > 1 ? "s" : ""} réservé{ticketCodes.length > 1 ? "s" : ""} !</h1>
+        <h1 className="text-2xl font-black text-white mb-2">Ton billet est confirmé 🎉</h1>
         <p className="text-gray-400 text-sm mb-8 text-center">
-          {ticketCodes.length > 1 ? `${ticketCodes.length} billets` : "Votre billet"} pour <span className="text-white font-semibold">{event.nom}</span>
+          {ticketCodes.length > 1 ? `${ticketCodes.length} billets` : "1 billet"} pour <span className="text-white font-semibold">{event.nom}</span>
         </p>
 
-        <div className="w-full max-w-sm space-y-3">
+        {/* Voir mes billets */}
+        <div className="w-full max-w-sm space-y-3 mb-8">
           {ticketCodes.map((code, i) => (
             <a
               key={code}
@@ -180,9 +216,44 @@ export default function EvenementPage() {
           ))}
         </div>
 
+        {/* ═══ Social Invite Section ═══ */}
+        <div className="w-full max-w-sm">
+          <div className="bg-white/5 border border-white/10 rounded-2xl p-5 text-center">
+            <div className="w-12 h-12 bg-purple-500/20 rounded-full flex items-center justify-center mx-auto mb-3">
+              <Heart className="w-6 h-6 text-purple-400" />
+            </div>
+            <p className="text-white font-bold text-[15px] mb-1">Invite tes amis à te rejoindre</p>
+            <p className="text-gray-500 text-xs mb-5">Les meilleurs moments se vivent ensemble</p>
+
+            <button
+              onClick={handleInviteFriends}
+              className="w-full py-3.5 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition hover:from-purple-500 hover:to-pink-500 active:scale-[0.98]"
+            >
+              <Send className="w-4 h-4" />
+              Inviter des amis
+            </button>
+          </div>
+
+          {/* Social proof */}
+          {totalParticipants > 0 && (
+            <div className="mt-4 flex items-center justify-center gap-2">
+              <div className="flex -space-x-2">
+                {[...Array(Math.min(3, totalParticipants))].map((_, i) => (
+                  <div key={i} className="w-7 h-7 bg-gradient-to-br from-gray-600 to-gray-700 rounded-full border-2 border-black flex items-center justify-center">
+                    <Users className="w-3 h-3 text-gray-400" />
+                  </div>
+                ))}
+              </div>
+              <p className="text-xs text-gray-400">
+                <span className="text-white font-bold">+{totalParticipants}</span> personne{totalParticipants > 1 ? "s" : ""} participe{totalParticipants > 1 ? "nt" : ""}
+              </p>
+            </div>
+          )}
+        </div>
+
         <button
           onClick={() => router.back()}
-          className="mt-6 text-gray-500 text-sm font-medium hover:text-gray-300 transition"
+          className="mt-8 text-gray-500 text-sm font-medium hover:text-gray-300 transition"
         >
           Retour
         </button>
@@ -237,12 +308,68 @@ export default function EvenementPage() {
 
       {/* Event info */}
       <div className="px-5 -mt-8 relative z-10">
+        {/* ═══ Referral Banner — "X participe à cet événement" ═══ */}
+        {referrer && (
+          <div className="mb-4 bg-gradient-to-r from-purple-600/20 to-pink-600/20 border border-purple-500/30 rounded-2xl p-4 animate-in slide-in-from-top-4 duration-300">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-purple-500/30 rounded-full flex items-center justify-center shrink-0">
+                <Sparkles className="w-5 h-5 text-purple-300" />
+              </div>
+              <div>
+                <p className="text-sm font-bold text-white">{referrer} participe à cet événement</p>
+                <p className="text-xs text-purple-300/80">Rejoins-le et vivez ça ensemble 🎉</p>
+              </div>
+            </div>
+          </div>
+        )}
+
         <div className="flex items-center gap-3 mb-3">
           {event.logo_url && (
             <img src={event.logo_url} alt="" className="w-14 h-14 rounded-2xl object-cover border-2 border-black shrink-0 shadow-lg" />
           )}
           <h1 className="text-2xl font-black text-white">{event.nom}</h1>
         </div>
+
+        {/* ═══ Social Proof Bar ═══ */}
+        {totalParticipants > 0 && (
+          <div className="mb-4 bg-white/5 rounded-2xl p-3.5">
+            <div className="flex items-center justify-between mb-2">
+              <div className="flex items-center gap-2">
+                <div className="flex -space-x-1.5">
+                  {[...Array(Math.min(4, totalParticipants))].map((_, i) => (
+                    <div key={i} className="w-6 h-6 bg-gradient-to-br from-gray-500 to-gray-600 rounded-full border-[1.5px] border-black flex items-center justify-center">
+                      <Users className="w-2.5 h-2.5 text-gray-300" />
+                    </div>
+                  ))}
+                  {totalParticipants > 4 && (
+                    <div className="w-6 h-6 bg-white/10 rounded-full border-[1.5px] border-black flex items-center justify-center">
+                      <span className="text-[8px] font-bold text-white">+{totalParticipants - 4}</span>
+                    </div>
+                  )}
+                </div>
+                <p className="text-xs text-gray-300">
+                  <span className="font-bold text-white">{totalParticipants}</span> personne{totalParticipants > 1 ? "s" : ""} participe{totalParticipants > 1 ? "nt" : ""}
+                </p>
+              </div>
+              {fillPercent >= 70 && (
+                <span className="text-[10px] font-bold text-orange-400 bg-orange-500/10 px-2 py-0.5 rounded-full">
+                  🔥 {fillPercent}% rempli
+                </span>
+              )}
+            </div>
+            {/* Progress bar */}
+            {totalCapacity > 0 && (
+              <div className="h-1.5 bg-white/10 rounded-full overflow-hidden">
+                <div
+                  className={`h-full rounded-full transition-all duration-500 ${
+                    fillPercent >= 90 ? "bg-red-500" : fillPercent >= 70 ? "bg-orange-500" : "bg-emerald-500"
+                  }`}
+                  style={{ width: `${fillPercent}%` }}
+                />
+              </div>
+            )}
+          </div>
+        )}
 
         {/* Date */}
         <div className="flex items-start gap-3 mb-3">
