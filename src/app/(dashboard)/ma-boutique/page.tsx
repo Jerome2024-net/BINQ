@@ -34,6 +34,10 @@ import {
   Eye,
   Settings,
   TrendingUp,
+  Sparkles,
+  Star,
+  Type,
+  FileText,
 } from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
 import { formatMontant } from "@/lib/currencies";
@@ -1301,167 +1305,250 @@ export default function MaBoutiquePage() {
                 </button>
               </div>
 
-              {/* Création rapide événement — block-based */}
+              {/* Création rapide événement — Premium Design */}
               {showAddEvent && (
-                <div className="mb-4 animate-in slide-in-from-top-2 duration-200">
-                  {/* Header */}
-                  <div className="flex items-center justify-between mb-3">
-                    <div>
-                      <h3 className="text-lg font-black text-gray-900">Nouvel événement</h3>
-                      <p className="text-[11px] text-gray-400">Vendez des billets en quelques secondes</p>
+                <div className="mb-4 animate-in slide-in-from-top-2 duration-300">
+                  {/* ── Hero Header ── */}
+                  <div className="relative bg-gradient-to-br from-violet-600 via-purple-600 to-indigo-700 rounded-3xl p-5 pb-6 mb-4 overflow-hidden">
+                    <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full blur-2xl -translate-y-1/2 translate-x-1/2" />
+                    <div className="absolute bottom-0 left-0 w-24 h-24 bg-pink-400/10 rounded-full blur-xl translate-y-1/2 -translate-x-1/4" />
+                    <div className="absolute top-4 right-16 w-2 h-2 bg-yellow-300/60 rounded-full animate-pulse" />
+                    <div className="absolute bottom-6 right-8 w-1.5 h-1.5 bg-emerald-300/60 rounded-full animate-pulse" style={{ animationDelay: '1s' }} />
+                    
+                    <div className="relative flex items-start justify-between">
+                      <div>
+                        <div className="flex items-center gap-2 mb-2">
+                          <div className="w-8 h-8 rounded-xl bg-white/15 backdrop-blur-sm flex items-center justify-center">
+                            <Sparkles className="w-4 h-4 text-yellow-300" />
+                          </div>
+                          <span className="text-[10px] font-bold text-white/60 uppercase tracking-widest">Nouveau</span>
+                        </div>
+                        <h3 className="text-xl font-black text-white leading-tight">Créer un<br />événement</h3>
+                        <p className="text-[11px] text-white/50 mt-1.5">En quelques étapes, vos billets seront en vente</p>
+                      </div>
+                      <button onClick={() => setShowAddEvent(false)} className="w-8 h-8 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center hover:bg-white/20 transition">
+                        <X className="w-4 h-4 text-white/70" />
+                      </button>
                     </div>
-                    <button onClick={() => setShowAddEvent(false)} className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center">
-                      <X className="w-4 h-4 text-gray-500" />
-                    </button>
+
+                    <div className="relative flex items-center gap-1.5 mt-4">
+                      <div className={`h-1 rounded-full transition-all duration-500 ${evtCoverPreview && evtLogoPreview ? 'bg-emerald-400 w-8' : 'bg-white/20 w-5'}`} />
+                      <div className={`h-1 rounded-full transition-all duration-500 ${evtNom.trim() && evtLieu.trim() ? 'bg-emerald-400 w-8' : 'bg-white/20 w-5'}`} />
+                      <div className={`h-1 rounded-full transition-all duration-500 ${evtDateDebut ? 'bg-emerald-400 w-8' : 'bg-white/20 w-5'}`} />
+                      <div className={`h-1 rounded-full transition-all duration-500 ${evtTicketTypes[0]?.nom ? 'bg-emerald-400 w-8' : 'bg-white/20 w-5'}`} />
+                      <span className="text-[9px] text-white/30 ml-auto font-semibold">
+                        {[evtCoverPreview && evtLogoPreview, evtNom.trim() && evtLieu.trim(), evtDateDebut, evtTicketTypes[0]?.nom].filter(Boolean).length}/4
+                      </span>
+                    </div>
                   </div>
 
-                  {/* Images — Logo + Cover (obligatoire) */}
-                  <div className="bg-white rounded-2xl border border-gray-100 p-4 shadow-sm mb-2">
-                    <p className="text-xs font-black text-gray-900 uppercase tracking-wide mb-3">Visuels</p>
+                  {/* ── Section 1: Visuels ── */}
+                  <div className="relative mb-3">
+                    <div className="flex items-center gap-2.5 mb-3">
+                      <div className="w-6 h-6 rounded-lg bg-gradient-to-br from-pink-500 to-rose-600 flex items-center justify-center shadow-sm shadow-pink-500/30">
+                        <Camera className="w-3 h-3 text-white" />
+                      </div>
+                      <div>
+                        <p className="text-[13px] font-bold text-gray-900">Visuels</p>
+                        <p className="text-[10px] text-gray-400">Les images attirent les participants</p>
+                      </div>
+                    </div>
 
-                    {/* Cover */}
-                    <button
-                      type="button"
-                      onClick={() => evtFormCoverRef.current?.click()}
-                      className={`w-full h-28 rounded-2xl border-2 border-dashed flex items-center justify-center overflow-hidden transition relative group mb-3 ${
-                        evtCoverPreview ? "border-transparent" : "border-gray-200 hover:border-gray-400 bg-gray-50"
-                      }`}
-                    >
+                    <button type="button" onClick={() => evtFormCoverRef.current?.click()}
+                      className={`w-full h-36 rounded-2xl flex items-center justify-center overflow-hidden transition-all relative group mb-3 ${
+                        evtCoverPreview ? "ring-2 ring-emerald-500/30 shadow-lg shadow-emerald-500/10" : "bg-gradient-to-br from-gray-50 to-gray-100 border-2 border-dashed border-gray-200 hover:border-purple-300 hover:from-purple-50/50 hover:to-pink-50/50"
+                      }`}>
                       {evtCoverPreview ? (
                         <>
                           <img src={evtCoverPreview} alt="" className="w-full h-full object-cover" />
-                          <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition flex items-center justify-center">
-                            <Camera className="w-5 h-5 text-white" />
-                            <span className="text-white text-xs font-bold ml-2">Changer</span>
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300 flex items-end justify-center pb-4">
+                            <span className="bg-white/90 backdrop-blur-sm text-gray-900 text-xs font-bold px-3 py-1.5 rounded-full flex items-center gap-1.5"><Camera className="w-3 h-3" /> Changer</span>
                           </div>
+                          <div className="absolute top-2 right-2 w-6 h-6 rounded-full bg-emerald-500 flex items-center justify-center shadow-lg"><Check className="w-3 h-3 text-white" /></div>
                         </>
                       ) : (
                         <div className="text-center">
-                          <ImagePlus className="w-6 h-6 text-gray-300 mx-auto mb-1" />
-                          <p className="text-xs text-gray-400 font-semibold">Cover de l&apos;événement *</p>
+                          <div className="w-12 h-12 rounded-2xl bg-white shadow-sm flex items-center justify-center mx-auto mb-2 group-hover:scale-110 transition-transform"><ImagePlus className="w-5 h-5 text-purple-400" /></div>
+                          <p className="text-xs font-bold text-gray-500">Ajouter la cover</p>
+                          <p className="text-[10px] text-gray-300 mt-0.5">Image de fond de votre événement</p>
                         </div>
                       )}
                     </button>
                     <input ref={evtFormCoverRef} type="file" accept="image/*" className="hidden"
                       onChange={(e) => { const f = e.target.files?.[0]; if (f) { setEvtCoverFile(f); setEvtCoverPreview(URL.createObjectURL(f)); } e.target.value = ""; }} />
 
-                    {/* Logo */}
-                    <div className="flex items-center gap-3">
-                      <button
-                        type="button"
-                        onClick={() => evtFormLogoRef.current?.click()}
-                        className={`w-16 h-16 rounded-2xl border-2 border-dashed flex items-center justify-center overflow-hidden transition relative group shrink-0 ${
-                          evtLogoPreview ? "border-transparent" : "border-gray-200 hover:border-gray-400 bg-gray-50"
-                        }`}
-                      >
+                    <div className="flex items-center gap-3 bg-white rounded-2xl border border-gray-100 p-3 shadow-sm">
+                      <button type="button" onClick={() => evtFormLogoRef.current?.click()}
+                        className={`w-16 h-16 rounded-2xl flex items-center justify-center overflow-hidden transition-all relative group shrink-0 ${
+                          evtLogoPreview ? "ring-2 ring-emerald-500/30 shadow-md" : "bg-gradient-to-br from-violet-50 to-purple-50 border-2 border-dashed border-purple-200 hover:border-purple-400"
+                        }`}>
                         {evtLogoPreview ? (
                           <>
                             <img src={evtLogoPreview} alt="" className="w-full h-full object-cover" />
-                            <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition flex items-center justify-center">
-                              <Camera className="w-4 h-4 text-white" />
-                            </div>
+                            <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition flex items-center justify-center"><Camera className="w-4 h-4 text-white" /></div>
                           </>
-                        ) : (
-                          <ImagePlus className="w-5 h-5 text-gray-300" />
-                        )}
+                        ) : (<Star className="w-5 h-5 text-purple-300" />)}
                       </button>
                       <input ref={evtFormLogoRef} type="file" accept="image/*" className="hidden"
                         onChange={(e) => { const f = e.target.files?.[0]; if (f) { setEvtLogoFile(f); setEvtLogoPreview(URL.createObjectURL(f)); } e.target.value = ""; }} />
+                      <div className="flex-1 min-w-0">
+                        <p className="text-xs font-bold text-gray-900">Logo / Photo de profil</p>
+                        <p className="text-[10px] text-gray-400 mt-0.5">Visible sur la page et les billets</p>
+                      </div>
+                      {evtLogoPreview && (<div className="w-5 h-5 rounded-full bg-emerald-500 flex items-center justify-center shrink-0"><Check className="w-3 h-3 text-white" /></div>)}
+                    </div>
+                  </div>
+
+                  {/* ── Section 2: Infos événement ── */}
+                  <div className="relative mb-3">
+                    <div className="flex items-center gap-2.5 mb-3">
+                      <div className="w-6 h-6 rounded-lg bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-sm shadow-blue-500/30">
+                        <Type className="w-3 h-3 text-white" />
+                      </div>
                       <div>
-                        <p className="text-xs font-bold text-gray-700">Logo / Photo de profil *</p>
-                        <p className="text-[10px] text-gray-400">Visible sur la page et les billets</p>
+                        <p className="text-[13px] font-bold text-gray-900">Informations</p>
+                        <p className="text-[10px] text-gray-400">Les détails de votre événement</p>
+                      </div>
+                    </div>
+                    <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+                      <div className="p-4 pb-3">
+                        <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block mb-1.5">Nom de l&apos;événement *</label>
+                        <input value={evtNom} onChange={(e) => setEvtNom(e.target.value)} placeholder="Ex: Binq Party, Festival Afro..."
+                          className="w-full bg-transparent text-[15px] font-bold text-gray-900 placeholder:text-gray-300 outline-none" autoFocus />
+                      </div>
+                      <div className="mx-4 border-t border-gray-50" />
+                      <div className="px-4 py-3">
+                        <div className="flex items-center gap-2.5">
+                          <div className="w-8 h-8 rounded-lg bg-orange-50 flex items-center justify-center shrink-0"><MapPin className="w-3.5 h-3.5 text-orange-500" /></div>
+                          <div className="flex-1 min-w-0">
+                            <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block mb-0.5">Lieu *</label>
+                            <input value={evtLieu} onChange={(e) => setEvtLieu(e.target.value)} placeholder="Palais de la Culture, Stade..."
+                              className="w-full bg-transparent text-sm text-gray-900 placeholder:text-gray-300 outline-none font-medium" />
+                          </div>
+                        </div>
+                      </div>
+                      <div className="mx-4 border-t border-gray-50" />
+                      <div className="px-4 py-3">
+                        <div className="flex items-center gap-2.5">
+                          <div className="w-8 h-8 rounded-lg bg-cyan-50 flex items-center justify-center shrink-0"><MapPin className="w-3.5 h-3.5 text-cyan-500" /></div>
+                          <div className="flex-1 min-w-0">
+                            <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block mb-0.5">Ville</label>
+                            <input value={evtVille} onChange={(e) => setEvtVille(e.target.value)} placeholder="Abidjan, Dakar, Lomé..."
+                              className="w-full bg-transparent text-sm text-gray-900 placeholder:text-gray-300 outline-none font-medium" />
+                          </div>
+                        </div>
+                      </div>
+                      <div className="mx-4 border-t border-gray-50" />
+                      <div className="px-4 py-3">
+                        <div className="flex items-center gap-2.5">
+                          <div className="w-8 h-8 rounded-lg bg-violet-50 flex items-center justify-center shrink-0"><Calendar className="w-3.5 h-3.5 text-violet-500" /></div>
+                          <div className="flex-1 min-w-0">
+                            <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block mb-0.5">Date & heure *</label>
+                            <div className="flex items-center gap-2">
+                              <input type="date" value={evtDateDebut} onChange={(e) => setEvtDateDebut(e.target.value)} className="flex-1 bg-transparent text-sm text-gray-900 outline-none font-medium" />
+                              <div className="w-px h-4 bg-gray-200" />
+                              <div className="flex items-center gap-1.5">
+                                <Clock className="w-3 h-3 text-gray-400" />
+                                <input type="time" value={evtHeureDebut} onChange={(e) => setEvtHeureDebut(e.target.value)} className="w-20 bg-transparent text-sm text-gray-900 outline-none font-medium" />
+                              </div>
+                            </div>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>
 
-                  {/* Block 1 — Événement */}
-                  <div className="bg-white rounded-2xl border border-gray-100 p-4 shadow-sm mb-2">
-                    <input value={evtNom} onChange={(e) => setEvtNom(e.target.value)} placeholder="Nom de l&apos;événement"
-                      className="w-full bg-transparent text-base font-bold text-gray-900 placeholder:text-gray-300 outline-none mb-3" autoFocus />
-                    <div className="flex items-center gap-2 mb-2">
-                      <MapPin className="w-3.5 h-3.5 text-gray-400 shrink-0" />
-                      <input value={evtLieu} onChange={(e) => setEvtLieu(e.target.value)} placeholder="Lieu (ex: Palais de la Culture)"
-                        className="flex-1 bg-transparent text-sm text-gray-700 placeholder:text-gray-300 outline-none" />
+                  {/* ── Section 3: Billets ── */}
+                  <div className="relative mb-3">
+                    <div className="flex items-center gap-2.5 mb-3">
+                      <div className="w-6 h-6 rounded-lg bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center shadow-sm shadow-emerald-500/30">
+                        <Ticket className="w-3 h-3 text-white" />
+                      </div>
+                      <div className="flex-1">
+                        <p className="text-[13px] font-bold text-gray-900">Billetterie</p>
+                        <p className="text-[10px] text-gray-400">Définissez vos types de billets</p>
+                      </div>
+                      <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">{evtTicketTypes.length} type{evtTicketTypes.length > 1 ? "s" : ""}</span>
                     </div>
-                    <div className="flex items-center gap-2 mb-2">
-                      <MapPin className="w-3.5 h-3.5 text-gray-400 shrink-0 opacity-0" />
-                      <input value={evtVille} onChange={(e) => setEvtVille(e.target.value)} placeholder="Ville (ex: Abidjan)"
-                        className="flex-1 bg-transparent text-sm text-gray-700 placeholder:text-gray-300 outline-none" />
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Calendar className="w-3.5 h-3.5 text-gray-400 shrink-0" />
-                      <input type="date" value={evtDateDebut} onChange={(e) => setEvtDateDebut(e.target.value)}
-                        className="flex-1 bg-transparent text-sm text-gray-700 outline-none" />
-                      <Clock className="w-3.5 h-3.5 text-gray-400 shrink-0 ml-1" />
-                      <input type="time" value={evtHeureDebut} onChange={(e) => setEvtHeureDebut(e.target.value)}
-                        className="w-24 bg-transparent text-sm text-gray-700 outline-none" />
-                    </div>
-                  </div>
-
-                  {/* Block 2 — Billets (multi) */}
-                  <div className="bg-white rounded-2xl border border-gray-100 p-4 shadow-sm mb-2">
-                    <div className="flex items-center justify-between mb-3">
-                      <p className="text-xs font-black text-gray-900 uppercase tracking-wide">Billets</p>
-                      <span className="text-[10px] text-gray-400">{evtTicketTypes.length} type{evtTicketTypes.length > 1 ? "s" : ""}</span>
-                    </div>
-
-                    <div className="space-y-2">
+                    <div className="space-y-2.5">
                       {evtTicketTypes.map((ticket, idx) => (
-                        <div key={idx} className="flex items-center gap-2 bg-gray-50 rounded-xl p-2.5">
-                          <input value={ticket.nom} onChange={(e) => { const arr = [...evtTicketTypes]; arr[idx] = {...arr[idx], nom: e.target.value}; setEvtTicketTypes(arr); }}
-                            placeholder="Type" className="flex-1 min-w-0 bg-transparent text-sm font-semibold text-gray-900 placeholder:text-gray-300 outline-none" />
-                          <div className="flex items-center gap-1 shrink-0">
-                            <input type="number" inputMode="numeric" value={ticket.prix} onChange={(e) => { const arr = [...evtTicketTypes]; arr[idx] = {...arr[idx], prix: e.target.value}; setEvtTicketTypes(arr); }}
-                              placeholder="0" className="w-20 bg-white border border-gray-200 rounded-lg px-2 py-1.5 text-sm text-right font-bold text-gray-900 placeholder:text-gray-300 outline-none focus:border-gray-900 transition" />
-                            <span className="text-[10px] text-gray-400 font-semibold">{devise}</span>
+                        <div key={idx} className="bg-white rounded-2xl border border-gray-100 shadow-sm p-3.5 relative overflow-hidden group">
+                          <div className={`absolute top-0 left-0 w-1 h-full rounded-r-full ${
+                            idx === 0 ? 'bg-gradient-to-b from-emerald-400 to-teal-500' :
+                            idx === 1 ? 'bg-gradient-to-b from-violet-400 to-purple-500' :
+                            idx === 2 ? 'bg-gradient-to-b from-amber-400 to-orange-500' :
+                            'bg-gradient-to-b from-blue-400 to-indigo-500'
+                          }`} />
+                          <div className="flex items-center gap-2.5 pl-2">
+                            <div className="flex-1 min-w-0">
+                              <label className="text-[9px] font-bold text-gray-400 uppercase tracking-wider">Nom du billet</label>
+                              <input value={ticket.nom} onChange={(e) => { const arr = [...evtTicketTypes]; arr[idx] = {...arr[idx], nom: e.target.value}; setEvtTicketTypes(arr); }}
+                                placeholder="Ex: VIP, Standard..." className="w-full bg-transparent text-sm font-bold text-gray-900 placeholder:text-gray-300 outline-none mt-0.5" />
+                            </div>
+                            {evtTicketTypes.length > 1 && (
+                              <button onClick={() => { const arr = evtTicketTypes.filter((_, i) => i !== idx); setEvtTicketTypes(arr); }}
+                                className="w-7 h-7 rounded-lg flex items-center justify-center text-gray-200 hover:text-red-500 hover:bg-red-50 transition shrink-0 opacity-0 group-hover:opacity-100"><X className="w-3.5 h-3.5" /></button>
+                            )}
                           </div>
-                          <input type="number" inputMode="numeric" value={ticket.qty} onChange={(e) => { const arr = [...evtTicketTypes]; arr[idx] = {...arr[idx], qty: e.target.value}; setEvtTicketTypes(arr); }}
-                            placeholder="Qty" className="w-16 bg-white border border-gray-200 rounded-lg px-2 py-1.5 text-sm text-center text-gray-700 placeholder:text-gray-300 outline-none focus:border-gray-900 transition" />
-                          {evtTicketTypes.length > 1 && (
-                            <button onClick={() => { const arr = evtTicketTypes.filter((_, i) => i !== idx); setEvtTicketTypes(arr); }}
-                              className="w-7 h-7 rounded-lg flex items-center justify-center text-gray-300 hover:text-red-500 hover:bg-red-50 transition shrink-0">
-                              <X className="w-3.5 h-3.5" />
-                            </button>
-                          )}
+                          <div className="flex items-center gap-2 mt-2.5 pl-2">
+                            <div className="flex-1">
+                              <label className="text-[9px] font-bold text-gray-400 uppercase tracking-wider">Prix</label>
+                              <div className="flex items-center gap-1 mt-0.5">
+                                <input type="number" inputMode="numeric" value={ticket.prix} onChange={(e) => { const arr = [...evtTicketTypes]; arr[idx] = {...arr[idx], prix: e.target.value}; setEvtTicketTypes(arr); }}
+                                  placeholder="0 = gratuit" className="w-full bg-gray-50 border border-gray-100 rounded-lg px-2.5 py-2 text-sm font-bold text-gray-900 placeholder:text-gray-300 outline-none focus:border-emerald-400 focus:ring-1 focus:ring-emerald-400/20 transition" />
+                                <span className="text-[10px] text-gray-400 font-bold shrink-0">{devise}</span>
+                              </div>
+                            </div>
+                            <div className="w-20">
+                              <label className="text-[9px] font-bold text-gray-400 uppercase tracking-wider">Places</label>
+                              <input type="number" inputMode="numeric" value={ticket.qty} onChange={(e) => { const arr = [...evtTicketTypes]; arr[idx] = {...arr[idx], qty: e.target.value}; setEvtTicketTypes(arr); }}
+                                placeholder="100" className="w-full bg-gray-50 border border-gray-100 rounded-lg px-2.5 py-2 text-sm text-center font-bold text-gray-900 placeholder:text-gray-300 outline-none focus:border-emerald-400 focus:ring-1 focus:ring-emerald-400/20 transition mt-0.5" />
+                            </div>
+                          </div>
                         </div>
                       ))}
                     </div>
-
                     <button onClick={() => { setEvtTicketTypes([...evtTicketTypes, {nom: "", prix: "", qty: "100"}]); hapticLight(); }}
-                      className="w-full mt-2 flex items-center justify-center gap-1.5 text-xs font-bold text-emerald-600 py-2 rounded-xl border border-dashed border-emerald-200 hover:bg-emerald-50 transition">
-                      <Plus className="w-3.5 h-3.5" /> Ajouter un billet
+                      className="w-full mt-2.5 flex items-center justify-center gap-1.5 text-xs font-bold text-violet-600 py-2.5 rounded-xl bg-violet-50 hover:bg-violet-100 transition active:scale-[0.98]">
+                      <Plus className="w-3.5 h-3.5" /> Ajouter un type de billet
                     </button>
-
-                    {/* Column hints */}
-                    <div className="flex items-center gap-2 mt-2 px-2.5">
-                      <span className="flex-1 text-[9px] text-gray-300">Nom</span>
-                      <span className="w-20 text-[9px] text-gray-300 text-right">Prix</span>
-                      <span className="w-16 text-[9px] text-gray-300 text-center">Places</span>
-                      {evtTicketTypes.length > 1 && <span className="w-7" />}
-                    </div>
                   </div>
 
-                  {/* Block 3 — Description (optionnel, collapsed) */}
-                  <div className="bg-white rounded-2xl border border-gray-100 shadow-sm mb-3 overflow-hidden">
-                    <button onClick={() => { const el = document.getElementById("evt-desc-block"); if(el) el.classList.toggle("hidden"); }}
-                      className="w-full flex items-center justify-between p-4 text-left">
-                      <span className="text-xs font-semibold text-gray-500">Description <span className="text-gray-300">(optionnel)</span></span>
-                      <ChevronRight className="w-3.5 h-3.5 text-gray-300" />
-                    </button>
-                    <div id="evt-desc-block" className="hidden px-4 pb-4 -mt-1">
-                      <textarea value={evtDesc} onChange={(e) => setEvtDesc(e.target.value)} rows={2} placeholder="Décrivez votre événement..."
-                        className="w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-gray-900 transition resize-none" />
+                  {/* ── Section 4: Description ── */}
+                  <div className="relative mb-4">
+                    <div className="flex items-center gap-2.5 mb-3">
+                      <div className="w-6 h-6 rounded-lg bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center shadow-sm shadow-amber-500/30">
+                        <FileText className="w-3 h-3 text-white" />
+                      </div>
+                      <div>
+                        <p className="text-[13px] font-bold text-gray-900">Description <span className="text-gray-300 font-normal text-[11px]">(optionnel)</span></p>
+                      </div>
                     </div>
+                    <textarea value={evtDesc} onChange={(e) => setEvtDesc(e.target.value)} rows={3} placeholder="Décrivez votre événement pour donner envie aux participants..."
+                      className="w-full bg-white border border-gray-100 rounded-2xl px-4 py-3 text-sm text-gray-900 placeholder:text-gray-300 outline-none focus:border-violet-300 focus:ring-2 focus:ring-violet-100 transition resize-none shadow-sm" />
                   </div>
 
-                  {/* Sticky CTA */}
+                  {/* ── CTA Créer ── */}
                   <button onClick={handleCreateEvent} disabled={savingEvent || !evtNom.trim() || !evtDateDebut || !evtLieu.trim() || !evtLogoFile || !evtCoverFile}
-                    className="w-full flex items-center justify-center gap-2.5 bg-gray-900 hover:bg-gray-800 text-white py-4 rounded-2xl font-black text-[15px] transition disabled:opacity-40 active:scale-[0.97] shadow-lg shadow-gray-900/20"
-                  >
-                    {savingEvent ? <Loader2 className="w-5 h-5 animate-spin" /> : <Ticket className="w-5 h-5" />}
-                    {savingEvent ? "Création..." : "Créer mon événement"}
+                    className="w-full relative flex items-center justify-center gap-2.5 py-4.5 rounded-2xl font-black text-[15px] transition-all disabled:opacity-40 active:scale-[0.97] overflow-hidden group"
+                    style={{ background: savingEvent ? '#1f2937' : 'linear-gradient(135deg, #7c3aed, #6d28d9, #4f46e5)' }}>
+                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
+                    <span className="relative flex items-center gap-2.5 text-white">
+                      {savingEvent ? <Loader2 className="w-5 h-5 animate-spin" /> : <Zap className="w-5 h-5" />}
+                      {savingEvent ? "Création en cours..." : "Créer mon événement"}
+                    </span>
                   </button>
-                  <p className="text-center text-[10px] text-gray-300 mt-2">Vos billets seront en vente immédiatement</p>
+                  <div className="flex items-center justify-center gap-2 mt-3 mb-1">
+                    <div className="flex items-center gap-1">
+                      <div className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                      <span className="text-[10px] text-gray-400">En ligne immédiatement</span>
+                    </div>
+                    <span className="text-gray-200">·</span>
+                    <div className="flex items-center gap-1">
+                      <div className="w-1.5 h-1.5 rounded-full bg-violet-400" />
+                      <span className="text-[10px] text-gray-400">Billets sécurisés</span>
+                    </div>
+                  </div>
                 </div>
               )}
 
