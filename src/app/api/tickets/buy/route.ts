@@ -1,5 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
+import {
+  signOrderData,
+  initFedaPay,
+  isFedaPayConfigured,
+  type OrderData,
+} from "@/lib/fedapay";
 
 function getServiceClient() {
   return createClient(
@@ -27,7 +33,7 @@ function generateQR(): string {
   return code;
 }
 
-// POST /api/tickets/buy — Acheter un billet
+// POST /api/tickets/buy — Acheter un billet (gratuit = direct, payant = FedaPay ou fallback dev)
 export async function POST(req: NextRequest) {
   try {
     const supabase = getServiceClient();
@@ -72,7 +78,60 @@ export async function POST(req: NextRequest) {
 
     const montant_total = ticketType.prix * qty;
 
-    // Créer les billets
+    // ═══ Billet payant + FedaPay configuré → rediriger vers paiement ═══
+    if (montant_total > 0 && isFedaPayConfigured()) {
+      try {
+        await initFedaPay();
+        const { Transaction } = await import("fedapay");
+
+        const orderData: OrderData = {
+          ticket_type_id,
+          buyer_name: buyer_name.trim(),
+          buyer_email: buyer_email?.trim() || undefined,
+          buyer_phone: buyer_phone?.trim() || undefined,
+          qty,
+          event_id: ticketType.events.id,
+          montant_total,
+          devise: ticketType.devise || "XOF",
+        };
+
+        const { encoded, signature } = signOrderData(orderData);
+        const appUrl = process.env.NEXT_PUBLIC_APP_URL || "";
+        const callbackUrl = `${appUrl}/payment/ticket-success?d=${encoded}&s=${signature}`;
+
+        const customerData: Record<string, unknown> = {
+          firstname: buyer_name.trim(),
+        };
+        if (buyer_email?.trim()) customerData.email = buyer_email.trim();
+        if (buyer_phone?.trim()) {
+          customerData.phone_number = {
+            number: buyer_phone.trim(),
+            country: "bj",
+          };
+        }
+
+        const transaction = await Transaction.create({
+          description: `Billet ${ticketType.events.nom}${qty > 1 ? ` x${qty}` : ""}`,
+          amount: montant_total,
+          callback_url: callbackUrl,
+          currency: { iso: ticketType.devise || "XOF" },
+          customer: customerData,
+        });
+
+        const tokenResult = await transaction.generateToken();
+
+        return NextResponse.json({
+          requires_payment: true,
+          payment_url: tokenResult.url,
+          transaction_id: transaction.id,
+        });
+      } catch (fedaErr) {
+        console.error("FedaPay error, falling back to direct creation:", fedaErr);
+        // Fallback: créer les billets directement si FedaPay échoue
+      }
+    }
+
+    // ═══ Création directe (gratuit, FedaPay non configuré, ou fallback) ═══
     const tickets = [];
     for (let i = 0; i < qty; i++) {
       tickets.push({
@@ -121,6 +180,7 @@ export async function POST(req: NextRequest) {
       devise: ticketType.devise,
     }, { status: 201 });
   } catch (err: any) {
+    console.error("Ticket buy error:", err);
     return NextResponse.json({ error: err.message || "Erreur serveur" }, { status: 500 });
   }
 }

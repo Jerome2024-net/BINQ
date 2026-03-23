@@ -102,42 +102,6 @@ export default function EvenementPage() {
     setBuying(true);
     setError("");
     try {
-      const selectedTT = event?.ticket_types.find((t) => t.id === selectedType);
-      const isPaid = selectedTT && selectedTT.prix > 0;
-
-      if (isPaid) {
-        // ═══ FedaPay checkout pour billets payants ═══
-        const checkoutRes = await fetch("/api/fedapay/checkout", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            ticket_type_id: selectedType,
-            buyer_name: buyerName.trim(),
-            buyer_email: buyerEmail.trim() || undefined,
-            buyer_phone: buyerPhone.trim() || undefined,
-            quantite: qty,
-          }),
-        });
-        const checkoutData = await checkoutRes.json();
-
-        if (!checkoutRes.ok) throw new Error(checkoutData.error || "Erreur");
-
-        if (checkoutData.payment_url) {
-          // Stocker le contexte pour la page de succès
-          sessionStorage.setItem(
-            "fedapay_tx_id",
-            String(checkoutData.transaction_id)
-          );
-          sessionStorage.setItem("fedapay_event_name", event?.nom || "");
-          // Rediriger vers FedaPay
-          window.location.href = checkoutData.payment_url;
-          return;
-        }
-
-        // fallback: FedaPay non configuré → achat direct (mode dev)
-      }
-
-      // ═══ Achat direct (billets gratuits ou fallback) ═══
       const res = await fetch("/api/tickets/buy", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -150,12 +114,28 @@ export default function EvenementPage() {
         }),
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Erreur");
-      setTicketCodes(data.tickets.map((t: any) => t.qr_code));
-      setJustBoughtName(buyerName.trim());
-      setSuccess(true);
+      if (!res.ok) throw new Error(data.error || "Erreur lors de l'achat");
+
+      // ═══ Paiement requis → redirection FedaPay ═══
+      if (data.requires_payment && data.payment_url) {
+        if (typeof window !== "undefined") {
+          sessionStorage.setItem("fedapay_tx_id", String(data.transaction_id));
+          sessionStorage.setItem("fedapay_event_name", event?.nom || "");
+        }
+        window.location.href = data.payment_url;
+        return;
+      }
+
+      // ═══ Billets créés directement ═══
+      if (data.tickets && data.tickets.length > 0) {
+        setTicketCodes(data.tickets.map((t: any) => t.qr_code));
+        setJustBoughtName(buyerName.trim());
+        setSuccess(true);
+      } else {
+        throw new Error("Aucun billet créé");
+      }
     } catch (err: any) {
-      setError(err.message);
+      setError(err.message || "Une erreur est survenue");
     } finally {
       setBuying(false);
     }
