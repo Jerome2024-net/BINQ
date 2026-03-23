@@ -35,6 +35,7 @@ import {
   Type,
   Hash,
   FileText,
+  Shield,
 } from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
 import { formatMontant } from "@/lib/currencies";
@@ -101,6 +102,7 @@ export default function EvenementsPage() {
   const evtFormLogoRef = useRef<HTMLInputElement>(null);
   const evtFormCoverRef = useRef<HTMLInputElement>(null);
   const [savingEvent, setSavingEvent] = useState(false);
+  const [showTicketPreview, setShowTicketPreview] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState<any>(null);
   const [eventTickets, setEventTickets] = useState<any[]>([]);
   const [loadingTickets, setLoadingTickets] = useState(false);
@@ -1169,6 +1171,148 @@ export default function EvenementsPage() {
                     <textarea value={evtDesc} onChange={(e) => setEvtDesc(e.target.value)} rows={3} placeholder="Décrivez votre événement pour donner envie aux participants..."
                       className="w-full bg-white border border-gray-100 rounded-2xl px-4 py-3 text-sm text-gray-900 placeholder:text-gray-300 outline-none focus:border-violet-300 focus:ring-2 focus:ring-violet-100 transition resize-none shadow-sm" />
                   </div>
+
+                  {/* ── Section 5: Prévisualisation du billet ── */}
+                  {(evtNom.trim() || evtLieu.trim() || evtDateDebut) && (
+                    <div className="relative mb-4">
+                      <button
+                        type="button"
+                        onClick={() => { setShowTicketPreview(!showTicketPreview); hapticLight(); }}
+                        className="flex items-center gap-2.5 mb-3 w-full text-left group"
+                      >
+                        <div className="w-6 h-6 rounded-lg bg-gradient-to-br from-gray-800 to-gray-900 flex items-center justify-center shadow-sm">
+                          <Eye className="w-3 h-3 text-white" />
+                        </div>
+                        <div className="flex-1">
+                          <p className="text-[13px] font-bold text-gray-900">Aperçu du billet</p>
+                          <p className="text-[10px] text-gray-400">Voyez comment vos participants recevront leur ticket</p>
+                        </div>
+                        <div className={`w-6 h-6 rounded-full flex items-center justify-center transition-all ${
+                          showTicketPreview ? 'bg-violet-100 rotate-90' : 'bg-gray-100'
+                        }`}>
+                          <ChevronRight className={`w-3.5 h-3.5 transition-transform ${
+                            showTicketPreview ? 'text-violet-600' : 'text-gray-400'
+                          }`} />
+                        </div>
+                      </button>
+
+                      {showTicketPreview && (
+                        <div className="animate-in slide-in-from-top-1 duration-200">
+                          {/* Phone frame */}
+                          <div className="bg-black rounded-[2rem] p-1 shadow-2xl shadow-black/30 mx-2">
+                            {/* Screen content */}
+                            <div className="bg-black rounded-[1.75rem] overflow-hidden">
+                              {/* Phone notch */}
+                              <div className="flex justify-center pt-2 pb-3">
+                                <div className="w-20 h-5 bg-gray-900 rounded-full" />
+                              </div>
+
+                              {/* Ticket Card */}
+                              <div className="px-4 pb-5">
+                                <div className="bg-white rounded-2xl overflow-hidden shadow-xl">
+                                  {/* Top — Event info (dark) */}
+                                  <div className="bg-black p-4 pb-5">
+                                    <p className="text-[9px] font-bold text-gray-500 uppercase tracking-wider mb-1">Billet</p>
+                                    <h4 className="text-base font-black text-white mb-2.5 leading-tight">
+                                      {evtNom.trim() || "Nom de l'événement"}
+                                    </h4>
+                                    <div className="space-y-1.5">
+                                      {evtDateDebut && (
+                                        <div className="flex items-center gap-1.5">
+                                          <Calendar className="w-3 h-3 text-gray-500" />
+                                          <p className="text-[11px] text-gray-400 capitalize">
+                                            {new Date(evtDateDebut + "T00:00:00").toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long" })}
+                                          </p>
+                                        </div>
+                                      )}
+                                      {evtHeureDebut && (
+                                        <div className="flex items-center gap-1.5">
+                                          <Clock className="w-3 h-3 text-gray-500" />
+                                          <p className="text-[11px] text-gray-400">{evtHeureDebut.slice(0, 5)}</p>
+                                        </div>
+                                      )}
+                                      <div className="flex items-center gap-1.5">
+                                        <MapPin className="w-3 h-3 text-gray-500" />
+                                        <p className="text-[11px] text-gray-400">
+                                          {evtLieu.trim() || "Lieu"}{evtVille.trim() ? `, ${evtVille.trim()}` : ""}
+                                        </p>
+                                      </div>
+                                    </div>
+                                  </div>
+
+                                  {/* Ticket cutout effect */}
+                                  <div className="relative h-5">
+                                    <div className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-1/2 w-5 h-5 bg-black rounded-full" />
+                                    <div className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-1/2 w-5 h-5 bg-black rounded-full" />
+                                    <div className="border-t-2 border-dashed border-gray-200 absolute top-1/2 left-5 right-5" />
+                                  </div>
+
+                                  {/* Bottom — QR + Details */}
+                                  <div className="p-4 pt-2">
+                                    {/* Status badge */}
+                                    <div className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 mb-3">
+                                      <Check className="w-2.5 h-2.5 text-emerald-500" />
+                                      <span className="text-[9px] font-bold text-emerald-500">Valide</span>
+                                    </div>
+
+                                    {/* QR Code */}
+                                    <div className="flex justify-center mb-4">
+                                      <div className="bg-white p-2.5 rounded-xl border-2 border-gray-100">
+                                        <QRCodeSVG
+                                          value={`https://binq.app/billet/DEMO-PREVIEW`}
+                                          size={140}
+                                          level="H"
+                                          includeMargin
+                                        />
+                                      </div>
+                                    </div>
+
+                                    {/* Info rows */}
+                                    <div className="space-y-2">
+                                      <div className="flex items-center justify-between">
+                                        <span className="text-[10px] text-gray-400">Référence</span>
+                                        <span className="text-[10px] font-bold text-gray-900 font-mono">BQ-XXXXXXXX</span>
+                                      </div>
+                                      <div className="flex items-center justify-between">
+                                        <span className="text-[10px] text-gray-400">Type</span>
+                                        <span className="text-[10px] font-bold text-gray-900">{evtTicketTypes[0]?.nom || "Standard"}</span>
+                                      </div>
+                                      <div className="flex items-center justify-between">
+                                        <span className="text-[10px] text-gray-400">Nom</span>
+                                        <span className="text-[10px] font-bold text-gray-900">Nom du participant</span>
+                                      </div>
+                                      <div className="flex items-center justify-between">
+                                        <span className="text-[10px] text-gray-400">Prix</span>
+                                        <span className="text-[10px] font-bold text-gray-900">
+                                          {evtTicketTypes[0]?.prix ? formatMontant(parseFloat(evtTicketTypes[0].prix), devise) : "Gratuit"}
+                                        </span>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+
+                                {/* Security hint (like real ticket page) */}
+                                <div className="flex items-center gap-1.5 justify-center mt-3">
+                                  <Shield className="w-3 h-3 text-gray-600" />
+                                  <p className="text-[9px] text-gray-600">Présentez ce QR code à l&apos;entrée</p>
+                                </div>
+
+                                {/* Branding */}
+                                <p className="text-center text-[9px] text-gray-600 mt-2">
+                                  Propulsé par <span className="text-white font-bold">Binq</span>
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Preview label */}
+                          <p className="text-center text-[10px] text-gray-400 mt-2 font-medium">
+                            ✨ Aperçu du billet tel que reçu par vos participants
+                          </p>
+                        </div>
+                      )}
+                    </div>
+                  )}
 
                   {/* ── CTA Créer ── */}
                   <button onClick={handleCreateEvent} disabled={savingEvent || !evtNom.trim() || !evtDateDebut || !evtLieu.trim() || !evtLogoFile || !evtCoverFile}
