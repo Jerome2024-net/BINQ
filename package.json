@@ -13,6 +13,7 @@
     "@stripe/stripe-js": "^8.7.0",
     "@supabase/ssr": "^0.8.0",
     "@supabase/supabase-js": "^2.95.3",
+    "fedapay": "^1.2.5",
     "html5-qrcode": "^2.3.8",
     "lucide-react": "^0.400.0",
     "next": "^14.2.0",

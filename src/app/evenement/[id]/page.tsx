@@ -100,7 +100,44 @@ export default function EvenementPage() {
   async function handleBuy() {
     if (!selectedType || !buyerName.trim()) return;
     setBuying(true);
+    setError("");
     try {
+      const selectedTT = event?.ticket_types.find((t) => t.id === selectedType);
+      const isPaid = selectedTT && selectedTT.prix > 0;
+
+      if (isPaid) {
+        // ═══ FedaPay checkout pour billets payants ═══
+        const checkoutRes = await fetch("/api/fedapay/checkout", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            ticket_type_id: selectedType,
+            buyer_name: buyerName.trim(),
+            buyer_email: buyerEmail.trim() || undefined,
+            buyer_phone: buyerPhone.trim() || undefined,
+            quantite: qty,
+          }),
+        });
+        const checkoutData = await checkoutRes.json();
+
+        if (!checkoutRes.ok) throw new Error(checkoutData.error || "Erreur");
+
+        if (checkoutData.payment_url) {
+          // Stocker le contexte pour la page de succès
+          sessionStorage.setItem(
+            "fedapay_tx_id",
+            String(checkoutData.transaction_id)
+          );
+          sessionStorage.setItem("fedapay_event_name", event?.nom || "");
+          // Rediriger vers FedaPay
+          window.location.href = checkoutData.payment_url;
+          return;
+        }
+
+        // fallback: FedaPay non configuré → achat direct (mode dev)
+      }
+
+      // ═══ Achat direct (billets gratuits ou fallback) ═══
       const res = await fetch("/api/tickets/buy", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -559,7 +596,7 @@ export default function EvenementPage() {
               ) : (
                 <>
                   <Ticket className="w-5 h-5" />
-                  {total > 0 ? `Réserver — ${formatMontant(total, devise)}` : "Réserver gratuitement"}
+                  {total > 0 ? `Payer — ${formatMontant(total, devise)}` : "Réserver gratuitement"}
                 </>
               )}
             </button>
