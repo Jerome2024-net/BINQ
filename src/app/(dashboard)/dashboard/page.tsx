@@ -152,7 +152,7 @@ export default function DashboardPage() {
             {upcomingEvents.map((evt) => (
               <Link
                 key={evt.id}
-                href="/evenements"
+                href={`/evenements?event=${evt.id}`}
                 className="flex items-center gap-3 bg-white rounded-xl border border-gray-100 p-3.5 hover:border-gray-200 transition active:scale-[0.99]"
               >
                 {evt.logo_url ? (

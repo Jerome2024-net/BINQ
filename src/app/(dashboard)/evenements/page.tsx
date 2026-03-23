@@ -141,15 +141,26 @@ export default function EvenementsPage() {
     load();
   }, []);
 
-  // Auto-ouvrir le formulaire si ?action=create
+  // Auto-ouvrir le formulaire si ?action=create, ou sélection d'événement si ?event=id
   const searchParams = useSearchParams();
   useEffect(() => {
-    if (searchParams.get("action") === "create" && boutique && !loading) {
+    if (!boutique || loading) return;
+    const action = searchParams.get("action");
+    const eventId = searchParams.get("event");
+    if (action === "create") {
       setShowAddEvent(true);
       setActiveTab("evenements");
       window.history.replaceState({}, "", "/evenements");
+    } else if (eventId && events.length > 0) {
+      const found = events.find((e: any) => e.id === eventId);
+      if (found) {
+        setSelectedEvent(found);
+        loadEventTickets(found.id);
+        setActiveTab("evenements");
+        window.history.replaceState({}, "", "/evenements");
+      }
     }
-  }, [searchParams, boutique, loading]);
+  }, [searchParams, boutique, loading, events]);
 
   // ═══ HANDLERS ═══
 
