@@ -168,7 +168,7 @@ export default function DashboardPage() {
       {/* CTA principal */}
       <div className="mt-10 flex justify-center">
         <Link
-          href="/ma-boutique"
+          href="/ma-boutique?action=create"
           className="w-full max-w-[300px] flex items-center justify-center gap-2 py-4 bg-gray-900 text-white font-bold text-[15px] rounded-2xl hover:bg-gray-800 transition-all active:scale-[0.97]"
         >
           <Plus className="w-5 h-5" />

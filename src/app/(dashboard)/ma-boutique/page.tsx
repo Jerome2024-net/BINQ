@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/contexts/ToastContext";
@@ -193,6 +193,17 @@ export default function MaBoutiquePage() {
     };
     load();
   }, []);
+
+  // Auto-ouvrir le formulaire si ?action=create
+  const searchParams = useSearchParams();
+  useEffect(() => {
+    if (searchParams.get("action") === "create" && boutique && !loading) {
+      setShowAddEvent(true);
+      setActiveTab("evenements");
+      // Nettoyer l'URL
+      window.history.replaceState({}, "", "/ma-boutique");
+    }
+  }, [searchParams, boutique, loading]);
 
   // ═══ HANDLERS ═══
 
