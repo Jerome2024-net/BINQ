@@ -286,10 +286,12 @@ export default function EvenementPage() {
   // ═══ PAGE ÉVÉNEMENT ═══
   return (
     <div className="min-h-screen bg-black">
+      {/* Desktop centered container */}
+      <div className="max-w-2xl mx-auto">
       {/* Cover */}
       <div className="relative">
         {event.cover_url ? (
-          <div className="w-full h-56 sm:h-72 relative">
+          <div className="w-full h-56 sm:h-72 lg:h-80 relative lg:rounded-b-3xl overflow-hidden">
             <img src={event.cover_url} alt={event.nom} className="w-full h-full object-cover" />
             <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent" />
           </div>
@@ -344,7 +346,7 @@ export default function EvenementPage() {
           {event.logo_url && (
             <img src={event.logo_url} alt="" className="w-14 h-14 rounded-2xl object-cover border-2 border-black shrink-0 shadow-lg" />
           )}
-          <h1 className="text-2xl font-black text-white">{event.nom}</h1>
+          <h1 className="text-2xl lg:text-3xl font-black text-white">{event.nom}</h1>
         </div>
 
         {/* ═══ Social Proof Bar ═══ */}
@@ -429,7 +431,7 @@ export default function EvenementPage() {
 
       {/* Billets */}
       <div className="px-5 pb-40">
-        <h2 className="text-lg font-black text-white mb-4">Billets</h2>
+        <h2 className="text-lg lg:text-xl font-black text-white mb-4">Billets</h2>
 
         {event.ticket_types.length === 0 ? (
           <div className="text-center py-8">
@@ -592,6 +594,7 @@ export default function EvenementPage() {
           </p>
         </div>
       </div>
+      </div>{/* end max-w container */}
     </div>
   );
 }

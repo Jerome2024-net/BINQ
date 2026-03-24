@@ -133,6 +133,7 @@ export default function BilletPage() {
 
   return (
     <div className="min-h-screen bg-black">
+      <div className="max-w-lg mx-auto">
       {/* Header */}
       <div className="px-5 pt-5 pb-3 flex items-center justify-between">
         <button
@@ -157,12 +158,12 @@ export default function BilletPage() {
       </div>
 
       {/* Billet Card */}
-      <div className="px-5 mt-2">
+      <div className="px-5 mt-2 lg:mt-6">
         <div className="bg-white rounded-3xl overflow-hidden shadow-2xl">
           {/* Top — Event info */}
           <div className="bg-black p-5 pb-6">
             <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Billet</p>
-            <h1 className="text-xl font-black text-white mb-3">{ticket.events.nom}</h1>
+            <h1 className="text-xl lg:text-2xl font-black text-white mb-3">{ticket.events.nom}</h1>
 
             <div className="flex items-center gap-2 mb-2">
               <Calendar className="w-4 h-4 text-gray-400" />
@@ -305,6 +306,7 @@ export default function BilletPage() {
           Propulsé par <span className="text-white font-bold">Binq</span>
         </p>
       </div>
+      </div>{/* end max-w container */}
     </div>
   );
 }

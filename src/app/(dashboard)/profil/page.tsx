@@ -173,14 +173,14 @@ export default function ProfilPage() {
   ];
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-5 pb-28 lg:pb-10">
       {/* Header */}
       <div className="flex items-center gap-3">
         <Link href="/dashboard" className="p-2 rounded-xl hover:bg-gray-100/50 transition-colors">
           <ArrowLeft className="w-5 h-5 text-gray-600" />
         </Link>
         <div>
-          <h1 className="text-xl font-bold">Mon Profil</h1>
+          <h1 className="text-xl lg:text-2xl font-bold">Mon Profil</h1>
           <p className="text-xs text-gray-600">Gérez vos informations personnelles</p>
         </div>
       </div>

@@ -67,9 +67,9 @@ export default function VentesPage() {
     .sort((a, b) => (parseFloat(b.revenus) || 0) - (parseFloat(a.revenus) || 0));
 
   return (
-    <div className="px-5 pt-8 pb-28">
+    <div className="px-5 pt-8 pb-28 lg:pb-10">
       {/* Header */}
-      <h1 className="text-[22px] font-black tracking-tight text-gray-900">Ventes</h1>
+      <h1 className="text-[22px] lg:text-[28px] font-black tracking-tight text-gray-900">Ventes</h1>
 
       {/* Total généré — carte principale */}
       <div className="mt-6 bg-gray-900 rounded-2xl p-5">

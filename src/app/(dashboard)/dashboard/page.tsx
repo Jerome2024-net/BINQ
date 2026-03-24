@@ -152,20 +152,20 @@ export default function DashboardPage() {
   // ═══════════════════════════════════════════
   if (!boutique) {
     return (
-      <div className="px-5 pt-10 pb-28">
-        <h1 className="text-[22px] font-black tracking-tight text-gray-900">
+      <div className="px-5 pt-10 pb-28 lg:pb-10">
+        <h1 className="text-[22px] lg:text-[28px] font-black tracking-tight text-gray-900">
           Salut, {user?.prenom || "là"} 👋
         </h1>
 
         <div className="mt-20 text-center">
-          <p className="text-[44px] font-black tracking-tight text-gray-900 leading-none">0 FCFA</p>
-          <p className="text-[13px] text-gray-500 font-semibold mt-3">Aujourd&apos;hui</p>
+          <p className="text-[44px] lg:text-[56px] font-black tracking-tight text-gray-900 leading-none">0 FCFA</p>
+          <p className="text-[13px] lg:text-sm text-gray-500 font-semibold mt-3">Aujourd&apos;hui</p>
         </div>
 
         <div className="mt-14 flex justify-center">
           <Link
             href="/evenements"
-            className="w-full max-w-[280px] flex items-center justify-center py-4 bg-emerald-500 text-white font-bold text-[15px] rounded-2xl hover:bg-emerald-400 transition-all active:scale-[0.97]"
+            className="w-full max-w-[280px] lg:max-w-[320px] flex items-center justify-center py-4 bg-emerald-500 text-white font-bold text-[15px] rounded-2xl hover:bg-emerald-400 transition-all active:scale-[0.97]"
           >
             Commencer
           </Link>
@@ -195,11 +195,11 @@ export default function DashboardPage() {
     const dayNum = eventDate.getDate();
 
     return (
-      <div className="pb-28 animate-in slide-in-from-right-4 duration-300">
+      <div className="pb-28 lg:pb-10 animate-in slide-in-from-right-4 duration-300">
         {/* ── Hero Section ── */}
         <div className="relative">
           {/* Cover / Gradient Hero */}
-          <div className="relative h-56 overflow-hidden">
+          <div className="relative h-56 lg:h-72 xl:h-80 overflow-hidden lg:rounded-2xl">
             {selectedEvent.cover_url ? (
               <>
                 <img src={selectedEvent.cover_url} alt="" className="w-full h-full object-cover" />
@@ -236,7 +236,7 @@ export default function DashboardPage() {
                   </div>
                 )}
                 <div className="flex-1 min-w-0 pb-0.5">
-                  <h1 className="text-[22px] font-black text-white leading-tight drop-shadow-lg">{selectedEvent.nom}</h1>
+                  <h1 className="text-[22px] lg:text-[28px] font-black text-white leading-tight drop-shadow-lg">{selectedEvent.nom}</h1>
                   {selectedEvent.is_published && (
                     <div className="flex items-center gap-1.5 mt-1">
                       <div className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse" />
@@ -283,7 +283,7 @@ export default function DashboardPage() {
           </div>
 
           {/* ── Stats Cards ── */}
-          <div className="mt-4 grid grid-cols-3 gap-2.5">
+          <div className="mt-4 grid grid-cols-3 gap-2.5 lg:gap-4">
             <div className="relative overflow-hidden bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-2xl p-3.5 text-center shadow-sm">
               <div className="absolute -top-3 -right-3 w-12 h-12 bg-white/10 rounded-full" />
               <p className="text-[10px] font-bold text-emerald-100 uppercase tracking-wider">Revenus</p>
@@ -317,7 +317,7 @@ export default function DashboardPage() {
           </div>
 
           {/* ── Actions rapides ── */}
-          <div className="mt-5 grid grid-cols-2 gap-2.5">
+          <div className="mt-5 grid grid-cols-2 gap-2.5 lg:gap-4">
             <Link
               href={`/evenements?event=${selectedEvent.id}`}
               className="flex items-center justify-center gap-2 bg-gray-900 text-white py-4 rounded-2xl font-bold text-[14px] transition hover:bg-gray-800 active:scale-[0.97] shadow-sm"
@@ -473,10 +473,10 @@ export default function DashboardPage() {
   // DASHBOARD EVENT-FIRST
   // ═══════════════════════════════════════════
   return (
-    <div className="px-5 pt-10 pb-28">
+    <div className="px-5 pt-10 pb-28 lg:pb-10">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <h1 className="text-[22px] font-black tracking-tight text-gray-900">
+        <h1 className="text-[22px] lg:text-[28px] font-black tracking-tight text-gray-900">
           Salut, {user?.prenom || "là"} 👋
         </h1>
         <div className="flex items-center gap-1">
@@ -486,18 +486,18 @@ export default function DashboardPage() {
       </div>
 
       {/* Montant central — wallet */}
-      <Link href="/portefeuille" className="block mt-14 text-center active:scale-[0.98] transition-transform">
-        <p className="text-[44px] font-black tracking-tight text-gray-900 leading-none">
+      <Link href="/portefeuille" className="block mt-14 lg:mt-10 text-center active:scale-[0.98] transition-transform">
+        <p className="text-[44px] lg:text-[56px] font-black tracking-tight text-gray-900 leading-none">
           {formatMontant(walletSolde, devise)}
         </p>
-        <p className="text-[13px] text-gray-400 font-medium mt-3">Solde wallet</p>
+        <p className="text-[13px] lg:text-sm text-gray-400 font-medium mt-3">Solde wallet</p>
       </Link>
 
       {/* CTA principal */}
       <div className="mt-10 flex justify-center">
         <Link
           href="/evenements?action=create"
-          className="w-full max-w-[300px] flex items-center justify-center gap-2 py-4 bg-gray-900 text-white font-bold text-[15px] rounded-2xl hover:bg-gray-800 transition-all active:scale-[0.97]"
+          className="w-full max-w-[300px] lg:max-w-[360px] flex items-center justify-center gap-2 py-4 bg-gray-900 text-white font-bold text-[15px] rounded-2xl hover:bg-gray-800 transition-all active:scale-[0.97]"
         >
           <Plus className="w-5 h-5" />
           Créer un événement
@@ -508,15 +508,15 @@ export default function DashboardPage() {
       {upcomingEvents.length > 0 && (
         <div className="mt-10">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-[16px] font-bold text-gray-900">Prochains événements</h2>
+            <h2 className="text-[16px] lg:text-lg font-bold text-gray-900">Prochains événements</h2>
             <Link href="/evenements" className="text-[12px] font-semibold text-emerald-600">Voir tout</Link>
           </div>
-          <div className="space-y-2">
+          <div className="space-y-2 lg:grid lg:grid-cols-2 xl:grid-cols-3 lg:gap-3 lg:space-y-0">
             {upcomingEvents.map((evt) => (
               <button
                 key={evt.id}
                 onClick={() => handleSelectEvent(evt)}
-                className="w-full flex items-center gap-3 bg-white rounded-xl border border-gray-100 p-3.5 hover:border-gray-200 transition active:scale-[0.99] text-left"
+                className="w-full flex items-center gap-3 bg-white rounded-xl border border-gray-100 p-3.5 hover:border-gray-200 hover:shadow-sm transition active:scale-[0.99] text-left"
               >
                 {evt.logo_url ? (
                   <img src={evt.logo_url} alt="" className="w-12 h-12 rounded-xl object-cover shrink-0" />

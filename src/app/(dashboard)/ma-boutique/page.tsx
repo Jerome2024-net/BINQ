@@ -714,12 +714,12 @@ export default function MaBoutiquePage() {
   // DASHBOARD POS — Terminal de vente
   // ═══════════════════════════════════════════════
   return (
-    <div className="pb-28">
+    <div className="pb-28 lg:pb-10">
       {/* Header — épuré */}
       <div className="px-4 pt-4 pb-2">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-xl font-black text-gray-900">Mes événements</h1>
+            <h1 className="text-xl lg:text-2xl font-black text-gray-900">Mes événements</h1>
             <div className="flex items-center gap-1.5 mt-0.5">
               <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full" />
               <span className="text-[11px] text-gray-400">{events.length} événement{events.length > 1 ? "s" : ""}</span>
@@ -739,8 +739,8 @@ export default function MaBoutiquePage() {
       {/* Stats business — toujours visible */}
       {activeTab === "evenements" && (
         <div className="px-4 mb-4 mt-1">
-          <div className="flex gap-2">
-            <div className="flex-1 bg-gray-900 rounded-2xl p-3.5">
+          <div className="flex gap-2 lg:gap-4">
+            <div className="flex-1 bg-gray-900 rounded-2xl p-3.5 lg:p-5">
               <div className="flex items-center gap-1.5 mb-1">
                 <TrendingUp className="w-3 h-3 text-emerald-400" />
                 <span className="text-[10px] text-gray-400 font-semibold uppercase tracking-wide">Revenus</span>
@@ -749,7 +749,7 @@ export default function MaBoutiquePage() {
                 {formatMontant(events.reduce((sum: number, e: any) => sum + (parseFloat(e.revenus) || 0), 0), devise)}
               </p>
             </div>
-            <div className="flex-1 bg-gray-50 rounded-2xl p-3.5 border border-gray-100">
+            <div className="flex-1 bg-gray-50 rounded-2xl p-3.5 lg:p-5 border border-gray-100">
               <div className="flex items-center gap-1.5 mb-1">
                 <Ticket className="w-3 h-3 text-gray-400" />
                 <span className="text-[10px] text-gray-400 font-semibold uppercase tracking-wide">Vendus</span>
@@ -1183,7 +1183,7 @@ export default function MaBoutiquePage() {
                 onChange={(e) => { const f = e.target.files?.[0]; if (f) handleUploadEventImage(f, selectedEvent.id, "cover"); e.target.value = ""; }} />
 
               {/* Stats rapides */}
-              <div className="grid grid-cols-3 gap-2 mb-4">
+              <div className="grid grid-cols-3 gap-2 lg:gap-4 mb-4">
                 <div className="bg-gray-50 rounded-xl p-3 text-center">
                   <p className="text-lg font-black text-gray-900">{selectedEvent.total_vendu || 0}</p>
                   <p className="text-[10px] text-gray-400">Billets vendus</p>
@@ -1201,7 +1201,7 @@ export default function MaBoutiquePage() {
               </div>
 
               {/* Actions */}
-              <div className="grid grid-cols-2 gap-2 mb-4">
+              <div className="grid grid-cols-2 gap-2 lg:gap-4 mb-4">
                 <button
                   onClick={() => { setScanMode(true); setScanResult(null); setScanCode(""); setTimeout(() => startCamera(), 300); }}
                   className="flex items-center justify-center gap-2 bg-gray-900 text-white py-3.5 rounded-xl font-bold text-sm transition hover:bg-gray-800 active:scale-[0.97]"
@@ -1309,7 +1309,7 @@ export default function MaBoutiquePage() {
 
               {/* Création rapide événement — Premium Design */}
               {showAddEvent && (
-                <div className="mb-4 animate-in slide-in-from-top-2 duration-300">
+                <div className="mb-4 animate-in slide-in-from-top-2 duration-300 lg:max-w-2xl lg:mx-auto">
                   {/* ── Hero Header ── */}
                   <div className="relative bg-gradient-to-br from-violet-600 via-purple-600 to-indigo-700 rounded-3xl p-5 pb-6 mb-4 overflow-hidden">
                     <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full blur-2xl -translate-y-1/2 translate-x-1/2" />

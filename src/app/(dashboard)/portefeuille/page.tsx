@@ -257,7 +257,7 @@ export default function PortefeuillePage() {
      ═══════════════════════════════════════════ */
   if (view === "add-method") {
     return (
-      <div className="px-5 pt-6 pb-28">
+      <div className="px-5 pt-6 pb-28 lg:pb-10">
         {/* Header */}
         <div className="flex items-center gap-3 mb-8">
           <button onClick={() => setView("main")} className="p-2 -ml-2 rounded-xl hover:bg-gray-100 transition-colors">
@@ -331,7 +331,7 @@ export default function PortefeuillePage() {
      ═══════════════════════════════════════════ */
   if (view === "withdraw") {
     return (
-      <div className="px-5 pt-6 pb-28">
+      <div className="px-5 pt-6 pb-28 lg:pb-10">
         <div className="flex items-center gap-3 mb-8">
           <button onClick={() => setView("main")} className="p-2 -ml-2 rounded-xl hover:bg-gray-100 transition-colors">
             <X className="w-5 h-5 text-gray-600" />
@@ -405,7 +405,7 @@ export default function PortefeuillePage() {
     const isValid = amount >= 500 && amount <= soldeDisponible;
 
     return (
-      <div className="px-5 pt-6 pb-28">
+      <div className="px-5 pt-6 pb-28 lg:pb-10">
         <div className="flex items-center gap-3 mb-8">
           <button onClick={() => { setView("withdraw"); setWithdrawAmount(""); }} className="p-2 -ml-2 rounded-xl hover:bg-gray-100 transition-colors">
             <X className="w-5 h-5 text-gray-600" />
@@ -493,7 +493,7 @@ export default function PortefeuillePage() {
     const net = amount - frais;
 
     return (
-      <div className="px-5 pt-6 pb-28">
+      <div className="px-5 pt-6 pb-28 lg:pb-10">
         <div className="flex items-center gap-3 mb-8">
           <button onClick={() => setView("withdraw-amount")} className="p-2 -ml-2 rounded-xl hover:bg-gray-100 transition-colors">
             <X className="w-5 h-5 text-gray-600" />
@@ -551,7 +551,7 @@ export default function PortefeuillePage() {
      ═══════════════════════════════════════════ */
   if (view === "withdraw-success" && lastWithdrawal) {
     return (
-      <div className="px-5 pt-16 pb-28 text-center">
+      <div className="px-5 pt-16 pb-28 lg:pb-10 text-center">
         <div className="w-20 h-20 bg-emerald-50 rounded-full flex items-center justify-center mx-auto mb-6">
           <CheckCircle2 className="w-10 h-10 text-emerald-500" />
         </div>
@@ -610,7 +610,7 @@ export default function PortefeuillePage() {
     ].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
     return (
-      <div className="px-5 pt-6 pb-28">
+      <div className="px-5 pt-6 pb-28 lg:pb-10">
         <div className="flex items-center gap-3 mb-6">
           <button onClick={() => setView("main")} className="p-2 -ml-2 rounded-xl hover:bg-gray-100 transition-colors">
             <X className="w-5 h-5 text-gray-600" />
@@ -665,7 +665,7 @@ export default function PortefeuillePage() {
   const pendingWithdrawals = withdrawals.filter((w) => w.statut === "pending" || w.statut === "processing");
 
   return (
-    <div className="px-5 pt-8 pb-28">
+    <div className="px-5 pt-8 pb-28 lg:pb-10">
       {/* Balance */}
       <div className="text-center">
         <p className="text-[12px] text-gray-500 font-semibold uppercase tracking-wide">Solde disponible</p>
