@@ -58,7 +58,6 @@ interface EventInfo {
 export default function DashboardPage() {
   const { user } = useAuth();
   const [boutique, setBoutique] = useState<BoutiqueInfo | null>(null);
-  const [walletSolde, setWalletSolde] = useState<number>(0);
   const [events, setEvents] = useState<EventInfo[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedEvent, setSelectedEvent] = useState<EventInfo | null>(null);
@@ -75,11 +74,8 @@ export default function DashboardPage() {
   useEffect(() => {
     const load = async () => {
       try {
-        const [meRes, walletRes] = await Promise.all([
-          fetch("/api/boutiques/me"),
-          fetch(`/api/wallet?devise=${devise}`),
-        ]);
-        const [meData, walletData] = await Promise.all([meRes.json(), walletRes.json()]);
+        const meRes = await fetch("/api/boutiques/me");
+        const meData = await meRes.json();
 
         if (meData.boutique) {
           setBoutique(meData.boutique);
@@ -88,9 +84,6 @@ export default function DashboardPage() {
             const evtData = await evtRes.json();
             setEvents(Array.isArray(evtData) ? evtData : []);
           } catch { /* ignore */ }
-        }
-        if (walletData.wallet) {
-          setWalletSolde(walletData.wallet.solde || 0);
         }
       } catch { /* ignore */ }
       finally { setLoading(false); }
@@ -485,12 +478,12 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {/* Montant central — wallet */}
-      <Link href="/portefeuille" className="block mt-14 lg:mt-10 text-center active:scale-[0.98] transition-transform">
+      {/* Montant central — revenus */}
+      <Link href="/ventes" className="block mt-14 lg:mt-10 text-center active:scale-[0.98] transition-transform">
         <p className="text-[44px] lg:text-[56px] font-black tracking-tight text-gray-900 leading-none">
-          {formatMontant(walletSolde, devise)}
+          {formatMontant(events.reduce((sum, e) => sum + (parseFloat(String(e.revenus)) || 0), 0), devise)}
         </p>
-        <p className="text-[13px] lg:text-sm text-gray-400 font-medium mt-3">Solde wallet</p>
+        <p className="text-[13px] lg:text-sm text-gray-400 font-medium mt-3">Revenus / Ventes</p>
       </Link>
 
       {/* CTA principal */}
