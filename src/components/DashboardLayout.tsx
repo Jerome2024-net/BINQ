@@ -19,6 +19,7 @@ import {
   Calendar,
   Ticket,
   TrendingUp,
+  ScanLine,
 } from "lucide-react";
 
 interface Notification {
@@ -32,6 +33,7 @@ interface Notification {
 const bottomTabs = [
   { href: "/dashboard", label: "Accueil", icon: ShoppingBag, isCenter: false },
   { href: "/evenements", label: "Événements", icon: Calendar, isCenter: false },
+  { href: "/evenements?action=scan", label: "Scanner", icon: ScanLine, isCenter: true },
   { href: "/portefeuille", label: "Wallet", icon: Wallet, isCenter: false },
   { href: "/ventes", label: "Ventes", icon: TrendingUp, isCenter: false },
 ];
@@ -143,6 +145,20 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           {/* Sidebar Navigation */}
           <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
             {bottomTabs.map((tab) => {
+              if (tab.isCenter) {
+                return (
+                  <Link
+                    key={tab.href}
+                    href={tab.href}
+                    className="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 bg-gradient-to-r from-violet-50 to-indigo-50 text-violet-700 hover:from-violet-100 hover:to-indigo-100"
+                  >
+                    <div className="p-1.5 rounded-lg bg-gradient-to-br from-violet-500 to-indigo-600">
+                      <tab.icon className="w-[18px] h-[18px] text-white" />
+                    </div>
+                    {tab.label}
+                  </Link>
+                );
+              }
               const isActive = pathname === tab.href || (tab.href !== "/dashboard" && pathname.startsWith(tab.href));
               return (
                 <Link
@@ -296,7 +312,23 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         <nav className="fixed bottom-0 inset-x-0 z-50 bg-white/95 backdrop-blur-2xl border-t border-gray-200/50 safe-area-pb lg:hidden">
           <div className="max-w-2xl mx-auto flex items-center justify-around h-16 px-2">
             {bottomTabs.map((tab) => {
-              const isActive = pathname === tab.href || (tab.href !== "/dashboard" && pathname.startsWith(tab.href));
+              const isActive = !tab.isCenter && (pathname === tab.href || (tab.href !== "/dashboard" && pathname.startsWith(tab.href)));
+
+              /* ── Center Scanner button ── */
+              if (tab.isCenter) {
+                return (
+                  <Link
+                    key={tab.href}
+                    href={tab.href}
+                    className="flex flex-col items-center justify-center -mt-5"
+                  >
+                    <div className="w-12 h-12 sm:w-14 sm:h-14 bg-gradient-to-br from-violet-600 to-indigo-600 rounded-2xl flex items-center justify-center shadow-lg shadow-violet-500/30 active:scale-[0.93] transition-transform">
+                      <tab.icon className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
+                    </div>
+                    <span className="text-[9px] sm:text-[10px] font-bold text-violet-600 mt-0.5">{tab.label}</span>
+                  </Link>
+                );
+              }
 
               /* ── Regular tabs ── */
               return (

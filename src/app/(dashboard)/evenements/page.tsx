@@ -159,6 +159,13 @@ export default function EvenementsPage() {
       setShowAddEvent(true);
       setActiveTab("evenements");
       window.history.replaceState({}, "", "/evenements");
+    } else if (action === "scan") {
+      setScanMode(true);
+      setScanResult(null);
+      setScanCode("");
+      setActiveTab("evenements");
+      window.history.replaceState({}, "", "/evenements");
+      setTimeout(() => startCamera(), 300);
     } else if (eventId && events.length > 0) {
       const found = events.find((e: any) => e.id === eventId);
       if (found) {
