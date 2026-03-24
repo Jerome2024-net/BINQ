@@ -881,21 +881,24 @@ export default function EvenementsPage() {
           ) : (
             /* ═══ LISTE DES ÉVÉNEMENTS ═══ */
             <div>
-              {/* CTAs */}
-              <div className="flex gap-2 mb-4">
-                <button
-                  onClick={() => { hapticMedium(); setShowAddEvent(true); }}
-                  className="flex-1 flex items-center justify-center gap-2 bg-gray-900 hover:bg-gray-800 text-white py-3.5 rounded-xl font-bold text-sm transition active:scale-[0.97]"
-                >
-                  <Plus className="w-4 h-4" /> Créer
-                </button>
-                <button
-                  onClick={() => { setScanMode(true); setScanResult(null); setScanCode(""); hapticMedium(); setTimeout(() => startCamera(), 300); }}
-                  className="flex items-center justify-center gap-2 bg-white border-2 border-gray-200 text-gray-700 px-5 py-3.5 rounded-xl font-bold text-sm transition hover:border-gray-300 active:scale-[0.97]"
-                >
-                  <ScanLine className="w-4 h-4" /> Scanner
-                </button>
-              </div>
+              {/* CTA Créer */}
+              <button
+                onClick={() => { hapticMedium(); setShowAddEvent(true); }}
+                className="w-full flex items-center justify-center gap-2 bg-gray-900 hover:bg-gray-800 text-white py-3.5 rounded-xl font-bold text-sm transition active:scale-[0.97] mb-2.5"
+              >
+                <Plus className="w-4 h-4" /> Créer un événement
+              </button>
+
+              {/* CTA Scanner — séparé */}
+              <button
+                onClick={() => { setScanMode(true); setScanResult(null); setScanCode(""); hapticMedium(); setTimeout(() => startCamera(), 300); }}
+                className="w-full flex items-center justify-center gap-2.5 bg-gradient-to-r from-violet-600 to-indigo-600 text-white py-3.5 rounded-xl font-bold text-sm transition hover:from-violet-500 hover:to-indigo-500 active:scale-[0.97] mb-4 shadow-sm shadow-violet-500/20"
+              >
+                <div className="w-7 h-7 bg-white/15 rounded-lg flex items-center justify-center">
+                  <ScanLine className="w-4 h-4" />
+                </div>
+                Scanner un billet
+              </button>
 
               {/* Formulaire création — Premium Design */}
               {showAddEvent && (
