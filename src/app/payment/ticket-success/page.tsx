@@ -9,6 +9,7 @@ import {
   AlertCircle,
   Heart,
   Send,
+  Download,
 } from "lucide-react";
 import Link from "next/link";
 
@@ -178,12 +179,17 @@ function TicketSuccessContent() {
           <Link
             key={t.qr_code}
             href={`/billet/${t.qr_code}`}
-            className="block w-full bg-white text-black rounded-2xl p-4 text-center font-bold text-sm transition hover:bg-gray-100 active:scale-[0.98]"
+            className="block w-full bg-emerald-500 text-white rounded-2xl p-4 text-center font-bold text-sm transition hover:bg-emerald-600 active:scale-[0.98]"
           >
-            <Ticket className="w-5 h-5 mx-auto mb-1" />
-            {tickets.length > 1
-              ? `Voir le billet ${i + 1}`
-              : "Voir mon billet"}
+            <div className="flex items-center justify-center gap-2">
+              <Ticket className="w-5 h-5" />
+              <span>
+                {tickets.length > 1
+                  ? `Voir & enregistrer le billet ${i + 1}`
+                  : "Voir & enregistrer mon billet"}
+              </span>
+              <Download className="w-4 h-4 opacity-70" />
+            </div>
           </Link>
         ))}
       </div>
