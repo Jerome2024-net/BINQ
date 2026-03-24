@@ -167,12 +167,21 @@ export default function DashboardPage() {
     );
   }
 
-  // Prochains événements
-  const now = new Date().toISOString().split("T")[0];
+  // Catégorisation des événements
+  const now = new Date();
+  const todayStr = now.toISOString().split("T")[0];
+  
+  const todayEvents = events
+    .filter((e) => e.date_debut === todayStr)
+    .sort((a, b) => (a.heure_debut || "").localeCompare(b.heure_debut || ""));
+  
   const upcomingEvents = events
-    .filter((e) => e.date_debut >= now && e.is_published)
-    .sort((a, b) => a.date_debut.localeCompare(b.date_debut))
-    .slice(0, 3);
+    .filter((e) => e.date_debut > todayStr)
+    .sort((a, b) => a.date_debut.localeCompare(b.date_debut));
+  
+  const pastEvents = events
+    .filter((e) => e.date_debut < todayStr)
+    .sort((a, b) => b.date_debut.localeCompare(a.date_debut));
 
   // ═══════════════════════════════════════════
   // DÉTAIL D'UN ÉVÉNEMENT — Design Premium
@@ -497,43 +506,164 @@ export default function DashboardPage() {
         </Link>
       </div>
 
+      {/* Événements aujourd'hui */}
+      {todayEvents.length > 0 && (
+        <div className="mt-10">
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center gap-2">
+              <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
+              <h2 className="text-[16px] lg:text-lg font-bold text-gray-900">Aujourd&apos;hui</h2>
+              <span className="text-[11px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">{todayEvents.length}</span>
+            </div>
+          </div>
+          <div className="space-y-2 lg:grid lg:grid-cols-2 xl:grid-cols-3 lg:gap-3 lg:space-y-0">
+            {todayEvents.map((evt) => {
+              const evtDate = new Date(evt.date_debut + "T00:00:00");
+              return (
+                <button
+                  key={evt.id}
+                  onClick={() => handleSelectEvent(evt)}
+                  className="w-full flex items-center gap-3 bg-emerald-50 rounded-xl border border-emerald-100 p-3.5 hover:border-emerald-200 hover:shadow-sm transition active:scale-[0.99] text-left"
+                >
+                  {evt.logo_url ? (
+                    <div className="relative shrink-0">
+                      <img src={evt.logo_url} alt="" className="w-12 h-12 rounded-xl object-cover" />
+                      <div className="absolute -top-1 -right-1 w-3 h-3 bg-emerald-500 rounded-full border-2 border-white" />
+                    </div>
+                  ) : (
+                    <div className="w-12 h-12 bg-emerald-500 rounded-xl flex flex-col items-center justify-center shrink-0">
+                      <span className="text-[10px] font-bold text-emerald-100 uppercase leading-none">
+                        {evtDate.toLocaleDateString("fr-FR", { month: "short" })}
+                      </span>
+                      <span className="text-lg font-black text-white leading-none">
+                        {evtDate.getDate()}
+                      </span>
+                    </div>
+                  )}
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2">
+                      <p className="text-sm font-bold text-gray-900 truncate">{evt.nom}</p>
+                      {!evt.is_published && <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-md bg-orange-100 text-orange-600 shrink-0">Brouillon</span>}
+                    </div>
+                    <div className="flex items-center gap-1 mt-0.5">
+                      <MapPin className="w-3 h-3 text-gray-400" />
+                      <p className="text-xs text-gray-500 truncate">{evt.lieu}{evt.ville ? ` · ${evt.ville}` : ""}</p>
+                    </div>
+                    <div className="flex items-center gap-3 mt-1">
+                      <span className="text-[10px] text-emerald-600 font-bold">{evt.total_vendu || 0} billet{(evt.total_vendu || 0) > 1 ? "s" : ""}</span>
+                      {parseFloat(String(evt.revenus)) > 0 && (
+                        <span className="text-[10px] text-gray-900 font-black">{formatMontant(parseFloat(String(evt.revenus)), devise)}</span>
+                      )}
+                    </div>
+                  </div>
+                  <ChevronRight className="w-4 h-4 text-emerald-400 shrink-0" />
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
       {/* Événements à venir */}
       {upcomingEvents.length > 0 && (
-        <div className="mt-10">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-[16px] lg:text-lg font-bold text-gray-900">Prochains événements</h2>
+        <div className={todayEvents.length > 0 ? "mt-6" : "mt-10"}>
+          <div className="flex items-center justify-between mb-3">
+            <h2 className="text-[16px] lg:text-lg font-bold text-gray-900">À venir</h2>
             <Link href="/evenements" className="text-[12px] font-semibold text-emerald-600">Voir tout</Link>
           </div>
           <div className="space-y-2 lg:grid lg:grid-cols-2 xl:grid-cols-3 lg:gap-3 lg:space-y-0">
-            {upcomingEvents.map((evt) => (
-              <button
-                key={evt.id}
-                onClick={() => handleSelectEvent(evt)}
-                className="w-full flex items-center gap-3 bg-white rounded-xl border border-gray-100 p-3.5 hover:border-gray-200 hover:shadow-sm transition active:scale-[0.99] text-left"
-              >
-                {evt.logo_url ? (
-                  <img src={evt.logo_url} alt="" className="w-12 h-12 rounded-xl object-cover shrink-0" />
-                ) : (
-                  <div className="w-12 h-12 bg-gray-900 rounded-xl flex flex-col items-center justify-center shrink-0">
-                    <span className="text-[10px] font-bold text-gray-400 uppercase leading-none">
-                      {new Date(evt.date_debut + "T00:00:00").toLocaleDateString("fr-FR", { month: "short" })}
-                    </span>
-                    <span className="text-lg font-black text-white leading-none">
-                      {new Date(evt.date_debut + "T00:00:00").getDate()}
-                    </span>
+            {upcomingEvents.map((evt) => {
+              const evtDate = new Date(evt.date_debut + "T00:00:00");
+              return (
+                <button
+                  key={evt.id}
+                  onClick={() => handleSelectEvent(evt)}
+                  className="w-full flex items-center gap-3 bg-white rounded-xl border border-gray-100 p-3.5 hover:border-gray-200 hover:shadow-sm transition active:scale-[0.99] text-left"
+                >
+                  {evt.logo_url ? (
+                    <img src={evt.logo_url} alt="" className="w-12 h-12 rounded-xl object-cover shrink-0" />
+                  ) : (
+                    <div className="w-12 h-12 bg-gray-900 rounded-xl flex flex-col items-center justify-center shrink-0">
+                      <span className="text-[10px] font-bold text-gray-400 uppercase leading-none">
+                        {evtDate.toLocaleDateString("fr-FR", { month: "short" })}
+                      </span>
+                      <span className="text-lg font-black text-white leading-none">
+                        {evtDate.getDate()}
+                      </span>
+                    </div>
+                  )}
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2">
+                      <p className="text-sm font-bold text-gray-900 truncate">{evt.nom}</p>
+                      {!evt.is_published && <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-md bg-orange-100 text-orange-600 shrink-0">Brouillon</span>}
+                    </div>
+                    <div className="flex items-center gap-1 mt-0.5">
+                      <MapPin className="w-3 h-3 text-gray-400" />
+                      <p className="text-xs text-gray-400 truncate">{evt.lieu}{evt.ville ? ` · ${evt.ville}` : ""}</p>
+                    </div>
+                    <div className="flex items-center gap-3 mt-1">
+                      <span className="text-[10px] text-emerald-600 font-bold">{evt.total_vendu || 0} billet{(evt.total_vendu || 0) > 1 ? "s" : ""}</span>
+                      {parseFloat(String(evt.revenus)) > 0 && (
+                        <span className="text-[10px] text-gray-900 font-black">{formatMontant(parseFloat(String(evt.revenus)), devise)}</span>
+                      )}
+                    </div>
                   </div>
-                )}
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-bold text-gray-900 truncate">{evt.nom}</p>
-                  <div className="flex items-center gap-1 mt-0.5">
-                    <MapPin className="w-3 h-3 text-gray-400" />
-                    <p className="text-xs text-gray-400 truncate">{evt.lieu}</p>
+                  <ChevronRight className="w-4 h-4 text-gray-300 shrink-0" />
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+      {/* Événements passés */}
+      {pastEvents.length > 0 && (
+        <div className="mt-6">
+          <div className="flex items-center justify-between mb-3">
+            <h2 className="text-[16px] lg:text-lg font-bold text-gray-400">Passés</h2>
+            <span className="text-[11px] font-bold text-gray-300">{pastEvents.length}</span>
+          </div>
+          <div className="space-y-2 lg:grid lg:grid-cols-2 xl:grid-cols-3 lg:gap-3 lg:space-y-0">
+            {pastEvents.map((evt) => {
+              const evtDate = new Date(evt.date_debut + "T00:00:00");
+              return (
+                <button
+                  key={evt.id}
+                  onClick={() => handleSelectEvent(evt)}
+                  className="w-full flex items-center gap-3 bg-gray-50 rounded-xl border border-gray-100 p-3.5 hover:border-gray-200 hover:shadow-sm transition active:scale-[0.99] text-left opacity-75 hover:opacity-100"
+                >
+                  {evt.logo_url ? (
+                    <img src={evt.logo_url} alt="" className="w-12 h-12 rounded-xl object-cover shrink-0 grayscale-[30%]" />
+                  ) : (
+                    <div className="w-12 h-12 bg-gray-300 rounded-xl flex flex-col items-center justify-center shrink-0">
+                      <span className="text-[10px] font-bold text-gray-100 uppercase leading-none">
+                        {evtDate.toLocaleDateString("fr-FR", { month: "short" })}
+                      </span>
+                      <span className="text-lg font-black text-white leading-none">
+                        {evtDate.getDate()}
+                      </span>
+                    </div>
+                  )}
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2">
+                      <p className="text-sm font-bold text-gray-600 truncate">{evt.nom}</p>
+                      <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-md bg-gray-100 text-gray-400 shrink-0">Terminé</span>
+                    </div>
+                    <div className="flex items-center gap-1 mt-0.5">
+                      <MapPin className="w-3 h-3 text-gray-300" />
+                      <p className="text-xs text-gray-400 truncate">{evt.lieu}</p>
+                    </div>
+                    <div className="flex items-center gap-3 mt-1">
+                      <span className="text-[10px] text-gray-500 font-bold">{evt.total_vendu || 0} billet{(evt.total_vendu || 0) > 1 ? "s" : ""}</span>
+                      {parseFloat(String(evt.revenus)) > 0 && (
+                        <span className="text-[10px] text-gray-700 font-black">{formatMontant(parseFloat(String(evt.revenus)), devise)}</span>
+                      )}
+                    </div>
                   </div>
-                  <span className="text-[10px] text-emerald-600 font-bold">{evt.total_vendu || 0} billet{(evt.total_vendu || 0) > 1 ? "s" : ""}</span>
-                </div>
-                <ChevronRight className="w-4 h-4 text-gray-300" />
-              </button>
-            ))}
+                  <ChevronRight className="w-4 h-4 text-gray-300 shrink-0" />
+                </button>
+              );
+            })}
           </div>
         </div>
       )}
