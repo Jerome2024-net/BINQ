@@ -150,9 +150,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                   <Link
                     key={tab.href}
                     href={tab.href}
-                    className="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 bg-gradient-to-r from-violet-50 to-indigo-50 text-violet-700 hover:from-violet-100 hover:to-indigo-100"
+                    className="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 bg-gradient-to-r from-emerald-50 to-emerald-50 text-emerald-700 hover:from-emerald-100 hover:to-emerald-100"
                   >
-                    <div className="p-1.5 rounded-lg bg-gradient-to-br from-violet-500 to-indigo-600">
+                    <div className="p-1.5 rounded-lg bg-gradient-to-br from-emerald-500 to-emerald-600">
                       <tab.icon className="w-[18px] h-[18px] text-white" />
                     </div>
                     {tab.label}
@@ -322,10 +322,10 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                     href={tab.href}
                     className="flex flex-col items-center justify-center -mt-5"
                   >
-                    <div className="w-12 h-12 sm:w-14 sm:h-14 bg-gradient-to-br from-violet-600 to-indigo-600 rounded-2xl flex items-center justify-center shadow-lg shadow-violet-500/30 active:scale-[0.93] transition-transform">
+                    <div className="w-12 h-12 sm:w-14 sm:h-14 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-2xl flex items-center justify-center shadow-lg shadow-emerald-500/30 active:scale-[0.93] transition-transform">
                       <tab.icon className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
                     </div>
-                    <span className="text-[9px] sm:text-[10px] font-bold text-violet-600 mt-0.5">{tab.label}</span>
+                    <span className="text-[9px] sm:text-[10px] font-bold text-emerald-600 mt-0.5">{tab.label}</span>
                   </Link>
                 );
               }

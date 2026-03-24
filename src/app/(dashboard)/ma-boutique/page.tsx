@@ -1302,7 +1302,7 @@ export default function MaBoutiquePage() {
               {/* CTA Scanner — séparé */}
               <button
                 onClick={() => { setScanMode(true); setScanResult(null); setScanCode(""); hapticMedium(); setTimeout(() => startCamera(), 300); }}
-                className="w-full flex items-center justify-center gap-2.5 bg-gradient-to-r from-violet-600 to-indigo-600 text-white py-3.5 rounded-xl font-bold text-sm transition hover:from-violet-500 hover:to-indigo-500 active:scale-[0.97] mb-4 shadow-sm shadow-violet-500/20"
+                className="w-full flex items-center justify-center gap-2.5 bg-gradient-to-r from-emerald-500 to-emerald-600 text-white py-3.5 rounded-xl font-bold text-sm transition hover:from-emerald-400 hover:to-emerald-500 active:scale-[0.97] mb-4 shadow-sm shadow-emerald-500/20"
               >
                 <div className="w-7 h-7 bg-white/15 rounded-lg flex items-center justify-center">
                   <ScanLine className="w-4 h-4" />
