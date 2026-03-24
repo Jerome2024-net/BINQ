@@ -152,7 +152,7 @@ export default function DashboardPage() {
         <p className="text-[15px] text-gray-400 font-medium mt-3 text-center">Commence à vendre en quelques secondes</p>
         <Link
           href="/evenements"
-          className="mt-8 w-full max-w-[280px] flex items-center justify-center gap-2 py-4 bg-gray-900 text-white font-bold text-[15px] rounded-2xl hover:bg-gray-800 transition-all active:scale-[0.97]"
+          className="mt-8 w-full max-w-[280px] flex items-center justify-center gap-2 py-4 bg-emerald-500 text-white font-bold text-[15px] rounded-2xl hover:bg-emerald-600 transition-all active:scale-[0.97] shadow-lg shadow-emerald-500/25"
         >
           <Plus className="w-5 h-5" /> Commencer
         </Link>
@@ -315,7 +315,7 @@ export default function DashboardPage() {
           <div className="mt-5 grid grid-cols-2 gap-2.5 lg:gap-4">
             <Link
               href={`/evenements?event=${selectedEvent.id}`}
-              className="flex items-center justify-center gap-2 bg-gray-900 text-white py-4 rounded-2xl font-bold text-[14px] transition hover:bg-gray-800 active:scale-[0.97] shadow-sm"
+              className="flex items-center justify-center gap-2 bg-emerald-500 text-white py-4 rounded-2xl font-bold text-[14px] transition hover:bg-emerald-600 active:scale-[0.97] shadow-lg shadow-emerald-500/25"
             >
               <ScanLine className="w-[18px] h-[18px]" /> Scanner
             </Link>
@@ -486,7 +486,7 @@ export default function DashboardPage() {
           <p className="text-[13px] text-gray-400 font-medium mt-2 text-center">Commence à vendre en quelques secondes</p>
           <Link
             href="/evenements?action=create"
-            className="mt-8 w-full max-w-[280px] flex items-center justify-center gap-2 py-4 bg-gray-900 text-white font-bold text-[15px] rounded-2xl hover:bg-gray-800 transition-all active:scale-[0.97]"
+            className="mt-8 w-full max-w-[280px] flex items-center justify-center gap-2 py-4 bg-emerald-500 text-white font-bold text-[15px] rounded-2xl hover:bg-emerald-600 transition-all active:scale-[0.97] shadow-lg shadow-emerald-500/25"
           >
             <Plus className="w-5 h-5" /> Créer un événement
           </Link>
@@ -495,15 +495,15 @@ export default function DashboardPage() {
         <>
           {/* ── Revenus ── */}
           <Link href="/ventes" className="block mt-6 active:scale-[0.98] transition-transform">
-            <div className="bg-gray-900 rounded-2xl p-5 relative overflow-hidden">
-              <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/4" />
-              <p className="text-[11px] font-bold text-gray-500 uppercase tracking-wider">Revenus</p>
+            <div className="bg-emerald-500 rounded-2xl p-5 relative overflow-hidden">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/4" />
+              <p className="text-[11px] font-bold text-white/70 uppercase tracking-wider">Revenus</p>
               <p className="text-[32px] lg:text-[40px] font-black text-white leading-none tracking-tight mt-1">
                 {formatMontant(totalRevenue, devise)}
               </p>
               <div className="flex items-center gap-4 mt-3">
-                <span className="text-[12px] text-gray-500 font-medium">{totalTicketsSold} billet{totalTicketsSold > 1 ? "s" : ""} vendu{totalTicketsSold > 1 ? "s" : ""}</span>
-                <span className="text-[12px] text-gray-600 font-medium">{activeEvents.length} event{activeEvents.length > 1 ? "s" : ""} actif{activeEvents.length > 1 ? "s" : ""}</span>
+                <span className="text-[12px] text-white/70 font-medium">{totalTicketsSold} billet{totalTicketsSold > 1 ? "s" : ""} vendu{totalTicketsSold > 1 ? "s" : ""}</span>
+                <span className="text-[12px] text-white/70 font-medium">{activeEvents.length} event{activeEvents.length > 1 ? "s" : ""} actif{activeEvents.length > 1 ? "s" : ""}</span>
               </div>
             </div>
           </Link>
@@ -579,8 +579,8 @@ export default function DashboardPage() {
                       {evt.logo_url ? (
                         <img src={evt.logo_url} alt="" className="w-12 h-12 rounded-xl object-cover shrink-0" />
                       ) : (
-                        <div className="w-12 h-12 bg-gray-900 rounded-xl flex flex-col items-center justify-center shrink-0">
-                          <span className="text-[10px] font-bold text-gray-400 uppercase leading-none">{evtDate.toLocaleDateString("fr-FR", { month: "short" })}</span>
+                        <div className="w-12 h-12 bg-emerald-500 rounded-xl flex flex-col items-center justify-center shrink-0">
+                          <span className="text-[10px] font-bold text-white/70 uppercase leading-none">{evtDate.toLocaleDateString("fr-FR", { month: "short" })}</span>
                           <span className="text-lg font-black text-white leading-none">{evtDate.getDate()}</span>
                         </div>
                       )}
@@ -609,8 +609,8 @@ export default function DashboardPage() {
                       {evt.logo_url ? (
                         <img src={evt.logo_url} alt="" className="w-12 h-12 rounded-xl object-cover shrink-0" />
                       ) : (
-                        <div className="w-12 h-12 bg-gray-900 rounded-xl flex flex-col items-center justify-center shrink-0">
-                          <span className="text-[10px] font-bold text-gray-400 uppercase leading-none">{evtDate.toLocaleDateString("fr-FR", { month: "short" })}</span>
+                        <div className="w-12 h-12 bg-emerald-500 rounded-xl flex flex-col items-center justify-center shrink-0">
+                          <span className="text-[10px] font-bold text-white/70 uppercase leading-none">{evtDate.toLocaleDateString("fr-FR", { month: "short" })}</span>
                           <span className="text-lg font-black text-white leading-none">{evtDate.getDate()}</span>
                         </div>
                       )}

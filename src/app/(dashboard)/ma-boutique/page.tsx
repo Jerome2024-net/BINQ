@@ -728,7 +728,7 @@ export default function MaBoutiquePage() {
           <button
             onClick={() => setActiveTab(activeTab === "reglages" ? "evenements" : "reglages")}
             className={`w-9 h-9 rounded-xl flex items-center justify-center transition ${
-              activeTab === "reglages" ? "bg-gray-900 text-white" : "bg-gray-100 text-gray-400 hover:bg-gray-200"
+              activeTab === "reglages" ? "bg-emerald-500 text-white" : "bg-gray-100 text-gray-400 hover:bg-gray-200"
             }`}
           >
             <Settings className="w-4 h-4" />
@@ -740,10 +740,10 @@ export default function MaBoutiquePage() {
       {activeTab === "evenements" && (
         <div className="px-4 mb-4 mt-1">
           <div className="flex gap-2 lg:gap-4">
-            <div className="flex-1 bg-gray-900 rounded-2xl p-3.5 lg:p-5">
+            <div className="flex-1 bg-emerald-500 rounded-2xl p-3.5 lg:p-5">
               <div className="flex items-center gap-1.5 mb-1">
-                <TrendingUp className="w-3 h-3 text-emerald-400" />
-                <span className="text-[10px] text-gray-400 font-semibold uppercase tracking-wide">Revenus</span>
+                <TrendingUp className="w-3 h-3 text-white/70" />
+                <span className="text-[10px] text-white/70 font-semibold uppercase tracking-wide">Revenus</span>
               </div>
               <p className="text-lg font-black text-white">
                 {formatMontant(events.reduce((sum: number, e: any) => sum + (parseFloat(e.revenus) || 0), 0), devise)}
@@ -1032,7 +1032,7 @@ export default function MaBoutiquePage() {
                   </div>
                   <button
                     onClick={() => { setScanResult(null); startCamera(); }}
-                    className="w-full py-4 bg-gray-900 text-white rounded-2xl font-bold text-sm transition hover:bg-gray-800 active:scale-[0.97] flex items-center justify-center gap-2"
+                    className="w-full py-4 bg-emerald-500 text-white rounded-2xl font-bold text-sm transition hover:bg-emerald-600 active:scale-[0.97] flex items-center justify-center gap-2"
                   >
                     <ScanLine className="w-5 h-5" /> Scanner un autre billet
                   </button>
@@ -1067,7 +1067,7 @@ export default function MaBoutiquePage() {
                   {!cameraActive && (
                     <button
                       onClick={startCamera}
-                      className="w-full py-16 bg-gray-900 text-white rounded-2xl font-bold transition hover:bg-gray-800 active:scale-[0.97] flex flex-col items-center justify-center gap-3 mb-4"
+                      className="w-full py-16 bg-emerald-500 text-white rounded-2xl font-bold transition hover:bg-emerald-600 active:scale-[0.97] flex flex-col items-center justify-center gap-3 mb-4"
                     >
                       <div className="w-16 h-16 bg-white/10 rounded-full flex items-center justify-center">
                         <Camera className="w-8 h-8 text-white" />
@@ -1099,7 +1099,7 @@ export default function MaBoutiquePage() {
                           <button
                             onClick={handleScanTicket}
                             disabled={scanning || !scanCode.trim()}
-                            className="px-5 py-3 bg-gray-900 text-white rounded-xl font-bold text-sm transition hover:bg-gray-800 active:scale-[0.97] disabled:opacity-50"
+                            className="px-5 py-3 bg-emerald-500 text-white rounded-xl font-bold text-sm transition hover:bg-emerald-600 active:scale-[0.97] disabled:opacity-50"
                           >
                             {scanning ? <Loader2 className="w-4 h-4 animate-spin" /> : <Check className="w-4 h-4" />}
                           </button>
@@ -1204,7 +1204,7 @@ export default function MaBoutiquePage() {
               <div className="grid grid-cols-2 gap-2 lg:gap-4 mb-4">
                 <button
                   onClick={() => { setScanMode(true); setScanResult(null); setScanCode(""); setTimeout(() => startCamera(), 300); }}
-                  className="flex items-center justify-center gap-2 bg-gray-900 text-white py-3.5 rounded-xl font-bold text-sm transition hover:bg-gray-800 active:scale-[0.97]"
+                  className="flex items-center justify-center gap-2 bg-emerald-500 text-white py-3.5 rounded-xl font-bold text-sm transition hover:bg-emerald-600 active:scale-[0.97]"
                 >
                   <ScanLine className="w-4 h-4" /> Scanner
                 </button>
@@ -1294,7 +1294,7 @@ export default function MaBoutiquePage() {
               {/* CTA Créer */}
               <button
                 onClick={() => { hapticMedium(); setShowAddEvent(true); }}
-                className="w-full flex items-center justify-center gap-2 bg-gray-900 hover:bg-gray-800 text-white py-3.5 rounded-xl font-bold text-sm transition active:scale-[0.97] mb-2.5"
+                className="w-full flex items-center justify-center gap-2 bg-emerald-500 hover:bg-emerald-600 text-white py-3.5 rounded-xl font-bold text-sm transition active:scale-[0.97] mb-2.5"
               >
                 <Plus className="w-4 h-4" /> Créer un événement
               </button>

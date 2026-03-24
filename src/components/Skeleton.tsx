@@ -29,7 +29,7 @@ export function DashboardSkeleton() {
       </div>
 
       {/* Wallet Card */}
-      <div className="bg-gray-900 rounded-xl p-6">
+      <div className="bg-emerald-500 rounded-xl p-6">
         <div className="flex items-center gap-5">
           <SkeletonBox className="w-12 h-12 rounded-xl !bg-white/10" />
           <div>
@@ -95,7 +95,7 @@ export function PortefeuilleSkeleton() {
       </div>
 
       {/* Balance */}
-      <div className="bg-gray-900 rounded-xl p-8">
+      <div className="bg-emerald-500 rounded-xl p-8">
         <div className="flex items-center gap-5">
           <SkeletonBox className="w-14 h-14 rounded-xl !bg-white/10" />
           <div>

@@ -196,7 +196,7 @@ export default function ProduitPage() {
           </div>
 
           <div className="flex gap-2">
-            <Link href={`/boutique/${produit.boutique.slug}`} className="flex-1 inline-flex items-center justify-center gap-2 bg-black text-white px-4 py-3 rounded-xl font-bold hover:bg-gray-800 transition text-sm">
+            <Link href={`/boutique/${produit.boutique.slug}`} className="flex-1 inline-flex items-center justify-center gap-2 bg-emerald-500 text-white px-4 py-3 rounded-xl font-bold hover:bg-emerald-600 transition text-sm">
               <Store className="w-4 h-4" />Retour a la boutique
             </Link>
           </div>
@@ -339,7 +339,7 @@ export default function ProduitPage() {
           {!user ? (
             <div className="text-center">
               <p className="text-sm text-gray-500 mb-3">Connectez-vous pour acheter</p>
-              <Link href={`/connexion?redirect=/produit/${produit.id}`} className="w-full inline-flex items-center justify-center gap-2 bg-black text-white py-3.5 rounded-xl font-bold hover:bg-gray-800 transition">
+              <Link href={`/connexion?redirect=/produit/${produit.id}`} className="w-full inline-flex items-center justify-center gap-2 bg-emerald-500 text-white py-3.5 rounded-xl font-bold hover:bg-emerald-600 transition">
                 <LogIn className="w-5 h-5" />Se connecter
               </Link>
             </div>
@@ -355,7 +355,7 @@ export default function ProduitPage() {
             <button
               onClick={handleBuy}
               disabled={buying}
-              className="w-full flex items-center justify-center gap-2.5 bg-black hover:bg-gray-800 text-white py-4 rounded-2xl font-bold text-base transition-all disabled:opacity-50 active:scale-[0.98] shadow-lg shadow-black/10"
+              className="w-full flex items-center justify-center gap-2.5 bg-emerald-500 hover:bg-emerald-600 text-white py-4 rounded-2xl font-bold text-base transition-all disabled:opacity-50 active:scale-[0.98] shadow-lg shadow-emerald-500/20"
             >
               {buying ? (
                 <><Loader2 className="w-5 h-5 animate-spin" />Paiement en cours...</>

@@ -167,7 +167,7 @@ export default function PayUserPage() {
           <p className="text-gray-600 mb-6">{error}</p>
           <button
             onClick={() => window.history.length > 1 ? router.back() : router.push("/")}
-            className="inline-flex items-center gap-2 bg-black text-white px-6 py-3 rounded-xl font-semibold hover:bg-gray-800 transition active:scale-95"
+            className="inline-flex items-center gap-2 bg-emerald-500 text-white px-6 py-3 rounded-xl font-semibold hover:bg-emerald-600 transition active:scale-95"
           >
             Retour
           </button>
@@ -224,7 +224,7 @@ export default function PayUserPage() {
           <div className="flex items-center gap-2">
             <Link
               href="/"
-              className="flex-1 inline-flex items-center justify-center gap-2 bg-black text-white px-4 py-3 rounded-xl font-bold hover:bg-gray-800 transition text-sm"
+              className="flex-1 inline-flex items-center justify-center gap-2 bg-emerald-500 text-white px-4 py-3 rounded-xl font-bold hover:bg-emerald-600 transition text-sm"
             >
               Fermer
             </Link>
@@ -290,7 +290,7 @@ export default function PayUserPage() {
                     onClick={() => { setDevise(d); setSelectedMethod(null); }}
                     className={`flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-sm font-bold transition-all ${
                       devise === d
-                        ? "bg-gray-900 text-white border border-gray-900"
+                        ? "bg-emerald-500 text-white border border-emerald-500"
                         : "bg-gray-50/50 text-gray-600 border border-gray-200/50 hover:bg-gray-100/50"
                     }`}
                   >
@@ -355,9 +355,9 @@ export default function PayUserPage() {
                         )}
                       </div>
                       <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
-                        isActive ? "border-black" : "border-gray-300"
+                        isActive ? "border-emerald-500" : "border-gray-300"
                       }`}>
-                        {isActive && <div className="w-2.5 h-2.5 rounded-full bg-black" />}
+                        {isActive && <div className="w-2.5 h-2.5 rounded-full bg-emerald-500" />}
                       </div>
                     </button>
                   );
@@ -400,7 +400,7 @@ export default function PayUserPage() {
             <button
               onClick={handlePay}
               disabled={sending || !montant || parsedMontant <= 0 || !selectedMethod}
-              className="w-full flex items-center justify-center gap-2 bg-black text-white py-3.5 rounded-xl font-bold hover:bg-gray-800 transition disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full flex items-center justify-center gap-2 bg-emerald-500 text-white py-3.5 rounded-xl font-bold hover:bg-emerald-600 transition disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {sending ? (
                 <Loader2 className="w-5 h-5 animate-spin" />
