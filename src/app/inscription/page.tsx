@@ -81,24 +81,24 @@ export default function InscriptionPage() {
           </Link>
 
           <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-50 border border-emerald-200/40 text-emerald-600 text-xs font-bold mb-6">
-            Mobile Money Nouvelle Génération
+            Billetterie Nouvelle Génération
           </div>
 
           <h1 className="text-4xl font-black mb-6 tracking-tight leading-[1.1]">
-            Gérez votre <br />argent{" "}
+            Lancez vos <br />events{" "}
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-400">
               simplement.
             </span>
           </h1>
           <p className="text-gray-600 text-lg leading-relaxed font-medium">
-            Créez votre compte en moins d&apos;une minute et commencez à encaisser via QR Code.
+            Créez votre compte en moins d&apos;une minute et vendez vos premiers billets.
           </p>
 
           <div className="mt-12 space-y-5 border-t border-gray-200/50 pt-10">
             {[
-              { title: "Encaissement QR Code", desc: "Générez un QR et recevez des paiements carte ou mobile money.", icon: CreditCard, color: "text-emerald-600 bg-emerald-50" },
-              { title: "Marketplace intégrée", desc: "Vendez vos produits sur la marketplace Binq, sans boutique physique.", icon: SendHorizonal, color: "text-cyan-600 bg-cyan-500/10" },
-              { title: "Sécurité maximale", desc: "Chiffrement AES-256 et infrastructure certifiée.", icon: ShieldCheck, color: "text-violet-400 bg-violet-500/10" },
+              { title: "Billetterie QR Code", desc: "Chaque billet génère un QR unique. Scannez à l’entrée, zéro fraude.", icon: CreditCard, color: "text-emerald-600 bg-emerald-50" },
+              { title: "Vente en ligne", desc: "Vos participants achètent leurs billets par carte ou Mobile Money.", icon: SendHorizonal, color: "text-cyan-600 bg-cyan-500/10" },
+              { title: "Sécurité maximale", desc: "Billets infalsifiables et scan en temps réel.", icon: ShieldCheck, color: "text-violet-400 bg-violet-500/10" },
             ].map((item, i) => (
               <div key={i} className="flex items-start gap-4">
                 <div className={`w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 mt-1 border border-gray-200/50 ${item.color}`}>

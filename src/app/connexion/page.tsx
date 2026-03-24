@@ -59,20 +59,20 @@ function ConnexionForm() {
           </Link>
 
           <h1 className="text-4xl font-black mb-6 tracking-tight leading-[1.1]">
-            Votre argent,{" "}
+            Vos events,{" "}
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-400">
-              mobile.
+              simplifiés.
             </span>
           </h1>
           <p className="text-gray-600 text-lg leading-relaxed font-medium">
-            Connectez-vous pour accéder à votre espace marchand et gérer vos paiements.
+            Connectez-vous pour gérer vos événements, vendre des billets et suivre vos entrées.
           </p>
 
           <div className="mt-12 space-y-3 border-t border-gray-200/50 pt-10">
             {[
-              { text: "Accès instantané à votre solde", icon: Zap, color: "text-emerald-600 bg-emerald-50 border-emerald-500/10" },
-              { text: "Chiffrement de bout en bout", icon: Lock, color: "text-cyan-600 bg-cyan-500/10 border-cyan-500/10" },
-              { text: "Infrastructure certifiée et sécurisée", icon: ShieldCheck, color: "text-violet-400 bg-violet-500/10 border-violet-500/10" },
+              { text: "Créez et publiez en 2 minutes", icon: Zap, color: "text-emerald-600 bg-emerald-50 border-emerald-500/10" },
+              { text: "Billets QR sécurisés et infalsifiables", icon: Lock, color: "text-cyan-600 bg-cyan-500/10 border-cyan-500/10" },
+              { text: "Scan des entrées en temps réel", icon: ShieldCheck, color: "text-violet-400 bg-violet-500/10 border-violet-500/10" },
             ].map((item, i) => (
               <div key={i} className="flex items-center gap-4 bg-gray-50/50 p-4 rounded-2xl border border-gray-200/50">
                 <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 border ${item.color}`}>
