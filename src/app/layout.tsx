@@ -7,7 +7,7 @@ import NavigationProgress from "@/components/NavigationProgress";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Binq - Marketplace QR Commerce",
+  title: "Binq - Billetterie & Événements",
   description:
     "Chaque produit devient un terminal de paiement. Creez votre boutique, partagez vos QR, encaissez par carte et mobile money.",
   manifest: "/manifest.json",
