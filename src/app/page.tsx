@@ -17,6 +17,7 @@ import {
   Ticket,
   Calendar,
   Users,
+  Check,
 } from "lucide-react";
 
 export default function HomePage() {
@@ -278,26 +279,32 @@ export default function HomePage() {
         <div className="max-w-4xl mx-auto px-4 sm:px-6">
           <div className="text-center mb-12">
             <h2 className="text-2xl sm:text-4xl font-black tracking-tight mb-3">
-              Des tarifs <span className="text-emerald-600">simples</span>.
+              <span className="text-emerald-600">Gratuit</span> pour l&apos;organisateur.
             </h2>
-            <p className="text-gray-600 text-base sm:text-lg">Pas d&apos;abonnement. Vous ne payez que quand vous vendez des billets.</p>
+            <p className="text-gray-600 text-base sm:text-lg">Pas d&apos;abonnement, pas de frais cachés. 10% de frais de service ajoutés au prix du billet, payés par l&apos;acheteur.</p>
           </div>
-          <div className="grid sm:grid-cols-2 gap-3 sm:gap-4 max-w-xl mx-auto">
-            <div className="rounded-2xl sm:rounded-3xl bg-gradient-to-b from-emerald-500/10 to-emerald-500/[0.02] border border-emerald-200/40 p-5 sm:p-7 text-center">
-              <div className="w-9 h-9 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-emerald-50 flex items-center justify-center mx-auto mb-3 sm:mb-4">
-                <CreditCard className="w-4 h-4 sm:w-6 sm:h-6 text-emerald-600" />
+          <div className="max-w-sm mx-auto">
+            <div className="rounded-2xl sm:rounded-3xl bg-gradient-to-b from-emerald-500/10 to-emerald-500/[0.02] border border-emerald-200/40 p-6 sm:p-8 text-center">
+              <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-emerald-50 flex items-center justify-center mx-auto mb-4">
+                <Ticket className="w-6 h-6 sm:w-7 sm:h-7 text-emerald-600" />
               </div>
-              <h3 className="text-base sm:text-lg font-bold text-gray-900 mb-1.5 sm:mb-2">Par carte</h3>
-              <p className="text-2xl sm:text-4xl font-black text-emerald-600 mb-1.5 sm:mb-2">2,9%</p>
-              <p className="text-sm text-gray-600">+ 0,30 &euro; par billet</p>
-            </div>
-            <div className="rounded-2xl sm:rounded-3xl bg-gradient-to-b from-cyan-500/10 to-cyan-500/[0.02] border border-cyan-500/20 p-5 sm:p-7 text-center">
-              <div className="w-9 h-9 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-cyan-500/10 flex items-center justify-center mx-auto mb-3 sm:mb-4">
-                <Smartphone className="w-4 h-4 sm:w-6 sm:h-6 text-cyan-600" />
+              <p className="text-3xl sm:text-5xl font-black text-emerald-600 mb-2">10%</p>
+              <p className="text-base font-bold text-gray-900 mb-1">de frais de service</p>
+              <p className="text-sm text-gray-500">ajoutés au prix du billet, payés par l&apos;acheteur</p>
+              <div className="mt-5 pt-5 border-t border-emerald-200/40 space-y-2">
+                <div className="flex items-center justify-center gap-2 text-sm text-gray-600">
+                  <Check className="w-4 h-4 text-emerald-500 flex-shrink-0" />
+                  <span>0 FCFA pour l&apos;organisateur</span>
+                </div>
+                <div className="flex items-center justify-center gap-2 text-sm text-gray-600">
+                  <Check className="w-4 h-4 text-emerald-500 flex-shrink-0" />
+                  <span>Mobile Money &amp; Carte acceptés</span>
+                </div>
+                <div className="flex items-center justify-center gap-2 text-sm text-gray-600">
+                  <Check className="w-4 h-4 text-emerald-500 flex-shrink-0" />
+                  <span>Billets gratuits = 0 frais</span>
+                </div>
               </div>
-              <h3 className="text-base sm:text-lg font-bold text-gray-900 mb-1.5 sm:mb-2">Mobile money</h3>
-              <p className="text-2xl sm:text-4xl font-black text-cyan-600 mb-1.5 sm:mb-2">3%</p>
-              <p className="text-sm text-gray-600">par billet</p>
             </div>
           </div>
         </div>
