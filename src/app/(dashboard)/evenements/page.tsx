@@ -445,7 +445,7 @@ export default function EvenementsPage() {
       scannerRef.current = scanner;
       await scanner.start(
         { facingMode: "environment" },
-        { fps: 10, qrbox: { width: 220, height: 220 }, aspectRatio: 1 },
+        { fps: 10, qrbox: { width: 280, height: 280 }, aspectRatio: 1 },
         (decodedText) => {
           scanner.stop().catch(() => {});
           try { scanner.clear(); } catch {}
@@ -591,11 +591,12 @@ export default function EvenementsPage() {
         <div className="px-4">
           {/* Scanner mode */}
           {scanMode ? (
-            <div className="animate-in slide-in-from-top-2 duration-200">
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="text-lg font-black text-gray-900">Scanner un billet</h2>
-                <button onClick={closeScanMode}>
-                  <X className="w-5 h-5 text-gray-400" />
+            <div className="fixed inset-0 z-50 bg-black flex flex-col">
+              {/* Header */}
+              <div className="relative z-10 flex items-center justify-between px-4 pt-4 pb-2">
+                <h2 className="text-lg font-black text-white">Scanner un billet</h2>
+                <button onClick={closeScanMode} className="w-10 h-10 bg-white/15 backdrop-blur-sm rounded-full flex items-center justify-center">
+                  <X className="w-5 h-5 text-white" />
                 </button>
               </div>
 
@@ -606,17 +607,18 @@ export default function EvenementsPage() {
                   onClose={() => { setScanResult(null); closeScanMode(); }}
                 />
               ) : (
-                <div>
+                <div className="flex-1 flex flex-col">
                   {cameraActive && (
-                    <div className="mb-4">
-                      <div className="relative rounded-2xl overflow-hidden bg-black aspect-square max-w-sm mx-auto">
+                    <div className="flex-1 flex flex-col">
+                      <div className="relative flex-1 overflow-hidden">
                         <div id="qr-scanner-region" ref={scannerDivRef} className="w-full h-full" />
+                        {/* Overlay cadre de scan */}
                         <div className="absolute inset-0 pointer-events-none flex items-center justify-center">
-                          <div className="w-56 h-56 border-2 border-white/30 rounded-2xl">
-                            <div className="absolute top-0 left-0 w-8 h-8 border-t-4 border-l-4 border-white rounded-tl-xl" />
-                            <div className="absolute top-0 right-0 w-8 h-8 border-t-4 border-r-4 border-white rounded-tr-xl" />
-                            <div className="absolute bottom-0 left-0 w-8 h-8 border-b-4 border-l-4 border-white rounded-bl-xl" />
-                            <div className="absolute bottom-0 right-0 w-8 h-8 border-b-4 border-r-4 border-white rounded-br-xl" />
+                          <div className="w-72 h-72 border-2 border-white/30 rounded-2xl relative">
+                            <div className="absolute top-0 left-0 w-10 h-10 border-t-4 border-l-4 border-emerald-400 rounded-tl-xl" />
+                            <div className="absolute top-0 right-0 w-10 h-10 border-t-4 border-r-4 border-emerald-400 rounded-tr-xl" />
+                            <div className="absolute bottom-0 left-0 w-10 h-10 border-b-4 border-l-4 border-emerald-400 rounded-bl-xl" />
+                            <div className="absolute bottom-0 right-0 w-10 h-10 border-b-4 border-r-4 border-emerald-400 rounded-br-xl" />
                           </div>
                         </div>
                         {scanning && (
@@ -625,38 +627,42 @@ export default function EvenementsPage() {
                           </div>
                         )}
                       </div>
-                      <p className="text-center text-xs text-gray-400 mt-3">Placez le QR code du billet devant la caméra</p>
+                      <div className="px-6 py-4 text-center">
+                        <p className="text-sm text-white/60">Placez le QR code du billet devant la caméra</p>
+                      </div>
                     </div>
                   )}
 
                   {!cameraActive && (
-                    <button
-                      onClick={startCamera}
-                      className="w-full py-16 bg-emerald-500 text-white rounded-2xl font-bold transition hover:bg-emerald-600 active:scale-[0.97] flex flex-col items-center justify-center gap-3 mb-4"
-                    >
-                      <div className="w-16 h-16 bg-white/10 rounded-full flex items-center justify-center">
-                        <Camera className="w-8 h-8 text-white" />
-                      </div>
-                      <span className="text-base font-black">Ouvrir la caméra</span>
-                      <span className="text-xs text-gray-400 font-normal">Scannez le QR code du billet</span>
-                    </button>
+                    <div className="flex-1 flex flex-col items-center justify-center px-6">
+                      <button
+                        onClick={startCamera}
+                        className="w-full max-w-sm py-16 bg-emerald-500 text-white rounded-2xl font-bold transition hover:bg-emerald-600 active:scale-[0.97] flex flex-col items-center justify-center gap-3 mb-4"
+                      >
+                        <div className="w-16 h-16 bg-white/10 rounded-full flex items-center justify-center">
+                          <Camera className="w-8 h-8 text-white" />
+                        </div>
+                        <span className="text-base font-black">Ouvrir la caméra</span>
+                        <span className="text-xs text-white/50 font-normal">Scannez le QR code du billet</span>
+                      </button>
+                    </div>
                   )}
 
                   {!cameraActive && (
-                    <div>
+                    <div className="mt-4">
                       <button
                         onClick={() => setManualMode(!manualMode)}
-                        className="w-full text-center text-xs text-gray-400 font-semibold py-2 hover:text-gray-600 transition"
+                        className="w-full text-center text-xs text-white/40 font-semibold py-2 hover:text-white/60 transition"
                       >
                         {manualMode ? "Masquer la saisie manuelle" : "Saisir le code manuellement"}
                       </button>
                       {manualMode && (
-                        <div className="flex gap-2 mt-2 animate-in slide-in-from-top-1 duration-150">
+                        <div className="flex gap-2 mt-2 animate-in slide-in-from-top-1 duration-150 max-w-sm mx-auto">
                           <input
                             value={scanCode}
                             onChange={(e) => setScanCode(e.target.value)}
                             placeholder="Code ou URL du billet"
-                            className="flex-1 bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm outline-none focus:border-gray-900 transition font-mono"
+                            className="flex-1 bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-sm text-white placeholder-white/30 outline-none focus:border-emerald-400 transition font-mono"
                             onKeyDown={(e) => e.key === "Enter" && handleScanTicket()}
                             autoFocus
                           />

@@ -197,17 +197,22 @@ html {
 }
 
 /* QR Scanner - html5-qrcode mobile fix */
-#qr-reader {
+#qr-reader,
+#qr-scanner-region {
   border: none !important;
   background: transparent !important;
   padding: 0 !important;
-}
-#qr-reader video {
   width: 100% !important;
-  min-height: 280px !important;
-  max-height: 70vh !important;
+  height: 100% !important;
+}
+#qr-reader video,
+#qr-scanner-region video {
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 100% !important;
+  max-height: 100vh !important;
   object-fit: cover !important;
-  border-radius: 12px !important;
+  border-radius: 0 !important;
   display: block !important;
   /* iOS Safari: force inline playback */
   -webkit-transform: translateZ(0);
@@ -217,13 +222,18 @@ html {
 #qr-reader__dashboard_section_csr,
 #qr-reader__status_span,
 #qr-reader__header_message,
-#qr-reader > div:last-child {
+#qr-reader > div:last-child,
+#qr-scanner-region img[alt="Info icon"],
+#qr-scanner-region > div:not(:first-child) {
   display: none !important;
 }
-#qr-reader__scan_region {
-  min-height: 280px !important;
+#qr-reader__scan_region,
+#qr-scanner-region > div:first-child {
+  min-height: 100% !important;
+  height: 100% !important;
   position: relative !important;
 }
-#qr-reader__scan_region > br {
+#qr-reader__scan_region > br,
+#qr-scanner-region br {
   display: none !important;
 }
