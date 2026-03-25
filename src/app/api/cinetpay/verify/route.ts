@@ -52,8 +52,9 @@ export async function POST(req: NextRequest) {
         );
       }
 
-      // Vérifier que le montant correspond (CinetPay arrondit au multiple de 5)
-      const expectedAmount = Math.ceil(orderData.montant_total / 5) * 5;
+      // Vérifier que le montant correspond (prix + 10% frais, arrondi au multiple de 5)
+      const fraisService = Math.ceil(orderData.montant_total * 0.1);
+      const expectedAmount = Math.ceil((orderData.montant_total + fraisService) / 5) * 5;
       if (result.amount !== expectedAmount) {
         return NextResponse.json(
           { error: "Montant invalide" },

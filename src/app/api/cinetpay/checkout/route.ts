@@ -108,8 +108,10 @@ export async function POST(req: NextRequest) {
     const returnUrl = `${appUrl}/payment/ticket-success?d=${encoded}&s=${signature}&transaction_id=${transactionId}`;
     const notifyUrl = `${appUrl}/api/webhooks/cinetpay`;
 
-    // Montant CinetPay doit être un multiple de 5
-    const cinetPayAmount = Math.ceil(montant_total / 5) * 5;
+    // Frais de service 10% + arrondi au multiple de 5 pour CinetPay
+    const fraisService = Math.ceil(montant_total * 0.1);
+    const montantClient = montant_total + fraisService;
+    const cinetPayAmount = Math.ceil(montantClient / 5) * 5;
 
     const { payment_url } = await createCinetPayPayment({
       transaction_id: transactionId,

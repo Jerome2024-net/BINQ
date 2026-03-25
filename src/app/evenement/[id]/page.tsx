@@ -173,7 +173,9 @@ export default function EvenementPage() {
   }
 
   const selectedTicketType = event?.ticket_types.find((t) => t.id === selectedType);
-  const total = selectedTicketType ? selectedTicketType.prix * qty : 0;
+  const sousTotal = selectedTicketType ? selectedTicketType.prix * qty : 0;
+  const fraisService = sousTotal > 0 ? Math.ceil(sousTotal * 0.1) : 0;
+  const total = sousTotal + fraisService;
   const devise = (event?.devise || "XOF") as DeviseCode;
 
   // Social proof — total participants & capacity
@@ -560,13 +562,29 @@ export default function EvenementPage() {
               </div>
             )}
 
-            {/* Total + CTA */}
-            <div className="flex items-center justify-between mb-4">
-              <span className="text-sm text-gray-500">Total</span>
-              <span className="text-lg font-black text-gray-900">
-                {total > 0 ? formatMontant(total, devise) : "Gratuit"}
-              </span>
-            </div>
+            {/* Détail prix */}
+            {sousTotal > 0 && (
+              <div className="space-y-2 mb-4">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-gray-500">Sous-total</span>
+                  <span className="text-sm font-semibold text-gray-700">{formatMontant(sousTotal, devise)}</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-gray-500">Frais de service (10%)</span>
+                  <span className="text-sm font-semibold text-gray-700">{formatMontant(fraisService, devise)}</span>
+                </div>
+                <div className="border-t border-gray-200 pt-2 flex items-center justify-between">
+                  <span className="text-sm font-bold text-gray-900">Total</span>
+                  <span className="text-lg font-black text-gray-900">{formatMontant(total, devise)}</span>
+                </div>
+              </div>
+            )}
+            {sousTotal === 0 && (
+              <div className="flex items-center justify-between mb-4">
+                <span className="text-sm text-gray-500">Total</span>
+                <span className="text-lg font-black text-gray-900">Gratuit</span>
+              </div>
+            )}
 
             <button
               onClick={handleBuy}
