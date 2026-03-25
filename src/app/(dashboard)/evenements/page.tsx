@@ -36,10 +36,12 @@ import {
   Hash,
   FileText,
   Shield,
+  Printer,
 } from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
 import { formatMontant } from "@/lib/currencies";
 import type { DeviseCode } from "@/lib/currencies";
+import { generateEventPoster } from "@/lib/generatePoster";
 
 interface Boutique {
   id: string;
@@ -103,6 +105,7 @@ export default function EvenementsPage() {
   const evtFormCoverRef = useRef<HTMLInputElement>(null);
   const [savingEvent, setSavingEvent] = useState(false);
   const [showTicketPreview, setShowTicketPreview] = useState(false);
+  const [generatingPoster, setGeneratingPoster] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState<any>(null);
   const [eventTickets, setEventTickets] = useState<any[]>([]);
   const [loadingTickets, setLoadingTickets] = useState(false);
@@ -821,10 +824,31 @@ export default function EvenementsPage() {
               <a
                 href={`/evenement/${selectedEvent.id}`}
                 target="_blank"
-                className="w-full flex items-center justify-center gap-2 bg-emerald-50 text-emerald-700 py-3 rounded-xl font-bold text-sm mb-5 transition hover:bg-emerald-100 border border-emerald-200/50"
+                className="w-full flex items-center justify-center gap-2 bg-emerald-50 text-emerald-700 py-3 rounded-xl font-bold text-sm mb-3 transition hover:bg-emerald-100 border border-emerald-200/50"
               >
                 <Eye className="w-4 h-4" /> Voir la page publique
               </a>
+
+              {/* Télécharger l'affiche QR */}
+              <button
+                onClick={async () => {
+                  setGeneratingPoster(true);
+                  try { await generateEventPoster(selectedEvent, devise); }
+                  catch (err) { console.error(err); }
+                  finally { setGeneratingPoster(false); }
+                }}
+                disabled={generatingPoster}
+                className="w-full flex items-center justify-center gap-2 bg-white border-2 border-dashed border-emerald-300 text-emerald-600 py-3 rounded-xl font-bold text-sm mb-1 transition hover:bg-emerald-50 hover:border-emerald-400 active:scale-[0.97] disabled:opacity-50"
+              >
+                {generatingPoster ? (
+                  <><Loader2 className="w-4 h-4 animate-spin" /> Génération...</>
+                ) : (
+                  <><Printer className="w-4 h-4" /> Télécharger l&apos;affiche QR</>
+                )}
+              </button>
+              <p className="text-[10px] text-gray-400 text-center mb-5">
+                Imprimez pour que vos clients scannent et réservent
+              </p>
 
               {/* Types de billets */}
               {selectedEvent.ticket_types && selectedEvent.ticket_types.length > 0 && (

@@ -19,8 +19,10 @@ import {
   Loader2,
   Copy,
   Check,
+  Printer,
 } from "lucide-react";
 import { type DeviseCode, DEFAULT_DEVISE, formatMontant } from "@/lib/currencies";
+import { generateEventPoster } from "@/lib/generatePoster";
 
 interface TicketTypeInfo {
   id: string;
@@ -64,6 +66,7 @@ export default function DashboardPage() {
   const [eventTickets, setEventTickets] = useState<any[]>([]);
   const [loadingTickets, setLoadingTickets] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [generatingPoster, setGeneratingPoster] = useState(false);
   const [devise] = useState<DeviseCode>(() => {
     if (typeof window !== "undefined") {
       return (localStorage.getItem("binq_devise") as DeviseCode) || DEFAULT_DEVISE;
@@ -115,6 +118,17 @@ export default function DashboardPage() {
         setCopied(true);
         setTimeout(() => setCopied(false), 2000);
       });
+    }
+  };
+
+  const handleDownloadPoster = async (evt: EventInfo) => {
+    setGeneratingPoster(true);
+    try {
+      await generateEventPoster(evt, devise);
+    } catch (err) {
+      console.error("Erreur génération affiche:", err);
+    } finally {
+      setGeneratingPoster(false);
     }
   };
 
@@ -336,6 +350,22 @@ export default function DashboardPage() {
           >
             <Eye className="w-4 h-4" /> Voir la page publique
           </a>
+
+          {/* Télécharger l'affiche QR */}
+          <button
+            onClick={() => handleDownloadPoster(selectedEvent)}
+            disabled={generatingPoster}
+            className="mt-2.5 w-full flex items-center justify-center gap-2 bg-white border-2 border-dashed border-emerald-300 text-emerald-600 py-3.5 rounded-2xl font-bold text-[13px] transition hover:bg-emerald-50 hover:border-emerald-400 active:scale-[0.97] disabled:opacity-50"
+          >
+            {generatingPoster ? (
+              <><Loader2 className="w-4 h-4 animate-spin" /> Génération en cours...</>
+            ) : (
+              <><Printer className="w-4 h-4" /> Télécharger l&apos;affiche QR</>
+            )}
+          </button>
+          <p className="text-[11px] text-gray-400 text-center mt-1.5">
+            Imprimez et affichez pour que vos clients scannent et réservent
+          </p>
 
           {/* ── Types de billets ── */}
           {selectedEvent.ticket_types && selectedEvent.ticket_types.length > 0 && (
