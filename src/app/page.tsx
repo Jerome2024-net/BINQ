@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState, useRef } from "react";
 import {
   Zap,
   ArrowRight,
@@ -13,44 +12,11 @@ import {
   ScanLine,
   Ticket,
   Calendar,
-  Check,
-  Play,
   Globe,
   BarChart3,
   Shield,
   Sparkles,
 } from "lucide-react";
-
-/* ── Compteur animé ── */
-function Counter({ target, suffix = "" }: { target: number; suffix?: string }) {
-  const [count, setCount] = useState(0);
-  const ref = useRef<HTMLParagraphElement>(null);
-  const started = useRef(false);
-
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting && !started.current) {
-          started.current = true;
-          let v = 0;
-          const step = target / 120;
-          const id = setInterval(() => {
-            v += step;
-            if (v >= target) { setCount(target); clearInterval(id); }
-            else setCount(Math.floor(v));
-          }, 16);
-        }
-      },
-      { threshold: 0.5 }
-    );
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, [target]);
-
-  return <span ref={ref}>{count.toLocaleString("fr-FR")}{suffix}</span>;
-}
 
 export default function HomePage() {
   return (
@@ -118,10 +84,6 @@ export default function HomePage() {
               <Zap className="w-5 h-5" />
               Créer mon événement — Gratuit
             </Link>
-            <Link href="/explorer" className="w-full sm:w-auto flex items-center justify-center gap-2 px-8 py-4 bg-white text-gray-700 font-semibold rounded-2xl border border-gray-200 hover:border-gray-300 hover:bg-gray-50 transition-all text-[15px]">
-              <Play className="w-4 h-4 text-emerald-500 fill-emerald-500" />
-              Explorer les événements
-            </Link>
           </div>
 
           {/* ── Mock Phone ── */}
@@ -184,25 +146,6 @@ export default function HomePage() {
             </div>
             {/* Glow */}
             <div className="absolute -inset-6 bg-gradient-to-b from-emerald-200/30 to-cyan-200/20 rounded-[3rem] blur-3xl -z-10" />
-          </div>
-        </div>
-      </section>
-
-      {/* ═══════ SOCIAL PROOF ═══════ */}
-      <section className="py-10 sm:py-14 border-y border-gray-100">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6">
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 sm:gap-8 text-center">
-            {[
-              { value: <Counter target={500} suffix="+" />, label: "Événements créés" },
-              { value: <Counter target={12000} suffix="+" />, label: "Billets vendus" },
-              { value: <Counter target={98} suffix="%" />, label: "Satisfaction" },
-              { value: "4+", label: "Pays actifs" },
-            ].map((s, i) => (
-              <div key={i}>
-                <p className="text-2xl sm:text-3xl font-black text-gray-900">{s.value}</p>
-                <p className="text-xs sm:text-sm text-gray-500 mt-1">{s.label}</p>
-              </div>
-            ))}
           </div>
         </div>
       </section>
@@ -370,7 +313,6 @@ export default function HomePage() {
             <div className="flex items-center gap-6 text-sm text-gray-500">
               <a href="#fonctionnalites" className="hover:text-gray-900 transition">Fonctionnalités</a>
               <a href="#tarifs" className="hover:text-gray-900 transition">Tarifs</a>
-              <Link href="/explorer" className="hover:text-gray-900 transition">Explorer</Link>
             </div>
             <p className="text-xs text-gray-400">
               &copy; {new Date().getFullYear()} Binq. Tous droits réservés.
