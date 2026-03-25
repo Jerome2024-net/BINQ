@@ -519,21 +519,34 @@ export default function MaBoutiquePage() {
 
   const stopCamera = useCallback(() => {
     if (scannerRef.current) {
-      scannerRef.current.stop().catch(() => {});
-      scannerRef.current.clear();
+      try { scannerRef.current.stop().catch(() => {}); } catch {}
+      try { scannerRef.current.clear(); } catch {}
       scannerRef.current = null;
     }
     setCameraActive(false);
   }, []);
 
   const startCamera = useCallback(async () => {
+    // Nettoyer tout scanner existant
+    if (scannerRef.current) {
+      try { await scannerRef.current.stop(); } catch {}
+      try { scannerRef.current.clear(); } catch {}
+      scannerRef.current = null;
+    }
     setScanResult(null);
     setCameraActive(true);
     try {
       const { Html5Qrcode } = await import("html5-qrcode");
-      // Petit délai pour que le div soit monté
-      await new Promise(r => setTimeout(r, 100));
-      if (!scannerDivRef.current) return;
+      // Attendre que le div soit dans le DOM (polling)
+      let attempts = 0;
+      while (!document.getElementById("qr-scanner-region") && attempts < 20) {
+        await new Promise(r => setTimeout(r, 100));
+        attempts++;
+      }
+      const el = document.getElementById("qr-scanner-region");
+      if (!el) { setCameraActive(false); return; }
+      // Vider le contenu résiduel
+      el.innerHTML = "";
       const scanner = new Html5Qrcode("qr-scanner-region");
       scannerRef.current = scanner;
       await scanner.start(
@@ -541,18 +554,19 @@ export default function MaBoutiquePage() {
         { fps: 10, qrbox: { width: 220, height: 220 }, aspectRatio: 1 },
         (decodedText) => {
           scanner.stop().catch(() => {});
-          scanner.clear();
+          try { scanner.clear(); } catch {}
           scannerRef.current = null;
           setCameraActive(false);
           hapticSuccess();
           validateScannedCode(decodedText);
         },
-        () => {} // ignore scan failures
+        () => {}
       );
-    } catch {
+    } catch (err) {
+      console.error("Camera error:", err);
       setCameraActive(false);
       hapticError();
-      showToast("error", "Caméra", "Impossible d\u0027accéder à la caméra");
+      showToast("error", "Caméra", "Impossible d'accéder à la caméra");
     }
   }, [validateScannedCode]);
 
@@ -985,7 +999,7 @@ export default function MaBoutiquePage() {
               {scanResult ? (
                 <ScanResultOverlay
                   result={scanResult}
-                  onScanNext={() => { setScanResult(null); startCamera(); }}
+                  onScanNext={() => { setScanResult(null); setTimeout(() => startCamera(), 300); }}
                   onClose={() => { setScanResult(null); closeScanMode(); }}
                 />
               ) : (
