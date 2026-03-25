@@ -282,9 +282,6 @@ export default function HomePage() {
             <h2 className="text-2xl sm:text-4xl font-black tracking-tight mb-4">
               Vous fixez le prix,<br /><span className="text-emerald-600">vous recevez 100%</span>.
             </h2>
-            <p className="text-gray-500 text-sm sm:text-base max-w-md mx-auto">
-              Binq ajoute <span className="font-semibold text-gray-700">10% de frais de service</span> au prix du billet, entièrement à la charge de l&apos;acheteur.
-            </p>
           </div>
 
           {/* Carte principale — Exemple concret */}
