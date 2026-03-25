@@ -281,7 +281,6 @@ export default function HomePage() {
             <h2 className="text-2xl sm:text-4xl font-black tracking-tight mb-3">
               Vous fixez le prix,<br /><span className="text-emerald-600">vous recevez 100%</span>.
             </h2>
-            <p className="text-gray-500 text-base sm:text-lg max-w-lg mx-auto">L&apos;acheteur paye un petit supplément. Vous, zéro frais.</p>
           </div>
 
           {/* Exemple visuel */}
