@@ -2,10 +2,11 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import {
   signOrderData,
-  initFedaPay,
-  isFedaPayConfigured,
+  isCinetPayConfigured,
+  createCinetPayPayment,
+  generateTransactionId,
   type OrderData,
-} from "@/lib/fedapay";
+} from "@/lib/cinetpay";
 
 function getServiceClient() {
   return createClient(
@@ -15,7 +16,7 @@ function getServiceClient() {
   );
 }
 
-// POST /api/fedapay/checkout — Initier un paiement FedaPay pour un billet
+// POST /api/cinetpay/checkout — Initier un paiement CinetPay pour un billet
 export async function POST(req: NextRequest) {
   try {
     const supabase = getServiceClient();
@@ -83,15 +84,12 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ free: true });
     }
 
-    // FedaPay non configuré → fallback (mode dev)
-    if (!isFedaPayConfigured()) {
+    // CinetPay non configuré → fallback (mode dev)
+    if (!isCinetPayConfigured()) {
       return NextResponse.json({ fallback: true });
     }
 
-    // ═══ Créer la transaction FedaPay ═══
-    await initFedaPay();
-    const { Transaction } = await import("fedapay");
-
+    // ═══ Créer le paiement CinetPay ═══
     const orderData: OrderData = {
       ticket_type_id,
       buyer_name: buyer_name.trim(),
@@ -105,38 +103,33 @@ export async function POST(req: NextRequest) {
 
     const { encoded, signature } = signOrderData(orderData);
     const appUrl = process.env.NEXT_PUBLIC_APP_URL || "";
+    const transactionId = generateTransactionId();
 
-    const callbackUrl = `${appUrl}/payment/ticket-success?d=${encoded}&s=${signature}`;
+    const returnUrl = `${appUrl}/payment/ticket-success?d=${encoded}&s=${signature}&transaction_id=${transactionId}`;
+    const notifyUrl = `${appUrl}/api/webhooks/cinetpay`;
 
-    const customerData: Record<string, unknown> = {
-      firstname: buyer_name.trim(),
-    };
-    if (buyer_email?.trim()) customerData.email = buyer_email.trim();
-    if (buyer_phone?.trim()) {
-      customerData.phone_number = {
-        number: buyer_phone.trim(),
-        country: "bj",
-      };
-    }
+    // Montant CinetPay doit être un multiple de 5
+    const cinetPayAmount = Math.ceil(montant_total / 5) * 5;
 
-    const transaction = await Transaction.create({
+    const { payment_url } = await createCinetPayPayment({
+      transaction_id: transactionId,
+      amount: cinetPayAmount,
+      currency: ticketType.devise || "XOF",
       description: `Billet ${ticketType.events.nom}${qty > 1 ? ` x${qty}` : ""}`,
-      amount: montant_total,
-      callback_url: callbackUrl,
-      currency: { iso: ticketType.devise || "XOF" },
-      customer: customerData,
+      return_url: returnUrl,
+      notify_url: notifyUrl,
+      customer_name: buyer_name.trim(),
+      customer_email: buyer_email?.trim() || undefined,
+      customer_phone_number: buyer_phone?.trim() || undefined,
     });
 
-    // Générer le token de paiement → URL de checkout
-    const tokenResult = await transaction.generateToken();
-
     return NextResponse.json({
-      payment_url: tokenResult.url,
-      transaction_id: transaction.id,
+      payment_url,
+      transaction_id: transactionId,
     });
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : "Erreur de paiement";
-    console.error("FedaPay checkout error:", err);
+    console.error("CinetPay checkout error:", err);
     return NextResponse.json({ error: message }, { status: 500 });
   }
 }

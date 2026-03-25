@@ -116,11 +116,11 @@ export default function EvenementPage() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Erreur lors de l'achat");
 
-      // ═══ Paiement requis → redirection FedaPay ═══
+      // ═══ Paiement requis → redirection CinetPay ═══
       if (data.requires_payment && data.payment_url) {
         if (typeof window !== "undefined") {
-          sessionStorage.setItem("fedapay_tx_id", String(data.transaction_id));
-          sessionStorage.setItem("fedapay_event_name", event?.nom || "");
+          sessionStorage.setItem("cinetpay_tx_id", String(data.transaction_id));
+          sessionStorage.setItem("cinetpay_event_name", event?.nom || "");
         }
         window.location.href = data.payment_url;
         return;

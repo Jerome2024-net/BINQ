@@ -2,11 +2,11 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import {
   verifyAndDecodeOrder,
-  initFedaPay,
-  isFedaPayConfigured,
+  verifyCinetPayPayment,
+  isCinetPayConfigured,
   generatePaymentRef,
   generateQR,
-} from "@/lib/fedapay";
+} from "@/lib/cinetpay";
 
 function getServiceClient() {
   return createClient(
@@ -16,7 +16,7 @@ function getServiceClient() {
   );
 }
 
-// POST /api/fedapay/verify — Vérifier le paiement et créer les billets
+// POST /api/cinetpay/verify — Vérifier le paiement CinetPay et créer les billets
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
@@ -38,24 +38,23 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // ═══ Vérifier le paiement FedaPay ═══
-    if (transaction_id && isFedaPayConfigured()) {
-      await initFedaPay();
-      const { Transaction } = await import("fedapay");
-      const transaction = await Transaction.retrieve(transaction_id);
+    // ═══ Vérifier le paiement CinetPay ═══
+    if (transaction_id && isCinetPayConfigured()) {
+      const result = await verifyCinetPayPayment(transaction_id);
 
-      if (!transaction.wasPaid()) {
+      if (!result.paid) {
         return NextResponse.json(
           {
             error: "Paiement non confirmé",
-            payment_status: transaction.status,
+            payment_status: result.status,
           },
           { status: 402 }
         );
       }
 
-      // Vérifier que le montant correspond
-      if (parseInt(transaction.amount) !== orderData.montant_total) {
+      // Vérifier que le montant correspond (CinetPay arrondit au multiple de 5)
+      const expectedAmount = Math.ceil(orderData.montant_total / 5) * 5;
+      if (result.amount !== expectedAmount) {
         return NextResponse.json(
           { error: "Montant invalide" },
           { status: 400 }
@@ -74,7 +73,6 @@ export async function POST(req: NextRequest) {
       .eq("reference", firstRef);
 
     if (existingTickets && existingTickets.length > 0) {
-      // Déjà créés → renvoyer tous les billets de cette transaction
       const refs = Array.from({ length: orderData.qty }, (_, i) =>
         generatePaymentRef(txRef, i)
       );
@@ -147,7 +145,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ tickets: createdTickets }, { status: 201 });
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : "Erreur serveur";
-    console.error("FedaPay verify error:", err);
+    console.error("CinetPay verify error:", err);
     return NextResponse.json({ error: message }, { status: 500 });
   }
 }
