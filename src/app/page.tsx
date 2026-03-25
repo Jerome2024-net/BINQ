@@ -274,20 +274,24 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ── PRICING ── */}
-      <section id="tarifs" className="py-16 sm:py-24">
+      {/* ── TARIFS ── */}
+      <section id="tarifs" className="py-16 sm:py-24 bg-gray-50/60">
         <div className="max-w-4xl mx-auto px-4 sm:px-6">
           <div className="text-center mb-10 sm:mb-14">
-            <h2 className="text-2xl sm:text-4xl font-black tracking-tight mb-3">
+            <p className="text-xs font-bold uppercase tracking-widest text-emerald-600 mb-3">Tarifs</p>
+            <h2 className="text-2xl sm:text-4xl font-black tracking-tight mb-4">
               Vous fixez le prix,<br /><span className="text-emerald-600">vous recevez 100%</span>.
             </h2>
+            <p className="text-gray-500 text-sm sm:text-base max-w-md mx-auto">
+              Binq ajoute <span className="font-semibold text-gray-700">10% de frais de service</span> au prix du billet, entièrement à la charge de l&apos;acheteur.
+            </p>
           </div>
 
-          {/* Exemple visuel */}
+          {/* Carte principale — Exemple concret */}
           <div className="max-w-md mx-auto mb-10">
             <div className="rounded-2xl sm:rounded-3xl bg-white border border-gray-200 shadow-sm overflow-hidden">
               <div className="p-5 sm:p-7 text-center border-b border-gray-100">
-                <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">Exemple</p>
+                <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">Exemple concret</p>
                 <p className="text-sm text-gray-500 mb-1">Vous vendez un billet à</p>
                 <p className="text-3xl sm:text-4xl font-black text-gray-900">5 000 <span className="text-lg font-bold">FCFA</span></p>
               </div>
@@ -295,29 +299,40 @@ export default function HomePage() {
                 <div className="p-4 sm:p-6 text-center">
                   <p className="text-[11px] font-semibold text-gray-400 uppercase tracking-wider mb-2">L&apos;acheteur paye</p>
                   <p className="text-xl sm:text-2xl font-black text-gray-900">5 500</p>
-                  <p className="text-xs text-gray-400 mt-0.5">FCFA</p>
+                  <p className="text-xs text-gray-400 mt-0.5">FCFA (billet + 10%)</p>
                 </div>
                 <div className="p-4 sm:p-6 text-center bg-emerald-50/50">
                   <p className="text-[11px] font-semibold text-emerald-600 uppercase tracking-wider mb-2">Vous recevez</p>
                   <p className="text-xl sm:text-2xl font-black text-emerald-600">5 000</p>
-                  <p className="text-xs text-emerald-500 mt-0.5">FCFA</p>
+                  <p className="text-xs text-emerald-500 mt-0.5">FCFA — 100% du prix</p>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Avantages */}
-          <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2">
-            {[
-              "Pas d\u2019abonnement",
-              "Mobile Money & Carte",
-              "Billets gratuits = 0 frais",
-            ].map((text) => (
-              <div key={text} className="flex items-center gap-1.5 text-sm text-gray-600">
-                <Check className="w-4 h-4 text-emerald-500 flex-shrink-0" />
-                <span>{text}</span>
+          {/* Détails tarifs */}
+          <div className="grid sm:grid-cols-3 gap-4 max-w-2xl mx-auto">
+            <div className="bg-white rounded-2xl border border-gray-200 p-5 text-center">
+              <div className="w-10 h-10 rounded-xl bg-emerald-50 flex items-center justify-center mx-auto mb-3">
+                <CircleDollarSign className="w-5 h-5 text-emerald-600" />
               </div>
-            ))}
+              <p className="text-sm font-bold text-gray-900 mb-1">0 FCFA pour vous</p>
+              <p className="text-xs text-gray-500">Aucun abonnement, aucun frais caché. Vous ne payez rien.</p>
+            </div>
+            <div className="bg-white rounded-2xl border border-gray-200 p-5 text-center">
+              <div className="w-10 h-10 rounded-xl bg-cyan-50 flex items-center justify-center mx-auto mb-3">
+                <Smartphone className="w-5 h-5 text-cyan-600" />
+              </div>
+              <p className="text-sm font-bold text-gray-900 mb-1">Mobile Money &amp; Carte</p>
+              <p className="text-xs text-gray-500">Vos acheteurs payent avec le moyen qui leur convient.</p>
+            </div>
+            <div className="bg-white rounded-2xl border border-gray-200 p-5 text-center">
+              <div className="w-10 h-10 rounded-xl bg-purple-50 flex items-center justify-center mx-auto mb-3">
+                <Ticket className="w-5 h-5 text-purple-600" />
+              </div>
+              <p className="text-sm font-bold text-gray-900 mb-1">Gratuit = 0 frais</p>
+              <p className="text-xs text-gray-500">Les billets gratuits ne génèrent aucun frais de service.</p>
+            </div>
           </div>
         </div>
       </section>
