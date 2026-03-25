@@ -43,6 +43,7 @@ import {
 import { QRCodeSVG } from "qrcode.react";
 import { formatMontant } from "@/lib/currencies";
 import type { DeviseCode } from "@/lib/currencies";
+import ScanResultOverlay from "@/components/ScanResultOverlay";
 
 interface Boutique {
   id: string;
@@ -982,61 +983,11 @@ export default function MaBoutiquePage() {
 
               {/* Résultat du scan */}
               {scanResult ? (
-                <div>
-                  <div className={`rounded-2xl p-5 mb-4 animate-in zoom-in-95 duration-200 ${
-                    scanResult.valid
-                      ? "bg-emerald-50 border-2 border-emerald-200"
-                      : "bg-red-50 border-2 border-red-200"
-                  }`}>
-                    <div className="flex items-center gap-3 mb-3">
-                      <div className={`w-14 h-14 rounded-full flex items-center justify-center ${
-                        scanResult.valid ? "bg-emerald-500" : "bg-red-500"
-                      }`}>
-                        {scanResult.valid ? <Check className="w-7 h-7 text-white" /> : <X className="w-7 h-7 text-white" />}
-                      </div>
-                      <div>
-                        <p className={`font-black text-lg ${scanResult.valid ? "text-emerald-700" : "text-red-700"}`}>
-                          {scanResult.valid ? "Billet valide ✓" : scanResult.error || "Billet invalide"}
-                        </p>
-                        {scanResult.ticket && (
-                          <p className="text-sm text-gray-600">{scanResult.ticket.buyer_name}</p>
-                        )}
-                      </div>
-                    </div>
-                    {scanResult.ticket && (
-                      <div className="space-y-1.5 mt-3 pt-3 border-t border-gray-200/50">
-                        <div className="flex justify-between">
-                          <span className="text-xs text-gray-500">Réf</span>
-                          <span className="text-xs font-bold text-gray-900 font-mono">{scanResult.ticket.reference}</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="text-xs text-gray-500">Type</span>
-                          <span className="text-xs font-bold text-gray-900">{scanResult.ticket.type}</span>
-                        </div>
-                        {scanResult.ticket.event && (
-                          <div className="flex justify-between">
-                            <span className="text-xs text-gray-500">Événement</span>
-                            <span className="text-xs font-bold text-gray-900">{scanResult.ticket.event}</span>
-                          </div>
-                        )}
-                        {scanResult.ticket.scanned_at && (
-                          <div className="flex justify-between">
-                            <span className="text-xs text-gray-500">Scanné le</span>
-                            <span className="text-xs font-bold text-gray-900">
-                              {new Date(scanResult.ticket.scanned_at).toLocaleString("fr-FR", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}
-                            </span>
-                          </div>
-                        )}
-                      </div>
-                    )}
-                  </div>
-                  <button
-                    onClick={() => { setScanResult(null); startCamera(); }}
-                    className="w-full py-4 bg-emerald-500 text-white rounded-2xl font-bold text-sm transition hover:bg-emerald-600 active:scale-[0.97] flex items-center justify-center gap-2"
-                  >
-                    <ScanLine className="w-5 h-5" /> Scanner un autre billet
-                  </button>
-                </div>
+                <ScanResultOverlay
+                  result={scanResult}
+                  onScanNext={() => { setScanResult(null); startCamera(); }}
+                  onClose={() => { setScanResult(null); closeScanMode(); }}
+                />
               ) : (
                 <div>
                   {/* Zone caméra */}

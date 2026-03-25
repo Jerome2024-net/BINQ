@@ -56,7 +56,9 @@ export async function POST(req: NextRequest) {
         ticket: {
           reference: ticket.reference,
           buyer_name: ticket.buyer_name,
+          buyer_phone: ticket.buyer_phone,
           type: ticket.ticket_types?.nom,
+          event: ticket.events?.nom,
           scanned_at: ticket.scanned_at,
         },
       });
@@ -81,16 +83,30 @@ export async function POST(req: NextRequest) {
     }
 
     // Valider le billet
+    const now = new Date().toISOString();
     const { error: updateError } = await supabase
       .from("tickets")
       .update({
         statut: "used",
-        scanned_at: new Date().toISOString(),
+        scanned_at: now,
         scanned_by: user.id,
       })
       .eq("id", ticket.id);
 
     if (updateError) throw updateError;
+
+    // Compter les entrées pour cet événement
+    const { count: entryCount } = await supabase
+      .from("tickets")
+      .select("*", { count: "exact", head: true })
+      .eq("event_id", ticket.events?.id)
+      .eq("statut", "used");
+
+    const { count: totalSold } = await supabase
+      .from("tickets")
+      .select("*", { count: "exact", head: true })
+      .eq("event_id", ticket.events?.id)
+      .in("statut", ["valid", "used"]);
 
     return NextResponse.json({
       valid: true,
@@ -99,10 +115,14 @@ export async function POST(req: NextRequest) {
         id: ticket.id,
         reference: ticket.reference,
         buyer_name: ticket.buyer_name,
+        buyer_phone: ticket.buyer_phone,
         type: ticket.ticket_types?.nom,
         event: ticket.events?.nom,
         prix: ticket.ticket_types?.prix,
         devise: ticket.devise,
+        scanned_at: now,
+        entry_number: entryCount || 1,
+        total_sold: totalSold || 1,
       },
     });
   } catch (err: any) {
