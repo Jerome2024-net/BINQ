@@ -801,7 +801,7 @@ export default function EvenementsPage() {
                 <Eye className="w-4 h-4" /> Voir la page publique
               </a>
 
-              {/* Télécharger le ticket QR */}
+              {/* Télécharger le QR de l'événement */}
               <button
                 onClick={async () => {
                   setGeneratingPoster(true);
@@ -815,11 +815,11 @@ export default function EvenementsPage() {
                 {generatingPoster ? (
                   <><Loader2 className="w-4 h-4 animate-spin" /> Génération...</>
                 ) : (
-                  <><Printer className="w-4 h-4" /> Télécharger le ticket QR</>
+                  <><Printer className="w-4 h-4" /> Télécharger le QR événement</>
                 )}
               </button>
               <p className="text-[10px] text-gray-400 text-center mb-5">
-                Imprimez ce ticket pour que vos clients scannent et réservent
+                Imprimez ce QR pour que vos clients scannent et réservent
               </p>
 
               {/* Types de billets */}
