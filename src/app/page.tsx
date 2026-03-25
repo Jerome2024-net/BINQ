@@ -82,7 +82,7 @@ export default function HomePage() {
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 mb-14 sm:mb-20">
             <Link href="/inscription" className="w-full sm:w-auto flex items-center justify-center gap-2.5 px-8 py-4 bg-emerald-500 text-white font-bold rounded-2xl hover:bg-emerald-400 transition-all shadow-xl shadow-emerald-500/25 text-[15px]">
               <Zap className="w-5 h-5" />
-              Créer mon événement — Gratuit
+              Créer mon événement
             </Link>
           </div>
 
