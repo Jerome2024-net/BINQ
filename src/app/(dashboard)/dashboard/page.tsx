@@ -351,7 +351,7 @@ export default function DashboardPage() {
             <Eye className="w-4 h-4" /> Voir la page publique
           </a>
 
-          {/* Télécharger l'affiche QR */}
+          {/* Télécharger le ticket QR */}
           <button
             onClick={() => handleDownloadPoster(selectedEvent)}
             disabled={generatingPoster}
@@ -360,11 +360,11 @@ export default function DashboardPage() {
             {generatingPoster ? (
               <><Loader2 className="w-4 h-4 animate-spin" /> Génération en cours...</>
             ) : (
-              <><Printer className="w-4 h-4" /> Télécharger l&apos;affiche QR</>
+              <><Printer className="w-4 h-4" /> Télécharger le ticket QR</>
             )}
           </button>
           <p className="text-[11px] text-gray-400 text-center mt-1.5">
-            Imprimez et affichez pour que vos clients scannent et réservent
+            Imprimez ce ticket pour que vos clients scannent et réservent
           </p>
 
           {/* ── Types de billets ── */}
