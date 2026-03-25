@@ -184,8 +184,8 @@ export default function EvenementPage() {
   // ═══ LOADING ═══
   if (loading) {
     return (
-      <div className="min-h-screen bg-black flex items-center justify-center">
-        <Loader2 className="w-8 h-8 text-white animate-spin" />
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <Loader2 className="w-8 h-8 text-emerald-500 animate-spin" />
       </div>
     );
   }
@@ -193,11 +193,11 @@ export default function EvenementPage() {
   // ═══ ERROR ═══
   if (error && !event) {
     return (
-      <div className="min-h-screen bg-black flex flex-col items-center justify-center px-6">
-        <AlertCircle className="w-12 h-12 text-gray-500 mb-4" />
-        <p className="text-white font-bold text-lg mb-2">Événement introuvable</p>
-        <p className="text-gray-400 text-sm mb-6">Cet événement n&apos;existe pas ou n&apos;est plus disponible</p>
-        <button onClick={() => router.back()} className="px-6 py-3 bg-white text-black rounded-xl font-bold text-sm">
+      <div className="min-h-screen bg-white flex flex-col items-center justify-center px-6">
+        <AlertCircle className="w-12 h-12 text-gray-400 mb-4" />
+        <p className="text-gray-900 font-bold text-lg mb-2">Événement introuvable</p>
+        <p className="text-gray-500 text-sm mb-6">Cet événement n&apos;existe pas ou n&apos;est plus disponible</p>
+        <button onClick={() => router.back()} className="px-6 py-3 bg-emerald-500 text-white rounded-xl font-bold text-sm">
           Retour
         </button>
       </div>
@@ -209,14 +209,14 @@ export default function EvenementPage() {
   // ═══ SUCCESS — Billet confirmé + Invite tes amis ═══
   if (success && ticketCodes.length > 0) {
     return (
-      <div className="min-h-screen bg-black flex flex-col items-center justify-center px-6">
+      <div className="min-h-screen bg-white flex flex-col items-center justify-center px-6">
         {/* Confirmation */}
         <div className="w-20 h-20 bg-emerald-500 rounded-full flex items-center justify-center mb-5 animate-in zoom-in-75 duration-300">
           <Check className="w-10 h-10 text-white" />
         </div>
-        <h1 className="text-2xl font-black text-white mb-2">Ton billet est confirmé 🎉</h1>
-        <p className="text-gray-400 text-sm mb-8 text-center">
-          {ticketCodes.length > 1 ? `${ticketCodes.length} billets` : "1 billet"} pour <span className="text-white font-semibold">{event.nom}</span>
+        <h1 className="text-2xl font-black text-gray-900 mb-2">Ton billet est confirmé 🎉</h1>
+        <p className="text-gray-500 text-sm mb-8 text-center">
+          {ticketCodes.length > 1 ? `${ticketCodes.length} billets` : "1 billet"} pour <span className="text-gray-900 font-semibold">{event.nom}</span>
         </p>
 
         {/* Voir mes billets */}
@@ -225,7 +225,7 @@ export default function EvenementPage() {
             <a
               key={code}
               href={`/billet/${code}`}
-              className="block w-full bg-white text-black rounded-2xl p-4 text-center font-bold text-sm transition hover:bg-gray-100 active:scale-[0.98]"
+              className="block w-full bg-emerald-500 text-white rounded-2xl p-4 text-center font-bold text-sm transition hover:bg-emerald-600 active:scale-[0.98]"
             >
               <Ticket className="w-5 h-5 mx-auto mb-1" />
               {ticketCodes.length > 1 ? `Voir le billet ${i + 1}` : "Voir mon billet"}
@@ -235,11 +235,11 @@ export default function EvenementPage() {
 
         {/* ═══ Social Invite Section ═══ */}
         <div className="w-full max-w-sm">
-          <div className="bg-white/5 border border-white/10 rounded-2xl p-5 text-center">
-            <div className="w-12 h-12 bg-purple-500/20 rounded-full flex items-center justify-center mx-auto mb-3">
-              <Heart className="w-6 h-6 text-purple-400" />
+          <div className="bg-gray-50 border border-gray-200 rounded-2xl p-5 text-center">
+            <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-3">
+              <Heart className="w-6 h-6 text-purple-500" />
             </div>
-            <p className="text-white font-bold text-[15px] mb-1">Invite tes amis à te rejoindre</p>
+            <p className="text-gray-900 font-bold text-[15px] mb-1">Invite tes amis à te rejoindre</p>
             <p className="text-gray-500 text-xs mb-5">Les meilleurs moments se vivent ensemble</p>
 
             <button
@@ -256,13 +256,13 @@ export default function EvenementPage() {
             <div className="mt-4 flex items-center justify-center gap-2">
               <div className="flex -space-x-2">
                 {[...Array(Math.min(3, totalParticipants))].map((_, i) => (
-                  <div key={i} className="w-7 h-7 bg-gradient-to-br from-gray-600 to-gray-700 rounded-full border-2 border-black flex items-center justify-center">
-                    <Users className="w-3 h-3 text-gray-400" />
+                  <div key={i} className="w-7 h-7 bg-gradient-to-br from-emerald-400 to-emerald-500 rounded-full border-2 border-white flex items-center justify-center">
+                    <Users className="w-3 h-3 text-white" />
                   </div>
                 ))}
               </div>
-              <p className="text-xs text-gray-400">
-                <span className="text-white font-bold">+{totalParticipants}</span> personne{totalParticipants > 1 ? "s" : ""} participe{totalParticipants > 1 ? "nt" : ""}
+              <p className="text-xs text-gray-500">
+                <span className="text-gray-900 font-bold">+{totalParticipants}</span> personne{totalParticipants > 1 ? "s" : ""} participe{totalParticipants > 1 ? "nt" : ""}
               </p>
             </div>
           )}
@@ -270,14 +270,14 @@ export default function EvenementPage() {
 
         <button
           onClick={() => router.back()}
-          className="mt-8 text-gray-500 text-sm font-medium hover:text-gray-300 transition"
+          className="mt-8 text-gray-400 text-sm font-medium hover:text-gray-600 transition"
         >
           Retour
         </button>
 
         {/* Footer */}
         <div className="mt-12 text-center">
-          <p className="text-[11px] text-gray-600 font-medium">Propulsé par <span className="text-white font-bold">Binq</span></p>
+          <p className="text-[11px] text-gray-400 font-medium">Propulsé par <span className="text-emerald-600 font-bold">Binq</span></p>
         </div>
       </div>
     );
@@ -285,7 +285,7 @@ export default function EvenementPage() {
 
   // ═══ PAGE ÉVÉNEMENT ═══
   return (
-    <div className="min-h-screen bg-black">
+    <div className="min-h-screen bg-white">
       {/* Desktop centered container */}
       <div className="max-w-2xl mx-auto">
       {/* Cover */}
@@ -293,18 +293,18 @@ export default function EvenementPage() {
         {event.cover_url ? (
           <div className="w-full h-56 sm:h-72 lg:h-80 relative lg:rounded-b-3xl overflow-hidden">
             <img src={event.cover_url} alt={event.nom} className="w-full h-full object-cover" />
-            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-t from-white via-transparent to-transparent" />
           </div>
         ) : (
-          <div className="w-full h-40 bg-gradient-to-br from-gray-900 to-gray-800 relative">
-            <div className="absolute inset-0 bg-gradient-to-t from-black to-transparent" />
+          <div className="w-full h-40 bg-gradient-to-br from-emerald-500 to-emerald-600 relative">
+            <div className="absolute inset-0 bg-gradient-to-t from-white to-transparent" />
           </div>
         )}
 
         {/* Back button */}
         <button
           onClick={() => router.back()}
-          className="absolute top-4 left-4 w-10 h-10 bg-black/50 backdrop-blur-sm rounded-full flex items-center justify-center text-white hover:bg-black/70 transition"
+          className="absolute top-4 left-4 w-10 h-10 bg-white/80 backdrop-blur-sm rounded-full flex items-center justify-center text-gray-700 hover:bg-white transition shadow-sm"
         >
           <ArrowLeft className="w-5 h-5" />
         </button>
@@ -319,7 +319,7 @@ export default function EvenementPage() {
               navigator.clipboard.writeText(url);
             }
           }}
-          className="absolute top-4 right-4 w-10 h-10 bg-black/50 backdrop-blur-sm rounded-full flex items-center justify-center text-white hover:bg-black/70 transition"
+          className="absolute top-4 right-4 w-10 h-10 bg-white/80 backdrop-blur-sm rounded-full flex items-center justify-center text-gray-700 hover:bg-white transition shadow-sm"
         >
           <Share2 className="w-5 h-5" />
         </button>
@@ -329,14 +329,14 @@ export default function EvenementPage() {
       <div className="px-5 -mt-8 relative z-10">
         {/* ═══ Referral Banner — "X participe à cet événement" ═══ */}
         {referrer && (
-          <div className="mb-4 bg-gradient-to-r from-purple-600/20 to-pink-600/20 border border-purple-500/30 rounded-2xl p-4 animate-in slide-in-from-top-4 duration-300">
+          <div className="mb-4 bg-purple-50 border border-purple-200 rounded-2xl p-4 animate-in slide-in-from-top-4 duration-300">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-purple-500/30 rounded-full flex items-center justify-center shrink-0">
-                <Sparkles className="w-5 h-5 text-purple-300" />
+              <div className="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center shrink-0">
+                <Sparkles className="w-5 h-5 text-purple-500" />
               </div>
               <div>
-                <p className="text-sm font-bold text-white">{referrer} participe à cet événement</p>
-                <p className="text-xs text-purple-300/80">Rejoins-le et vivez ça ensemble 🎉</p>
+                <p className="text-sm font-bold text-gray-900">{referrer} participe à cet événement</p>
+                <p className="text-xs text-purple-600">Rejoins-le et vivez ça ensemble 🎉</p>
               </div>
             </div>
           </div>
@@ -344,41 +344,41 @@ export default function EvenementPage() {
 
         <div className="flex items-center gap-3 mb-3">
           {event.logo_url && (
-            <img src={event.logo_url} alt="" className="w-14 h-14 rounded-2xl object-cover border-2 border-black shrink-0 shadow-lg" />
+            <img src={event.logo_url} alt="" className="w-14 h-14 rounded-2xl object-cover border-2 border-white shrink-0 shadow-lg" />
           )}
-          <h1 className="text-2xl lg:text-3xl font-black text-white">{event.nom}</h1>
+          <h1 className="text-2xl lg:text-3xl font-black text-gray-900">{event.nom}</h1>
         </div>
 
         {/* ═══ Social Proof Bar ═══ */}
         {totalParticipants > 0 && (
-          <div className="mb-4 bg-white/5 rounded-2xl p-3.5">
+          <div className="mb-4 bg-gray-50 rounded-2xl p-3.5 border border-gray-100">
             <div className="flex items-center justify-between mb-2">
               <div className="flex items-center gap-2">
                 <div className="flex -space-x-1.5">
                   {[...Array(Math.min(4, totalParticipants))].map((_, i) => (
-                    <div key={i} className="w-6 h-6 bg-gradient-to-br from-gray-500 to-gray-600 rounded-full border-[1.5px] border-black flex items-center justify-center">
-                      <Users className="w-2.5 h-2.5 text-gray-300" />
+                    <div key={i} className="w-6 h-6 bg-gradient-to-br from-emerald-400 to-emerald-500 rounded-full border-[1.5px] border-white flex items-center justify-center">
+                      <Users className="w-2.5 h-2.5 text-white" />
                     </div>
                   ))}
                   {totalParticipants > 4 && (
-                    <div className="w-6 h-6 bg-white/10 rounded-full border-[1.5px] border-black flex items-center justify-center">
-                      <span className="text-[8px] font-bold text-white">+{totalParticipants - 4}</span>
+                    <div className="w-6 h-6 bg-gray-100 rounded-full border-[1.5px] border-white flex items-center justify-center">
+                      <span className="text-[8px] font-bold text-gray-600">+{totalParticipants - 4}</span>
                     </div>
                   )}
                 </div>
-                <p className="text-xs text-gray-300">
-                  <span className="font-bold text-white">{totalParticipants}</span> personne{totalParticipants > 1 ? "s" : ""} participe{totalParticipants > 1 ? "nt" : ""}
+                <p className="text-xs text-gray-500">
+                  <span className="font-bold text-gray-900">{totalParticipants}</span> personne{totalParticipants > 1 ? "s" : ""} participe{totalParticipants > 1 ? "nt" : ""}
                 </p>
               </div>
               {fillPercent >= 70 && (
-                <span className="text-[10px] font-bold text-orange-400 bg-orange-500/10 px-2 py-0.5 rounded-full">
+                <span className="text-[10px] font-bold text-orange-600 bg-orange-50 px-2 py-0.5 rounded-full">
                   🔥 {fillPercent}% rempli
                 </span>
               )}
             </div>
             {/* Progress bar */}
             {totalCapacity > 0 && (
-              <div className="h-1.5 bg-white/10 rounded-full overflow-hidden">
+              <div className="h-1.5 bg-gray-200 rounded-full overflow-hidden">
                 <div
                   className={`h-full rounded-full transition-all duration-500 ${
                     fillPercent >= 90 ? "bg-red-500" : fillPercent >= 70 ? "bg-orange-500" : "bg-emerald-500"
@@ -392,51 +392,51 @@ export default function EvenementPage() {
 
         {/* Date */}
         <div className="flex items-start gap-3 mb-3">
-          <div className="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center shrink-0">
-            <Calendar className="w-5 h-5 text-white" />
+          <div className="w-10 h-10 bg-emerald-50 rounded-xl flex items-center justify-center shrink-0">
+            <Calendar className="w-5 h-5 text-emerald-600" />
           </div>
           <div>
-            <p className="text-sm font-bold text-white capitalize">{formatDate(event.date_debut)}</p>
+            <p className="text-sm font-bold text-gray-900 capitalize">{formatDate(event.date_debut)}</p>
             {event.heure_debut && (
-              <p className="text-xs text-gray-400">
+              <p className="text-xs text-gray-500">
                 {formatTime(event.heure_debut)}
                 {event.heure_fin ? ` — ${formatTime(event.heure_fin)}` : ""}
               </p>
             )}
             {event.date_fin && event.date_fin !== event.date_debut && (
-              <p className="text-xs text-gray-400">jusqu&apos;au {formatDate(event.date_fin)}</p>
+              <p className="text-xs text-gray-500">jusqu&apos;au {formatDate(event.date_fin)}</p>
             )}
           </div>
         </div>
 
         {/* Lieu */}
         <div className="flex items-start gap-3 mb-4">
-          <div className="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center shrink-0">
-            <MapPin className="w-5 h-5 text-white" />
+          <div className="w-10 h-10 bg-emerald-50 rounded-xl flex items-center justify-center shrink-0">
+            <MapPin className="w-5 h-5 text-emerald-600" />
           </div>
           <div>
-            <p className="text-sm font-bold text-white">{event.lieu}</p>
-            {event.adresse && <p className="text-xs text-gray-400">{event.adresse}</p>}
-            {event.ville && <p className="text-xs text-gray-400">{event.ville}</p>}
+            <p className="text-sm font-bold text-gray-900">{event.lieu}</p>
+            {event.adresse && <p className="text-xs text-gray-500">{event.adresse}</p>}
+            {event.ville && <p className="text-xs text-gray-500">{event.ville}</p>}
           </div>
         </div>
 
         {/* Description */}
         {event.description && (
-          <div className="bg-white/5 rounded-2xl p-4 mb-6">
-            <p className="text-sm text-gray-300 whitespace-pre-line">{event.description}</p>
+          <div className="bg-gray-50 rounded-2xl p-4 mb-6 border border-gray-100">
+            <p className="text-sm text-gray-600 whitespace-pre-line">{event.description}</p>
           </div>
         )}
       </div>
 
       {/* Billets */}
       <div className="px-5 pb-40">
-        <h2 className="text-lg lg:text-xl font-black text-white mb-4">Billets</h2>
+        <h2 className="text-lg lg:text-xl font-black text-gray-900 mb-4">Billets</h2>
 
         {event.ticket_types.length === 0 ? (
           <div className="text-center py-8">
-            <Ticket className="w-10 h-10 text-gray-600 mx-auto mb-2" />
-            <p className="text-sm text-gray-500">Aucun billet disponible</p>
+            <Ticket className="w-10 h-10 text-gray-300 mx-auto mb-2" />
+            <p className="text-sm text-gray-400">Aucun billet disponible</p>
           </div>
         ) : (
           <div className="space-y-3 mb-6">
@@ -452,26 +452,26 @@ export default function EvenementPage() {
                   disabled={soldOut}
                   className={`w-full text-left rounded-2xl p-4 transition border-2 ${
                     isSelected
-                      ? "bg-white/10 border-white"
+                      ? "bg-emerald-50 border-emerald-500"
                       : soldOut
-                      ? "bg-white/5 border-transparent opacity-50 cursor-not-allowed"
-                      : "bg-white/5 border-transparent hover:border-white/30"
+                      ? "bg-gray-50 border-transparent opacity-50 cursor-not-allowed"
+                      : "bg-gray-50 border-transparent hover:border-emerald-300"
                   }`}
                 >
                   <div className="flex items-center justify-between mb-1">
-                    <p className="font-bold text-white text-sm">{tt.nom}</p>
-                    <p className="font-black text-white text-sm">
+                    <p className="font-bold text-gray-900 text-sm">{tt.nom}</p>
+                    <p className="font-black text-gray-900 text-sm">
                       {tt.prix > 0 ? formatMontant(tt.prix, devise) : "Gratuit"}
                     </p>
                   </div>
                   {tt.description && (
-                    <p className="text-xs text-gray-400 mb-2">{tt.description}</p>
+                    <p className="text-xs text-gray-500 mb-2">{tt.description}</p>
                   )}
                   <div className="flex items-center gap-2">
                     {soldOut ? (
-                      <span className="text-xs font-bold text-red-400">Complet</span>
+                      <span className="text-xs font-bold text-red-500">Complet</span>
                     ) : (
-                      <span className="text-xs text-gray-500">
+                      <span className="text-xs text-gray-400">
                         {remaining} place{remaining > 1 ? "s" : ""} restante{remaining > 1 ? "s" : ""}
                       </span>
                     )}
@@ -479,10 +479,10 @@ export default function EvenementPage() {
                   {/* Indicateur sélection */}
                   {isSelected && (
                     <div className="mt-2 flex items-center gap-1">
-                      <div className="w-4 h-4 bg-white rounded-full flex items-center justify-center">
-                        <Check className="w-3 h-3 text-black" />
+                      <div className="w-4 h-4 bg-emerald-500 rounded-full flex items-center justify-center">
+                        <Check className="w-3 h-3 text-white" />
                       </div>
-                      <span className="text-xs font-bold text-white">Sélectionné</span>
+                      <span className="text-xs font-bold text-emerald-600">Sélectionné</span>
                     </div>
                   )}
                 </button>
@@ -493,24 +493,24 @@ export default function EvenementPage() {
 
         {/* Formulaire d'achat */}
         {selectedType && selectedTicketType && (
-          <div className="bg-white/5 rounded-2xl p-5 animate-in slide-in-from-bottom-4 duration-300">
-            <h3 className="font-bold text-white mb-4">Réserver</h3>
+          <div className="bg-gray-50 border border-gray-100 rounded-2xl p-5 animate-in slide-in-from-bottom-4 duration-300">
+            <h3 className="font-bold text-gray-900 mb-4">Réserver</h3>
 
             {/* Quantité */}
             {selectedTicketType.max_par_personne > 1 && (
               <div className="flex items-center justify-between mb-4">
-                <span className="text-sm text-gray-400">Quantité</span>
+                <span className="text-sm text-gray-500">Quantité</span>
                 <div className="flex items-center gap-3">
                   <button
                     onClick={() => setQty(Math.max(1, qty - 1))}
-                    className="w-8 h-8 bg-white/10 rounded-lg flex items-center justify-center text-white hover:bg-white/20 transition"
+                    className="w-8 h-8 bg-gray-200 rounded-lg flex items-center justify-center text-gray-700 hover:bg-gray-300 transition"
                   >
                     <Minus className="w-4 h-4" />
                   </button>
-                  <span className="text-white font-bold w-6 text-center">{qty}</span>
+                  <span className="text-gray-900 font-bold w-6 text-center">{qty}</span>
                   <button
                     onClick={() => setQty(Math.min(selectedTicketType.max_par_personne, qty + 1))}
-                    className="w-8 h-8 bg-white/10 rounded-lg flex items-center justify-center text-white hover:bg-white/20 transition"
+                    className="w-8 h-8 bg-gray-200 rounded-lg flex items-center justify-center text-gray-700 hover:bg-gray-300 transition"
                   >
                     <Plus className="w-4 h-4" />
                   </button>
@@ -520,50 +520,50 @@ export default function EvenementPage() {
 
             {/* Nom */}
             <div className="mb-3">
-              <label className="text-xs font-semibold text-gray-400 mb-1 block">Votre nom *</label>
+              <label className="text-xs font-semibold text-gray-500 mb-1 block">Votre nom *</label>
               <input
                 value={buyerName}
                 onChange={(e) => setBuyerName(e.target.value)}
                 placeholder="Nom complet"
-                className="w-full bg-white/10 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-gray-500 outline-none focus:border-white/30 transition"
+                className="w-full bg-white border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-900 placeholder-gray-400 outline-none focus:border-emerald-400 transition"
               />
             </div>
 
             {/* Téléphone */}
             <div className="mb-3">
-              <label className="text-xs font-semibold text-gray-400 mb-1 block">Téléphone</label>
+              <label className="text-xs font-semibold text-gray-500 mb-1 block">Téléphone</label>
               <input
                 value={buyerPhone}
                 onChange={(e) => setBuyerPhone(e.target.value)}
                 placeholder="+225 07 00 00 00"
                 type="tel"
-                className="w-full bg-white/10 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-gray-500 outline-none focus:border-white/30 transition"
+                className="w-full bg-white border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-900 placeholder-gray-400 outline-none focus:border-emerald-400 transition"
               />
             </div>
 
             {/* Email */}
             <div className="mb-5">
-              <label className="text-xs font-semibold text-gray-400 mb-1 block">Email <span className="text-gray-600">(optionnel)</span></label>
+              <label className="text-xs font-semibold text-gray-500 mb-1 block">Email <span className="text-gray-400">(optionnel)</span></label>
               <input
                 value={buyerEmail}
                 onChange={(e) => setBuyerEmail(e.target.value)}
                 placeholder="email@exemple.com"
                 type="email"
-                className="w-full bg-white/10 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-gray-500 outline-none focus:border-white/30 transition"
+                className="w-full bg-white border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-900 placeholder-gray-400 outline-none focus:border-emerald-400 transition"
               />
             </div>
 
             {/* Erreur */}
             {error && (
-              <div className="bg-red-500/10 border border-red-500/20 rounded-xl p-3 mb-4">
-                <p className="text-sm text-red-400 font-medium">{error}</p>
+              <div className="bg-red-50 border border-red-200 rounded-xl p-3 mb-4">
+                <p className="text-sm text-red-600 font-medium">{error}</p>
               </div>
             )}
 
             {/* Total + CTA */}
             <div className="flex items-center justify-between mb-4">
-              <span className="text-sm text-gray-400">Total</span>
-              <span className="text-lg font-black text-white">
+              <span className="text-sm text-gray-500">Total</span>
+              <span className="text-lg font-black text-gray-900">
                 {total > 0 ? formatMontant(total, devise) : "Gratuit"}
               </span>
             </div>
@@ -571,7 +571,7 @@ export default function EvenementPage() {
             <button
               onClick={handleBuy}
               disabled={buying || !buyerName.trim()}
-              className="w-full py-4 bg-white text-black rounded-2xl font-bold text-[15px] transition hover:bg-gray-100 active:scale-[0.98] disabled:opacity-50 flex items-center justify-center gap-2"
+              className="w-full py-4 bg-emerald-500 text-white rounded-2xl font-bold text-[15px] transition hover:bg-emerald-600 active:scale-[0.98] disabled:opacity-50 flex items-center justify-center gap-2"
             >
               {buying ? (
                 <Loader2 className="w-5 h-5 animate-spin" />
@@ -587,10 +587,10 @@ export default function EvenementPage() {
       </div>
 
       {/* Footer */}
-      <div className="fixed bottom-0 left-0 right-0 bg-gradient-to-t from-black via-black to-transparent pt-8 pb-6 px-5 pointer-events-none">
+      <div className="fixed bottom-0 left-0 right-0 bg-gradient-to-t from-white via-white to-transparent pt-8 pb-6 px-5 pointer-events-none">
         <div className="text-center pointer-events-auto">
-          <p className="text-[11px] text-gray-600 font-medium">
-            Propulsé par <span className="text-white font-bold">Binq</span>
+          <p className="text-[11px] text-gray-400 font-medium">
+            Propulsé par <span className="text-emerald-600 font-bold">Binq</span>
           </p>
         </div>
       </div>
