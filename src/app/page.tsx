@@ -277,35 +277,48 @@ export default function HomePage() {
       {/* ── PRICING ── */}
       <section id="tarifs" className="py-16 sm:py-24">
         <div className="max-w-4xl mx-auto px-4 sm:px-6">
-          <div className="text-center mb-12">
+          <div className="text-center mb-10 sm:mb-14">
             <h2 className="text-2xl sm:text-4xl font-black tracking-tight mb-3">
-              <span className="text-emerald-600">Gratuit</span> pour l&apos;organisateur.
+              Vous fixez le prix,<br /><span className="text-emerald-600">vous recevez 100%</span>.
             </h2>
-            <p className="text-gray-600 text-base sm:text-lg">Pas d&apos;abonnement, pas de frais cachés. 10% de frais de service ajoutés au prix du billet, payés par l&apos;acheteur.</p>
+            <p className="text-gray-500 text-base sm:text-lg max-w-lg mx-auto">L&apos;acheteur paye un petit supplément. Vous, zéro frais.</p>
           </div>
-          <div className="max-w-sm mx-auto">
-            <div className="rounded-2xl sm:rounded-3xl bg-gradient-to-b from-emerald-500/10 to-emerald-500/[0.02] border border-emerald-200/40 p-6 sm:p-8 text-center">
-              <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-emerald-50 flex items-center justify-center mx-auto mb-4">
-                <Ticket className="w-6 h-6 sm:w-7 sm:h-7 text-emerald-600" />
+
+          {/* Exemple visuel */}
+          <div className="max-w-md mx-auto mb-10">
+            <div className="rounded-2xl sm:rounded-3xl bg-white border border-gray-200 shadow-sm overflow-hidden">
+              <div className="p-5 sm:p-7 text-center border-b border-gray-100">
+                <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">Exemple</p>
+                <p className="text-sm text-gray-500 mb-1">Vous vendez un billet à</p>
+                <p className="text-3xl sm:text-4xl font-black text-gray-900">5 000 <span className="text-lg font-bold">FCFA</span></p>
               </div>
-              <p className="text-3xl sm:text-5xl font-black text-emerald-600 mb-2">10%</p>
-              <p className="text-base font-bold text-gray-900 mb-1">de frais de service</p>
-              <p className="text-sm text-gray-500">ajoutés au prix du billet, payés par l&apos;acheteur</p>
-              <div className="mt-5 pt-5 border-t border-emerald-200/40 space-y-2">
-                <div className="flex items-center justify-center gap-2 text-sm text-gray-600">
-                  <Check className="w-4 h-4 text-emerald-500 flex-shrink-0" />
-                  <span>0 FCFA pour l&apos;organisateur</span>
+              <div className="grid grid-cols-2 divide-x divide-gray-100">
+                <div className="p-4 sm:p-6 text-center">
+                  <p className="text-[11px] font-semibold text-gray-400 uppercase tracking-wider mb-2">L&apos;acheteur paye</p>
+                  <p className="text-xl sm:text-2xl font-black text-gray-900">5 500</p>
+                  <p className="text-xs text-gray-400 mt-0.5">FCFA</p>
                 </div>
-                <div className="flex items-center justify-center gap-2 text-sm text-gray-600">
-                  <Check className="w-4 h-4 text-emerald-500 flex-shrink-0" />
-                  <span>Mobile Money &amp; Carte acceptés</span>
-                </div>
-                <div className="flex items-center justify-center gap-2 text-sm text-gray-600">
-                  <Check className="w-4 h-4 text-emerald-500 flex-shrink-0" />
-                  <span>Billets gratuits = 0 frais</span>
+                <div className="p-4 sm:p-6 text-center bg-emerald-50/50">
+                  <p className="text-[11px] font-semibold text-emerald-600 uppercase tracking-wider mb-2">Vous recevez</p>
+                  <p className="text-xl sm:text-2xl font-black text-emerald-600">5 000</p>
+                  <p className="text-xs text-emerald-500 mt-0.5">FCFA</p>
                 </div>
               </div>
             </div>
+          </div>
+
+          {/* Avantages */}
+          <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2">
+            {[
+              "Pas d\u2019abonnement",
+              "Mobile Money & Carte",
+              "Billets gratuits = 0 frais",
+            ].map((text) => (
+              <div key={text} className="flex items-center gap-1.5 text-sm text-gray-600">
+                <Check className="w-4 h-4 text-emerald-500 flex-shrink-0" />
+                <span>{text}</span>
+              </div>
+            ))}
           </div>
         </div>
       </section>
