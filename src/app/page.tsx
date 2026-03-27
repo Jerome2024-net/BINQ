@@ -168,7 +168,7 @@ export default function HomePage() {
             {[
               { icon: Calendar, title: "Événement en 2 min", desc: "Nom, date, lieu, cover et types de billets. Publiez en quelques clics.", color: "bg-emerald-500" },
               { icon: QrCode, title: "QR unique par billet", desc: "Chaque billet génère un QR infalsifiable. Zéro fraude, zéro doublon.", color: "bg-cyan-500" },
-              { icon: Smartphone, title: "Mobile Money & Carte", desc: "Orange Money, Wave, MTN, carte bancaire… vos participants choisissent.", color: "bg-violet-500" },
+              { icon: Smartphone, title: "Mobile Money & Carte", desc: "Orange Money, MTN, carte bancaire… vos participants choisissent.", color: "bg-violet-500" },
               { icon: ScanLine, title: "Scan à l'entrée", desc: "Scannez les QR en temps réel. Voyez le taux de remplissage en direct.", color: "bg-orange-500" },
               { icon: Shield, title: "Anti-fraude intégré", desc: "Chaque billet est unique, signé et vérifié. Impossible à dupliquer.", color: "bg-rose-500" },
               { icon: BarChart3, title: "Dashboard temps réel", desc: "Ventes, revenus, entrées scannées — tout dans un tableau de bord clair.", color: "bg-amber-500" },
