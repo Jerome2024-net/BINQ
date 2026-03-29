@@ -31,7 +31,7 @@ interface Notification {
 
 const bottomTabs = [
   { href: "/dashboard", label: "Accueil", icon: ShoppingBag },
-  { href: "/evenements", label: "\u00c9v\u00e9nements", icon: Calendar },
+  { href: "/evenements", label: "Billetteries", icon: Calendar },
   { href: "/portefeuille", label: "Wallet", icon: Wallet },
   { href: "/ventes", label: "Ventes", icon: TrendingUp },
 ];

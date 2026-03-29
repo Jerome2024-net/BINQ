@@ -360,7 +360,7 @@ export default function DashboardPage() {
             {generatingPoster ? (
               <><Loader2 className="w-4 h-4 animate-spin" /> Génération en cours...</>
             ) : (
-              <><Printer className="w-4 h-4" /> Télécharger le QR événement</>
+              <><Printer className="w-4 h-4" /> Télécharger le QR billetterie</>
             )}
           </button>
           <p className="text-[11px] text-gray-400 text-center mt-1.5">
@@ -435,7 +435,7 @@ export default function DashboardPage() {
                   <Users className="w-7 h-7 text-gray-300" />
                 </div>
                 <p className="text-[13px] font-semibold text-gray-500">Aucun participant</p>
-                <p className="text-[11px] text-gray-400 mt-1">Partagez votre événement pour vendre des billets</p>
+                <p className="text-[11px] text-gray-400 mt-1">Partagez votre billetterie pour vendre des billets</p>
               </div>
             ) : (
               <div className="space-y-2">
@@ -487,7 +487,7 @@ export default function DashboardPage() {
             href={`/evenements?event=${selectedEvent.id}`}
             className="mt-6 mb-2 w-full flex items-center justify-center gap-2 text-gray-400 text-[12px] font-semibold py-3 hover:text-gray-600 transition"
           >
-            Gérer cet événement <ExternalLink className="w-3.5 h-3.5" />
+            Gérer cette billetterie <ExternalLink className="w-3.5 h-3.5" />
           </Link>
         </div>
       </div>
@@ -512,13 +512,13 @@ export default function DashboardPage() {
       {/* ── Si aucun event: un seul bloc minimaliste ── */}
       {events.length === 0 ? (
         <div className="mt-20 flex flex-col items-center">
-          <p className="text-[17px] font-black text-gray-900 text-center">Crée ton premier événement</p>
+          <p className="text-[17px] font-black text-gray-900 text-center">Crée ta première billetterie</p>
           <p className="text-[13px] text-gray-400 font-medium mt-2 text-center">Commence à vendre en quelques secondes</p>
           <Link
             href="/evenements?action=create"
             className="mt-8 w-full max-w-[280px] flex items-center justify-center gap-2 py-4 bg-emerald-500 text-white font-bold text-[15px] rounded-2xl hover:bg-emerald-600 transition-all active:scale-[0.97] shadow-lg shadow-emerald-500/25"
           >
-            <Plus className="w-5 h-5" /> Créer un événement
+            <Plus className="w-5 h-5" /> Créer une billetterie
           </Link>
         </div>
       ) : (
@@ -533,7 +533,7 @@ export default function DashboardPage() {
               </p>
               <div className="flex items-center gap-4 mt-3">
                 <span className="text-[12px] text-white/70 font-medium">{totalTicketsSold} billet{totalTicketsSold > 1 ? "s" : ""} vendu{totalTicketsSold > 1 ? "s" : ""}</span>
-                <span className="text-[12px] text-white/70 font-medium">{activeEvents.length} event{activeEvents.length > 1 ? "s" : ""} actif{activeEvents.length > 1 ? "s" : ""}</span>
+                <span className="text-[12px] text-white/70 font-medium">{activeEvents.length} billetterie{activeEvents.length > 1 ? "s" : ""} active{activeEvents.length > 1 ? "s" : ""}</span>
               </div>
             </div>
           </Link>
@@ -543,7 +543,7 @@ export default function DashboardPage() {
             href="/evenements?action=create"
             className="mt-3 w-full flex items-center justify-center gap-2 py-3.5 bg-white border border-gray-200 text-gray-900 font-bold text-[14px] rounded-2xl hover:bg-gray-50 transition-all active:scale-[0.97]"
           >
-            <Plus className="w-4 h-4" /> Créer un événement
+            <Plus className="w-4 h-4" /> Créer une billetterie
           </Link>
 
           {/* ── Prochain événement — Hero ── */}

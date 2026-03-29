@@ -200,7 +200,7 @@ export default function EvenementsPage() {
         setBoutique(meData.boutique);
       } else { setBoutique(data.boutique); }
       hapticSuccess();
-      showToast("success", "C'est parti !", "Créez votre premier événement");
+      showToast("success", "C'est parti !", "Créez votre première billetterie");
     } catch { hapticError(); showToast("error", "Erreur", "Erreur de création"); }
     finally { setCreating(false); }
   };
@@ -316,7 +316,7 @@ export default function EvenementsPage() {
       setEvtLogoFile(null); setEvtLogoPreview(null); setEvtCoverFile(null); setEvtCoverPreview(null);
       hapticSuccess();
       const uploadFailed = results.some((r: any) => !r.url);
-      showToast("success", "Événement créé !", uploadFailed ? "Les images seront à re-uploader" : "");
+      showToast("success", "Billetterie créée !", uploadFailed ? "Les images seront à re-uploader" : "");
     } catch (err: any) {
       hapticError();
       showToast("error", "Erreur", err.message || "Impossible de créer");
@@ -331,7 +331,7 @@ export default function EvenementsPage() {
         setEvents((prev) => prev.filter((e) => e.id !== eventId));
         if (selectedEvent?.id === eventId) setSelectedEvent(null);
         hapticSuccess();
-        showToast("success", "Événement supprimé");
+        showToast("success", "Billetterie supprimée");
       }
     } catch { hapticError(); }
     finally { setDeletingEventId(null); }
@@ -542,10 +542,10 @@ export default function EvenementsPage() {
       <div className="px-4 pt-4 pb-2">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-xl lg:text-2xl font-black text-gray-900">Mes événements</h1>
+            <h1 className="text-xl lg:text-2xl font-black text-gray-900">Mes billetteries</h1>
             <div className="flex items-center gap-1.5 mt-0.5">
               <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full" />
-              <span className="text-[11px] text-gray-400">{events.length} événement{events.length > 1 ? "s" : ""}</span>
+              <span className="text-[11px] text-gray-400">{events.length} billetterie{events.length > 1 ? "s" : ""}</span>
             </div>
           </div>
           <button
@@ -815,7 +815,7 @@ export default function EvenementsPage() {
                 {generatingPoster ? (
                   <><Loader2 className="w-4 h-4 animate-spin" /> Génération...</>
                 ) : (
-                  <><Printer className="w-4 h-4" /> Télécharger le QR événement</>
+                  <><Printer className="w-4 h-4" /> Télécharger le QR billetterie</>
                 )}
               </button>
               <p className="text-[10px] text-gray-400 text-center mb-5">
@@ -889,7 +889,7 @@ export default function EvenementsPage() {
                 onClick={() => { hapticMedium(); setShowAddEvent(true); }}
                 className="w-full flex items-center justify-center gap-2 bg-emerald-500 hover:bg-emerald-600 text-white py-3.5 rounded-xl font-bold text-sm transition active:scale-[0.97] mb-2.5"
               >
-                <Plus className="w-4 h-4" /> Créer un événement
+                <Plus className="w-4 h-4" /> Créer une billetterie
               </button>
 
               {/* CTA Scanner — séparé */}
@@ -922,7 +922,7 @@ export default function EvenementsPage() {
                           </div>
                           <span className="text-[10px] font-bold text-white/60 uppercase tracking-widest">Nouveau</span>
                         </div>
-                        <h3 className="text-xl font-black text-white leading-tight">Créer un<br />événement</h3>
+                        <h3 className="text-xl font-black text-white leading-tight">Nouvelle<br />billetterie</h3>
                         <p className="text-[11px] text-white/50 mt-1.5">En quelques étapes, vos billets seront en vente</p>
                       </div>
                       <button onClick={() => setShowAddEvent(false)} className="w-8 h-8 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center hover:bg-white/20 transition">
@@ -1353,8 +1353,8 @@ export default function EvenementsPage() {
               ) : events.length === 0 ? (
                 <div className="text-center py-12">
                   <Calendar className="w-12 h-12 text-gray-200 mx-auto mb-3" />
-                  <p className="text-sm font-semibold text-gray-500">Aucun événement</p>
-                  <p className="text-xs text-gray-400 mt-1">Créez votre premier événement et vendez des billets</p>
+                  <p className="text-sm font-semibold text-gray-500">Aucune billetterie</p>
+                  <p className="text-xs text-gray-400 mt-1">Créez votre première billetterie et vendez des billets</p>
                 </div>
               ) : (
                 <div className="space-y-2.5 lg:grid lg:grid-cols-2 xl:grid-cols-3 lg:gap-3 lg:space-y-0">
