@@ -274,7 +274,7 @@ export default function HomePage() {
               { label: "Soirées & Clubs", img: "https://images.unsplash.com/photo-1566737236500-c8ac43014a67?w=600&h=400&fit=crop&q=80" },
               { label: "Formations & Ateliers", img: "https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=600&h=400&fit=crop&q=80" },
               { label: "Conférences & Séminaires", img: "https://images.unsplash.com/photo-1505373877841-8d25f7d46678?w=600&h=400&fit=crop&q=80" },
-              { label: "Sport & Compétitions", img: "https://images.unsplash.com/photo-1461896836934-bd45ba8e291d?w=600&h=400&fit=crop&q=80" },
+              { label: "Restaurants", img: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=600&h=400&fit=crop&q=80" },
               { label: "Salons & Expositions", img: "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=600&h=400&fit=crop&q=80" },
             ].map((item, i) => (
               <div key={i} className="group relative rounded-2xl overflow-hidden aspect-[3/2] cursor-default">
