@@ -2,10 +2,9 @@
 
 import Link from "next/link";
 import {
-  Zap,
   ArrowRight,
+  Check,
   ChevronRight,
-  Smartphone,
   QrCode,
   CircleDollarSign,
   Star,
@@ -13,9 +12,14 @@ import {
   Ticket,
   Calendar,
   Globe,
-  BarChart3,
   Shield,
   Sparkles,
+  Music,
+  GraduationCap,
+  PartyPopper,
+  Dumbbell,
+  Presentation,
+  Store,
 } from "lucide-react";
 
 export default function HomePage() {
@@ -32,10 +36,10 @@ export default function HomePage() {
             <span className="font-black text-lg sm:text-xl tracking-tight">Binq</span>
           </Link>
 
-          <nav className="hidden md:flex items-center gap-6">
+          <nav className="hidden md:flex items-center gap-8">
             {[
               { label: "Fonctionnalités", href: "#fonctionnalites" },
-              { label: "Comment ça marche", href: "#comment" },
+              { label: "Pour qui ?", href: "#pourqui" },
               { label: "Tarifs", href: "#tarifs" },
             ].map((l) => (
               <a key={l.href} href={l.href} className="text-sm font-medium text-gray-500 hover:text-gray-900 transition-colors">{l.label}</a>
@@ -46,171 +50,278 @@ export default function HomePage() {
             <Link href="/connexion" className="text-[11px] sm:text-sm font-semibold text-gray-600 hover:text-gray-900 transition-colors px-2 sm:px-4 py-2">
               Connexion
             </Link>
-            <Link href="/inscription" className="text-[11px] sm:text-sm font-bold bg-emerald-500 text-white px-3.5 sm:px-5 py-2 sm:py-2.5 rounded-xl sm:rounded-2xl hover:bg-emerald-400 transition-all flex items-center gap-1.5 shadow-lg shadow-emerald-500/25">
-              Commencer
-              <ArrowRight className="w-3.5 h-3.5" />
+            <Link href="/inscription" className="text-[11px] sm:text-sm font-bold bg-emerald-500 text-white px-3.5 sm:px-5 py-2 sm:py-2.5 rounded-xl hover:bg-emerald-400 transition-all flex items-center gap-1.5 shadow-lg shadow-emerald-500/25">
+              Créer ma billetterie
             </Link>
           </div>
         </div>
       </header>
 
       {/* ═══════ HERO ═══════ */}
-      <section className="relative pt-28 sm:pt-36 pb-16 sm:pb-24 overflow-hidden">
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute top-[-20%] left-[-15%] w-[60vw] h-[60vw] bg-emerald-100/60 rounded-full blur-[120px]" />
-          <div className="absolute bottom-[-10%] right-[-10%] w-[40vw] h-[40vw] bg-cyan-100/40 rounded-full blur-[100px]" />
-          <div className="absolute inset-0 opacity-[0.02]" style={{ backgroundImage: "radial-gradient(circle, #000 1px, transparent 1px)", backgroundSize: "28px 28px" }} />
+      <section className="relative pt-28 sm:pt-40 pb-20 sm:pb-32 overflow-hidden">
+        {/* Background */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none -z-10">
+          <div className="absolute top-[-20%] left-[-15%] w-[60vw] h-[60vw] bg-emerald-100/50 rounded-full blur-[120px]" />
+          <div className="absolute bottom-[-10%] right-[-10%] w-[40vw] h-[40vw] bg-cyan-100/30 rounded-full blur-[100px]" />
+          <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808008_1px,transparent_1px),linear-gradient(to_bottom,#80808008_1px,transparent_1px)] bg-[size:32px_32px]" />
         </div>
 
         <div className="relative max-w-5xl mx-auto px-4 sm:px-6 text-center">
           {/* Badge */}
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-50 border border-emerald-200/50 text-emerald-700 text-xs font-bold mb-6 sm:mb-8">
             <Sparkles className="w-3.5 h-3.5" />
-            La billetterie #1 en Afrique de l&apos;Ouest
+            La billetterie pensée pour l&apos;Afrique de l&apos;Ouest
           </div>
 
-          <h1 className="text-[2.5rem] sm:text-6xl lg:text-7xl font-black tracking-tight leading-[1.08] mb-5 sm:mb-7">
-            Vendez vos billets.<br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-500 via-emerald-400 to-cyan-400">Scannez à l&apos;entrée.</span>
+          <h1 className="text-[2.5rem] sm:text-6xl lg:text-[4.5rem] font-black tracking-tight leading-[1.08] mb-6 sm:mb-8">
+            Lancez rapidement.<br />
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-500 via-emerald-400 to-cyan-400">Vendez plus.</span>
           </h1>
 
-          <p className="text-base sm:text-xl text-gray-500 max-w-xl mx-auto mb-8 sm:mb-10 leading-relaxed">
-            Créez votre événement, vendez des billets en ligne et contrôlez les entrées avec un simple scan QR.
+          <p className="text-base sm:text-xl text-gray-500 max-w-2xl mx-auto mb-8 sm:mb-10 leading-relaxed">
+            Créez votre billetterie en ligne, encaissez via Mobile Money ou carte, et contrôlez chaque entrée par QR code. <span className="text-gray-700 font-semibold">Inscription gratuite et sans engagement.</span>
           </p>
 
           {/* CTA */}
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 mb-14 sm:mb-20">
-            <Link href="/inscription" className="w-full sm:w-auto flex items-center justify-center gap-2.5 px-8 py-4 bg-emerald-500 text-white font-bold rounded-2xl hover:bg-emerald-400 transition-all shadow-xl shadow-emerald-500/25 text-[15px]">
-              <Zap className="w-5 h-5" />
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 mb-6">
+            <Link href="/inscription" className="w-full sm:w-auto flex items-center justify-center gap-2.5 px-8 py-4 bg-emerald-500 text-white font-bold rounded-2xl hover:bg-emerald-400 transition-all shadow-xl shadow-emerald-500/25 text-[15px] active:scale-[0.97]">
               Créer ma billetterie
+              <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
+          <p className="text-xs text-gray-400 font-medium">✓ Gratuit &nbsp; ✓ Sans abonnement &nbsp; ✓ Sans engagement</p>
+        </div>
+      </section>
 
-          {/* ── Mock Phone ── */}
-          <div className="relative max-w-[280px] mx-auto">
-            <div className="relative bg-gradient-to-b from-[#111] to-[#0a0a0a] rounded-[2.5rem] border border-white/10 p-5 pt-7 pb-7 shadow-2xl shadow-black/20 text-white">
-              {/* Notch */}
-              <div className="absolute top-2.5 left-1/2 -translate-x-1/2 w-20 h-5 bg-black rounded-full" />
-              <div className="flex items-center justify-between mb-4 px-1 pt-3">
-                <span className="text-[10px] text-gray-400 font-semibold">9:41</span>
-                <div className="flex gap-1">
-                  <div className="w-4 h-2 rounded-sm bg-white/15" />
-                  <div className="w-3 h-2 rounded-sm bg-white/15" />
-                  <div className="w-6 h-2.5 rounded-sm bg-emerald-500/50" />
-                </div>
+      {/* ═══════ 3 PILIERS ═══════ */}
+      <section id="fonctionnalites" className="py-16 sm:py-24 border-t border-gray-100">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6">
+          <div className="text-center mb-14 sm:mb-20">
+            <h2 className="text-2xl sm:text-4xl lg:text-5xl font-black tracking-tight mb-4">
+              La billetterie qui reste{" "}
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-500 to-cyan-400">simple.</span>
+            </h2>
+            <p className="text-gray-500 text-base sm:text-lg max-w-xl mx-auto">
+              Adaptée à tous les événements. Pour 10 ou 10 000 participants.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-0 md:gap-0 border border-gray-200 rounded-3xl overflow-hidden bg-white">
+            {/* Pilier 1: Simple */}
+            <div className="p-8 sm:p-10 border-b md:border-b-0 md:border-r border-gray-200 group">
+              <div className="w-14 h-14 bg-emerald-50 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-emerald-100 transition-colors">
+                <Calendar className="w-7 h-7 text-emerald-600" />
               </div>
-
-              {/* QR */}
-              <div className="text-center mb-4">
-                <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-2">Votre billet</p>
-                <div className="w-32 h-32 bg-white rounded-2xl mx-auto flex items-center justify-center shadow-inner">
-                  <QrCode className="w-20 h-20 text-gray-900" />
-                </div>
-                <p className="text-[11px] font-bold text-emerald-400 mt-2.5">Afro Night — VIP · 5 000 FCFA</p>
-              </div>
-
-              {/* Actions */}
-              <div className="grid grid-cols-3 gap-2 mb-4">
+              <h3 className="text-xl font-black text-gray-900 mb-3">Simple.</h3>
+              <p className="text-gray-500 text-sm mb-6 leading-relaxed">Lancez votre billetterie en quelques clics, sans compétence technique.</p>
+              <ul className="space-y-3">
                 {[
-                  { icon: ScanLine, label: "Scanner", color: "from-emerald-500 to-emerald-600" },
-                  { icon: Calendar, label: "Événement", color: "from-cyan-500 to-cyan-600" },
-                  { icon: Ticket, label: "Billets", color: "from-violet-500 to-violet-600" },
-                ].map((btn, i) => (
-                  <div key={i} className="flex flex-col items-center gap-1">
-                    <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${btn.color} flex items-center justify-center shadow-lg`}>
-                      <btn.icon className="w-4 h-4 text-white" />
-                    </div>
-                    <span className="text-[9px] font-medium text-gray-500">{btn.label}</span>
-                  </div>
+                  "Créez votre billetterie gratuitement",
+                  "Personnalisez à votre image",
+                  "Vendez et partagez en un instant",
+                  "Suivez les ventes en temps réel",
+                ].map((item, i) => (
+                  <li key={i} className="flex items-start gap-2.5 text-sm text-gray-600">
+                    <Check className="w-4 h-4 text-emerald-500 mt-0.5 shrink-0" />
+                    {item}
+                  </li>
                 ))}
-              </div>
-
-              {/* Tickets */}
-              <div className="space-y-1.5">
-                {[
-                  { name: "Afro Night — VIP", price: "5 000 F", badge: "Validé", bc: "bg-emerald-500/15 text-emerald-400" },
-                  { name: "Concert Dakar", price: "3 000 F", badge: "Scanné", bc: "bg-cyan-500/15 text-cyan-400" },
-                  { name: "Festival Abidjan", price: "10 000 F", badge: "Validé", bc: "bg-emerald-500/15 text-emerald-400" },
-                ].map((t, i) => (
-                  <div key={i} className="flex items-center gap-2.5 px-2.5 py-2 rounded-xl bg-white/[0.04]">
-                    <div className="w-7 h-7 rounded-lg bg-emerald-500/10 flex items-center justify-center shrink-0">
-                      <Ticket className="w-3 h-3 text-emerald-400" />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-[11px] font-semibold text-white/80 truncate">{t.name}</p>
-                    </div>
-                    <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded-full ${t.bc}`}>{t.badge}</span>
-                  </div>
-                ))}
-              </div>
+              </ul>
             </div>
-            {/* Glow */}
-            <div className="absolute -inset-6 bg-gradient-to-b from-emerald-200/30 to-cyan-200/20 rounded-[3rem] blur-3xl -z-10" />
+
+            {/* Pilier 2: Transparent */}
+            <div className="p-8 sm:p-10 border-b md:border-b-0 md:border-r border-gray-200 group">
+              <div className="w-14 h-14 bg-emerald-50 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-emerald-100 transition-colors">
+                <CircleDollarSign className="w-7 h-7 text-emerald-600" />
+              </div>
+              <h3 className="text-xl font-black text-gray-900 mb-3">Transparent.</h3>
+              <p className="text-gray-500 text-sm mb-6 leading-relaxed">Tarif clair, pas de surprise. Les frais sont payés par l&apos;acheteur.</p>
+              <ul className="space-y-3">
+                {[
+                  "0 FCFA pour l'organisateur",
+                  "Sans frais d'installation",
+                  "Sans abonnement, ni engagement",
+                  "Gratuit pour les billets gratuits",
+                ].map((item, i) => (
+                  <li key={i} className="flex items-start gap-2.5 text-sm text-gray-600">
+                    <Check className="w-4 h-4 text-emerald-500 mt-0.5 shrink-0" />
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Pilier 3: Fiable */}
+            <div className="p-8 sm:p-10 group">
+              <div className="w-14 h-14 bg-emerald-50 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-emerald-100 transition-colors">
+                <Shield className="w-7 h-7 text-emerald-600" />
+              </div>
+              <h3 className="text-xl font-black text-gray-900 mb-3">Fiable.</h3>
+              <p className="text-gray-500 text-sm mb-6 leading-relaxed">Chaque billet est unique et infalsifiable. Zéro fraude, zéro doublon.</p>
+              <ul className="space-y-3">
+                {[
+                  "QR code unique par billet",
+                  "Signature cryptographique",
+                  "Scanner intégré ultra-rapide",
+                  "Contrôle en temps réel",
+                ].map((item, i) => (
+                  <li key={i} className="flex items-start gap-2.5 text-sm text-gray-600">
+                    <Check className="w-4 h-4 text-emerald-500 mt-0.5 shrink-0" />
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* ═══════ FEATURES ═══════ */}
-      <section id="fonctionnalites" className="py-16 sm:py-24">
+      {/* ═══════ PHONE MOCKUP ═══════ */}
+      <section className="py-16 sm:py-24 bg-gray-50">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6">
+          <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-16">
+            {/* Phone */}
+            <div className="relative max-w-[260px] mx-auto lg:mx-0 shrink-0">
+              <div className="relative bg-gradient-to-b from-[#111] to-[#0a0a0a] rounded-[2.5rem] border border-white/10 p-4 pt-6 pb-6 shadow-2xl shadow-black/20 text-white">
+                <div className="absolute top-2 left-1/2 -translate-x-1/2 w-20 h-5 bg-black rounded-full" />
+                <div className="flex items-center justify-between mb-3 px-1 pt-3">
+                  <span className="text-[10px] text-gray-400 font-semibold">9:41</span>
+                  <div className="flex gap-1">
+                    <div className="w-4 h-2 rounded-sm bg-white/15" />
+                    <div className="w-6 h-2.5 rounded-sm bg-emerald-500/50" />
+                  </div>
+                </div>
+                <div className="text-center mb-3">
+                  <p className="text-[9px] font-bold text-gray-500 uppercase tracking-widest mb-2">Votre billet</p>
+                  <div className="w-28 h-28 bg-white rounded-2xl mx-auto flex items-center justify-center">
+                    <QrCode className="w-16 h-16 text-gray-900" />
+                  </div>
+                  <p className="text-[10px] font-bold text-emerald-400 mt-2">Afro Night — VIP · 5 000 FCFA</p>
+                </div>
+                <div className="grid grid-cols-3 gap-1.5 mb-3">
+                  {[
+                    { icon: ScanLine, label: "Scanner", color: "from-emerald-500 to-emerald-600" },
+                    { icon: Calendar, label: "Billetterie", color: "from-cyan-500 to-cyan-600" },
+                    { icon: Ticket, label: "Billets", color: "from-violet-500 to-violet-600" },
+                  ].map((btn, i) => (
+                    <div key={i} className="flex flex-col items-center gap-0.5">
+                      <div className={`w-9 h-9 rounded-lg bg-gradient-to-br ${btn.color} flex items-center justify-center`}>
+                        <btn.icon className="w-3.5 h-3.5 text-white" />
+                      </div>
+                      <span className="text-[8px] font-medium text-gray-500">{btn.label}</span>
+                    </div>
+                  ))}
+                </div>
+                <div className="space-y-1">
+                  {[
+                    { name: "Afro Night — VIP", badge: "Validé", bc: "bg-emerald-500/15 text-emerald-400" },
+                    { name: "Concert Dakar", badge: "Scanné", bc: "bg-cyan-500/15 text-cyan-400" },
+                    { name: "Festival Abidjan", badge: "Validé", bc: "bg-emerald-500/15 text-emerald-400" },
+                  ].map((t, i) => (
+                    <div key={i} className="flex items-center gap-2 px-2 py-1.5 rounded-lg bg-white/[0.04]">
+                      <div className="w-6 h-6 rounded-md bg-emerald-500/10 flex items-center justify-center shrink-0">
+                        <Ticket className="w-3 h-3 text-emerald-400" />
+                      </div>
+                      <p className="text-[10px] font-semibold text-white/80 truncate flex-1">{t.name}</p>
+                      <span className={`text-[8px] font-bold px-1.5 py-0.5 rounded-full ${t.bc}`}>{t.badge}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <div className="absolute -inset-6 bg-gradient-to-b from-emerald-200/30 to-cyan-200/20 rounded-[3rem] blur-3xl -z-10" />
+            </div>
+
+            {/* Right text */}
+            <div className="flex-1 text-center lg:text-left">
+              <h2 className="text-2xl sm:text-4xl font-black tracking-tight mb-6">
+                Votre billetterie commence par un scan.
+              </h2>
+              <p className="text-gray-500 text-base sm:text-lg leading-relaxed mb-8 max-w-lg mx-auto lg:mx-0">
+                80% des participants achètent depuis leur téléphone. Binq offre une expérience de réservation fluide, sans création de compte, optimisée mobile.
+              </p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-md mx-auto lg:mx-0">
+                {[
+                  { title: "Scan < 1 seconde", desc: "Validation instantanée à l'entrée" },
+                  { title: "Mobile Money", desc: "Orange Money, MTN, carte bancaire" },
+                  { title: "QR infalsifiable", desc: "Signature unique par billet" },
+                  { title: "Temps réel", desc: "Suivi des ventes et entrées en direct" },
+                ].map((item, i) => (
+                  <div key={i} className="flex items-start gap-3">
+                    <div className="w-8 h-8 bg-emerald-50 rounded-lg flex items-center justify-center shrink-0 mt-0.5">
+                      <Check className="w-4 h-4 text-emerald-500" />
+                    </div>
+                    <div>
+                      <p className="text-sm font-bold text-gray-900">{item.title}</p>
+                      <p className="text-xs text-gray-400 mt-0.5">{item.desc}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ═══════ POUR QUI ? ═══════ */}
+      <section id="pourqui" className="py-16 sm:py-24">
         <div className="max-w-6xl mx-auto px-4 sm:px-6">
           <div className="text-center mb-12 sm:mb-16">
-            <p className="text-xs font-bold uppercase tracking-widest text-emerald-600 mb-3">Fonctionnalités</p>
             <h2 className="text-2xl sm:text-4xl lg:text-5xl font-black tracking-tight mb-4">
-              Tout ce qu&apos;il faut.{" "}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-400">Rien de plus.</span>
+              Pour tous les types d&apos;événements.
             </h2>
-            <p className="text-gray-500 text-base sm:text-lg max-w-lg mx-auto">
-              De la création à l&apos;entrée, chaque étape est simple et efficace.
+            <p className="text-gray-500 text-base sm:text-lg max-w-xl mx-auto">
+              Un atelier pour 10 personnes ? Un concert pour 10 000 participants ? Binq s&apos;adapte.
             </p>
           </div>
 
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
             {[
-              { icon: Calendar, title: "Événement en 2 min", desc: "Nom, date, lieu, cover et types de billets. Publiez en quelques clics.", color: "bg-emerald-500" },
-              { icon: QrCode, title: "QR unique par billet", desc: "Chaque billet génère un QR infalsifiable. Zéro fraude, zéro doublon.", color: "bg-cyan-500" },
-              { icon: Smartphone, title: "Mobile Money & Carte", desc: "Orange Money, MTN, carte bancaire… vos participants choisissent.", color: "bg-violet-500" },
-              { icon: ScanLine, title: "Scan à l'entrée", desc: "Scannez les QR en temps réel. Voyez le taux de remplissage en direct.", color: "bg-orange-500" },
-              { icon: Shield, title: "Anti-fraude intégré", desc: "Chaque billet est unique, signé et vérifié. Impossible à dupliquer.", color: "bg-rose-500" },
-              { icon: BarChart3, title: "Dashboard temps réel", desc: "Ventes, revenus, entrées scannées — tout dans un tableau de bord clair.", color: "bg-amber-500" },
-            ].map((f, i) => (
-              <div key={i} className="group rounded-2xl bg-white border border-gray-200/60 p-5 sm:p-6 hover:border-gray-300 hover:shadow-lg hover:shadow-gray-100/80 transition-all duration-300">
-                <div className={`w-10 h-10 rounded-xl ${f.color} flex items-center justify-center mb-4`}>
-                  <f.icon className="w-5 h-5 text-white" />
+              { icon: Music, label: "Concerts & Spectacles", color: "bg-violet-50 text-violet-600" },
+              { icon: PartyPopper, label: "Soirées & Clubs", color: "bg-rose-50 text-rose-600" },
+              { icon: GraduationCap, label: "Formations & Ateliers", color: "bg-blue-50 text-blue-600" },
+              { icon: Presentation, label: "Conférences & Séminaires", color: "bg-amber-50 text-amber-600" },
+              { icon: Dumbbell, label: "Sport & Compétitions", color: "bg-orange-50 text-orange-600" },
+              { icon: Store, label: "Salons & Expositions", color: "bg-teal-50 text-teal-600" },
+            ].map((item, i) => (
+              <div key={i} className="group flex flex-col items-center gap-3 p-5 sm:p-6 rounded-2xl border border-gray-200/60 bg-white hover:border-gray-300 hover:shadow-md transition-all text-center">
+                <div className={`w-12 h-12 rounded-xl ${item.color} flex items-center justify-center group-hover:scale-110 transition-transform`}>
+                  <item.icon className="w-6 h-6" />
                 </div>
-                <h3 className="text-[15px] sm:text-base font-bold text-gray-900 mb-1.5">{f.title}</h3>
-                <p className="text-gray-500 text-sm leading-relaxed">{f.desc}</p>
+                <p className="text-xs sm:text-sm font-bold text-gray-700 leading-tight">{item.label}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ═══════ HOW IT WORKS ═══════ */}
-      <section id="comment" className="py-16 sm:py-24 bg-gray-50/50">
-        <div className="max-w-3xl mx-auto px-4 sm:px-6">
+      {/* ═══════ COMMENT ÇA MARCHE ═══════ */}
+      <section className="py-16 sm:py-24 bg-gray-50">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6">
           <div className="text-center mb-12 sm:mb-16">
             <p className="text-xs font-bold uppercase tracking-widest text-emerald-600 mb-3">Comment ça marche</p>
             <h2 className="text-2xl sm:text-4xl lg:text-5xl font-black tracking-tight mb-3">
               3 étapes. C&apos;est tout.
             </h2>
-            <p className="text-gray-500 text-base sm:text-lg">De zéro à votre premier événement en 5 minutes.</p>
+            <p className="text-gray-500 text-base sm:text-lg">De zéro à votre première billetterie en 5 minutes.</p>
           </div>
 
-          <div className="space-y-4">
+          <div className="grid md:grid-cols-3 gap-6">
             {[
-              { step: "01", title: "Créez votre événement", desc: "Nom, date, lieu, cover et billets. Votre page est en ligne en 2 minutes.", color: "bg-emerald-500", icon: Calendar },
-              { step: "02", title: "Partagez & vendez", desc: "Envoyez le lien à votre audience. Vos participants achètent en un clic.", color: "bg-cyan-500", icon: Ticket },
-              { step: "03", title: "Scannez à l'entrée", desc: "Ouvrez le scanner intégré, validez chaque QR code. Rapide et fiable.", color: "bg-violet-500", icon: ScanLine },
+              { step: "1", title: "Créez votre billetterie", desc: "Nom, date, lieu, cover et types de billets. Publiez en quelques clics.", icon: Calendar, color: "bg-emerald-500" },
+              { step: "2", title: "Partagez & vendez", desc: "Envoyez le lien à votre audience. Vos participants achètent en un clic.", icon: Ticket, color: "bg-cyan-500" },
+              { step: "3", title: "Scannez à l'entrée", desc: "Ouvrez le scanner, validez chaque QR code. Rapide et fiable.", icon: ScanLine, color: "bg-violet-500" },
             ].map((item, i) => (
-              <div key={i} className="flex items-start gap-4 sm:gap-5 p-5 sm:p-6 rounded-2xl bg-white border border-gray-200/60 hover:shadow-md transition-all group">
-                <div className={`w-12 h-12 sm:w-14 sm:h-14 rounded-2xl ${item.color} text-white flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform shadow-lg`}>
-                  <item.icon className="w-5 h-5 sm:w-6 sm:h-6" />
+              <div key={i} className="relative bg-white rounded-2xl border border-gray-200/60 p-6 sm:p-8 text-center hover:shadow-lg transition-all group">
+                <div className="absolute -top-4 left-1/2 -translate-x-1/2">
+                  <div className={`w-8 h-8 ${item.color} rounded-full flex items-center justify-center text-white font-black text-sm shadow-lg`}>
+                    {item.step}
+                  </div>
                 </div>
-                <div>
-                  <span className="text-[10px] font-black text-gray-300 uppercase">Étape {item.step}</span>
-                  <h3 className="text-base sm:text-lg font-bold text-gray-900 mb-1">{item.title}</h3>
-                  <p className="text-gray-500 text-sm leading-relaxed">{item.desc}</p>
+                <div className={`w-14 h-14 rounded-2xl bg-gray-50 flex items-center justify-center mx-auto mt-4 mb-5 group-hover:scale-105 transition-transform`}>
+                  <item.icon className="w-7 h-7 text-gray-400" />
                 </div>
+                <h3 className="text-base sm:text-lg font-bold text-gray-900 mb-2">{item.title}</h3>
+                <p className="text-gray-500 text-sm leading-relaxed">{item.desc}</p>
               </div>
             ))}
           </div>
@@ -239,7 +350,7 @@ export default function HomePage() {
                 <div className="p-4 sm:p-6 text-center">
                   <p className="text-[11px] font-semibold text-gray-400 uppercase tracking-wider mb-2">L&apos;acheteur paye</p>
                   <p className="text-xl sm:text-2xl font-black text-gray-900">5 500</p>
-                  <p className="text-xs text-gray-400 mt-0.5">FCFA (billet + 10%)</p>
+                  <p className="text-xs text-gray-400 mt-0.5">FCFA (billet + frais)</p>
                 </div>
                 <div className="p-4 sm:p-6 text-center bg-emerald-50/50">
                   <p className="text-[11px] font-semibold text-emerald-600 uppercase tracking-wider mb-2">Vous recevez</p>
@@ -286,15 +397,17 @@ export default function HomePage() {
 
             <div className="relative z-10 p-8 sm:p-16 text-center">
               <h2 className="text-2xl sm:text-4xl lg:text-5xl font-black text-white tracking-tight mb-4">
-                Prêt à lancer votre événement ?
+                Prêt à lancer votre billetterie ?
               </h2>
               <p className="text-base sm:text-lg text-white/70 max-w-md mx-auto mb-8">
-                Rejoignez les organisateurs qui font confiance à Binq. C&apos;est gratuit.
+                Inscription gratuite et sans engagement. Lancez-vous en 5 minutes.
               </p>
-              <Link href="/inscription" className="group inline-flex items-center justify-center gap-2.5 px-8 sm:px-10 py-4 sm:py-5 bg-white text-gray-900 font-black rounded-2xl hover:bg-gray-100 transition-all shadow-xl text-[15px] sm:text-base">
-                Créer ma billetterie
-                <ChevronRight className="w-5 h-5 text-gray-400 group-hover:text-gray-900 group-hover:translate-x-1 transition-all" />
-              </Link>
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+                <Link href="/inscription" className="group inline-flex items-center justify-center gap-2.5 px-8 sm:px-10 py-4 sm:py-5 bg-white text-gray-900 font-black rounded-2xl hover:bg-gray-100 transition-all shadow-xl text-[15px] sm:text-base active:scale-[0.97]">
+                  Créer ma billetterie
+                  <ChevronRight className="w-5 h-5 text-gray-400 group-hover:text-gray-900 group-hover:translate-x-1 transition-all" />
+                </Link>
+              </div>
             </div>
           </div>
         </div>
@@ -312,6 +425,7 @@ export default function HomePage() {
             </div>
             <div className="flex items-center gap-6 text-sm text-gray-500">
               <a href="#fonctionnalites" className="hover:text-gray-900 transition">Fonctionnalités</a>
+              <a href="#pourqui" className="hover:text-gray-900 transition">Pour qui ?</a>
               <a href="#tarifs" className="hover:text-gray-900 transition">Tarifs</a>
             </div>
             <p className="text-xs text-gray-400">
