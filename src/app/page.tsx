@@ -14,12 +14,6 @@ import {
   Globe,
   Shield,
   Sparkles,
-  Music,
-  GraduationCap,
-  PartyPopper,
-  Dumbbell,
-  Presentation,
-  Store,
 } from "lucide-react";
 
 export default function HomePage() {
@@ -274,20 +268,22 @@ export default function HomePage() {
             </p>
           </div>
 
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 sm:gap-5">
             {[
-              { icon: Music, label: "Concerts & Spectacles", color: "bg-violet-50 text-violet-600" },
-              { icon: PartyPopper, label: "Soirées & Clubs", color: "bg-rose-50 text-rose-600" },
-              { icon: GraduationCap, label: "Formations & Ateliers", color: "bg-blue-50 text-blue-600" },
-              { icon: Presentation, label: "Conférences & Séminaires", color: "bg-amber-50 text-amber-600" },
-              { icon: Dumbbell, label: "Sport & Compétitions", color: "bg-orange-50 text-orange-600" },
-              { icon: Store, label: "Salons & Expositions", color: "bg-teal-50 text-teal-600" },
+              { label: "Concerts & Spectacles", img: "https://images.unsplash.com/photo-1540039155733-5bb30b53aa14?w=600&h=400&fit=crop&q=80" },
+              { label: "Soirées & Clubs", img: "https://images.unsplash.com/photo-1566737236500-c8ac43014a67?w=600&h=400&fit=crop&q=80" },
+              { label: "Formations & Ateliers", img: "https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=600&h=400&fit=crop&q=80" },
+              { label: "Conférences & Séminaires", img: "https://images.unsplash.com/photo-1505373877841-8d25f7d46678?w=600&h=400&fit=crop&q=80" },
+              { label: "Sport & Compétitions", img: "https://images.unsplash.com/photo-1461896836934-bd45ba8e291d?w=600&h=400&fit=crop&q=80" },
+              { label: "Salons & Expositions", img: "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=600&h=400&fit=crop&q=80" },
             ].map((item, i) => (
-              <div key={i} className="group flex flex-col items-center gap-3 p-5 sm:p-6 rounded-2xl border border-gray-200/60 bg-white hover:border-gray-300 hover:shadow-md transition-all text-center">
-                <div className={`w-12 h-12 rounded-xl ${item.color} flex items-center justify-center group-hover:scale-110 transition-transform`}>
-                  <item.icon className="w-6 h-6" />
+              <div key={i} className="group relative rounded-2xl overflow-hidden aspect-[3/2] cursor-default">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={item.img} alt={item.label} className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+                <div className="absolute bottom-0 inset-x-0 p-4 sm:p-5">
+                  <p className="text-sm sm:text-base font-bold text-white leading-tight drop-shadow-lg">{item.label}</p>
                 </div>
-                <p className="text-xs sm:text-sm font-bold text-gray-700 leading-tight">{item.label}</p>
               </div>
             ))}
           </div>
