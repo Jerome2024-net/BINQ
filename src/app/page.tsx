@@ -82,7 +82,7 @@ export default function HomePage() {
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 mb-14 sm:mb-20">
             <Link href="/inscription" className="w-full sm:w-auto flex items-center justify-center gap-2.5 px-8 py-4 bg-emerald-500 text-white font-bold rounded-2xl hover:bg-emerald-400 transition-all shadow-xl shadow-emerald-500/25 text-[15px]">
               <Zap className="w-5 h-5" />
-              Créer mon événement
+              Créer ma billetterie
             </Link>
           </div>
 
@@ -292,7 +292,7 @@ export default function HomePage() {
                 Rejoignez les organisateurs qui font confiance à Binq. C&apos;est gratuit.
               </p>
               <Link href="/inscription" className="group inline-flex items-center justify-center gap-2.5 px-8 sm:px-10 py-4 sm:py-5 bg-white text-gray-900 font-black rounded-2xl hover:bg-gray-100 transition-all shadow-xl text-[15px] sm:text-base">
-                Créer mon événement
+                Créer ma billetterie
                 <ChevronRight className="w-5 h-5 text-gray-400 group-hover:text-gray-900 group-hover:translate-x-1 transition-all" />
               </Link>
             </div>
