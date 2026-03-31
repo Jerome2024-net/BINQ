@@ -3,17 +3,17 @@
 import Link from "next/link";
 import {
   ArrowLeft,
+  ArrowRight,
   Fingerprint,
   Shield,
   QrCode,
   Building2,
-  Clock,
   Users,
   BarChart3,
   Smartphone,
-  Wifi,
   Check,
   Star,
+  Zap,
 } from "lucide-react";
 
 export default function BinqAccessPage() {
@@ -28,10 +28,16 @@ export default function BinqAccessPage() {
             </div>
             <span className="font-black text-lg tracking-tight">Binq</span>
           </Link>
-          <Link href="/" className="flex items-center gap-2 text-sm text-gray-500 hover:text-gray-900 transition-colors">
-            <ArrowLeft className="w-4 h-4" />
-            Retour
-          </Link>
+          <div className="flex items-center gap-3">
+            <Link href="/" className="flex items-center gap-2 text-sm text-gray-500 hover:text-gray-900 transition-colors">
+              <ArrowLeft className="w-4 h-4" />
+              Retour
+            </Link>
+            <Link href="/inscription" className="text-sm font-bold bg-emerald-500 text-white px-5 py-2.5 rounded-xl hover:bg-emerald-400 transition-all shadow-lg shadow-emerald-500/25 flex items-center gap-1.5">
+              Commencer
+              <ArrowRight className="w-3.5 h-3.5" />
+            </Link>
+          </div>
         </div>
       </header>
 
@@ -39,9 +45,9 @@ export default function BinqAccessPage() {
       <section className="pt-20 sm:pt-32 pb-16 sm:pb-24 relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-b from-emerald-50/50 to-transparent pointer-events-none" />
         <div className="max-w-4xl mx-auto px-4 sm:px-6 text-center relative">
-          <div className="inline-flex items-center gap-2 bg-amber-50 border border-amber-200 text-amber-700 px-4 py-2 rounded-full text-sm font-semibold mb-8">
-            <Clock className="w-4 h-4" />
-            Bientôt disponible
+          <div className="inline-flex items-center gap-2 bg-emerald-50 border border-emerald-200 text-emerald-700 px-4 py-2 rounded-full text-sm font-semibold mb-8">
+            <Zap className="w-4 h-4" />
+            Disponible maintenant
           </div>
 
           <div className="w-20 h-20 rounded-3xl bg-gradient-to-br from-emerald-500 to-cyan-500 flex items-center justify-center shadow-2xl shadow-emerald-500/30 mx-auto mb-8">
@@ -51,9 +57,13 @@ export default function BinqAccessPage() {
           <h1 className="text-4xl sm:text-6xl font-black tracking-tight leading-[1.08] mb-6">
             Binq <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-500 to-cyan-400">Access</span>
           </h1>
-          <p className="text-xl sm:text-2xl text-gray-500 max-w-2xl mx-auto leading-relaxed">
+          <p className="text-xl sm:text-2xl text-gray-500 max-w-2xl mx-auto leading-relaxed mb-10">
             Le terminal de vérification sur mesure pour sécuriser et gérer les accès de votre entreprise.
           </p>
+          <Link href="/inscription" className="inline-flex items-center gap-2 bg-gray-900 text-white font-semibold px-8 py-3.5 rounded-full hover:bg-gray-800 transition-colors text-sm sm:text-base shadow-lg shadow-gray-900/20">
+            Créer mon compte
+            <ArrowRight className="w-4 h-4" />
+          </Link>
         </div>
       </section>
 
@@ -170,22 +180,19 @@ export default function BinqAccessPage() {
       {/* ═══════ CTA ═══════ */}
       <section className="py-16 sm:py-24 bg-gray-50">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 text-center">
-          <div className="inline-flex items-center gap-2 bg-amber-50 border border-amber-200 text-amber-700 px-4 py-2 rounded-full text-sm font-semibold mb-6">
-            <Clock className="w-4 h-4" />
-            Lancement bientôt
-          </div>
           <h2 className="text-2xl sm:text-4xl font-extrabold text-gray-900 mb-4">
-            Intéressé par Binq Access ?
+            Prêt à sécuriser vos accès ?
           </h2>
           <p className="text-gray-500 mb-8 max-w-xl mx-auto">
-            Nous préparons cette solution. Contactez-nous pour être parmi les premiers à en bénéficier.
+            Créez votre compte gratuitement et configurez votre premier point de contrôle en quelques minutes.
           </p>
-          <a
-            href="mailto:contact@binq.app"
+          <Link
+            href="/inscription"
             className="inline-flex items-center gap-2 bg-gray-900 text-white font-semibold px-8 py-3.5 rounded-full hover:bg-gray-800 transition-colors text-sm sm:text-base shadow-lg shadow-gray-900/20"
           >
-            Nous contacter
-          </a>
+            Créer mon compte — Gratuit
+            <ArrowRight className="w-4 h-4" />
+          </Link>
         </div>
       </section>
 
