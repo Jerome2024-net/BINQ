@@ -48,7 +48,7 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
   }
 }
 
-// PUT /api/events/[id] — Modifier un événement
+// PUT /api/events/[id] — Modifier un événement (+ ticket_types)
 export async function PUT(req: NextRequest, { params }: { params: { id: string } }) {
   try {
     const user = await getAuthenticatedUser();
@@ -70,20 +70,80 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
       return NextResponse.json({ error: "Événement non trouvé" }, { status: 404 });
     }
 
+    // Mettre à jour l'événement
     const updates: any = { updated_at: new Date().toISOString() };
     const fields = ["nom", "description", "date_debut", "heure_debut", "date_fin", "heure_fin", "lieu", "adresse", "ville", "logo_url", "cover_url", "is_active", "is_published"];
     for (const f of fields) {
       if (body[f] !== undefined) updates[f] = body[f];
     }
 
-    const { data, error } = await supabase
+    const { error: updateError } = await supabase
       .from("events")
       .update(updates)
-      .eq("id", id)
+      .eq("id", id);
+
+    if (updateError) throw updateError;
+
+    // Mettre à jour les ticket_types si fournis
+    if (body.ticket_types && Array.isArray(body.ticket_types)) {
+      for (const tt of body.ticket_types) {
+        if (tt.id) {
+          // Modifier un type existant
+          const ttUpdates: any = {};
+          if (tt.nom !== undefined) ttUpdates.nom = tt.nom;
+          if (tt.prix !== undefined) ttUpdates.prix = parseFloat(tt.prix) || 0;
+          if (tt.quantite_total !== undefined) ttUpdates.quantite_total = parseInt(tt.quantite_total) || 100;
+          if (tt.is_active !== undefined) ttUpdates.is_active = tt.is_active;
+          if (tt.description !== undefined) ttUpdates.description = tt.description;
+          if (Object.keys(ttUpdates).length > 0) {
+            await supabase.from("ticket_types").update(ttUpdates).eq("id", tt.id).eq("event_id", id);
+          }
+        } else if (tt.nom) {
+          // Ajouter un nouveau type
+          const { data: existingTypes } = await supabase
+            .from("ticket_types")
+            .select("ordre")
+            .eq("event_id", id)
+            .order("ordre", { ascending: false })
+            .limit(1);
+          const nextOrdre = (existingTypes?.[0]?.ordre || 0) + 1;
+          await supabase.from("ticket_types").insert({
+            event_id: id,
+            nom: tt.nom,
+            prix: parseFloat(tt.prix) || 0,
+            quantite_total: parseInt(tt.quantite_total) || 100,
+            devise: body.devise || "XOF",
+            ordre: nextOrdre,
+          });
+        }
+      }
+
+      // Supprimer les types marqués pour suppression
+      if (body.delete_ticket_type_ids && Array.isArray(body.delete_ticket_type_ids)) {
+        for (const ttId of body.delete_ticket_type_ids) {
+          // Ne supprimer que si aucun billet vendu
+          const { count } = await supabase
+            .from("tickets")
+            .select("*", { count: "exact", head: true })
+            .eq("ticket_type_id", ttId);
+          if (!count || count === 0) {
+            await supabase.from("ticket_types").delete().eq("id", ttId).eq("event_id", id);
+          }
+        }
+      }
+    }
+
+    // Retourner l'événement mis à jour
+    const { data, error: fetchError } = await supabase
+      .from("events")
       .select("*, ticket_types(*)")
+      .eq("id", id)
       .single();
 
-    if (error) throw error;
+    if (fetchError) throw fetchError;
+    if (data?.ticket_types) {
+      data.ticket_types.sort((a: any, b: any) => a.ordre - b.ordre);
+    }
 
     return NextResponse.json(data);
   } catch (err: any) {

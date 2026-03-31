@@ -37,6 +37,9 @@ import {
   FileText,
   Shield,
   Printer,
+  Users,
+  UserPlus,
+  UserMinus,
 } from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
 import { formatMontant } from "@/lib/currencies";
@@ -123,6 +126,18 @@ export default function EvenementsPage() {
   const [uploadingEvtCover, setUploadingEvtCover] = useState(false);
   const evtLogoInputRef = useRef<HTMLInputElement>(null);
   const evtCoverInputRef = useRef<HTMLInputElement>(null);
+  const [editMode, setEditMode] = useState(false);
+  const [editForm, setEditForm] = useState<any>({});
+  const [editTicketTypes, setEditTicketTypes] = useState<any[]>([]);
+  const [deleteTicketTypeIds, setDeleteTicketTypeIds] = useState<string[]>([]);
+  const [savingEdit, setSavingEdit] = useState(false);
+
+  // Équipe de scan
+  const [teamMembers, setTeamMembers] = useState<any[]>([]);
+  const [loadingTeam, setLoadingTeam] = useState(false);
+  const [teamEmail, setTeamEmail] = useState("");
+  const [addingTeamMember, setAddingTeamMember] = useState(false);
+  const [showTeamSection, setShowTeamSection] = useState(false);
 
   // Réglages
   const logoInputRef = useRef<HTMLInputElement>(null);
@@ -357,6 +372,112 @@ export default function EvenementsPage() {
       hapticError();
       showToast("error", "Erreur", err.message || "Impossible d\u0027uploader");
     } finally { setUploading(false); }
+  };
+
+  const startEditMode = () => {
+    if (!selectedEvent) return;
+    setEditForm({
+      nom: selectedEvent.nom || "",
+      description: selectedEvent.description || "",
+      date_debut: selectedEvent.date_debut || "",
+      heure_debut: selectedEvent.heure_debut?.slice(0, 5) || "",
+      lieu: selectedEvent.lieu || "",
+      ville: selectedEvent.ville || "",
+    });
+    setEditTicketTypes(
+      (selectedEvent.ticket_types || []).map((tt: any) => ({
+        id: tt.id,
+        nom: tt.nom,
+        prix: String(tt.prix || 0),
+        quantite_total: String(tt.quantite_total || 100),
+        quantite_vendue: tt.quantite_vendue || 0,
+      }))
+    );
+    setDeleteTicketTypeIds([]);
+    setEditMode(true);
+  };
+
+  const handleSaveEdit = async () => {
+    if (!selectedEvent || !editForm.nom?.trim() || !editForm.date_debut || !editForm.lieu?.trim()) return;
+    setSavingEdit(true);
+    try {
+      const res = await fetch(`/api/events/${selectedEvent.id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          nom: editForm.nom.trim(),
+          description: editForm.description?.trim() || null,
+          date_debut: editForm.date_debut,
+          heure_debut: editForm.heure_debut || null,
+          lieu: editForm.lieu.trim(),
+          ville: editForm.ville?.trim() || null,
+          ticket_types: editTicketTypes.map((tt: any) => ({
+            id: tt.id || undefined,
+            nom: tt.nom,
+            prix: tt.prix,
+            quantite_total: tt.quantite_total,
+          })),
+          delete_ticket_type_ids: deleteTicketTypeIds,
+          devise: boutique?.devise || "XOF",
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error);
+      setSelectedEvent(data);
+      setEvents((prev) => prev.map((e) => e.id === data.id ? data : e));
+      setEditMode(false);
+      hapticSuccess();
+      showToast("success", "Événement modifié !");
+    } catch (err: any) {
+      hapticError();
+      showToast("error", "Erreur", err.message || "Impossible de modifier");
+    } finally { setSavingEdit(false); }
+  };
+
+  // ── Équipe de scan ──
+  const loadTeamMembers = async (eventId: string) => {
+    setLoadingTeam(true);
+    try {
+      const res = await fetch(`/api/events/${eventId}/team`);
+      const data = await res.json();
+      setTeamMembers(data.team || []);
+    } catch { setTeamMembers([]); }
+    finally { setLoadingTeam(false); }
+  };
+
+  const handleAddTeamMember = async () => {
+    if (!teamEmail.trim() || !selectedEvent) return;
+    setAddingTeamMember(true);
+    try {
+      const res = await fetch(`/api/events/${selectedEvent.id}/team`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: teamEmail.trim().toLowerCase() }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error);
+      hapticSuccess();
+      showToast("success", data.message || "Membre ajouté !");
+      setTeamEmail("");
+      loadTeamMembers(selectedEvent.id);
+    } catch (err: any) {
+      hapticError();
+      showToast("error", "Erreur", err.message);
+    } finally { setAddingTeamMember(false); }
+  };
+
+  const handleRemoveTeamMember = async (memberId: string) => {
+    if (!selectedEvent) return;
+    try {
+      const res = await fetch(`/api/events/${selectedEvent.id}/team?member_id=${memberId}`, { method: "DELETE" });
+      if (!res.ok) { const d = await res.json(); throw new Error(d.error); }
+      hapticSuccess();
+      showToast("success", "Membre retiré");
+      setTeamMembers((prev) => prev.filter((m) => m.user_id !== memberId));
+    } catch (err: any) {
+      hapticError();
+      showToast("error", "Erreur", err.message);
+    }
   };
 
   const loadEventTickets = async (eventId: string) => {
@@ -683,10 +804,112 @@ export default function EvenementsPage() {
           ) : selectedEvent ? (
             /* ═══ DÉTAIL D'UN ÉVÉNEMENT ═══ */
             <div className="animate-in slide-in-from-right-2 duration-200">
-              <button onClick={() => { setSelectedEvent(null); setEventTickets([]); }} className="flex items-center gap-1 text-sm text-gray-500 font-semibold mb-4 hover:text-gray-700 transition">
+              <button onClick={() => { setSelectedEvent(null); setEventTickets([]); setEditMode(false); }} className="flex items-center gap-1 text-sm text-gray-500 font-semibold mb-4 hover:text-gray-700 transition">
                 <ArrowLeft className="w-4 h-4" /> Retour
               </button>
 
+              {/* ═══ MODE ÉDITION ═══ */}
+              {editMode ? (
+                <div className="animate-in fade-in duration-200">
+                  <h3 className="text-lg font-black text-gray-900 mb-4">Modifier l&apos;événement</h3>
+                  <div className="space-y-3 mb-4">
+                    <div>
+                      <label className="text-[11px] font-bold text-gray-500 uppercase tracking-wider block mb-1">Nom *</label>
+                      <input value={editForm.nom} onChange={(e) => setEditForm({ ...editForm, nom: e.target.value })}
+                        className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-900 outline-none focus:border-emerald-500 transition" />
+                    </div>
+                    <div className="grid grid-cols-2 gap-2">
+                      <div>
+                        <label className="text-[11px] font-bold text-gray-500 uppercase tracking-wider block mb-1">Lieu *</label>
+                        <input value={editForm.lieu} onChange={(e) => setEditForm({ ...editForm, lieu: e.target.value })}
+                          className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-900 outline-none focus:border-emerald-500 transition" />
+                      </div>
+                      <div>
+                        <label className="text-[11px] font-bold text-gray-500 uppercase tracking-wider block mb-1">Ville</label>
+                        <input value={editForm.ville} onChange={(e) => setEditForm({ ...editForm, ville: e.target.value })}
+                          className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-900 outline-none focus:border-emerald-500 transition" />
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-2 gap-2">
+                      <div>
+                        <label className="text-[11px] font-bold text-gray-500 uppercase tracking-wider block mb-1">Date *</label>
+                        <input type="date" value={editForm.date_debut} onChange={(e) => setEditForm({ ...editForm, date_debut: e.target.value })}
+                          className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-900 outline-none focus:border-emerald-500 transition" />
+                      </div>
+                      <div>
+                        <label className="text-[11px] font-bold text-gray-500 uppercase tracking-wider block mb-1">Heure</label>
+                        <input type="time" value={editForm.heure_debut} onChange={(e) => setEditForm({ ...editForm, heure_debut: e.target.value })}
+                          className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-900 outline-none focus:border-emerald-500 transition" />
+                      </div>
+                    </div>
+                    <div>
+                      <label className="text-[11px] font-bold text-gray-500 uppercase tracking-wider block mb-1">Description</label>
+                      <textarea value={editForm.description} onChange={(e) => setEditForm({ ...editForm, description: e.target.value })}
+                        rows={3} className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-900 outline-none focus:border-emerald-500 transition resize-none" />
+                    </div>
+                  </div>
+
+                  {/* Ticket types editing */}
+                  <div className="mb-4">
+                    <div className="flex items-center justify-between mb-2">
+                      <h4 className="text-sm font-bold text-gray-700">Types de billets</h4>
+                      <button onClick={() => setEditTicketTypes([...editTicketTypes, { id: null, nom: "", prix: "0", quantite_total: "100", quantite_vendue: 0 }])}
+                        className="text-xs font-bold text-emerald-600 flex items-center gap-1">
+                        <Plus className="w-3 h-3" /> Ajouter
+                      </button>
+                    </div>
+                    <div className="space-y-2">
+                      {editTicketTypes.map((tt: any, idx: number) => (
+                        <div key={tt.id || `new-${idx}`} className="bg-white rounded-xl border border-gray-100 p-3 relative">
+                          <div className="flex items-center gap-2 mb-2">
+                            <input value={tt.nom} onChange={(e) => { const arr = [...editTicketTypes]; arr[idx] = { ...arr[idx], nom: e.target.value }; setEditTicketTypes(arr); }}
+                              placeholder="Nom du billet" className="flex-1 text-sm font-bold text-gray-900 outline-none placeholder:text-gray-300" />
+                            {editTicketTypes.length > 1 && (
+                              <button onClick={() => {
+                                if (tt.id) {
+                                  if (tt.quantite_vendue > 0) { showToast("error", "Impossible", "Des billets ont été vendus"); return; }
+                                  setDeleteTicketTypeIds([...deleteTicketTypeIds, tt.id]);
+                                }
+                                setEditTicketTypes(editTicketTypes.filter((_: any, i: number) => i !== idx));
+                              }} className="w-6 h-6 rounded-lg flex items-center justify-center text-gray-300 hover:text-red-500 hover:bg-red-50 transition">
+                                <X className="w-3 h-3" />
+                              </button>
+                            )}
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <div className="flex-1">
+                              <label className="text-[9px] font-bold text-gray-400 uppercase">Prix</label>
+                              <input type="number" value={tt.prix} onChange={(e) => { const arr = [...editTicketTypes]; arr[idx] = { ...arr[idx], prix: e.target.value }; setEditTicketTypes(arr); }}
+                                className="w-full bg-gray-50 border border-gray-100 rounded-lg px-2.5 py-1.5 text-sm font-bold text-gray-900 outline-none focus:border-emerald-400 transition mt-0.5" />
+                            </div>
+                            <div className="w-20">
+                              <label className="text-[9px] font-bold text-gray-400 uppercase">Places</label>
+                              <input type="number" value={tt.quantite_total} onChange={(e) => { const arr = [...editTicketTypes]; arr[idx] = { ...arr[idx], quantite_total: e.target.value }; setEditTicketTypes(arr); }}
+                                className="w-full bg-gray-50 border border-gray-100 rounded-lg px-2.5 py-1.5 text-sm text-center font-bold text-gray-900 outline-none focus:border-emerald-400 transition mt-0.5" />
+                            </div>
+                          </div>
+                          {tt.quantite_vendue > 0 && (
+                            <p className="text-[10px] text-emerald-600 font-semibold mt-1">{tt.quantite_vendue} vendus</p>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="flex gap-2">
+                    <button onClick={() => setEditMode(false)}
+                      className="flex-1 py-3 bg-gray-100 text-gray-600 font-bold text-sm rounded-xl transition hover:bg-gray-200 active:scale-[0.97]">
+                      Annuler
+                    </button>
+                    <button onClick={handleSaveEdit} disabled={savingEdit || !editForm.nom?.trim() || !editForm.date_debut || !editForm.lieu?.trim()}
+                      className="flex-1 py-3 bg-emerald-500 text-white font-bold text-sm rounded-xl transition hover:bg-emerald-600 active:scale-[0.97] disabled:opacity-40 flex items-center justify-center gap-2">
+                      {savingEdit ? <Loader2 className="w-4 h-4 animate-spin" /> : <Check className="w-4 h-4" />}
+                      {savingEdit ? "Enregistrement..." : "Enregistrer"}
+                    </button>
+                  </div>
+                </div>
+              ) : (
+              <>
               {/* Header événement */}
               <div className="flex items-start justify-between mb-4">
                 <div className="flex items-center gap-3">
@@ -720,6 +943,12 @@ export default function EvenementsPage() {
                     </p>
                   </div>
                 </div>
+                <button
+                  onClick={() => startEditMode()}
+                  className="p-2 rounded-lg hover:bg-emerald-50 text-gray-400 hover:text-emerald-600 transition"
+                >
+                  <Settings className="w-4 h-4" />
+                </button>
                 <button
                   onClick={() => handleDeleteEvent(selectedEvent.id)}
                   disabled={deletingEventId === selectedEvent.id}
@@ -842,6 +1071,77 @@ export default function EvenementsPage() {
                 </div>
               )}
 
+              {/* ── Équipe de scan ── */}
+              <div>
+                <button
+                  onClick={() => {
+                    const next = !showTeamSection;
+                    setShowTeamSection(next);
+                    if (next && teamMembers.length === 0) loadTeamMembers(selectedEvent.id);
+                  }}
+                  className="flex items-center justify-between w-full mb-2"
+                >
+                  <h3 className="text-sm font-bold text-gray-700 flex items-center gap-1.5">
+                    <Users className="w-4 h-4 text-emerald-500" /> Équipe de scan
+                  </h3>
+                  <ChevronRight className={`w-4 h-4 text-gray-400 transition-transform ${showTeamSection ? "rotate-90" : ""}`} />
+                </button>
+
+                {showTeamSection && (
+                  <div className="space-y-3 animate-in slide-in-from-top-1 duration-200">
+                    {/* Ajouter un membre */}
+                    <div className="flex gap-2">
+                      <input
+                        type="email"
+                        value={teamEmail}
+                        onChange={(e) => setTeamEmail(e.target.value)}
+                        placeholder="Email du contrôleur..."
+                        className="flex-1 text-sm border border-gray-200 rounded-xl px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-400"
+                        onKeyDown={(e) => e.key === "Enter" && handleAddTeamMember()}
+                      />
+                      <button
+                        onClick={handleAddTeamMember}
+                        disabled={addingTeamMember || !teamEmail.trim()}
+                        className="bg-emerald-500 text-white px-3 py-2.5 rounded-xl disabled:opacity-50 transition hover:bg-emerald-600 active:scale-95"
+                      >
+                        {addingTeamMember ? <Loader2 className="w-4 h-4 animate-spin" /> : <UserPlus className="w-4 h-4" />}
+                      </button>
+                    </div>
+                    <p className="text-[10px] text-gray-400">Le contrôleur doit avoir un compte Binq. Il pourra scanner les billets de cet événement.</p>
+
+                    {/* Liste des membres */}
+                    {loadingTeam ? (
+                      <div className="text-center py-4"><Loader2 className="w-4 h-4 text-gray-300 animate-spin mx-auto" /></div>
+                    ) : teamMembers.length === 0 ? (
+                      <div className="text-center py-4">
+                        <Users className="w-6 h-6 text-gray-200 mx-auto mb-1" />
+                        <p className="text-xs text-gray-400">Aucun contrôleur ajouté</p>
+                      </div>
+                    ) : (
+                      <div className="space-y-2">
+                        {teamMembers.filter((m) => m.is_active).map((m: any) => (
+                          <div key={m.id} className="flex items-center justify-between bg-white rounded-xl border border-gray-100 p-3">
+                            <div>
+                              <p className="text-sm font-bold text-gray-900">
+                                {m.profile?.prenom || ""} {m.profile?.nom || "Utilisateur"}
+                              </p>
+                              <p className="text-[11px] text-gray-400">{m.profile?.email || m.profile?.telephone || "–"}</p>
+                            </div>
+                            <button
+                              onClick={() => handleRemoveTeamMember(m.user_id)}
+                              className="text-red-400 hover:text-red-600 transition p-1"
+                              title="Retirer"
+                            >
+                              <UserMinus className="w-4 h-4" />
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+
               {/* Voir participants — billets vendus */}
               <div>
                 <div className="flex items-center justify-between mb-2">
@@ -880,6 +1180,8 @@ export default function EvenementsPage() {
                   </div>
                 )}
               </div>
+              </>
+              )}
             </div>
           ) : (
             /* ═══ LISTE DES ÉVÉNEMENTS ═══ */

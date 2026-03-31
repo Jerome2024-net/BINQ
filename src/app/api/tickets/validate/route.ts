@@ -38,13 +38,23 @@ export async function POST(req: NextRequest) {
       }, { status: 404 });
     }
 
-    // Vérifier que l'utilisateur est l'organisateur
+    // Vérifier que l'utilisateur est l'organisateur ou membre de l'équipe de scan
     if (ticket.events?.user_id !== user.id) {
-      return NextResponse.json({ 
-        valid: false, 
-        error: "Vous n'êtes pas l'organisateur de cet événement",
-        status_code: "UNAUTHORIZED" 
-      }, { status: 403 });
+      const { data: teamMember } = await supabase
+        .from("scan_team")
+        .select("id")
+        .eq("event_id", ticket.events?.id)
+        .eq("user_id", user.id)
+        .eq("is_active", true)
+        .single();
+
+      if (!teamMember) {
+        return NextResponse.json({ 
+          valid: false, 
+          error: "Vous n'êtes pas autorisé à scanner pour cet événement",
+          status_code: "UNAUTHORIZED" 
+        }, { status: 403 });
+      }
     }
 
     // Vérifier le statut
