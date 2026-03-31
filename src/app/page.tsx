@@ -23,6 +23,7 @@ import {
 
 export default function HomePage() {
   const [solOpen, setSolOpen] = useState(false);
+  const [mobileSolOpen, setMobileSolOpen] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const solRef = useRef<HTMLDivElement>(null);
 
@@ -114,16 +115,16 @@ export default function HomePage() {
                 </a>
               ))}
               <button
-                onClick={() => setSolOpen(!solOpen)}
+                onClick={() => setMobileSolOpen(!mobileSolOpen)}
                 className="flex items-center justify-between px-4 py-3 rounded-xl text-gray-600 hover:bg-gray-50 hover:text-gray-900 font-medium transition-colors w-full text-left"
               >
                 Solutions
-                <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${solOpen ? "rotate-180" : ""}`} />
+                <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${mobileSolOpen ? "rotate-180" : ""}`} />
               </button>
-              {solOpen && (
+              {mobileSolOpen && (
                 <Link
                   href="/binq-access"
-                  onClick={() => { setMobileOpen(false); setSolOpen(false); }}
+                  onClick={() => { setMobileOpen(false); setMobileSolOpen(false); }}
                   className="flex items-center gap-3 ml-4 px-4 py-3 rounded-xl text-gray-600 hover:bg-gray-50 hover:text-gray-900 font-medium transition-colors"
                 >
                   <Fingerprint className="w-5 h-5 text-emerald-500" />
