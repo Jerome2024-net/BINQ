@@ -8,15 +8,59 @@ const supabase = () =>
     { auth: { autoRefreshToken: false, persistSession: false } }
   );
 
+// GET — Liste des membres d'un espace (public, pour la pointeuse)
+// ?space_code=SP-XXXXXXXX
+export async function GET(req: NextRequest) {
+  try {
+    const { searchParams } = new URL(req.url);
+    const spaceCode = searchParams.get("space_code");
+
+    if (!spaceCode) {
+      return NextResponse.json({ error: "Code espace requis" }, { status: 400 });
+    }
+
+    // Trouver l'espace
+    const { data: space } = await supabase()
+      .from("access_spaces")
+      .select("id, nom, mode, actif")
+      .eq("space_code", spaceCode)
+      .eq("mode", "pointeuse")
+      .single();
+
+    if (!space) {
+      return NextResponse.json({ error: "Espace non trouvé" }, { status: 404 });
+    }
+
+    if (!space.actif) {
+      return NextResponse.json({ error: "Espace désactivé" }, { status: 403 });
+    }
+
+    // Récupérer les membres actifs (seulement les infos nécessaires pour l'affichage)
+    const { data: members } = await supabase()
+      .from("access_members")
+      .select("id, nom, prenom, role, photo_url")
+      .eq("space_id", space.id)
+      .eq("actif", true)
+      .order("prenom", { ascending: true });
+
+    return NextResponse.json({
+      space: { id: space.id, nom: space.nom },
+      members: members || [],
+    });
+  } catch (err: any) {
+    return NextResponse.json({ error: err.message || "Erreur serveur" }, { status: 500 });
+  }
+}
+
 // POST — Pointeuse self-service (public, sans auth)
-// Body: { space_code, pin }
+// Body: { space_code, member_id }
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { space_code, pin } = body;
+    const { space_code, member_id } = body;
 
-    if (!space_code || !pin) {
-      return NextResponse.json({ error: "Code espace et PIN requis" }, { status: 400 });
+    if (!space_code || !member_id) {
+      return NextResponse.json({ error: "Code espace et membre requis" }, { status: 400 });
     }
 
     // 1. Trouver l'espace par space_code
@@ -41,18 +85,18 @@ export async function POST(req: NextRequest) {
       });
     }
 
-    // 2. Trouver le membre par PIN dans cet espace
+    // 2. Trouver le membre par ID dans cet espace
     const { data: member } = await supabase()
       .from("access_members")
       .select("*")
+      .eq("id", member_id)
       .eq("space_id", space.id)
-      .eq("pin", pin)
       .single();
 
     if (!member) {
       return NextResponse.json({
         statut: "refuse",
-        message: "PIN incorrect",
+        message: "Membre non trouvé",
       });
     }
 
