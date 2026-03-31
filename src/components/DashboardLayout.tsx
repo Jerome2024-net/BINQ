@@ -19,6 +19,7 @@ import {
   Calendar,
   Ticket,
   TrendingUp,
+  Shield,
 } from "lucide-react";
 
 interface Notification {
@@ -32,6 +33,7 @@ interface Notification {
 const bottomTabs = [
   { href: "/dashboard", label: "Accueil", icon: ShoppingBag },
   { href: "/evenements", label: "Billetteries", icon: Calendar },
+  { href: "/access", label: "Access", icon: Shield },
   { href: "/portefeuille", label: "Wallet", icon: Wallet },
   { href: "/ventes", label: "Ventes", icon: TrendingUp },
 ];
