@@ -68,8 +68,8 @@ export default function HomePage() {
           </div>
 
           <h1 className="text-[2.5rem] sm:text-6xl lg:text-[4.5rem] font-black tracking-tight leading-[1.08] mb-6 sm:mb-8">
-            Vos événements. Vos billets.<br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-500 via-emerald-400 to-cyan-400">Votre contrôle.</span>
+            Créez. Vendez.<br />
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-500 via-emerald-400 to-cyan-400">Scannez.</span>
           </h1>
 
           <p className="text-base sm:text-xl text-gray-500 max-w-2xl mx-auto mb-8 sm:mb-10 leading-relaxed">
