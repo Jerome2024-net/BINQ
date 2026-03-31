@@ -1,10 +1,12 @@
 "use client";
 
 import Link from "next/link";
+import { useState, useRef, useEffect } from "react";
 import {
   ArrowRight,
   Check,
   ChevronRight,
+  ChevronDown,
   QrCode,
   CircleDollarSign,
   Star,
@@ -18,6 +20,16 @@ import {
 } from "lucide-react";
 
 export default function HomePage() {
+  const [solOpen, setSolOpen] = useState(false);
+  const solRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handleClick(e: MouseEvent) {
+      if (solRef.current && !solRef.current.contains(e.target as Node)) setSolOpen(false);
+    }
+    document.addEventListener("mousedown", handleClick);
+    return () => document.removeEventListener("mousedown", handleClick);
+  }, []);
   return (
     <div className="min-h-screen bg-white font-sans antialiased text-gray-900 overflow-x-hidden">
 
@@ -34,12 +46,39 @@ export default function HomePage() {
           <nav className="hidden md:flex items-center gap-8">
             {[
               { label: "Fonctionnalités", href: "#fonctionnalites" },
-              { label: "Solutions", href: "#solutions" },
               { label: "Pour qui ?", href: "#pourqui" },
               { label: "Tarifs", href: "#tarifs" },
             ].map((l) => (
               <a key={l.href} href={l.href} className="text-sm font-medium text-gray-500 hover:text-gray-900 transition-colors">{l.label}</a>
             ))}
+
+            {/* Solutions dropdown */}
+            <div ref={solRef} className="relative">
+              <button
+                onClick={() => setSolOpen(!solOpen)}
+                className="flex items-center gap-1.5 text-sm font-medium text-gray-500 hover:text-gray-900 transition-colors"
+              >
+                Solutions
+                <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${solOpen ? "rotate-180" : ""}`} />
+              </button>
+              {solOpen && (
+                <div className="absolute top-full left-1/2 -translate-x-1/2 mt-4 w-72 bg-white rounded-2xl border border-gray-200 shadow-xl shadow-gray-200/50 p-2 z-50">
+                  <Link
+                    href="/binq-access"
+                    onClick={() => setSolOpen(false)}
+                    className="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-50 transition-colors group"
+                  >
+                    <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-cyan-500 flex items-center justify-center flex-shrink-0">
+                      <Fingerprint className="w-5 h-5 text-white" />
+                    </div>
+                    <div>
+                      <p className="text-sm font-semibold text-gray-900 group-hover:text-emerald-600 transition-colors">Binq Access</p>
+                      <p className="text-xs text-gray-500">Contrôle d&apos;accès entreprises</p>
+                    </div>
+                  </Link>
+                </div>
+              )}
+            </div>
           </nav>
 
           <div className="flex items-center gap-1.5 sm:gap-3">
