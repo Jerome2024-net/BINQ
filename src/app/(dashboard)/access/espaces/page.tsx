@@ -16,7 +16,14 @@ import {
   Users,
   ToggleLeft,
   ToggleRight,
+  QrCode,
+  ScanLine,
+  Shield,
+  Copy,
+  Check,
+  Printer,
 } from "lucide-react";
+import { QRCodeSVG } from "qrcode.react";
 
 interface Space {
   id: string;
@@ -26,6 +33,8 @@ interface Space {
   horaire_fin: string;
   jours_actifs: string[];
   actif: boolean;
+  mode: string;
+  space_code: string | null;
   created_at: string;
   access_members: { count: number }[];
 }
@@ -46,6 +55,7 @@ const DEFAULT_FORM = {
   horaire_debut: "08:00",
   horaire_fin: "18:00",
   jours_actifs: ["lundi", "mardi", "mercredi", "jeudi", "vendredi"],
+  mode: "controle" as string,
 };
 
 export default function EspacesPage() {
@@ -58,6 +68,8 @@ export default function EspacesPage() {
   const [form, setForm] = useState(DEFAULT_FORM);
   const [saving, setSaving] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [showQR, setShowQR] = useState<Space | null>(null);
+  const [copied, setCopied] = useState(false);
 
   const fetchSpaces = async () => {
     const r = await fetch("/api/access/spaces");
@@ -86,8 +98,17 @@ export default function EspacesPage() {
       horaire_debut: space.horaire_debut,
       horaire_fin: space.horaire_fin,
       jours_actifs: space.jours_actifs,
+      mode: space.mode || "controle",
     });
     setShowModal(true);
+  };
+
+  const copyPointeuseLink = (code: string) => {
+    const url = `${window.location.origin}/binq-access/pointeuse/${code}`;
+    navigator.clipboard.writeText(url);
+    setCopied(true);
+    hapticSuccess();
+    setTimeout(() => setCopied(false), 2000);
   };
 
   const handleSave = async () => {
@@ -236,6 +257,17 @@ export default function EspacesPage() {
               </div>
 
               <div className="flex flex-wrap gap-2 mb-3">
+                <span className={`inline-flex items-center gap-1 text-[11px] font-semibold px-2 py-1 rounded-lg ${
+                  (space.mode || "controle") === "pointeuse"
+                    ? "bg-blue-50 text-blue-600"
+                    : "bg-emerald-50 text-emerald-600"
+                }`}>
+                  {(space.mode || "controle") === "pointeuse" ? (
+                    <><QrCode className="w-3 h-3" /> Pointeuse</>
+                  ) : (
+                    <><Shield className="w-3 h-3" /> Contrôlé</>
+                  )}
+                </span>
                 <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-gray-500 bg-gray-50 px-2 py-1 rounded-lg">
                   <Users className="w-3 h-3" />
                   {space.access_members?.[0]?.count || 0} membres
@@ -252,6 +284,17 @@ export default function EspacesPage() {
                     .join(", ")}
                 </span>
               </div>
+
+              {/* Pointeuse QR button */}
+              {(space.mode || "controle") === "pointeuse" && space.space_code && (
+                <button
+                  onClick={() => { hapticMedium(); setShowQR(space); }}
+                  className="w-full flex items-center justify-center gap-2 bg-blue-50 text-blue-600 text-[13px] font-semibold py-2.5 rounded-xl mb-3 active:scale-[0.97] transition-transform"
+                >
+                  <QrCode className="w-4 h-4" />
+                  Voir le QR pointeuse
+                </button>
+              )}
 
               <div className="flex gap-2">
                 <button
@@ -295,6 +338,41 @@ export default function EspacesPage() {
             </div>
 
             <div className="space-y-4">
+              {/* Mode */}
+              <div>
+                <label className="text-[13px] font-semibold text-gray-700 mb-2 block">
+                  Mode de fonctionnement
+                </label>
+                <div className="grid grid-cols-2 gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setForm({ ...form, mode: "controle" })}
+                    className={`p-3 rounded-xl border-2 text-left transition-all ${
+                      form.mode === "controle"
+                        ? "border-emerald-500 bg-emerald-50"
+                        : "border-gray-200 bg-white"
+                    }`}
+                  >
+                    <Shield className={`w-5 h-5 mb-1.5 ${form.mode === "controle" ? "text-emerald-600" : "text-gray-400"}`} />
+                    <p className={`text-[13px] font-bold ${form.mode === "controle" ? "text-emerald-700" : "text-gray-700"}`}>Contrôlé</p>
+                    <p className="text-[11px] text-gray-500">Un gardien scanne les badges</p>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setForm({ ...form, mode: "pointeuse" })}
+                    className={`p-3 rounded-xl border-2 text-left transition-all ${
+                      form.mode === "pointeuse"
+                        ? "border-blue-500 bg-blue-50"
+                        : "border-gray-200 bg-white"
+                    }`}
+                  >
+                    <QrCode className={`w-5 h-5 mb-1.5 ${form.mode === "pointeuse" ? "text-blue-600" : "text-gray-400"}`} />
+                    <p className={`text-[13px] font-bold ${form.mode === "pointeuse" ? "text-blue-700" : "text-gray-700"}`}>Pointeuse</p>
+                    <p className="text-[11px] text-gray-500">Self-service avec PIN</p>
+                  </button>
+                </div>
+              </div>
+
               {/* Nom */}
               <div>
                 <label className="text-[13px] font-semibold text-gray-700 mb-1 block">
@@ -390,6 +468,60 @@ export default function EspacesPage() {
           </div>
         </div>
       )}
+      {/* QR Pointeuse Modal */}
+      {showQR && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+          <div className="bg-white rounded-2xl w-full max-w-sm p-6 animate-slide-in text-center">
+            <div className="flex items-center justify-between mb-5">
+              <h3 className="text-[18px] font-black text-gray-900">QR Pointeuse</h3>
+              <button
+                onClick={() => setShowQR(null)}
+                className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center"
+              >
+                <X className="w-4 h-4 text-gray-500" />
+              </button>
+            </div>
+
+            <p className="text-[14px] font-bold text-gray-900 mb-1">{showQR.nom}</p>
+            <p className="text-[12px] text-gray-500 mb-4">
+              Imprimez ce QR et collez-le à l&apos;entrée. Les membres le scanneront avec leur téléphone.
+            </p>
+
+            <div className="bg-gray-50 rounded-2xl p-6 mb-4">
+              <QRCodeSVG
+                value={`${typeof window !== "undefined" ? window.location.origin : ""}/binq-access/pointeuse/${showQR.space_code}`}
+                size={200}
+                level="H"
+                className="mx-auto"
+                includeMargin
+              />
+            </div>
+
+            <p className="text-[13px] font-mono font-bold text-blue-600 mb-4">
+              {showQR.space_code}
+            </p>
+
+            <div className="flex gap-2">
+              <button
+                onClick={() => copyPointeuseLink(showQR.space_code!)}
+                className="flex-1 flex items-center justify-center gap-1.5 text-[13px] font-bold text-gray-700 bg-gray-100 py-2.5 rounded-xl active:scale-[0.97] transition-transform"
+              >
+                {copied ? <Check className="w-4 h-4 text-emerald-500" /> : <Copy className="w-4 h-4" />}
+                {copied ? "Copié !" : "Copier le lien"}
+              </button>
+              <a
+                href={`/binq-access/pointeuse/${showQR.space_code}`}
+                target="_blank"
+                className="flex-1 flex items-center justify-center gap-1.5 text-[13px] font-bold text-white bg-blue-500 py-2.5 rounded-xl active:scale-[0.97] transition-transform shadow-lg shadow-blue-500/25"
+              >
+                <Printer className="w-4 h-4" />
+                Ouvrir
+              </a>
+            </div>
+          </div>
+        </div>
+      )}
+
     </AccessLayout>
   );
 }

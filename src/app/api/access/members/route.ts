@@ -14,6 +14,10 @@ function generateAccessCode(): string {
   return "BA-" + crypto.randomBytes(4).toString("hex").toUpperCase();
 }
 
+function generatePin(): string {
+  return String(Math.floor(1000 + Math.random() * 9000));
+}
+
 // GET — Liste des membres (optionnel: ?space_id=...)
 export async function GET(req: NextRequest) {
   try {
@@ -35,7 +39,7 @@ export async function GET(req: NextRequest) {
 
     const { data, error } = await query;
     if (error) throw error;
-    return NextResponse.json(data);
+    return NextResponse.json({ members: data });
   } catch (err: any) {
     return NextResponse.json({ error: err.message || "Erreur serveur" }, { status: 500 });
   }
@@ -67,6 +71,7 @@ export async function POST(req: NextRequest) {
     }
 
     const qr_code = generateAccessCode();
+    const pin = generatePin();
 
     const { data, error } = await supabase()
       .from("access_members")
@@ -79,6 +84,7 @@ export async function POST(req: NextRequest) {
         telephone: telephone?.trim() || null,
         role: role || "employé",
         qr_code,
+        pin,
         date_debut: date_debut || null,
         date_fin: date_fin || null,
       })

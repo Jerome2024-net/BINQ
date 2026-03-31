@@ -20,6 +20,7 @@ import {
   Copy,
   Check,
   UserCircle2,
+  KeyRound,
 } from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
 
@@ -32,6 +33,7 @@ interface Member {
   telephone: string | null;
   role: string;
   qr_code: string;
+  pin: string | null;
   actif: boolean;
   date_debut: string | null;
   date_fin: string | null;
@@ -42,6 +44,7 @@ interface Member {
 interface Space {
   id: string;
   nom: string;
+  mode: string;
   access_members: { count: number }[];
 }
 
@@ -335,7 +338,15 @@ export default function MembresPage() {
               <div className="flex items-center gap-2 bg-gray-50 rounded-xl p-2.5 mb-3">
                 <QRCodeSVG value={m.qr_code} size={40} level="M" />
                 <div className="flex-1 min-w-0">
-                  <p className="text-[13px] font-mono font-bold text-gray-700">{m.qr_code}</p>
+                  <div className="flex items-center gap-2">
+                    <p className="text-[13px] font-mono font-bold text-gray-700">{m.qr_code}</p>
+                    {m.pin && (
+                      <span className="inline-flex items-center gap-1 text-[11px] font-bold text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">
+                        <KeyRound className="w-3 h-3" />
+                        PIN: {m.pin}
+                      </span>
+                    )}
+                  </div>
                   <p className="text-[10px] text-gray-400">
                     {m.date_debut && m.date_fin
                       ? `${new Date(m.date_debut).toLocaleDateString("fr-FR")} → ${new Date(m.date_fin).toLocaleDateString("fr-FR")}`
