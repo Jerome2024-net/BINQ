@@ -157,6 +157,7 @@ export default function BinqAccessPage() {
           <div className="grid sm:grid-cols-2 gap-6">
             {[
               { title: "Bureaux & Coworkings", items: ["Contrôle d'accès par badge/QR", "Gestion des horaires", "Suivi des présences"] },
+              { title: "Administrations publiques", items: ["Accès sécurisé aux locaux (mairies, ministères, préfectures)", "Traçabilité des entrées/sorties du personnel et visiteurs", "Gestion des badges temporaires pour les rendez-vous"] },
               { title: "Événements privés", items: ["Liste d'invités digitale", "Scan rapide à l'entrée", "Statistiques de fréquentation"] },
               { title: "Salles de sport & Clubs", items: ["Vérification d'abonnement", "Détection des expirations", "Historique des visites"] },
               { title: "Résidences & Immeubles", items: ["Accès sécurisé résidents", "Gestion des visiteurs", "Registre automatique"] },
