@@ -17,10 +17,13 @@ import {
   Shield,
   Sparkles,
   Fingerprint,
+  Menu,
+  X,
 } from "lucide-react";
 
 export default function HomePage() {
   const [solOpen, setSolOpen] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
   const solRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -82,14 +85,61 @@ export default function HomePage() {
           </nav>
 
           <div className="flex items-center gap-1.5 sm:gap-3">
-            <Link href="/connexion" className="text-[11px] sm:text-sm font-semibold text-gray-600 hover:text-gray-900 transition-colors px-2 sm:px-4 py-2">
+            <Link href="/connexion" className="hidden sm:block text-[11px] sm:text-sm font-semibold text-gray-600 hover:text-gray-900 transition-colors px-2 sm:px-4 py-2">
               Connexion
             </Link>
-            <Link href="/inscription" className="text-[11px] sm:text-sm font-bold bg-emerald-500 text-white px-3.5 sm:px-5 py-2 sm:py-2.5 rounded-xl hover:bg-emerald-400 transition-all flex items-center gap-1.5 shadow-lg shadow-emerald-500/25">
+            <Link href="/inscription" className="hidden sm:block text-[11px] sm:text-sm font-bold bg-emerald-500 text-white px-3.5 sm:px-5 py-2 sm:py-2.5 rounded-xl hover:bg-emerald-400 transition-all flex items-center gap-1.5 shadow-lg shadow-emerald-500/25">
               Créer ma billetterie
             </Link>
+            <button
+              onClick={() => setMobileOpen(!mobileOpen)}
+              className="md:hidden p-2 rounded-xl text-gray-700 hover:bg-gray-100 transition-colors"
+            >
+              {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+            </button>
           </div>
         </div>
+
+        {/* Mobile menu */}
+        {mobileOpen && (
+          <div className="md:hidden border-t border-gray-100 pb-4 pt-3 px-4 sm:px-6 animate-fade-up">
+            <div className="flex flex-col gap-1">
+              {[
+                { label: "Fonctionnalités", href: "#fonctionnalites" },
+                { label: "Pour qui ?", href: "#pourqui" },
+                { label: "Tarifs", href: "#tarifs" },
+              ].map((l) => (
+                <a key={l.href} href={l.href} onClick={() => setMobileOpen(false)} className="px-4 py-3 rounded-xl text-gray-600 hover:bg-gray-50 hover:text-gray-900 font-medium transition-colors">
+                  {l.label}
+                </a>
+              ))}
+              <button
+                onClick={() => setSolOpen(!solOpen)}
+                className="flex items-center justify-between px-4 py-3 rounded-xl text-gray-600 hover:bg-gray-50 hover:text-gray-900 font-medium transition-colors w-full text-left"
+              >
+                Solutions
+                <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${solOpen ? "rotate-180" : ""}`} />
+              </button>
+              {solOpen && (
+                <Link
+                  href="/binq-access"
+                  onClick={() => { setMobileOpen(false); setSolOpen(false); }}
+                  className="flex items-center gap-3 ml-4 px-4 py-3 rounded-xl text-gray-600 hover:bg-gray-50 hover:text-gray-900 font-medium transition-colors"
+                >
+                  <Fingerprint className="w-5 h-5 text-emerald-500" />
+                  Binq Access
+                </Link>
+              )}
+              <hr className="my-2 border-gray-100" />
+              <Link href="/connexion" onClick={() => setMobileOpen(false)} className="px-4 py-3 rounded-xl text-gray-600 hover:bg-gray-50 hover:text-gray-900 font-medium transition-colors">
+                Connexion
+              </Link>
+              <Link href="/inscription" onClick={() => setMobileOpen(false)} className="text-center font-bold bg-emerald-500 text-white px-5 py-2.5 rounded-xl hover:bg-emerald-400 transition-all shadow-lg shadow-emerald-500/25 mt-1">
+                Créer ma billetterie
+              </Link>
+            </div>
+          </div>
+        )}
       </header>
 
       {/* ═══════ HERO ═══════ */}
