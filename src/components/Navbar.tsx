@@ -13,7 +13,7 @@ import {
 const navLinks = [
   { href: "/#fonctionnalites", label: "Fonctionnalités" },
   { href: "/#tarifs", label: "Tarifs" },
-  { href: "/binq-access", label: "Binq Access" },
+  { href: "/#solutions", label: "Solutions" },
 ];
 
 export default function Navbar() {
