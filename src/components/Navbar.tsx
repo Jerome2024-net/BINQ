@@ -17,8 +17,8 @@ const navLinks = [
   { href: "/#tarifs", label: "Tarifs" },
 ];
 
-const solutions = [
-  { href: "/binq-access", label: "Binq Access", desc: "Contrôle d'accès entreprises", icon: Fingerprint },
+const solutions: { href: string; label: string; desc: string; icon: any }[] = [
+  // { href: "/binq-access", label: "Binq Access", desc: "Contrôle d'accès entreprises", icon: Fingerprint },
 ];
 
 export default function Navbar() {
