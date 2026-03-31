@@ -13,7 +13,7 @@ import {
 const navLinks = [
   { href: "/#fonctionnalites", label: "Fonctionnalités" },
   { href: "/#tarifs", label: "Tarifs" },
-  // { href: "/explorer", label: "Explorer" }, // Removed as page doesn't exist
+  { href: "/binq-access", label: "Binq Access" },
 ];
 
 export default function Navbar() {

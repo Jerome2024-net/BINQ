@@ -14,9 +14,6 @@ import {
   Globe,
   Shield,
   Sparkles,
-  Building2,
-  Fingerprint,
-  ArrowUpRight,
 } from "lucide-react";
 
 export default function HomePage() {
@@ -36,7 +33,6 @@ export default function HomePage() {
           <nav className="hidden md:flex items-center gap-8">
             {[
               { label: "Fonctionnalités", href: "#fonctionnalites" },
-              { label: "Solutions", href: "#solutions" },
               { label: "Pour qui ?", href: "#pourqui" },
               { label: "Tarifs", href: "#tarifs" },
             ].map((l) => (
@@ -290,66 +286,6 @@ export default function HomePage() {
                 </div>
               </div>
             ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ═══════ SOLUTIONS ═══════ */}
-      <section id="solutions" className="py-16 sm:py-24 border-t border-gray-100">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6">
-          <div className="text-center mb-12 sm:mb-16">
-            <p className="text-xs font-bold uppercase tracking-widest text-emerald-600 mb-3">Solutions</p>
-            <h2 className="text-2xl sm:text-4xl font-extrabold text-gray-900">Nos verticales</h2>
-            <p className="text-gray-500 mt-3 max-w-xl mx-auto">Des solutions spécialisées pour répondre à chaque besoin.</p>
-          </div>
-
-          <div className="grid gap-6 sm:gap-8">
-            {/* Binq Access */}
-            <div className="relative overflow-hidden rounded-2xl border border-gray-200 bg-white p-8 sm:p-10 hover:border-emerald-200 hover:shadow-lg transition-all duration-300 group">
-              <div className="absolute top-4 right-4 bg-amber-100 text-amber-700 text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full">Bientôt disponible</div>
-              
-              <div className="flex flex-col sm:flex-row gap-6 sm:gap-10 items-start">
-                <div className="flex-shrink-0">
-                  <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-emerald-500 to-cyan-500 flex items-center justify-center shadow-lg shadow-emerald-500/20">
-                    <Fingerprint className="w-8 h-8 text-white" />
-                  </div>
-                </div>
-                
-                <div className="flex-1">
-                  <h3 className="text-xl sm:text-2xl font-extrabold text-gray-900 mb-2 flex items-center gap-2">
-                    Binq Access
-                    <ArrowUpRight className="w-5 h-5 text-emerald-500 opacity-0 group-hover:opacity-100 transition-opacity" />
-                  </h3>
-                  <p className="text-lg text-emerald-600 font-semibold mb-4">Contrôle d&apos;accès pour entreprises</p>
-                  <p className="text-gray-500 leading-relaxed mb-6">
-                    Un terminal de vérification sur mesure pour sécuriser et gérer les accès de votre entreprise. 
-                    Contrôlez qui entre, quand, et où — en temps réel.
-                  </p>
-                  
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                    {[
-                      { icon: Building2, text: "Adapté aux entreprises" },
-                      { icon: Shield, text: "Sécurité renforcée" },
-                      { icon: QrCode, text: "Scan & vérification instantanée" },
-                    ].map((f, i) => (
-                      <div key={i} className="flex items-center gap-3 text-sm text-gray-600">
-                        <div className="w-8 h-8 rounded-lg bg-emerald-50 flex items-center justify-center flex-shrink-0">
-                          <f.icon className="w-4 h-4 text-emerald-600" />
-                        </div>
-                        {f.text}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Placeholder futur */}
-            <div className="rounded-2xl border-2 border-dashed border-gray-200 p-8 sm:p-10 text-center">
-              <Sparkles className="w-8 h-8 text-gray-300 mx-auto mb-3" />
-              <p className="text-gray-400 font-semibold">D&apos;autres solutions arrivent bientôt...</p>
-              <p className="text-sm text-gray-300 mt-1">Restez connectés.</p>
-            </div>
           </div>
         </div>
       </section>
