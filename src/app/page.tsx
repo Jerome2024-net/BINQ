@@ -21,10 +21,10 @@ export default function HomePage() {
       <header className="fixed top-0 inset-x-0 z-[60]">
         <div className="max-w-6xl mx-auto px-5 sm:px-8 h-16 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2">
-            <div className="w-7 h-7 bg-white/15 backdrop-blur-sm rounded-lg flex items-center justify-center border border-white/10">
+            <div className="w-7 h-7 bg-neutral-900 rounded-lg flex items-center justify-center">
               <span className="text-white font-bold text-xs">B</span>
             </div>
-            <span className="font-semibold text-[15px] tracking-tight text-white">Binq</span>
+            <span className="font-semibold text-[15px] tracking-tight text-neutral-900">Binq</span>
           </Link>
 
           <div className="flex items-center gap-5">
@@ -33,15 +33,15 @@ export default function HomePage() {
                 { label: "Fonctionnalités", href: "#fonctionnalites" },
                 { label: "Tarifs", href: "#tarifs" },
               ].map((l) => (
-                <a key={l.href} href={l.href} className="text-[13px] text-white/50 hover:text-white transition-colors">{l.label}</a>
+                <a key={l.href} href={l.href} className="text-[13px] text-neutral-500 hover:text-neutral-900 transition-colors">{l.label}</a>
               ))}
             </nav>
-            <Link href="/connexion" className="text-[13px] text-white/60 hover:text-white transition-colors font-medium">
+            <Link href="/connexion" className="text-[13px] text-neutral-600 hover:text-neutral-900 transition-colors font-medium">
               Connexion
             </Link>
             <button
               onClick={() => setMobileOpen(!mobileOpen)}
-              className="md:hidden p-2 rounded-lg text-white/70 hover:bg-white/10 transition-colors"
+              className="md:hidden p-2 rounded-lg text-neutral-700 hover:bg-neutral-100 transition-colors"
             >
               {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
@@ -72,21 +72,20 @@ export default function HomePage() {
       {/* ═══════ HERO — Clean & Bold ═══════ */}
       <section className="relative min-h-screen flex flex-col items-center justify-between overflow-hidden">
 
-        {/* Gradient background */}
-        <div className="absolute inset-0 -z-10 bg-neutral-950" />
-        <div className="absolute inset-0 -z-10 opacity-40" style={{ background: "radial-gradient(ellipse 80% 60% at 50% 0%, #7c3aed 0%, transparent 60%), radial-gradient(ellipse 60% 50% at 80% 20%, #ec4899 0%, transparent 50%), radial-gradient(ellipse 60% 40% at 20% 10%, #3b82f6 0%, transparent 50%)" }} />
-        <div className="absolute inset-0 -z-10 opacity-30" style={{ background: "radial-gradient(ellipse 50% 40% at 50% 80%, #06b6d4 0%, transparent 60%)" }} />
+        {/* Soft gradient background */}
+        <div className="absolute inset-0 -z-10 bg-[#fafbfc]" />
+        <div className="absolute inset-0 -z-10 opacity-50" style={{ background: "radial-gradient(ellipse 80% 50% at 50% 0%, #dbeafe 0%, transparent 60%), radial-gradient(ellipse 50% 40% at 80% 20%, #fce7f3 0%, transparent 50%), radial-gradient(ellipse 50% 40% at 20% 30%, #ede9fe 0%, transparent 50%)" }} />
 
         {/* ── Text ── */}
         <div className="relative z-10 text-center px-4 sm:px-6 pt-28 sm:pt-36">
           <h1 className="text-[2.75rem] sm:text-7xl lg:text-8xl font-extrabold tracking-tight leading-[1.02] mb-5">
-            <span className="text-white">Créez des moments</span><br />
-            <span className="text-cyan-400">inoubliables.</span>
+            <span className="text-neutral-900">Créez des moments</span><br />
+            <span className="text-blue-600">inoubliables.</span>
           </h1>
-          <p className="text-base sm:text-lg text-neutral-300 max-w-sm mx-auto mb-8 leading-relaxed">
+          <p className="text-base sm:text-lg text-neutral-500 max-w-sm mx-auto mb-8 leading-relaxed">
             Billetterie, paiement Mobile Money, scan QR — tout en un seul endroit.
           </p>
-          <Link href="/inscription" className="inline-flex items-center gap-2 px-7 py-3 bg-white text-neutral-900 font-semibold rounded-full hover:bg-white/90 transition-all text-sm shadow-2xl shadow-white/10">
+          <Link href="/inscription" className="inline-flex items-center gap-2 px-7 py-3 bg-neutral-900 text-white font-semibold rounded-full hover:bg-neutral-800 transition-all text-sm shadow-xl shadow-neutral-900/20">
             Commencer gratuitement <ArrowRight className="w-3.5 h-3.5" />
           </Link>
         </div>
@@ -148,7 +147,7 @@ export default function HomePage() {
         </div>
 
         {/* Bottom fade */}
-        <div className="absolute bottom-0 inset-x-0 h-24 bg-gradient-to-t from-white to-transparent z-20 pointer-events-none" />
+        <div className="absolute bottom-0 inset-x-0 h-32 bg-gradient-to-t from-white to-transparent z-20 pointer-events-none" />
       </section>
 
       {/* ═══════ 3 PILLARS — Ultra-compact ═══════ */}
