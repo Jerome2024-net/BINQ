@@ -84,10 +84,10 @@ export default function HomePage() {
             <span className="text-blue-600">inoubliables.</span>
           </h1>
           <p className="text-base sm:text-lg text-neutral-500 max-w-sm mx-auto mb-8 leading-relaxed">
-            Billetterie, paiement Mobile Money, scan QR — tout en un seul endroit.
+            Créez une page événement, invitez vos proches et vendez vos billets. Organisez un moment mémorable dès aujourd&apos;hui.
           </p>
           <Link href="/inscription" className="inline-flex items-center gap-2 px-7 py-3 bg-neutral-900 text-white font-semibold rounded-full hover:bg-neutral-800 transition-all text-sm shadow-xl shadow-neutral-900/20">
-            Commencer gratuitement <ArrowRight className="w-3.5 h-3.5" />
+            Créer ma billetterie <ArrowRight className="w-3.5 h-3.5" />
           </Link>
         </div>
 
