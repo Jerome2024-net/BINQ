@@ -1,39 +1,35 @@
 import Link from "next/link";
-import { Mail, Shield, Headphones } from "lucide-react";
+import { Mail, Headphones } from "lucide-react";
 
 export default function Footer() {
   return (
-    <footer className="bg-gray-950 text-gray-400">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-14">
+    <footer className="bg-white border-t border-neutral-100">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-10 sm:py-14">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8 sm:gap-10">
           {/* Brand */}
           <div className="col-span-2 md:col-span-1">
-            <div className="flex items-center mb-4">
-              <img src="https://res.cloudinary.com/dn8ed1doa/image/upload/82D516A1-AEEB-4D11-B7F0-C0DB72341613_gz12tn" alt="Binq" className="h-12 w-auto brightness-0 invert md:hidden" />
-              <img src="https://res.cloudinary.com/dn8ed1doa/image/upload/82D516A1-AEEB-4D11-B7F0-C0DB72341613_gz12tn" alt="Binq" className="h-12 w-auto brightness-0 invert hidden md:block" />
-            </div>
-            <p className="text-gray-500 text-[14px] leading-relaxed mb-6">
-              La fintech digitale pour gérer votre argent simplement et en toute sécurité.
-            </p>
-            <div className="flex items-center gap-4">
-              <div className="flex items-center gap-2 text-xs text-gray-600">
-                <Shield className="w-3.5 h-3.5" />
-                <span>Paiements sécurisés</span>
+            <div className="flex items-center gap-2 mb-4">
+              <div className="w-7 h-7 bg-neutral-900 rounded-lg flex items-center justify-center">
+                <span className="text-white font-semibold text-xs">B</span>
               </div>
+              <span className="font-semibold text-neutral-900 tracking-tight">Binq</span>
             </div>
+            <p className="text-neutral-400 text-sm leading-relaxed">
+              The modern ticketing platform for events of any size.
+            </p>
           </div>
 
-          {/* Produit */}
+          {/* Product */}
           <div>
-            <h3 className="text-gray-900 text-sm font-semibold mb-4">Produit</h3>
+            <h3 className="text-neutral-900 text-sm font-semibold mb-4">Product</h3>
             <ul className="space-y-2.5">
               {[
-                { href: "/#fonctionnalites", label: "Fonctionnalités" },
-                { href: "/#tarifs", label: "Tarifs" },
+                { href: "/#fonctionnalites", label: "Features" },
+                { href: "/#tarifs", label: "Pricing" },
                 { href: "/dashboard", label: "Dashboard" },
               ].map((link) => (
                 <li key={link.href}>
-                  <Link href={link.href} className="text-gray-500 hover:text-gray-700 transition-colors text-[14px]">
+                  <Link href={link.href} className="text-neutral-400 hover:text-neutral-900 transition-colors text-sm">
                     {link.label}
                   </Link>
                 </li>
@@ -41,18 +37,18 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Ressources */}
+          {/* Resources */}
           <div>
-            <h3 className="text-gray-900 text-sm font-semibold mb-4">Ressources</h3>
+            <h3 className="text-neutral-900 text-sm font-semibold mb-4">Resources</h3>
             <ul className="space-y-2.5">
               {[
-                { href: "#", label: "Centre d'aide" },
-                { href: "#", label: "Guide de démarrage" },
+                { href: "#", label: "Help Center" },
+                { href: "#", label: "Getting Started" },
                 { href: "#", label: "FAQ" },
                 { href: "#", label: "Blog" },
               ].map((link) => (
                 <li key={link.label}>
-                  <Link href={link.href} className="text-gray-500 hover:text-gray-700 transition-colors text-[14px]">
+                  <Link href={link.href} className="text-neutral-400 hover:text-neutral-900 transition-colors text-sm">
                     {link.label}
                   </Link>
                 </li>
@@ -62,49 +58,35 @@ export default function Footer() {
 
           {/* Contact */}
           <div className="col-span-2 md:col-span-1">
-            <h3 className="text-gray-900 text-sm font-semibold mb-4">Contact</h3>
-            <ul className="space-y-3 text-gray-500 text-[14px]">
-              <li className="flex items-center gap-2">
-                <Mail className="w-4 h-4 text-gray-600" />
-                <a href="mailto:support@binq.io" className="hover:text-gray-700 transition-colors">
+            <h3 className="text-neutral-900 text-sm font-semibold mb-4">Contact</h3>
+            <ul className="space-y-3 text-sm">
+              <li className="flex items-center gap-2 text-neutral-400">
+                <Mail className="w-4 h-4 text-neutral-300" />
+                <a href="mailto:support@binq.io" className="hover:text-neutral-900 transition-colors">
                   support@binq.io
                 </a>
               </li>
-              <li className="flex items-center gap-2">
-                <Headphones className="w-4 h-4 text-gray-600" />
-                <span>Support 7j/7</span>
+              <li className="flex items-center gap-2 text-neutral-400">
+                <Headphones className="w-4 h-4 text-neutral-300" />
+                <span>Support 7/7</span>
               </li>
             </ul>
-            <div className="mt-6 bg-gray-50/80 border border-gray-200/50 rounded-xl p-4">
-              <p className="text-[13px] text-gray-400 font-medium mb-1">Newsletter</p>
-              <p className="text-[12px] text-gray-600 mb-3">Restez informé des nouveautés</p>
-              <div className="flex flex-col sm:flex-row gap-2">
-                <input
-                  type="email"
-                  placeholder="votre@email.com"
-                  className="flex-1 min-w-0 px-3 py-2 bg-gray-100/50 border border-gray-200/60 rounded-lg text-[13px] text-gray-900 placeholder:text-gray-600 outline-none focus:border-primary-500/50"
-                />
-                <button className="px-3 py-2 bg-primary-600 hover:bg-primary-700 text-gray-900 rounded-lg text-[13px] font-medium transition-colors whitespace-nowrap">
-                  OK
-                </button>
-              </div>
-            </div>
           </div>
         </div>
 
-        <div className="border-t border-gray-800/60 mt-8 sm:mt-10 pt-6 sm:pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
-          <p className="text-gray-600 text-[13px]">
-            © 2026 Binq. Tous droits réservés.
+        <div className="border-t border-neutral-100 mt-8 sm:mt-10 pt-6 sm:pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
+          <p className="text-neutral-300 text-xs">
+            &copy; {new Date().getFullYear()} Binq. All rights reserved.
           </p>
           <div className="flex items-center gap-6">
-            <Link href="#" className="text-gray-600 hover:text-gray-400 text-[13px] transition-colors">
-              Mentions légales
+            <Link href="#" className="text-neutral-300 hover:text-neutral-900 text-xs transition-colors">
+              Legal
             </Link>
-            <Link href="#" className="text-gray-600 hover:text-gray-400 text-[13px] transition-colors">
-              Confidentialité
+            <Link href="#" className="text-neutral-300 hover:text-neutral-900 text-xs transition-colors">
+              Privacy
             </Link>
-            <Link href="#" className="text-gray-600 hover:text-gray-400 text-[13px] transition-colors">
-              CGU
+            <Link href="#" className="text-neutral-300 hover:text-neutral-900 text-xs transition-colors">
+              Terms
             </Link>
           </div>
         </div>

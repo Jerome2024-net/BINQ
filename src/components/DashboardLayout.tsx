@@ -11,14 +11,11 @@ import {
   LogOut,
   User,
   X,
-  Star,
-  ShoppingBag,
-  Store,
-  Package,
-  Wallet,
+  Home,
   Calendar,
-  Ticket,
+  Wallet,
   TrendingUp,
+  Plus,
 } from "lucide-react";
 
 interface Notification {
@@ -30,10 +27,10 @@ interface Notification {
 }
 
 const bottomTabs = [
-  { href: "/dashboard", label: "Accueil", icon: ShoppingBag },
-  { href: "/evenements", label: "Billetteries", icon: Calendar },
+  { href: "/dashboard", label: "Home", icon: Home },
+  { href: "/evenements", label: "Events", icon: Calendar },
   { href: "/portefeuille", label: "Wallet", icon: Wallet },
-  { href: "/ventes", label: "Ventes", icon: TrendingUp },
+  { href: "/ventes", label: "Analytics", icon: TrendingUp },
 ];
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
@@ -128,120 +125,115 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   return (
     <AuthGuard>
-      <div className="min-h-screen bg-white font-sans antialiased text-gray-900 lg:flex">
+      <div className="min-h-screen bg-white font-sans antialiased text-neutral-900 lg:flex">
 
-        {/* ── Desktop Sidebar (lg+) ── */}
-        <aside className="hidden lg:flex lg:flex-col lg:w-64 xl:w-72 lg:fixed lg:inset-y-0 lg:left-0 lg:z-50 lg:border-r lg:border-gray-100 bg-white">
-          {/* Sidebar Header */}
-          <div className="flex items-center gap-2.5 px-6 h-16 border-b border-gray-100">
-            <div className="w-9 h-9 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-xl flex items-center justify-center shadow-lg shadow-emerald-500/25">
-              <Star className="w-4.5 h-4.5 text-white fill-white" />
+        {/* ── Desktop Sidebar ── */}
+        <aside className="hidden lg:flex lg:flex-col lg:w-[220px] lg:fixed lg:inset-y-0 lg:left-0 lg:z-50 lg:border-r lg:border-neutral-200 bg-white">
+          {/* Logo */}
+          <div className="flex items-center gap-2 px-5 h-14 border-b border-neutral-200">
+            <div className="w-7 h-7 bg-neutral-900 rounded-lg flex items-center justify-center">
+              <span className="text-white text-xs font-bold">B</span>
             </div>
-            <span className="font-black text-lg tracking-tight">Binq</span>
+            <span className="font-semibold text-[15px] text-neutral-900">Binq</span>
           </div>
 
-          {/* Sidebar Navigation */}
-          <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
+          {/* Nav */}
+          <nav className="flex-1 px-3 py-3 space-y-0.5 overflow-y-auto">
             {bottomTabs.map((tab) => {
               const isActive = pathname === tab.href || (tab.href !== "/dashboard" && pathname.startsWith(tab.href));
               return (
                 <Link
                   key={tab.href}
                   href={tab.href}
-                  className={`flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 ${
+                  className={`flex items-center gap-2.5 px-3 py-2 rounded-lg text-[13px] font-medium transition-colors duration-150 ${
                     isActive
-                      ? "bg-emerald-50 text-emerald-700"
-                      : "text-gray-500 hover:bg-gray-50 hover:text-gray-900"
+                      ? "bg-neutral-100 text-neutral-900"
+                      : "text-neutral-500 hover:bg-neutral-50 hover:text-neutral-900"
                   }`}
                 >
-                  <div className={`p-1.5 rounded-lg transition-colors ${isActive ? "bg-emerald-100" : ""}`}>
-                    <tab.icon className={`w-[18px] h-[18px] ${isActive ? "text-emerald-600" : "text-gray-400"}`} />
-                  </div>
+                  <tab.icon className={`w-4 h-4 ${isActive ? "text-neutral-900" : "text-neutral-400"}`} />
                   {tab.label}
                 </Link>
               );
             })}
           </nav>
 
-          {/* Sidebar Footer — Profile */}
-          <div className="px-3 py-5 border-t border-gray-100">
-            <Link href="/profil" className="flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-gray-50 transition group">
-              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center shrink-0">
-                <span className="text-white text-[11px] font-black uppercase">{initials}</span>
+          {/* Profile */}
+          <div className="px-3 py-3 border-t border-neutral-200">
+            <Link href="/profil" className="flex items-center gap-2.5 px-3 py-2 rounded-lg hover:bg-neutral-50 transition group">
+              <div className="w-8 h-8 rounded-full bg-neutral-200 flex items-center justify-center shrink-0">
+                <span className="text-neutral-600 text-[10px] font-semibold uppercase">{initials}</span>
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-bold text-gray-900 truncate">{user?.prenom} {user?.nom}</p>
-                <p className="text-[11px] text-gray-400 truncate">{user?.email}</p>
+                <p className="text-[13px] font-medium text-neutral-900 truncate">{user?.prenom} {user?.nom}</p>
+                <p className="text-[11px] text-neutral-400 truncate">{user?.email}</p>
               </div>
             </Link>
-            <button onClick={handleLogout} className="mt-2 flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm text-gray-400 hover:bg-red-50 hover:text-red-500 transition w-full text-left">
-              <LogOut className="w-4 h-4" />
-              Déconnexion
+            <button onClick={handleLogout} className="mt-1 flex items-center gap-2.5 px-3 py-2 rounded-lg text-[13px] text-neutral-400 hover:bg-red-50 hover:text-red-500 transition w-full text-left">
+              <LogOut className="w-3.5 h-3.5" />
+              Se déconnecter
             </button>
           </div>
         </aside>
 
-        {/* ── Main Content Area ── */}
-        <div className="flex-1 lg:ml-64 xl:ml-72">
+        {/* ── Main Content ── */}
+        <div className="flex-1 lg:ml-[220px]">
 
-        {/* ── Top Header Bar ── */}
-        <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-2xl border-b border-gray-100">
-          <div className="flex items-center justify-between px-4 sm:px-6 lg:px-8 h-14 max-w-2xl lg:max-w-5xl xl:max-w-6xl mx-auto">
-            {/* Left: Logo (mobile only) */}
+        {/* ── Top Bar ── */}
+        <header className="sticky top-0 z-40 bg-white border-b border-neutral-200">
+          <div className="flex items-center justify-between px-4 sm:px-6 lg:px-8 h-14 max-w-5xl mx-auto">
+            {/* Left: Logo (mobile) */}
             <Link href="/dashboard" className="flex items-center gap-2 lg:hidden">
-              <div className="w-8 h-8 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-xl flex items-center justify-center shadow-lg shadow-emerald-500/25">
-                <Star className="w-4 h-4 text-white fill-white" />
+              <div className="w-7 h-7 bg-neutral-900 rounded-lg flex items-center justify-center">
+                <span className="text-white text-xs font-bold">B</span>
               </div>
-              <span className="font-black text-base tracking-tight">Binq</span>
+              <span className="font-semibold text-[15px]">Binq</span>
             </Link>
 
-            {/* Left: Page breadcrumb (desktop) */}
+            {/* Left: breadcrumb (desktop) */}
             <div className="hidden lg:block">
-              <h2 className="text-sm font-bold text-gray-900">
+              <h2 className="text-[13px] font-medium text-neutral-500">
                 {bottomTabs.find(t => t.href === pathname || (t.href !== "/dashboard" && pathname.startsWith(t.href)))?.label || "Dashboard"}
               </h2>
             </div>
 
-            {/* Right: Actions */}
+            {/* Right */}
             <div className="flex items-center gap-1">
               {/* Notification */}
               <div className="relative" ref={notifRef}>
-                <button onClick={() => { setNotifOpen(!notifOpen); setProfileOpen(false); }} className="relative p-2.5 rounded-xl hover:bg-gray-100/50 transition-colors">
-                  <Bell className="w-[18px] h-[18px] text-gray-600" />
+                <button onClick={() => { setNotifOpen(!notifOpen); setProfileOpen(false); }} className="relative p-2 rounded-lg hover:bg-neutral-100 transition-colors">
+                  <Bell className="w-[18px] h-[18px] text-neutral-500" />
                   {unreadCount > 0 && (
-                    <span className="absolute top-1.5 right-1.5 flex h-2 w-2">
-                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
-                      <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
-                    </span>
+                    <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full" />
                   )}
                 </button>
 
                 {notifOpen && (
-                  <div className="absolute right-0 mt-2 w-80 sm:w-96 bg-white border border-gray-200/60 rounded-2xl shadow-xl overflow-hidden z-50">
-                    <div className="flex items-center justify-between px-5 py-3 border-b border-gray-200/50">
-                      <h3 className="text-sm font-bold">Notifications</h3>
+                  <div className="absolute right-0 mt-2 w-80 sm:w-96 bg-white border border-neutral-200 rounded-xl shadow-hard overflow-hidden z-50">
+                    <div className="flex items-center justify-between px-4 py-3 border-b border-neutral-100">
+                      <h3 className="text-sm font-semibold">Notifications</h3>
                       {unreadCount > 0 && (
-                        <button onClick={markAllRead} className="text-xs font-semibold text-emerald-600 hover:text-emerald-600 transition-colors">
-                          Tout marquer lu
+                        <button onClick={markAllRead} className="text-xs font-medium text-neutral-500 hover:text-neutral-900 transition-colors">
+                          Mark all read
                         </button>
                       )}
                     </div>
                     <div className="max-h-72 overflow-y-auto">
                       {notifications.length === 0 ? (
                         <div className="py-10 text-center">
-                          <Bell className="w-8 h-8 text-gray-500 mx-auto mb-2" />
-                          <p className="text-sm text-gray-700">Aucune notification</p>
+                          <Bell className="w-5 h-5 text-neutral-300 mx-auto mb-2" />
+                          <p className="text-sm text-neutral-400">No notifications</p>
                         </div>
                       ) : (
-                        <div className="p-1.5 space-y-0.5">
+                        <div className="divide-y divide-neutral-100">
                           {notifications.map((notif) => (
-                            <div key={notif.id} className={`px-4 py-2.5 rounded-xl transition-colors ${notif.lu ? "opacity-50" : "bg-emerald-50"}`}>
+                            <div key={notif.id} className={`px-4 py-3 ${notif.lu ? "opacity-50" : ""}`}>
                               <div className="flex justify-between items-start gap-3">
-                                <span className={`text-sm font-bold ${notif.lu ? "text-gray-700" : "text-emerald-600"}`}>{notif.titre}</span>
-                                {!notif.lu && <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0 mt-1.5" />}
+                                <span className="text-sm font-medium text-neutral-900">{notif.titre}</span>
+                                {!notif.lu && <span className="w-1.5 h-1.5 rounded-full bg-blue-500 shrink-0 mt-1.5" />}
                               </div>
-                              <p className="text-[11px] text-gray-700 mt-0.5 leading-relaxed">{notif.message}</p>
-                              <span className="text-[10px] text-gray-600 mt-0.5 block">{formatTimeAgo(notif.created_at)}</span>
+                              <p className="text-xs text-neutral-500 mt-0.5 leading-relaxed">{notif.message}</p>
+                              <span className="text-[11px] text-neutral-400 mt-0.5 block">{formatTimeAgo(notif.created_at)}</span>
                             </div>
                           ))}
                         </div>
@@ -251,30 +243,30 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 )}
               </div>
 
-              {/* Profile (mobile/tablet only) */}
+              {/* Profile (mobile) */}
               <div className="relative lg:hidden" ref={profileRef}>
-                <button onClick={() => { setProfileOpen(!profileOpen); setNotifOpen(false); }} className="p-1.5 rounded-xl hover:bg-gray-100/50 transition-colors">
-                  <div className="w-8 h-8 rounded-full bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center">
-                    <span className="text-white text-[10px] font-black uppercase">{initials}</span>
+                <button onClick={() => { setProfileOpen(!profileOpen); setNotifOpen(false); }} className="p-1 rounded-lg hover:bg-neutral-100 transition-colors">
+                  <div className="w-8 h-8 rounded-full bg-neutral-200 flex items-center justify-center">
+                    <span className="text-neutral-600 text-[10px] font-semibold uppercase">{initials}</span>
                   </div>
                 </button>
 
                 {profileOpen && (
-                  <div className="absolute right-0 mt-2 w-56 bg-white border border-gray-200/60 rounded-2xl shadow-xl p-1.5 z-50">
+                  <div className="absolute right-0 mt-2 w-56 bg-white border border-neutral-200 rounded-xl shadow-hard p-1 z-50">
                     <div className="px-3 py-2.5 mb-1">
-                      <p className="text-sm font-bold">{user?.prenom} {user?.nom}</p>
-                      <p className="text-[11px] text-gray-700 truncate">{user?.email}</p>
+                      <p className="text-sm font-medium">{user?.prenom} {user?.nom}</p>
+                      <p className="text-[11px] text-neutral-400 truncate">{user?.email}</p>
                     </div>
-                    <Link href="/profil" onClick={() => setProfileOpen(false)} className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-gray-700 hover:bg-gray-100/50 hover:text-gray-900 transition-colors">
+                    <Link href="/profil" onClick={() => setProfileOpen(false)} className="flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm text-neutral-600 hover:bg-neutral-50 transition-colors">
                       <User className="w-4 h-4" />
                       Mon Profil
                     </Link>
-                    <Link href="/parametres" onClick={() => setProfileOpen(false)} className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-gray-700 hover:bg-gray-100/50 hover:text-gray-900 transition-colors">
+                    <Link href="/parametres" onClick={() => setProfileOpen(false)} className="flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm text-neutral-600 hover:bg-neutral-50 transition-colors">
                       <Settings className="w-4 h-4" />
                       Param&egrave;tres
                     </Link>
-                    <div className="h-px bg-gray-100/50 my-1" />
-                    <button onClick={handleLogout} className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-red-500 hover:bg-red-500/10 transition-colors w-full text-left">
+                    <div className="h-px bg-neutral-100 my-1" />
+                    <button onClick={handleLogout} className="flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm text-red-500 hover:bg-red-50 transition-colors w-full text-left">
                       <LogOut className="w-4 h-4" />
                       D&eacute;connexion
                     </button>
@@ -286,32 +278,27 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         </header>
 
         {/* ── Content ── */}
-        <main className="pb-24 lg:pb-8 px-4 sm:px-6 lg:px-8">
-          <div className="max-w-2xl lg:max-w-5xl xl:max-w-6xl mx-auto pt-4 sm:pt-6">
+        <main className="pb-20 lg:pb-8 px-4 sm:px-6 lg:px-8">
+          <div className="max-w-5xl mx-auto pt-6">
             {children}
           </div>
         </main>
 
-        {/* ── Bottom Tab Bar (mobile/tablet only) ── */}
-        <nav className="fixed bottom-0 inset-x-0 z-50 bg-white/95 backdrop-blur-2xl border-t border-gray-200/50 safe-area-pb lg:hidden">
-          <div className="max-w-2xl mx-auto flex items-center justify-around h-16 px-2">
+        {/* ── Bottom Tabs (mobile) ── */}
+        <nav className="fixed bottom-0 inset-x-0 z-50 bg-white border-t border-neutral-200 safe-area-pb lg:hidden">
+          <div className="max-w-md mx-auto flex items-center justify-around h-14 px-2">
             {bottomTabs.map((tab) => {
               const isActive = pathname === tab.href || (tab.href !== "/dashboard" && pathname.startsWith(tab.href));
-
               return (
                 <Link
                   key={tab.href}
                   href={tab.href}
-                  className={`flex flex-col items-center justify-center gap-0.5 w-16 sm:w-18 py-1 rounded-xl transition-all duration-200 ${
-                    isActive
-                      ? "text-emerald-600"
-                      : "text-gray-600 hover:text-gray-700"
+                  className={`flex flex-col items-center justify-center gap-0.5 w-16 py-1 transition-colors duration-150 ${
+                    isActive ? "text-neutral-900" : "text-neutral-400"
                   }`}
                 >
-                  <div className={`p-1.5 rounded-xl transition-colors ${isActive ? "bg-emerald-50" : ""}`}>
-                    <tab.icon className={`w-5 h-5 ${isActive ? "text-emerald-600" : ""}`} />
-                  </div>
-                  <span className={`text-[10px] font-semibold ${isActive ? "text-emerald-600" : ""}`}>{tab.label}</span>
+                  <tab.icon className="w-5 h-5" />
+                  <span className="text-[10px] font-medium">{tab.label}</span>
                 </Link>
               );
             })}
