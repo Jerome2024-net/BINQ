@@ -46,8 +46,8 @@ export default function HomePage() {
             <Link href="/connexion" className="hidden sm:block text-sm text-neutral-500 hover:text-neutral-900 transition-colors">
               Log in
             </Link>
-            <Link href="/inscription" className="hidden sm:flex items-center gap-1.5 text-sm font-medium bg-neutral-900 text-white px-4 py-2 rounded-lg hover:bg-neutral-800 transition-all">
-              Get Started <ArrowRight className="w-3.5 h-3.5" />
+            <Link href="/inscription" className="hidden sm:flex items-center gap-1.5 text-sm font-medium bg-blue-600 text-white px-4 py-2 rounded-full hover:bg-blue-700 transition-all shadow-sm shadow-blue-600/20">
+              Créer ma billetterie <ArrowRight className="w-3.5 h-3.5" />
             </Link>
             <button
               onClick={() => setMobileOpen(!mobileOpen)}
@@ -75,8 +75,8 @@ export default function HomePage() {
               <Link href="/connexion" onClick={() => setMobileOpen(false)} className="px-3 py-2.5 rounded-lg text-neutral-600 hover:bg-neutral-50 text-sm transition-colors">
                 Log in
               </Link>
-              <Link href="/inscription" onClick={() => setMobileOpen(false)} className="text-center font-medium bg-neutral-900 text-white px-5 py-2.5 rounded-lg text-sm mt-1">
-                Get Started
+              <Link href="/inscription" onClick={() => setMobileOpen(false)} className="text-center font-medium bg-blue-600 text-white px-5 py-2.5 rounded-full text-sm mt-1">
+                Créer ma billetterie
               </Link>
             </div>
           </div>
@@ -84,20 +84,93 @@ export default function HomePage() {
       </header>
 
       {/* ═══════ HERO ═══════ */}
-      <section className="pt-32 sm:pt-44 pb-20 sm:pb-28">
+      <section className="pt-28 sm:pt-40 pb-0">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 text-center">
           <h1 className="text-4xl sm:text-6xl lg:text-7xl font-semibold tracking-tight leading-[1.05] mb-6">
             Delightful events<br />start here.
           </h1>
           <p className="text-base sm:text-lg text-neutral-400 max-w-xl mx-auto mb-8 leading-relaxed">
-            Create your ticketing in minutes, accept Mobile Money or card payments, and scan every entry with QR codes.
+            Créez votre billetterie en quelques minutes, acceptez Mobile Money ou carte, et scannez chaque entrée par QR code.
           </p>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-4">
-            <Link href="/inscription" className="w-full sm:w-auto flex items-center justify-center gap-2 px-8 py-3 bg-neutral-900 text-white font-medium rounded-lg hover:bg-neutral-800 transition-all text-sm active:scale-[0.98]">
-              Create Event <ArrowRight className="w-4 h-4" />
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-3">
+            <Link href="/inscription" className="w-full sm:w-auto flex items-center justify-center gap-2 px-8 py-3.5 bg-blue-600 text-white font-medium rounded-full hover:bg-blue-700 transition-all text-[15px] active:scale-[0.97] shadow-lg shadow-blue-600/25">
+              Créer ma billetterie <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
-          <p className="text-xs text-neutral-300">Free to start &middot; No subscription &middot; No commitment</p>
+          <p className="text-xs text-neutral-300 mb-16 sm:mb-20">Gratuit &middot; Sans abonnement &middot; Sans engagement</p>
+        </div>
+
+        {/* ═══ HERO VISUAL — Luma-style event cards showcase ═══ */}
+        <div className="relative max-w-6xl mx-auto px-4 sm:px-6">
+          {/* Fade-out bottom */}
+          <div className="absolute bottom-0 inset-x-0 h-32 bg-gradient-to-t from-white to-transparent z-10 pointer-events-none" />
+
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-4 sm:gap-5">
+            {/* Card 1 — Large featured */}
+            <div className="md:col-span-2 rounded-2xl overflow-hidden border border-neutral-200 bg-white group">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=900&h=500&fit=crop&q=80" alt="Event" className="w-full aspect-[16/9] object-cover" />
+              <div className="p-4 sm:p-5">
+                <div className="flex items-center gap-2 mb-2">
+                  <div className="w-10 h-10 rounded-lg bg-blue-50 flex flex-col items-center justify-center">
+                    <span className="text-[10px] font-semibold text-blue-600 uppercase leading-none">AVR</span>
+                    <span className="text-sm font-bold text-blue-700 leading-none">12</span>
+                  </div>
+                  <div>
+                    <p className="text-sm font-semibold text-neutral-900">Afro Night Festival</p>
+                    <p className="text-xs text-neutral-400">Dakar &middot; 2,400 participants</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2 mt-3">
+                  <div className="flex -space-x-1.5">
+                    {[...Array(4)].map((_, i) => (
+                      <div key={i} className="w-6 h-6 rounded-full border-2 border-white" style={{ background: ['#3b82f6', '#8b5cf6', '#f59e0b', '#10b981'][i] }} />
+                    ))}
+                  </div>
+                  <span className="text-xs text-neutral-400">+2,396 inscrits</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Right column — stacked cards */}
+            <div className="flex flex-col gap-4 sm:gap-5">
+              {/* Card 2 */}
+              <div className="rounded-2xl overflow-hidden border border-neutral-200 bg-white">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=500&h=300&fit=crop&q=80" alt="Conference" className="w-full aspect-[4/3] object-cover" />
+                <div className="p-3 sm:p-4">
+                  <div className="flex items-center gap-2">
+                    <div className="w-9 h-9 rounded-lg bg-violet-50 flex flex-col items-center justify-center">
+                      <span className="text-[9px] font-semibold text-violet-600 uppercase leading-none">MAI</span>
+                      <span className="text-xs font-bold text-violet-700 leading-none">03</span>
+                    </div>
+                    <div>
+                      <p className="text-[13px] font-semibold text-neutral-900">Tech Summit</p>
+                      <p className="text-[11px] text-neutral-400">Abidjan &middot; 500 places</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Card 3 */}
+              <div className="rounded-2xl overflow-hidden border border-neutral-200 bg-white">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src="https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=500&h=300&fit=crop&q=80" alt="Concert" className="w-full aspect-[4/3] object-cover" />
+                <div className="p-3 sm:p-4">
+                  <div className="flex items-center gap-2">
+                    <div className="w-9 h-9 rounded-lg bg-amber-50 flex flex-col items-center justify-center">
+                      <span className="text-[9px] font-semibold text-amber-600 uppercase leading-none">JUN</span>
+                      <span className="text-xs font-bold text-amber-700 leading-none">21</span>
+                    </div>
+                    <div>
+                      <p className="text-[13px] font-semibold text-neutral-900">Summer Vibes</p>
+                      <p className="text-[11px] text-neutral-400">Lomé &middot; 1,200 places</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -342,13 +415,13 @@ export default function HomePage() {
         <div className="max-w-4xl mx-auto px-4 sm:px-6">
           <div className="bg-neutral-900 rounded-2xl p-8 sm:p-16 text-center">
             <h2 className="text-2xl sm:text-4xl font-semibold text-white tracking-tight mb-4">
-              Ready to launch your event?
+              Prêt à lancer votre événement ?
             </h2>
             <p className="text-base text-neutral-400 max-w-md mx-auto mb-8">
-              Free to start. No commitment. Go live in 5 minutes.
+              Gratuit, sans abonnement. Lancez-vous en 5 minutes.
             </p>
-            <Link href="/inscription" className="inline-flex items-center justify-center gap-2 px-8 py-3 bg-white text-neutral-900 font-medium rounded-lg hover:bg-neutral-100 transition-all text-sm active:scale-[0.98]">
-              Create Event <ChevronRight className="w-4 h-4" />
+            <Link href="/inscription" className="inline-flex items-center justify-center gap-2 px-8 py-3.5 bg-blue-600 text-white font-medium rounded-full hover:bg-blue-700 transition-all text-[15px] active:scale-[0.97] shadow-lg shadow-blue-600/25">
+              Créer ma billetterie <ChevronRight className="w-4 h-4" />
             </Link>
           </div>
         </div>
