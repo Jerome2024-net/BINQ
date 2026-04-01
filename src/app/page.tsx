@@ -81,9 +81,9 @@ export default function HomePage() {
         <div className="relative z-10 text-center px-4 sm:px-6 pt-28 sm:pt-36">
           <h1 className="text-[2.75rem] sm:text-7xl lg:text-8xl font-extrabold tracking-tight leading-[1.02] mb-5">
             <span className="text-white">Créez des moments</span><br />
-            <span className="bg-gradient-to-r from-cyan-300 via-blue-400 to-violet-400 bg-clip-text" style={{ WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>inoubliables.</span>
+            <span className="text-cyan-400">inoubliables.</span>
           </h1>
-          <p className="text-base sm:text-lg text-white/50 max-w-sm mx-auto mb-8 leading-relaxed font-light">
+          <p className="text-base sm:text-lg text-neutral-300 max-w-sm mx-auto mb-8 leading-relaxed">
             Billetterie, paiement Mobile Money, scan QR — tout en un seul endroit.
           </p>
           <Link href="/inscription" className="inline-flex items-center gap-2 px-7 py-3 bg-white text-neutral-900 font-semibold rounded-full hover:bg-white/90 transition-all text-sm shadow-2xl shadow-white/10">
