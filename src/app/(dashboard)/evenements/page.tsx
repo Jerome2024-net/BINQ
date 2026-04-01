@@ -339,16 +339,20 @@ export default function EvenementsPage() {
   };
 
   const handleDeleteEvent = async (eventId: string) => {
+    if (!confirm("Supprimer cette billetterie ? Tous les billets vendus seront également supprimés.")) return;
     setDeletingEventId(eventId);
     try {
       const res = await fetch(`/api/events/${eventId}`, { method: "DELETE" });
-      if (res.ok) {
-        setEvents((prev) => prev.filter((e) => e.id !== eventId));
-        if (selectedEvent?.id === eventId) setSelectedEvent(null);
-        hapticSuccess();
-        showToast("success", "Billetterie supprimée");
-      }
-    } catch { hapticError(); }
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Erreur de suppression");
+      setEvents((prev) => prev.filter((e) => e.id !== eventId));
+      if (selectedEvent?.id === eventId) setSelectedEvent(null);
+      hapticSuccess();
+      showToast("success", "Billetterie supprimée");
+    } catch (err: any) {
+      hapticError();
+      showToast("error", "Erreur", err.message || "Impossible de supprimer");
+    }
     finally { setDeletingEventId(null); }
   };
 

@@ -160,6 +160,23 @@ export async function DELETE(req: NextRequest, { params }: { params: { id: strin
     const supabase = getServiceClient();
     const { id } = params;
 
+    // Vérifier que l'utilisateur est le propriétaire
+    const { data: event } = await supabase
+      .from("events")
+      .select("id, user_id")
+      .eq("id", id)
+      .eq("user_id", user.id)
+      .single();
+
+    if (!event) {
+      return NextResponse.json({ error: "Événement non trouvé ou non autorisé" }, { status: 404 });
+    }
+
+    // Supprimer dans l'ordre: tickets → ticket_types → scan_team → event
+    await supabase.from("tickets").delete().eq("event_id", id);
+    await supabase.from("ticket_types").delete().eq("event_id", id);
+    await supabase.from("scan_team").delete().eq("event_id", id);
+
     const { error } = await supabase
       .from("events")
       .delete()
