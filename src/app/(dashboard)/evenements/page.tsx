@@ -683,14 +683,22 @@ export default function EvenementsPage() {
               <span className="text-[10px] text-white/40 font-bold bg-white/10 px-2 py-0.5 rounded-full">{events.length}</span>
             )}
           </div>
-          <button
-            onClick={() => setActiveTab(activeTab === "reglages" ? "evenements" : "reglages")}
-            className={`w-9 h-9 rounded-xl flex items-center justify-center transition ${
-              activeTab === "reglages" ? "bg-emerald-500 text-white" : "bg-white/10 text-white/60 hover:bg-white/20"
-            }`}
-          >
-            <Settings className="w-4 h-4" />
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => { setScanMode(true); setScanResult(null); setScanCode(""); hapticMedium(); setTimeout(() => startCamera(), 300); }}
+              className="w-9 h-9 rounded-xl flex items-center justify-center bg-white/10 text-white/60 hover:bg-white/20 transition"
+            >
+              <ScanLine className="w-4 h-4" />
+            </button>
+            <button
+              onClick={() => setActiveTab(activeTab === "reglages" ? "evenements" : "reglages")}
+              className={`w-9 h-9 rounded-xl flex items-center justify-center transition ${
+                activeTab === "reglages" ? "bg-emerald-500 text-white" : "bg-white/10 text-white/60 hover:bg-white/20"
+              }`}
+            >
+              <Settings className="w-4 h-4" />
+            </button>
+          </div>
         </div>
 
         {/* Stats intégrés — compact row */}
@@ -1278,25 +1286,21 @@ export default function EvenementsPage() {
           ) : (
             /* ═══ LISTE DES ÉVÉNEMENTS — PREMIUM ═══ */
             <div>
-              {/* Quick action buttons — Nouvelle = primary, Scanner = secondary */}
-              <div className="flex gap-2 mb-4">
-                <button
-                  onClick={() => { hapticMedium(); setShowAddEvent(true); }}
-                  className="flex-1 flex items-center justify-center gap-2 bg-gradient-to-r from-emerald-500 to-emerald-600 text-white py-3 rounded-2xl font-bold text-[13px] transition hover:from-emerald-400 hover:to-emerald-500 active:scale-[0.97] shadow-md shadow-emerald-500/20"
-                >
-                  <Plus className="w-4 h-4" /> Nouvelle billetterie
-                </button>
-                <button
-                  onClick={() => { setScanMode(true); setScanResult(null); setScanCode(""); hapticMedium(); setTimeout(() => startCamera(), 300); }}
-                  className="flex items-center justify-center gap-2 px-5 py-3 bg-white border border-gray-200 text-gray-700 font-bold text-[13px] rounded-2xl transition hover:bg-gray-50 hover:border-gray-300 active:scale-[0.97] shadow-sm"
-                >
-                  <ScanLine className="w-4 h-4 text-emerald-500" /> Scanner
-                </button>
-              </div>
+              {/* CTA Nouvelle billetterie — only when events exist */}
+              {events.length > 0 && !showAddEvent && (
+                <div className="mt-8 mb-5">
+                  <button
+                    onClick={() => { hapticMedium(); setShowAddEvent(true); }}
+                    className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-emerald-500 to-emerald-600 text-white py-3.5 rounded-2xl font-bold text-[14px] transition hover:from-emerald-400 hover:to-emerald-500 active:scale-[0.97] shadow-md shadow-emerald-500/20"
+                  >
+                    <Plus className="w-4.5 h-4.5" /> Nouvelle billetterie
+                  </button>
+                </div>
+              )}
 
               {/* Formulaire création — Premium Design */}
               {showAddEvent && (
-                <div className="mb-4 animate-in slide-in-from-top-2 duration-300 lg:max-w-2xl lg:mx-auto">
+                <div className="mt-8 mb-4 animate-in slide-in-from-top-2 duration-300 lg:max-w-2xl lg:mx-auto">
                   {/* ── Hero Header ── */}
                   <div className="relative bg-gradient-to-br from-violet-600 via-purple-600 to-indigo-700 rounded-3xl p-5 pb-6 mb-4 overflow-hidden">
                     {/* Decorative elements */}
