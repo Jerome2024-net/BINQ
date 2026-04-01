@@ -10,6 +10,7 @@ import {
   Shield,
   Menu,
   X,
+  Star,
 } from "lucide-react";
 
 export default function HomePage() {
@@ -21,8 +22,8 @@ export default function HomePage() {
       <header className="fixed top-0 inset-x-0 z-[60]">
         <div className="max-w-6xl mx-auto px-5 sm:px-8 h-16 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2">
-            <div className="w-7 h-7 bg-neutral-900 rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-xs">B</span>
+            <div className="w-7 h-7 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center shadow-sm shadow-blue-500/30">
+              <Star className="w-3.5 h-3.5 text-white fill-white" />
             </div>
             <span className="font-semibold text-[15px] tracking-tight text-neutral-900">Binq</span>
           </Link>
@@ -258,8 +259,8 @@ export default function HomePage() {
         <div className="max-w-6xl mx-auto px-4 sm:px-6">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-6">
             <div className="flex items-center gap-2">
-              <div className="w-6 h-6 bg-neutral-900 rounded-md flex items-center justify-center">
-                <span className="text-white font-semibold text-[10px]">B</span>
+              <div className="w-6 h-6 bg-gradient-to-br from-blue-500 to-blue-600 rounded-md flex items-center justify-center shadow-sm shadow-blue-500/30">
+                <Star className="w-3 h-3 text-white fill-white" />
               </div>
               <span className="font-semibold text-neutral-900 tracking-tight">Binq</span>
             </div>
