@@ -20,6 +20,9 @@ import {
   Copy,
   Check,
   Printer,
+  TrendingUp,
+  Sparkles,
+  Zap,
 } from "lucide-react";
 import { type DeviseCode, DEFAULT_DEVISE, formatMontant } from "@/lib/currencies";
 import { generateEventPoster } from "@/lib/generatePoster";
@@ -503,190 +506,286 @@ export default function DashboardPage() {
   const nextEvent = upcomingEvents[0] || todayEvents[0];
 
   return (
-    <div className="px-5 pt-8 pb-28 lg:pb-10">
-      {/* ── Header — just name ── */}
-      <h1 className="text-[22px] lg:text-[28px] font-black tracking-tight text-gray-900">
-        Salut, {user?.prenom || "là"} 👋
-      </h1>
+    <div className="pb-28 lg:pb-10">
+      {/* ── Hero Header ── */}
+      <div className="relative bg-gradient-to-br from-gray-900 via-gray-900 to-emerald-900 px-5 pt-8 pb-6 lg:rounded-b-3xl overflow-hidden">
+        {/* Decorative elements */}
+        <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-500/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/4" />
+        <div className="absolute bottom-0 left-0 w-40 h-40 bg-emerald-500/5 rounded-full blur-2xl translate-y-1/2" />
+        <div className="absolute top-8 right-10 w-1.5 h-1.5 bg-emerald-400/40 rounded-full animate-pulse" />
+        <div className="absolute top-20 right-24 w-1 h-1 bg-emerald-300/30 rounded-full animate-pulse" style={{ animationDelay: '1.5s' }} />
 
-      {/* ── Si aucun event: un seul bloc minimaliste ── */}
-      {events.length === 0 ? (
-        <div className="mt-20 flex flex-col items-center">
-          <p className="text-[17px] font-black text-gray-900 text-center">Crée ta première billetterie</p>
-          <p className="text-[13px] text-gray-400 font-medium mt-2 text-center">Commence à vendre en quelques secondes</p>
-          <Link
-            href="/evenements?action=create"
-            className="mt-8 w-full max-w-[280px] flex items-center justify-center gap-2 py-4 bg-emerald-500 text-white font-bold text-[15px] rounded-2xl hover:bg-emerald-600 transition-all active:scale-[0.97] shadow-lg shadow-emerald-500/25"
-          >
-            <Plus className="w-5 h-5" /> Créer une billetterie
-          </Link>
+        <div className="relative">
+          <p className="text-[11px] font-semibold text-emerald-400/80 uppercase tracking-widest mb-1">
+            {new Date().getHours() < 12 ? "Bonjour" : new Date().getHours() < 18 ? "Bon après-midi" : "Bonsoir"}
+          </p>
+          <h1 className="text-[26px] lg:text-[32px] font-black tracking-tight text-white leading-tight">
+            {user?.prenom || "là"} 👋
+          </h1>
         </div>
-      ) : (
-        <>
-          {/* ── Revenus ── */}
-          <Link href="/ventes" className="block mt-6 active:scale-[0.98] transition-transform">
-            <div className="bg-emerald-500 rounded-2xl p-5 relative overflow-hidden">
-              <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/4" />
-              <p className="text-[11px] font-bold text-white/70 uppercase tracking-wider">Revenus</p>
-              <p className="text-[32px] lg:text-[40px] font-black text-white leading-none tracking-tight mt-1">
-                {formatMontant(totalRevenue, devise)}
-              </p>
-              <div className="flex items-center gap-4 mt-3">
-                <span className="text-[12px] text-white/70 font-medium">{totalTicketsSold} billet{totalTicketsSold > 1 ? "s" : ""} vendu{totalTicketsSold > 1 ? "s" : ""}</span>
-                <span className="text-[12px] text-white/70 font-medium">{activeEvents.length} billetterie{activeEvents.length > 1 ? "s" : ""} active{activeEvents.length > 1 ? "s" : ""}</span>
+
+        {events.length > 0 && (
+          <div className="relative mt-5 grid grid-cols-3 gap-2.5">
+            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-3.5 border border-white/5">
+              <div className="flex items-center gap-1.5 mb-1.5">
+                <TrendingUp className="w-3 h-3 text-emerald-400" />
+                <span className="text-[9px] font-bold text-white/50 uppercase tracking-wider">Revenus</span>
               </div>
+              <p className="text-[16px] font-black text-white leading-tight">{formatMontant(totalRevenue, devise)}</p>
             </div>
-          </Link>
+            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-3.5 border border-white/5">
+              <div className="flex items-center gap-1.5 mb-1.5">
+                <Ticket className="w-3 h-3 text-blue-400" />
+                <span className="text-[9px] font-bold text-white/50 uppercase tracking-wider">Vendus</span>
+              </div>
+              <p className="text-[16px] font-black text-white leading-tight">{totalTicketsSold}</p>
+            </div>
+            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-3.5 border border-white/5">
+              <div className="flex items-center gap-1.5 mb-1.5">
+                <Zap className="w-3 h-3 text-amber-400" />
+                <span className="text-[9px] font-bold text-white/50 uppercase tracking-wider">Actives</span>
+              </div>
+              <p className="text-[16px] font-black text-white leading-tight">{activeEvents.length}</p>
+            </div>
+          </div>
+        )}
+      </div>
 
-          {/* ── CTA Créer ── */}
-          <Link
-            href="/evenements?action=create"
-            className="mt-3 w-full flex items-center justify-center gap-2 py-3.5 bg-white border border-gray-200 text-gray-900 font-bold text-[14px] rounded-2xl hover:bg-gray-50 transition-all active:scale-[0.97]"
-          >
-            <Plus className="w-4 h-4" /> Créer une billetterie
-          </Link>
-
-          {/* ── Prochain événement — Hero ── */}
-          {nextEvent && (() => {
-            const nDate = new Date(nextEvent.date_debut + "T00:00:00");
-            const diffDays = Math.ceil((nDate.getTime() - new Date(todayStr + "T00:00:00").getTime()) / 86400000);
-            const countdownLabel = diffDays === 0 ? "Aujourd'hui" : diffDays === 1 ? "Demain" : `Dans ${diffDays} jours`;
-            const totalCap = nextEvent.ticket_types?.reduce((a: number, t: TicketTypeInfo) => a + t.quantite_total, 0) || 1;
-            const fillPct = Math.round(((nextEvent.total_vendu || 0) / totalCap) * 100);
-            return (
-              <button
-                onClick={() => handleSelectEvent(nextEvent)}
-                className="w-full text-left mt-5 relative overflow-hidden rounded-2xl border border-gray-100 active:scale-[0.99] transition-all hover:shadow-md group"
+      <div className="px-5">
+        {/* ── Si aucun event: Empty state ── */}
+        {events.length === 0 ? (
+          <div className="mt-16 flex flex-col items-center">
+            <div className="w-20 h-20 bg-gradient-to-br from-emerald-50 to-teal-50 rounded-3xl flex items-center justify-center mb-5 shadow-sm">
+              <Sparkles className="w-9 h-9 text-emerald-500" />
+            </div>
+            <p className="text-[20px] font-black text-gray-900 text-center">Crée ta première billetterie</p>
+            <p className="text-[13px] text-gray-400 font-medium mt-2 text-center max-w-[260px]">
+              Vends des billets pour tes événements en quelques clics
+            </p>
+            <Link
+              href="/evenements?action=create"
+              className="mt-8 w-full max-w-[300px] flex items-center justify-center gap-2.5 py-4 bg-gradient-to-r from-emerald-500 to-emerald-600 text-white font-bold text-[15px] rounded-2xl hover:from-emerald-400 hover:to-emerald-500 transition-all active:scale-[0.97] shadow-lg shadow-emerald-500/25"
+            >
+              <Plus className="w-5 h-5" /> Créer une billetterie
+            </Link>
+          </div>
+        ) : (
+          <>
+            {/* ── Quick Actions ── */}
+            <div className="flex gap-2.5 mt-5">
+              <Link
+                href="/evenements?action=create"
+                className="flex-1 flex items-center justify-center gap-2 py-3.5 bg-white border border-gray-200 text-gray-800 font-bold text-[13px] rounded-2xl hover:bg-gray-50 hover:border-gray-300 transition-all active:scale-[0.97] shadow-sm"
               >
-                <div className="relative h-36 lg:h-44 overflow-hidden">
-                  {nextEvent.cover_url ? (
-                    <>
-                      <img src={nextEvent.cover_url} alt="" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
-                    </>
-                  ) : (
-                    <div className="w-full h-full bg-gradient-to-br from-gray-800 to-gray-900" />
-                  )}
-                  <div className="absolute top-3 left-3">
-                    <span className="bg-white/20 backdrop-blur-md text-white text-[11px] font-bold px-3 py-1.5 rounded-full">
-                      {countdownLabel}
-                    </span>
-                  </div>
-                  <div className="absolute bottom-0 left-0 right-0 px-4 pb-4">
-                    <h3 className="text-lg font-black text-white leading-tight drop-shadow-lg truncate">{nextEvent.nom}</h3>
-                    <div className="flex items-center gap-1.5 mt-1">
-                      <MapPin className="w-3 h-3 text-white/60" />
-                      <span className="text-[12px] text-white/70 font-medium truncate">{nextEvent.lieu}</span>
+                <Plus className="w-4 h-4 text-emerald-500" /> Nouvelle billetterie
+              </Link>
+              <Link
+                href="/evenements?action=scan"
+                className="flex items-center justify-center gap-2 px-5 py-3.5 bg-gradient-to-r from-emerald-500 to-emerald-600 text-white font-bold text-[13px] rounded-2xl hover:from-emerald-400 hover:to-emerald-500 transition-all active:scale-[0.97] shadow-md shadow-emerald-500/20"
+              >
+                <ScanLine className="w-4 h-4" /> Scanner
+              </Link>
+            </div>
+
+            {/* ── Prochain événement — Hero Card ── */}
+            {nextEvent && (() => {
+              const nDate = new Date(nextEvent.date_debut + "T00:00:00");
+              const diffDays = Math.ceil((nDate.getTime() - new Date(todayStr + "T00:00:00").getTime()) / 86400000);
+              const countdownLabel = diffDays === 0 ? "🔴  Aujourd'hui" : diffDays === 1 ? "Demain" : `Dans ${diffDays} jours`;
+              const totalCap = nextEvent.ticket_types?.reduce((a: number, t: TicketTypeInfo) => a + t.quantite_total, 0) || 1;
+              const fillPct = Math.round(((nextEvent.total_vendu || 0) / totalCap) * 100);
+              return (
+                <button
+                  onClick={() => handleSelectEvent(nextEvent)}
+                  className="w-full text-left mt-5 relative overflow-hidden rounded-2xl active:scale-[0.98] transition-all hover:shadow-xl group"
+                >
+                  <div className="relative h-44 lg:h-52 overflow-hidden rounded-2xl">
+                    {nextEvent.cover_url ? (
+                      <>
+                        <img src={nextEvent.cover_url} alt="" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-black/5" />
+                      </>
+                    ) : (
+                      <div className="w-full h-full bg-gradient-to-br from-emerald-500 via-emerald-600 to-teal-700" />
+                    )}
+                    
+                    {/* Countdown badge */}
+                    <div className="absolute top-3 left-3">
+                      <span className="bg-white/20 backdrop-blur-md text-white text-[11px] font-bold px-3 py-1.5 rounded-full border border-white/10">
+                        {countdownLabel}
+                      </span>
+                    </div>
+
+                    {/* Fill badge */}
+                    <div className="absolute top-3 right-3">
+                      <span className="bg-emerald-500/90 backdrop-blur-md text-white text-[11px] font-bold px-2.5 py-1.5 rounded-full">
+                        {fillPct}% rempli
+                      </span>
+                    </div>
+
+                    {/* Bottom info */}
+                    <div className="absolute bottom-0 left-0 right-0 p-4">
+                      <h3 className="text-[18px] lg:text-xl font-black text-white leading-tight drop-shadow-lg line-clamp-1">{nextEvent.nom}</h3>
+                      <div className="flex items-center gap-3 mt-1.5">
+                        <div className="flex items-center gap-1">
+                          <MapPin className="w-3 h-3 text-white/60" />
+                          <span className="text-[12px] text-white/80 font-medium truncate">{nextEvent.lieu}</span>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <Ticket className="w-3 h-3 text-white/60" />
+                          <span className="text-[12px] text-white/80 font-medium">{nextEvent.total_vendu || 0} vendu{(nextEvent.total_vendu || 0) > 1 ? "s" : ""}</span>
+                        </div>
+                      </div>
+                      
+                      {/* Progress bar */}
+                      <div className="mt-3 h-1 bg-white/20 rounded-full overflow-hidden">
+                        <div className="h-full bg-emerald-400 rounded-full transition-all duration-700" style={{ width: `${Math.min(fillPct, 100)}%` }} />
+                      </div>
                     </div>
                   </div>
+                </button>
+              );
+            })()}
+
+            {/* ── Aujourd'hui ── */}
+            {todayEvents.length > 0 && (
+              <div className="mt-7">
+                <div className="flex items-center gap-2 mb-3">
+                  <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
+                  <h2 className="text-[15px] font-black text-gray-900">Aujourd&apos;hui</h2>
+                  <span className="text-[11px] text-gray-400 font-semibold">{todayEvents.length} événement{todayEvents.length > 1 ? "s" : ""}</span>
                 </div>
-                <div className="bg-white px-4 py-3">
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-[12px] font-bold text-emerald-600">{nextEvent.total_vendu || 0} billet{(nextEvent.total_vendu || 0) > 1 ? "s" : ""}</span>
-                    <span className="text-[11px] font-black text-gray-400">{fillPct}%</span>
-                  </div>
-                  <div className="h-1 bg-gray-100 rounded-full overflow-hidden">
-                    <div className="h-full bg-emerald-500 rounded-full transition-all duration-700" style={{ width: `${Math.min(fillPct, 100)}%` }} />
-                  </div>
+                <div className="space-y-2 lg:grid lg:grid-cols-2 xl:grid-cols-3 lg:gap-3 lg:space-y-0">
+                  {todayEvents.map((evt) => {
+                    const evtDate = new Date(evt.date_debut + "T00:00:00");
+                    const totalCap = evt.ticket_types?.reduce((a: number, t: TicketTypeInfo) => a + t.quantite_total, 0) || 1;
+                    const fillPct = Math.round(((evt.total_vendu || 0) / totalCap) * 100);
+                    return (
+                      <button key={evt.id} onClick={() => handleSelectEvent(evt)}
+                        className="w-full flex items-center gap-3.5 bg-white rounded-2xl border border-gray-100 p-3.5 hover:shadow-md hover:border-gray-200 transition-all active:scale-[0.99] text-left group">
+                        {evt.cover_url ? (
+                          <div className="relative shrink-0">
+                            <img src={evt.cover_url} alt="" className="w-14 h-14 rounded-xl object-cover" />
+                            <div className="absolute -top-1 -right-1 w-3 h-3 bg-emerald-500 rounded-full border-2 border-white" />
+                          </div>
+                        ) : evt.logo_url ? (
+                          <div className="relative shrink-0">
+                            <img src={evt.logo_url} alt="" className="w-14 h-14 rounded-xl object-cover" />
+                            <div className="absolute -top-1 -right-1 w-3 h-3 bg-emerald-500 rounded-full border-2 border-white" />
+                          </div>
+                        ) : (
+                          <div className="relative w-14 h-14 bg-emerald-500 rounded-xl flex flex-col items-center justify-center shrink-0">
+                            <span className="text-[10px] font-bold text-white/70 uppercase leading-none">{evtDate.toLocaleDateString("fr-FR", { month: "short" })}</span>
+                            <span className="text-lg font-black text-white leading-none">{evtDate.getDate()}</span>
+                            <div className="absolute -top-1 -right-1 w-3 h-3 bg-emerald-500 rounded-full border-2 border-white" />
+                          </div>
+                        )}
+                        <div className="flex-1 min-w-0">
+                          <p className="text-[14px] font-bold text-gray-900 truncate group-hover:text-emerald-600 transition-colors">{evt.nom}</p>
+                          <p className="text-[12px] text-gray-400 truncate mt-0.5">{evt.lieu}</p>
+                          <div className="flex items-center gap-2 mt-1.5">
+                            <span className="text-[11px] text-emerald-600 font-bold">{evt.total_vendu || 0} billet{(evt.total_vendu || 0) > 1 ? "s" : ""}</span>
+                            <div className="flex-1 h-1 bg-gray-100 rounded-full overflow-hidden max-w-[60px]">
+                              <div className="h-full bg-emerald-400 rounded-full" style={{ width: `${Math.min(fillPct, 100)}%` }} />
+                            </div>
+                            <span className="text-[10px] text-gray-400 font-semibold">{fillPct}%</span>
+                          </div>
+                        </div>
+                        <ChevronRight className="w-4 h-4 text-gray-300 shrink-0 group-hover:text-emerald-400 transition-colors" />
+                      </button>
+                    );
+                  })}
                 </div>
-              </button>
-            );
-          })()}
+              </div>
+            )}
 
-          {/* ── Aujourd'hui ── */}
-          {todayEvents.length > 0 && (
-            <div className="mt-7">
-              <div className="flex items-center gap-2 mb-3">
-                <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
-                <h2 className="text-[15px] font-black text-gray-900">Aujourd&apos;hui</h2>
-              </div>
-              <div className="space-y-2 lg:grid lg:grid-cols-2 xl:grid-cols-3 lg:gap-3 lg:space-y-0">
-                {todayEvents.map((evt) => {
-                  const evtDate = new Date(evt.date_debut + "T00:00:00");
-                  return (
-                    <button key={evt.id} onClick={() => handleSelectEvent(evt)}
-                      className="w-full flex items-center gap-3 bg-white rounded-2xl border border-gray-100 p-3.5 hover:shadow-sm transition active:scale-[0.99] text-left">
-                      {evt.logo_url ? (
-                        <img src={evt.logo_url} alt="" className="w-12 h-12 rounded-xl object-cover shrink-0" />
-                      ) : (
-                        <div className="w-12 h-12 bg-emerald-500 rounded-xl flex flex-col items-center justify-center shrink-0">
-                          <span className="text-[10px] font-bold text-white/70 uppercase leading-none">{evtDate.toLocaleDateString("fr-FR", { month: "short" })}</span>
-                          <span className="text-lg font-black text-white leading-none">{evtDate.getDate()}</span>
+            {/* ── À venir ── */}
+            {upcomingEvents.length > (nextEvent === upcomingEvents[0] ? 1 : 0) && (
+              <div className="mt-7">
+                <h2 className="text-[15px] font-black text-gray-900 mb-3">À venir</h2>
+                <div className="space-y-2 lg:grid lg:grid-cols-2 xl:grid-cols-3 lg:gap-3 lg:space-y-0">
+                  {(nextEvent === upcomingEvents[0] ? upcomingEvents.slice(1) : upcomingEvents).map((evt) => {
+                    const evtDate = new Date(evt.date_debut + "T00:00:00");
+                    const totalCap = evt.ticket_types?.reduce((a: number, t: TicketTypeInfo) => a + t.quantite_total, 0) || 1;
+                    const fillPct = Math.round(((evt.total_vendu || 0) / totalCap) * 100);
+                    const diffDays = Math.ceil((evtDate.getTime() - new Date(todayStr + "T00:00:00").getTime()) / 86400000);
+                    return (
+                      <button key={evt.id} onClick={() => handleSelectEvent(evt)}
+                        className="w-full flex items-center gap-3.5 bg-white rounded-2xl border border-gray-100 p-3.5 hover:shadow-md hover:border-gray-200 transition-all active:scale-[0.99] text-left group">
+                        {evt.cover_url ? (
+                          <img src={evt.cover_url} alt="" className="w-14 h-14 rounded-xl object-cover shrink-0" />
+                        ) : evt.logo_url ? (
+                          <img src={evt.logo_url} alt="" className="w-14 h-14 rounded-xl object-cover shrink-0" />
+                        ) : (
+                          <div className="w-14 h-14 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-xl flex flex-col items-center justify-center shrink-0">
+                            <span className="text-[10px] font-bold text-white/70 uppercase leading-none">{evtDate.toLocaleDateString("fr-FR", { month: "short" })}</span>
+                            <span className="text-lg font-black text-white leading-none">{evtDate.getDate()}</span>
+                          </div>
+                        )}
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2">
+                            <p className="text-[14px] font-bold text-gray-900 truncate group-hover:text-emerald-600 transition-colors">{evt.nom}</p>
+                            <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-md bg-gray-100 text-gray-500 shrink-0">J-{diffDays}</span>
+                          </div>
+                          <p className="text-[12px] text-gray-400 truncate mt-0.5">{evt.lieu}</p>
+                          <div className="flex items-center gap-2 mt-1.5">
+                            <span className="text-[11px] text-emerald-600 font-bold">{evt.total_vendu || 0} billet{(evt.total_vendu || 0) > 1 ? "s" : ""}</span>
+                            <div className="flex-1 h-1 bg-gray-100 rounded-full overflow-hidden max-w-[60px]">
+                              <div className="h-full bg-emerald-400 rounded-full" style={{ width: `${Math.min(fillPct, 100)}%` }} />
+                            </div>
+                          </div>
                         </div>
-                      )}
-                      <div className="flex-1 min-w-0">
-                        <p className="text-[14px] font-bold text-gray-900 truncate">{evt.nom}</p>
-                        <p className="text-[12px] text-gray-400 truncate mt-0.5">{evt.lieu}</p>
-                      </div>
-                      <ChevronRight className="w-4 h-4 text-gray-300 shrink-0" />
-                    </button>
-                  );
-                })}
+                        <ChevronRight className="w-4 h-4 text-gray-300 shrink-0 group-hover:text-emerald-400 transition-colors" />
+                      </button>
+                    );
+                  })}
+                </div>
               </div>
-            </div>
-          )}
+            )}
 
-          {/* ── À venir ── */}
-          {upcomingEvents.length > (nextEvent === upcomingEvents[0] ? 1 : 0) && (
-            <div className="mt-7">
-              <h2 className="text-[15px] font-black text-gray-900 mb-3">À venir</h2>
-              <div className="space-y-2 lg:grid lg:grid-cols-2 xl:grid-cols-3 lg:gap-3 lg:space-y-0">
-                {(nextEvent === upcomingEvents[0] ? upcomingEvents.slice(1) : upcomingEvents).map((evt) => {
-                  const evtDate = new Date(evt.date_debut + "T00:00:00");
-                  return (
-                    <button key={evt.id} onClick={() => handleSelectEvent(evt)}
-                      className="w-full flex items-center gap-3 bg-white rounded-2xl border border-gray-100 p-3.5 hover:shadow-sm transition active:scale-[0.99] text-left">
-                      {evt.logo_url ? (
-                        <img src={evt.logo_url} alt="" className="w-12 h-12 rounded-xl object-cover shrink-0" />
-                      ) : (
-                        <div className="w-12 h-12 bg-emerald-500 rounded-xl flex flex-col items-center justify-center shrink-0">
-                          <span className="text-[10px] font-bold text-white/70 uppercase leading-none">{evtDate.toLocaleDateString("fr-FR", { month: "short" })}</span>
-                          <span className="text-lg font-black text-white leading-none">{evtDate.getDate()}</span>
+            {/* ── Passés ── */}
+            {pastEvents.length > 0 && (
+              <div className="mt-7">
+                <h2 className="text-[15px] font-bold text-gray-400 mb-3">Passés</h2>
+                <div className="space-y-2 lg:grid lg:grid-cols-2 xl:grid-cols-3 lg:gap-3 lg:space-y-0">
+                  {pastEvents.map((evt) => {
+                    const evtDate = new Date(evt.date_debut + "T00:00:00");
+                    return (
+                      <button key={evt.id} onClick={() => handleSelectEvent(evt)}
+                        className="w-full flex items-center gap-3.5 bg-gray-50/80 rounded-2xl border border-gray-100 p-3.5 hover:shadow-sm hover:bg-white transition-all active:scale-[0.99] text-left opacity-70 hover:opacity-100 group">
+                        {evt.cover_url ? (
+                          <img src={evt.cover_url} alt="" className="w-14 h-14 rounded-xl object-cover shrink-0 grayscale-[40%] group-hover:grayscale-0 transition-all" />
+                        ) : evt.logo_url ? (
+                          <img src={evt.logo_url} alt="" className="w-14 h-14 rounded-xl object-cover shrink-0 grayscale-[40%] group-hover:grayscale-0 transition-all" />
+                        ) : (
+                          <div className="w-14 h-14 bg-gray-300 rounded-xl flex flex-col items-center justify-center shrink-0">
+                            <span className="text-[10px] font-bold text-gray-100 uppercase leading-none">{evtDate.toLocaleDateString("fr-FR", { month: "short" })}</span>
+                            <span className="text-lg font-black text-white leading-none">{evtDate.getDate()}</span>
+                          </div>
+                        )}
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2">
+                            <p className="text-sm font-bold text-gray-500 truncate group-hover:text-gray-900 transition-colors">{evt.nom}</p>
+                            <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-md bg-gray-100 text-gray-400 shrink-0">Terminé</span>
+                          </div>
+                          <p className="text-[12px] text-gray-300 truncate mt-0.5">{evt.lieu}</p>
+                          <div className="flex items-center gap-3 mt-1">
+                            <span className="text-[11px] text-gray-400 font-semibold">{evt.total_vendu || 0} billet{(evt.total_vendu || 0) > 1 ? "s" : ""}</span>
+                            {parseFloat(String(evt.revenus)) > 0 && (
+                              <span className="text-[11px] text-gray-500 font-black">{formatMontant(parseFloat(String(evt.revenus)), devise)}</span>
+                            )}
+                          </div>
                         </div>
-                      )}
-                      <div className="flex-1 min-w-0">
-                        <p className="text-[14px] font-bold text-gray-900 truncate">{evt.nom}</p>
-                        <p className="text-[12px] text-gray-400 truncate mt-0.5">{evt.lieu}</p>
-                      </div>
-                      <ChevronRight className="w-4 h-4 text-gray-300 shrink-0" />
-                    </button>
-                  );
-                })}
+                        <ChevronRight className="w-4 h-4 text-gray-200 shrink-0" />
+                      </button>
+                    );
+                  })}
+                </div>
               </div>
-            </div>
-          )}
-
-          {/* ── Passés ── */}
-          {pastEvents.length > 0 && (
-            <div className="mt-7">
-              <h2 className="text-[15px] font-bold text-gray-400 mb-3">Passés</h2>
-              <div className="space-y-2 lg:grid lg:grid-cols-2 xl:grid-cols-3 lg:gap-3 lg:space-y-0">
-                {pastEvents.map((evt) => {
-                  const evtDate = new Date(evt.date_debut + "T00:00:00");
-                  return (
-                    <button key={evt.id} onClick={() => handleSelectEvent(evt)}
-                      className="w-full flex items-center gap-3 bg-gray-50 rounded-2xl border border-gray-100 p-3.5 hover:shadow-sm transition active:scale-[0.99] text-left opacity-60 hover:opacity-100">
-                      {evt.logo_url ? (
-                        <img src={evt.logo_url} alt="" className="w-12 h-12 rounded-xl object-cover shrink-0 grayscale-[30%]" />
-                      ) : (
-                        <div className="w-12 h-12 bg-gray-300 rounded-xl flex flex-col items-center justify-center shrink-0">
-                          <span className="text-[10px] font-bold text-gray-100 uppercase leading-none">{evtDate.toLocaleDateString("fr-FR", { month: "short" })}</span>
-                          <span className="text-lg font-black text-white leading-none">{evtDate.getDate()}</span>
-                        </div>
-                      )}
-                      <div className="flex-1 min-w-0">
-                        <p className="text-sm font-bold text-gray-500 truncate">{evt.nom}</p>
-                        <p className="text-[12px] text-gray-300 truncate mt-0.5">{evt.lieu}</p>
-                      </div>
-                      <ChevronRight className="w-4 h-4 text-gray-200 shrink-0" />
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-          )}
-        </>
-      )}
+            )}
+          </>
+        )}
+      </div>
     </div>
   );
 }

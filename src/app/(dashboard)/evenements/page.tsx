@@ -659,55 +659,54 @@ export default function EvenementsPage() {
   // ═══════════════════════════════════════════════
   return (
     <div className="pb-28 lg:pb-10">
-      {/* Header */}
-      <div className="px-4 pt-4 pb-2">
-        <div className="flex items-center justify-between">
+      {/* Header — Premium dark gradient */}
+      <div className="relative bg-gradient-to-br from-gray-900 via-gray-900 to-emerald-900 px-4 pt-5 pb-5 lg:rounded-b-3xl overflow-hidden">
+        <div className="absolute top-0 right-0 w-48 h-48 bg-emerald-500/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/4" />
+        <div className="absolute bottom-0 left-0 w-32 h-32 bg-emerald-500/5 rounded-full blur-2xl translate-y-1/2" />
+        
+        <div className="relative flex items-center justify-between">
           <div>
-            <h1 className="text-xl lg:text-2xl font-black text-gray-900">Mes billetteries</h1>
+            <h1 className="text-xl lg:text-2xl font-black text-white">Mes billetteries</h1>
             <div className="flex items-center gap-1.5 mt-0.5">
-              <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full" />
-              <span className="text-[11px] text-gray-400">{events.length} billetterie{events.length > 1 ? "s" : ""}</span>
+              <div className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse" />
+              <span className="text-[11px] text-white/50 font-medium">{events.length} billetterie{events.length > 1 ? "s" : ""}</span>
             </div>
           </div>
           <button
             onClick={() => setActiveTab(activeTab === "reglages" ? "evenements" : "reglages")}
             className={`w-9 h-9 rounded-xl flex items-center justify-center transition ${
-              activeTab === "reglages" ? "bg-emerald-500 text-white" : "bg-gray-100 text-gray-400 hover:bg-gray-200"
+              activeTab === "reglages" ? "bg-emerald-500 text-white" : "bg-white/10 text-white/60 hover:bg-white/20"
             }`}
           >
             <Settings className="w-4 h-4" />
           </button>
         </div>
-      </div>
 
-      {/* Stats business */}
-      {activeTab === "evenements" && (
-        <div className="px-4 mb-4 mt-1">
-          <div className="flex gap-2 lg:gap-4">
-            <div className="flex-1 bg-emerald-500 rounded-2xl p-3.5 lg:p-5">
+        {/* Stats intégrés dans le header */}
+        {activeTab === "evenements" && events.length > 0 && (
+          <div className="relative flex gap-2 mt-4">
+            <div className="flex-1 bg-white/10 backdrop-blur-sm rounded-2xl p-3.5 border border-white/5">
               <div className="flex items-center gap-1.5 mb-1">
-                <TrendingUp className="w-3 h-3 text-white/70" />
-                <span className="text-[10px] text-white/70 font-semibold uppercase tracking-wide">Revenus</span>
+                <TrendingUp className="w-3 h-3 text-emerald-400" />
+                <span className="text-[9px] text-white/50 font-bold uppercase tracking-wider">Revenus</span>
               </div>
-              <p className="text-lg font-black text-white">
+              <p className="text-[16px] font-black text-white leading-tight">
                 {formatMontant(events.reduce((sum: number, e: any) => sum + (parseFloat(e.revenus) || 0), 0), devise)}
               </p>
             </div>
-            <div className="flex-1 bg-gray-50 rounded-2xl p-3.5 lg:p-5 border border-gray-100">
+            <div className="flex-1 bg-white/10 backdrop-blur-sm rounded-2xl p-3.5 border border-white/5">
               <div className="flex items-center gap-1.5 mb-1">
-                <Ticket className="w-3 h-3 text-gray-400" />
-                <span className="text-[10px] text-gray-400 font-semibold uppercase tracking-wide">Vendus</span>
+                <Ticket className="w-3 h-3 text-blue-400" />
+                <span className="text-[9px] text-white/50 font-bold uppercase tracking-wider">Vendus</span>
               </div>
-              <p className="text-lg font-black text-gray-900">
+              <p className="text-[16px] font-black text-white leading-tight">
                 {events.reduce((sum: number, e: any) => sum + (e.total_vendu || 0), 0)}
-                <span className="text-xs text-gray-400 font-semibold ml-1">billets</span>
+                <span className="text-[10px] text-white/40 font-semibold ml-1">billets</span>
               </p>
             </div>
           </div>
-        </div>
-      )}
-
-      {/* ═══ TAB: ÉVÉNEMENTS ═══ */}
+        )}
+      </div>
       {activeTab === "evenements" && (
         <div className="px-4">
           {/* Scanner mode */}
@@ -802,15 +801,14 @@ export default function EvenementsPage() {
               )}
             </div>
           ) : selectedEvent ? (
-            /* ═══ DÉTAIL D'UN ÉVÉNEMENT ═══ */
+            /* ═══ DÉTAIL D'UN ÉVÉNEMENT — PREMIUM ═══ */
             <div className="animate-in slide-in-from-right-2 duration-200">
-              <button onClick={() => { setSelectedEvent(null); setEventTickets([]); setEditMode(false); }} className="flex items-center gap-1 text-sm text-gray-500 font-semibold mb-4 hover:text-gray-700 transition">
-                <ArrowLeft className="w-4 h-4" /> Retour
-              </button>
-
               {/* ═══ MODE ÉDITION ═══ */}
               {editMode ? (
                 <div className="animate-in fade-in duration-200">
+                  <button onClick={() => setEditMode(false)} className="flex items-center gap-1 text-sm text-gray-500 font-semibold mb-4 hover:text-gray-700 transition">
+                    <ArrowLeft className="w-4 h-4" /> Retour
+                  </button>
                   <h3 className="text-lg font-black text-gray-900 mb-4">Modifier l&apos;événement</h3>
                   <div className="space-y-3 mb-4">
                     <div>
@@ -910,163 +908,213 @@ export default function EvenementsPage() {
                 </div>
               ) : (
               <>
-              {/* Header événement */}
-              <div className="flex items-start justify-between mb-4">
-                <div className="flex items-center gap-3">
-                  <button
-                    onClick={() => evtLogoInputRef.current?.click()}
-                    className="w-14 h-14 rounded-2xl bg-gray-100 border-2 border-dashed border-gray-200 flex items-center justify-center shrink-0 overflow-hidden hover:border-gray-400 transition relative group"
-                  >
-                    {uploadingEvtLogo ? (
-                      <Loader2 className="w-5 h-5 text-gray-400 animate-spin" />
-                    ) : selectedEvent.logo_url ? (
-                      <>
-                        <img src={selectedEvent.logo_url} alt="Logo" className="w-full h-full object-cover" />
-                        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition flex items-center justify-center">
-                          <Camera className="w-4 h-4 text-white" />
-                        </div>
-                      </>
-                    ) : (
-                      <ImagePlus className="w-5 h-5 text-gray-300" />
-                    )}
-                  </button>
-                  <input ref={evtLogoInputRef} type="file" accept="image/*" className="hidden"
-                    onChange={(e) => { const f = e.target.files?.[0]; if (f) handleUploadEventImage(f, selectedEvent.id, "logo"); e.target.value = ""; }} />
-                  <div>
-                    <h2 className="text-lg font-black text-gray-900">{selectedEvent.nom}</h2>
-                    <p className="text-xs text-gray-400 mt-0.5">
-                      {selectedEvent.lieu}{selectedEvent.ville ? ` · ${selectedEvent.ville}` : ""}
-                    </p>
-                    <p className="text-xs text-gray-400">
-                      {new Date(selectedEvent.date_debut + "T00:00:00").toLocaleDateString("fr-FR", { weekday: "short", day: "numeric", month: "long" })}
-                      {selectedEvent.heure_debut ? ` · ${selectedEvent.heure_debut.slice(0, 5)}` : ""}
-                    </p>
-                  </div>
-                </div>
-                <button
-                  onClick={() => startEditMode()}
-                  className="p-2 rounded-lg hover:bg-emerald-50 text-gray-400 hover:text-emerald-600 transition"
-                >
-                  <Settings className="w-4 h-4" />
-                </button>
-                <button
-                  onClick={() => handleDeleteEvent(selectedEvent.id)}
-                  disabled={deletingEventId === selectedEvent.id}
-                  className="p-2 rounded-lg hover:bg-red-50 text-gray-400 hover:text-red-500 transition"
-                >
-                  {deletingEventId === selectedEvent.id ? <Loader2 className="w-4 h-4 animate-spin" /> : <Trash2 className="w-4 h-4" />}
-                </button>
-              </div>
-
-              {/* Cover */}
-              <button
-                onClick={() => evtCoverInputRef.current?.click()}
-                className="w-full h-32 rounded-2xl bg-gray-50 border-2 border-dashed border-gray-200 flex items-center justify-center mb-4 overflow-hidden hover:border-gray-400 transition relative group"
-              >
-                {uploadingEvtCover ? (
-                  <Loader2 className="w-5 h-5 text-gray-400 animate-spin" />
-                ) : selectedEvent.cover_url ? (
-                  <>
-                    <img src={selectedEvent.cover_url} alt="Cover" className="w-full h-full object-cover" />
-                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition flex items-center justify-center">
-                      <Camera className="w-5 h-5 text-white" />
-                      <span className="text-white text-xs font-bold ml-2">Changer la cover</span>
+              {/* ── Hero Cover ── */}
+              <div className="relative -mx-4 -mt-0">
+                <div className="relative h-48 lg:h-56 overflow-hidden lg:rounded-2xl">
+                  {selectedEvent.cover_url ? (
+                    <>
+                      <img src={selectedEvent.cover_url} alt="" className="w-full h-full object-cover" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-black/10" />
+                    </>
+                  ) : (
+                    <div className="w-full h-full bg-gradient-to-br from-emerald-500 via-emerald-600 to-teal-700">
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
                     </div>
-                  </>
-                ) : (
-                  <div className="text-center">
-                    <ImagePlus className="w-6 h-6 text-gray-300 mx-auto mb-1" />
-                    <p className="text-xs text-gray-400 font-semibold">Ajouter une cover</p>
+                  )}
+
+                  {/* Floating back button */}
+                  <button
+                    onClick={() => { setSelectedEvent(null); setEventTickets([]); setEditMode(false); }}
+                    className="absolute top-3 left-3 w-9 h-9 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center text-white hover:bg-white/30 transition active:scale-93"
+                  >
+                    <ArrowLeft className="w-4 h-4" />
+                  </button>
+
+                  {/* Action buttons */}
+                  <div className="absolute top-3 right-3 flex items-center gap-1.5">
+                    <button onClick={() => startEditMode()}
+                      className="w-9 h-9 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center text-white hover:bg-white/30 transition">
+                      <Settings className="w-4 h-4" />
+                    </button>
+                    <button onClick={() => handleDeleteEvent(selectedEvent.id)} disabled={deletingEventId === selectedEvent.id}
+                      className="w-9 h-9 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center text-white hover:bg-red-500/60 transition">
+                      {deletingEventId === selectedEvent.id ? <Loader2 className="w-4 h-4 animate-spin" /> : <Trash2 className="w-4 h-4" />}
+                    </button>
                   </div>
-                )}
-              </button>
-              <input ref={evtCoverInputRef} type="file" accept="image/*" className="hidden"
-                onChange={(e) => { const f = e.target.files?.[0]; if (f) handleUploadEventImage(f, selectedEvent.id, "cover"); e.target.value = ""; }} />
 
-              {/* Stats — ventes liées à cet événement */}
-              <div className="grid grid-cols-3 gap-2 lg:gap-4 mb-4">
-                <div className="bg-emerald-500 rounded-xl p-3 text-center">
-                  <p className="text-sm font-black text-white">{formatMontant(parseFloat(selectedEvent.revenus) || 0, devise)}</p>
-                  <p className="text-[10px] text-white/70">Généré</p>
+                  {/* Event name on hero */}
+                  <div className="absolute bottom-0 left-0 right-0 px-4 pb-4">
+                    <div className="flex items-end gap-3">
+                      <button
+                        onClick={() => evtLogoInputRef.current?.click()}
+                        className="w-14 h-14 rounded-2xl bg-white/15 backdrop-blur-md flex items-center justify-center shrink-0 overflow-hidden border border-white/20 hover:border-white/40 transition group relative"
+                      >
+                        {uploadingEvtLogo ? (
+                          <Loader2 className="w-5 h-5 text-white animate-spin" />
+                        ) : selectedEvent.logo_url ? (
+                          <>
+                            <img src={selectedEvent.logo_url} alt="Logo" className="w-full h-full object-cover" />
+                            <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition flex items-center justify-center">
+                              <Camera className="w-4 h-4 text-white" />
+                            </div>
+                          </>
+                        ) : (
+                          <ImagePlus className="w-5 h-5 text-white/60 group-hover:text-white transition" />
+                        )}
+                      </button>
+                      <input ref={evtLogoInputRef} type="file" accept="image/*" className="hidden"
+                        onChange={(e) => { const f = e.target.files?.[0]; if (f) handleUploadEventImage(f, selectedEvent.id, "logo"); e.target.value = ""; }} />
+                      <div className="flex-1 min-w-0 pb-0.5">
+                        <h2 className="text-[20px] font-black text-white leading-tight drop-shadow-lg line-clamp-2">{selectedEvent.nom}</h2>
+                        <div className="flex items-center gap-2 mt-1">
+                          <div className="flex items-center gap-1">
+                            <MapPin className="w-3 h-3 text-white/60" />
+                            <span className="text-[11px] text-white/80 font-medium">{selectedEvent.lieu}</span>
+                          </div>
+                          {selectedEvent.ville && <span className="text-[11px] text-white/50">· {selectedEvent.ville}</span>}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-                <div className="bg-gray-50 rounded-xl p-3 text-center">
-                  <p className="text-lg font-black text-gray-900">{selectedEvent.total_vendu || 0}</p>
-                  <p className="text-[10px] text-gray-400">Billets vendus</p>
-                </div>
-                <div className="bg-gray-50 rounded-xl p-3 text-center">
-                  <p className="text-lg font-black text-gray-900">
-                    {selectedEvent.ticket_types?.reduce((a: number, t: any) => a + (t.quantite_total - t.quantite_vendue), 0) || 0}
-                  </p>
-                  <p className="text-[10px] text-gray-400">Restants</p>
-                </div>
+                
+                {/* Upload cover button */}
+                <input ref={evtCoverInputRef} type="file" accept="image/*" className="hidden"
+                  onChange={(e) => { const f = e.target.files?.[0]; if (f) handleUploadEventImage(f, selectedEvent.id, "cover"); e.target.value = ""; }} />
+                {!selectedEvent.cover_url && (
+                  <button onClick={() => evtCoverInputRef.current?.click()}
+                    className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center gap-2 bg-white/20 backdrop-blur-md text-white/80 px-4 py-2 rounded-xl text-xs font-bold hover:bg-white/30 transition">
+                    <Camera className="w-4 h-4" /> Ajouter une cover
+                  </button>
+                )}
               </div>
 
-              {/* Actions */}
-              <div className="grid grid-cols-2 gap-2 lg:gap-4 mb-4">
-                <button
-                  onClick={() => { setScanMode(true); setScanResult(null); setScanCode(""); setTimeout(() => startCamera(), 300); }}
-                  className="flex items-center justify-center gap-2 bg-emerald-500 text-white py-3.5 rounded-xl font-bold text-sm transition hover:bg-emerald-600 active:scale-[0.97]"
+              {/* Content below hero */}
+              <div className="mt-4">
+                {/* Date & heure */}
+                <div className="flex items-center gap-3 bg-white rounded-2xl border border-gray-100 shadow-sm p-3.5 mb-3">
+                  <div className="w-10 h-10 bg-emerald-50 rounded-xl flex items-center justify-center shrink-0">
+                    <Calendar className="w-[18px] h-[18px] text-emerald-600" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-[13px] font-bold text-gray-900 capitalize">
+                      {new Date(selectedEvent.date_debut + "T00:00:00").toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}
+                    </p>
+                    {selectedEvent.heure_debut && (
+                      <p className="text-[11px] text-gray-400 flex items-center gap-1 mt-0.5">
+                        <Clock className="w-3 h-3" /> {selectedEvent.heure_debut.slice(0, 5)}
+                      </p>
+                    )}
+                  </div>
+                </div>
+
+                {/* Stats Cards — Premium */}
+                <div className="grid grid-cols-3 gap-2 mb-4">
+                  <div className="relative overflow-hidden bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-2xl p-3 text-center shadow-sm">
+                    <div className="absolute -top-3 -right-3 w-10 h-10 bg-white/10 rounded-full" />
+                    <p className="text-[9px] font-bold text-emerald-100 uppercase tracking-wider">Revenus</p>
+                    <p className="text-[14px] font-black text-white mt-1 leading-tight">{formatMontant(parseFloat(selectedEvent.revenus) || 0, devise)}</p>
+                  </div>
+                  <div className="relative overflow-hidden bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl p-3 text-center shadow-sm">
+                    <div className="absolute -top-3 -right-3 w-10 h-10 bg-white/10 rounded-full" />
+                    <p className="text-[9px] font-bold text-blue-100 uppercase tracking-wider">Vendus</p>
+                    <p className="text-xl font-black text-white mt-1 leading-tight">{selectedEvent.total_vendu || 0}</p>
+                  </div>
+                  <div className="relative overflow-hidden bg-gradient-to-br from-violet-500 to-violet-600 rounded-2xl p-3 text-center shadow-sm">
+                    <div className="absolute -top-3 -right-3 w-10 h-10 bg-white/10 rounded-full" />
+                    <p className="text-[9px] font-bold text-violet-100 uppercase tracking-wider">Restants</p>
+                    <p className="text-xl font-black text-white mt-1 leading-tight">
+                      {selectedEvent.ticket_types?.reduce((a: number, t: any) => a + (t.quantite_total - t.quantite_vendue), 0) || 0}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Actions — Premium */}
+                <div className="grid grid-cols-2 gap-2 mb-3">
+                  <button
+                    onClick={() => { setScanMode(true); setScanResult(null); setScanCode(""); setTimeout(() => startCamera(), 300); }}
+                    className="flex items-center justify-center gap-2 bg-gradient-to-r from-emerald-500 to-emerald-600 text-white py-3.5 rounded-2xl font-bold text-sm transition hover:from-emerald-400 hover:to-emerald-500 active:scale-[0.97] shadow-md shadow-emerald-500/20"
+                  >
+                    <ScanLine className="w-4 h-4" /> Scanner
+                  </button>
+                  <button
+                    onClick={() => {
+                      const url = `${window.location.origin}/evenement/${selectedEvent.id}`;
+                      if (navigator.share) { navigator.share({ title: selectedEvent.nom, url }).catch(() => {}); }
+                      else { navigator.clipboard.writeText(url).then(() => showToast("success", "Lien copié")); }
+                    }}
+                    className="flex items-center justify-center gap-2 bg-white border-2 border-gray-200 text-gray-700 py-3.5 rounded-2xl font-bold text-sm transition hover:border-gray-300 hover:bg-gray-50 active:scale-[0.97]"
+                  >
+                    <Share2 className="w-4 h-4" /> Partager
+                  </button>
+                </div>
+
+                {/* Actions row 2 */}
+                <a
+                  href={`/evenement/${selectedEvent.id}`}
+                  target="_blank"
+                  className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-emerald-50 to-teal-50 text-emerald-700 py-3 rounded-2xl font-bold text-[13px] transition hover:from-emerald-100 hover:to-teal-100 border border-emerald-200/60 mb-2"
                 >
-                  <ScanLine className="w-4 h-4" /> Scanner billet
-                </button>
+                  <Eye className="w-4 h-4" /> Voir la page publique
+                </a>
                 <button
-                  onClick={() => {
-                    const url = `${window.location.origin}/evenement/${selectedEvent.id}`;
-                    if (navigator.share) { navigator.share({ title: selectedEvent.nom, url }).catch(() => {}); }
-                    else { navigator.clipboard.writeText(url).then(() => showToast("success", "Lien copié")); }
+                  onClick={async () => {
+                    setGeneratingPoster(true);
+                    try { await generateEventPoster(selectedEvent, devise); }
+                    catch (err) { console.error(err); }
+                    finally { setGeneratingPoster(false); }
                   }}
-                  className="flex items-center justify-center gap-2 bg-gray-100 text-gray-700 py-3.5 rounded-xl font-bold text-sm transition hover:bg-gray-200 active:scale-[0.97]"
+                  disabled={generatingPoster}
+                  className="w-full flex items-center justify-center gap-2 bg-white border-2 border-dashed border-emerald-300 text-emerald-600 py-3 rounded-2xl font-bold text-[13px] mb-1 transition hover:bg-emerald-50 hover:border-emerald-400 active:scale-[0.97] disabled:opacity-50"
                 >
-                  <Share2 className="w-4 h-4" /> Partager
+                  {generatingPoster ? (
+                    <><Loader2 className="w-4 h-4 animate-spin" /> Génération...</>
+                  ) : (
+                    <><Printer className="w-4 h-4" /> Télécharger le QR billetterie</>
+                  )}
                 </button>
+                <p className="text-[10px] text-gray-400 text-center mb-5">
+                  Imprimez ce QR pour que vos clients scannent et réservent
+                </p>
               </div>
 
-              {/* Lien public */}
-              <a
-                href={`/evenement/${selectedEvent.id}`}
-                target="_blank"
-                className="w-full flex items-center justify-center gap-2 bg-emerald-50 text-emerald-700 py-3 rounded-xl font-bold text-sm mb-3 transition hover:bg-emerald-100 border border-emerald-200/50"
-              >
-                <Eye className="w-4 h-4" /> Voir la page publique
-              </a>
-
-              {/* Télécharger le QR de l'événement */}
-              <button
-                onClick={async () => {
-                  setGeneratingPoster(true);
-                  try { await generateEventPoster(selectedEvent, devise); }
-                  catch (err) { console.error(err); }
-                  finally { setGeneratingPoster(false); }
-                }}
-                disabled={generatingPoster}
-                className="w-full flex items-center justify-center gap-2 bg-white border-2 border-dashed border-emerald-300 text-emerald-600 py-3 rounded-xl font-bold text-sm mb-1 transition hover:bg-emerald-50 hover:border-emerald-400 active:scale-[0.97] disabled:opacity-50"
-              >
-                {generatingPoster ? (
-                  <><Loader2 className="w-4 h-4 animate-spin" /> Génération...</>
-                ) : (
-                  <><Printer className="w-4 h-4" /> Télécharger le QR billetterie</>
-                )}
-              </button>
-              <p className="text-[10px] text-gray-400 text-center mb-5">
-                Imprimez ce QR pour que vos clients scannent et réservent
-              </p>
-
-              {/* Types de billets */}
+              {/* Types de billets — Premium */}
               {selectedEvent.ticket_types && selectedEvent.ticket_types.length > 0 && (
                 <div className="mb-5">
-                  <h3 className="text-sm font-bold text-gray-700 mb-2">Types de billets</h3>
-                  <div className="space-y-2">
-                    {selectedEvent.ticket_types.map((tt: any) => (
-                      <div key={tt.id} className="bg-white rounded-xl border border-gray-100 p-3 flex items-center justify-between">
-                        <div>
-                          <p className="text-sm font-bold text-gray-900">{tt.nom}</p>
-                          <p className="text-xs text-gray-400">{tt.quantite_vendue}/{tt.quantite_total} vendus</p>
+                  <div className="flex items-center gap-2 mb-3">
+                    <Ticket className="w-4 h-4 text-gray-400" />
+                    <h3 className="text-[14px] font-bold text-gray-900">Billets</h3>
+                  </div>
+                  <div className="space-y-2.5">
+                    {selectedEvent.ticket_types.map((tt: any) => {
+                      const ttSoldPct = tt.quantite_total > 0 ? Math.round((tt.quantite_vendue / tt.quantite_total) * 100) : 0;
+                      return (
+                        <div key={tt.id} className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4">
+                          <div className="flex items-center justify-between mb-2">
+                            <div>
+                              <p className="text-[14px] font-bold text-gray-900">{tt.nom}</p>
+                              <p className="text-[12px] text-gray-400 mt-0.5">{tt.quantite_vendue} / {tt.quantite_total} vendus</p>
+                            </div>
+                            <div className="text-right">
+                              <p className="text-[15px] font-black text-gray-900">
+                                {tt.prix > 0 ? formatMontant(tt.prix, devise) : "Gratuit"}
+                              </p>
+                              {tt.prix > 0 && tt.quantite_vendue > 0 && (
+                                <p className="text-[11px] text-emerald-600 font-semibold mt-0.5">
+                                  {formatMontant(tt.prix * tt.quantite_vendue, devise)}
+                                </p>
+                              )}
+                            </div>
+                          </div>
+                          <div className="h-1.5 bg-gray-100 rounded-full overflow-hidden">
+                            <div
+                              className="h-full bg-gradient-to-r from-emerald-400 to-emerald-500 rounded-full transition-all duration-500"
+                              style={{ width: `${Math.min(ttSoldPct, 100)}%` }}
+                            />
+                          </div>
                         </div>
-                        <p className="text-sm font-black text-gray-900">
-                          {tt.prix > 0 ? formatMontant(tt.prix, devise) : "Gratuit"}
-                        </p>
-                      </div>
-                    ))}
+                      );
+                    })}
                   </div>
                 </div>
               )}
@@ -1142,41 +1190,74 @@ export default function EvenementsPage() {
                 )}
               </div>
 
-              {/* Voir participants — billets vendus */}
+              {/* Participants — Premium */}
               <div>
-                <div className="flex items-center justify-between mb-2">
-                  <h3 className="text-sm font-bold text-gray-700">Participants</h3>
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center gap-2">
+                    <Users className="w-4 h-4 text-gray-400" />
+                    <h3 className="text-[14px] font-bold text-gray-900">Participants</h3>
+                    {!loadingTickets && eventTickets.length > 0 && (
+                      <span className="bg-emerald-50 text-emerald-600 text-[11px] font-bold px-2 py-0.5 rounded-full">{eventTickets.length}</span>
+                    )}
+                  </div>
                   {!loadingTickets && (
-                    <button onClick={() => loadEventTickets(selectedEvent.id)} className="text-xs text-emerald-600 font-semibold">
+                    <button onClick={() => loadEventTickets(selectedEvent.id)} className="text-[12px] text-emerald-600 font-bold hover:text-emerald-700 transition">
                       Rafraîchir
                     </button>
                   )}
                 </div>
                 {loadingTickets ? (
-                  <div className="text-center py-8"><Loader2 className="w-5 h-5 text-gray-300 animate-spin mx-auto" /></div>
+                  <div className="bg-white rounded-2xl border border-gray-100 shadow-sm py-10">
+                    <Loader2 className="w-6 h-6 text-emerald-400 animate-spin mx-auto" />
+                  </div>
                 ) : eventTickets.length === 0 ? (
-                  <div className="text-center py-8">
-                    <Ticket className="w-8 h-8 text-gray-200 mx-auto mb-2" />
-                    <p className="text-xs text-gray-400">Aucun participant</p>
+                  <div className="bg-white rounded-2xl border border-gray-100 shadow-sm py-10 text-center">
+                    <div className="w-14 h-14 bg-gray-50 rounded-2xl flex items-center justify-center mx-auto mb-3">
+                      <Users className="w-7 h-7 text-gray-300" />
+                    </div>
+                    <p className="text-[13px] font-semibold text-gray-500">Aucun participant</p>
+                    <p className="text-[11px] text-gray-400 mt-1">Partagez votre billetterie</p>
                   </div>
                 ) : (
                   <div className="space-y-2">
-                    {eventTickets.map((t: any) => (
-                      <div key={t.id} className="flex items-center justify-between bg-white rounded-xl border border-gray-100 p-3">
-                        <div>
-                          <p className="text-sm font-bold text-gray-900">{t.buyer_name}</p>
-                          <p className="text-[11px] text-gray-400 font-mono">{t.reference}</p>
-                          {t.ticket_types?.nom && <p className="text-[10px] text-gray-400">{t.ticket_types.nom}</p>}
+                    {eventTickets.map((t: any, idx: number) => {
+                      const initials = (t.buyer_name || "?").split(" ").map((n: string) => n[0]).join("").toUpperCase().slice(0, 2);
+                      const colors = [
+                        "from-emerald-400 to-emerald-500",
+                        "from-blue-400 to-blue-500",
+                        "from-violet-400 to-violet-500",
+                        "from-amber-400 to-amber-500",
+                        "from-rose-400 to-rose-500",
+                        "from-cyan-400 to-cyan-500",
+                      ];
+                      const colorClass = colors[idx % colors.length];
+                      return (
+                        <div key={t.id} className="flex items-center gap-3 bg-white rounded-2xl border border-gray-100 shadow-sm p-3.5">
+                          <div className={`w-10 h-10 bg-gradient-to-br ${colorClass} rounded-xl flex items-center justify-center shrink-0`}>
+                            <span className="text-[12px] font-black text-white">{initials}</span>
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <p className="text-[13px] font-bold text-gray-900">{t.buyer_name}</p>
+                            <div className="flex items-center gap-2 mt-0.5">
+                              <p className="text-[11px] text-gray-400 font-mono">{t.reference}</p>
+                              {t.ticket_types?.nom && (
+                                <>
+                                  <span className="text-gray-200">·</span>
+                                  <p className="text-[11px] text-gray-400">{t.ticket_types.nom}</p>
+                                </>
+                              )}
+                            </div>
+                          </div>
+                          <span className={`text-[11px] font-bold px-2.5 py-1 rounded-xl ${
+                            t.statut === "valid" ? "bg-emerald-50 text-emerald-600" :
+                            t.statut === "used" ? "bg-gray-100 text-gray-500" :
+                            "bg-red-50 text-red-500"
+                          }`}>
+                            {t.statut === "valid" ? "✓ Valide" : t.statut === "used" ? "Utilisé" : t.statut}
+                          </span>
                         </div>
-                        <span className={`text-xs font-bold px-2.5 py-1 rounded-lg ${
-                          t.statut === "valid" ? "bg-emerald-50 text-emerald-600" :
-                          t.statut === "used" ? "bg-gray-100 text-gray-500" :
-                          "bg-red-50 text-red-500"
-                        }`}>
-                          {t.statut === "valid" ? "✓ Valide" : t.statut === "used" ? "Utilisé" : t.statut}
-                        </span>
-                      </div>
-                    ))}
+                      );
+                    })}
                   </div>
                 )}
               </div>
@@ -1184,26 +1265,23 @@ export default function EvenementsPage() {
               )}
             </div>
           ) : (
-            /* ═══ LISTE DES ÉVÉNEMENTS ═══ */
+            /* ═══ LISTE DES ÉVÉNEMENTS — PREMIUM ═══ */
             <div>
-              {/* CTA Créer */}
-              <button
-                onClick={() => { hapticMedium(); setShowAddEvent(true); }}
-                className="w-full flex items-center justify-center gap-2 bg-emerald-500 hover:bg-emerald-600 text-white py-3.5 rounded-xl font-bold text-sm transition active:scale-[0.97] mb-2.5"
-              >
-                <Plus className="w-4 h-4" /> Créer une billetterie
-              </button>
-
-              {/* CTA Scanner — séparé */}
-              <button
-                onClick={() => { setScanMode(true); setScanResult(null); setScanCode(""); hapticMedium(); setTimeout(() => startCamera(), 300); }}
-                className="w-full flex items-center justify-center gap-2.5 bg-gradient-to-r from-emerald-500 to-emerald-600 text-white py-3.5 rounded-xl font-bold text-sm transition hover:from-emerald-400 hover:to-emerald-500 active:scale-[0.97] mb-4 shadow-sm shadow-emerald-500/20"
-              >
-                <div className="w-7 h-7 bg-white/15 rounded-lg flex items-center justify-center">
-                  <ScanLine className="w-4 h-4" />
-                </div>
-                Scanner un billet
-              </button>
+              {/* Quick action buttons */}
+              <div className="flex gap-2 mb-4">
+                <button
+                  onClick={() => { hapticMedium(); setShowAddEvent(true); }}
+                  className="flex-1 flex items-center justify-center gap-2 bg-white border border-gray-200 text-gray-800 py-3.5 rounded-2xl font-bold text-[13px] transition hover:bg-gray-50 hover:border-gray-300 active:scale-[0.97] shadow-sm"
+                >
+                  <Plus className="w-4 h-4 text-emerald-500" /> Nouvelle billetterie
+                </button>
+                <button
+                  onClick={() => { setScanMode(true); setScanResult(null); setScanCode(""); hapticMedium(); setTimeout(() => startCamera(), 300); }}
+                  className="flex items-center justify-center gap-2 px-5 py-3.5 bg-gradient-to-r from-emerald-500 to-emerald-600 text-white font-bold text-[13px] rounded-2xl transition hover:from-emerald-400 hover:to-emerald-500 active:scale-[0.97] shadow-md shadow-emerald-500/20"
+                >
+                  <ScanLine className="w-4 h-4" /> Scanner
+                </button>
+              </div>
 
               {/* Formulaire création — Premium Design */}
               {showAddEvent && (
@@ -1651,12 +1729,14 @@ export default function EvenementsPage() {
 
               {/* Liste événements */}
               {loadingEvents ? (
-                <div className="text-center py-12"><Loader2 className="w-6 h-6 text-gray-300 animate-spin mx-auto" /></div>
+                <div className="text-center py-12"><Loader2 className="w-6 h-6 text-emerald-400 animate-spin mx-auto" /></div>
               ) : events.length === 0 ? (
-                <div className="text-center py-12">
-                  <Calendar className="w-12 h-12 text-gray-200 mx-auto mb-3" />
-                  <p className="text-sm font-semibold text-gray-500">Aucune billetterie</p>
-                  <p className="text-xs text-gray-400 mt-1">Créez votre première billetterie et vendez des billets</p>
+                <div className="text-center py-16">
+                  <div className="w-16 h-16 bg-gradient-to-br from-emerald-50 to-teal-50 rounded-3xl flex items-center justify-center mx-auto mb-4 shadow-sm">
+                    <Sparkles className="w-8 h-8 text-emerald-500" />
+                  </div>
+                  <p className="text-[15px] font-bold text-gray-900">Aucune billetterie</p>
+                  <p className="text-[12px] text-gray-400 mt-1.5 max-w-[220px] mx-auto">Créez votre première billetterie et commencez à vendre</p>
                 </div>
               ) : (
                 <div className="space-y-2.5 lg:grid lg:grid-cols-2 xl:grid-cols-3 lg:gap-3 lg:space-y-0">
@@ -1665,52 +1745,81 @@ export default function EvenementsPage() {
                     const now = new Date();
                     const isPast = evtDate < new Date(now.getFullYear(), now.getMonth(), now.getDate());
                     const isToday = evtDate.toDateString() === now.toDateString();
+                    const totalCap = evt.ticket_types?.reduce((a: number, t: any) => a + t.quantite_total, 0) || 1;
+                    const fillPct = Math.round(((evt.total_vendu || 0) / totalCap) * 100);
                     return (
                       <button
                         key={evt.id}
                         onClick={() => { setSelectedEvent(evt); loadEventTickets(evt.id); }}
-                        className="w-full bg-white rounded-2xl border border-gray-100 p-3.5 flex items-center gap-3 text-left hover:border-gray-200 hover:shadow-sm transition active:scale-[0.99]"
+                        className={`w-full bg-white rounded-2xl border border-gray-100 overflow-hidden text-left hover:shadow-md hover:border-gray-200 transition-all active:scale-[0.99] group ${isPast ? "opacity-70 hover:opacity-100" : ""}`}
                       >
-                        {evt.logo_url ? (
-                          <div className="relative shrink-0">
-                            <img src={evt.logo_url} alt="" className="w-14 h-14 rounded-xl object-cover" />
-                            {isToday && <div className="absolute -top-1 -right-1 w-3 h-3 bg-emerald-500 rounded-full border-2 border-white" />}
-                          </div>
-                        ) : (
-                          <div className={`w-14 h-14 rounded-xl flex flex-col items-center justify-center shrink-0 ${
-                            isPast ? "bg-gray-200" : isToday ? "bg-emerald-500" : "bg-emerald-500"
-                          }`}>
-                            <span className={`text-[10px] font-bold uppercase leading-none ${
-                              isPast ? "text-gray-500" : isToday ? "text-emerald-100" : "text-gray-400"
-                            }`}>
-                              {evtDate.toLocaleDateString("fr-FR", { month: "short" })}
-                            </span>
-                            <span className={`text-lg font-black leading-none ${
-                              isPast ? "text-gray-600" : "text-white"
-                            }`}>
-                              {evtDate.getDate()}
-                            </span>
+                        {/* Mini cover */}
+                        {evt.cover_url && (
+                          <div className="relative h-28 overflow-hidden">
+                            <img src={evt.cover_url} alt="" className={`w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ${isPast ? "grayscale-[40%] group-hover:grayscale-0" : ""}`} />
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
+                            {isToday && (
+                              <div className="absolute top-2 left-2">
+                                <span className="bg-emerald-500 text-white text-[10px] font-bold px-2 py-1 rounded-full">Aujourd&apos;hui</span>
+                              </div>
+                            )}
+                            {isPast && (
+                              <div className="absolute top-2 left-2">
+                                <span className="bg-gray-800/70 text-white/80 text-[10px] font-bold px-2 py-1 rounded-full backdrop-blur-sm">Terminé</span>
+                              </div>
+                            )}
+                            <div className="absolute bottom-2 right-2">
+                              <span className="bg-white/20 backdrop-blur-md text-white text-[10px] font-bold px-2 py-1 rounded-full">
+                                {fillPct}%
+                              </span>
+                            </div>
                           </div>
                         )}
+                        
+                        <div className="p-3.5 flex items-center gap-3">
+                          {!evt.cover_url && (
+                            evt.logo_url ? (
+                              <div className="relative shrink-0">
+                                <img src={evt.logo_url} alt="" className={`w-14 h-14 rounded-xl object-cover ${isPast ? "grayscale-[40%]" : ""}`} />
+                                {isToday && <div className="absolute -top-1 -right-1 w-3 h-3 bg-emerald-500 rounded-full border-2 border-white" />}
+                              </div>
+                            ) : (
+                              <div className={`w-14 h-14 rounded-xl flex flex-col items-center justify-center shrink-0 ${
+                                isPast ? "bg-gray-200" : "bg-gradient-to-br from-emerald-500 to-teal-600"
+                              }`}>
+                                <span className={`text-[10px] font-bold uppercase leading-none ${isPast ? "text-gray-500" : "text-white/70"}`}>
+                                  {evtDate.toLocaleDateString("fr-FR", { month: "short" })}
+                                </span>
+                                <span className={`text-lg font-black leading-none ${isPast ? "text-gray-600" : "text-white"}`}>
+                                  {evtDate.getDate()}
+                                </span>
+                              </div>
+                            )
+                          )}
 
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center gap-2">
-                            <p className="text-sm font-bold text-gray-900 truncate">{evt.nom}</p>
-                            {isPast ? (
-                              <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-md bg-gray-100 text-gray-400 shrink-0">Terminé</span>
-                            ) : isToday ? (
-                              <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-md bg-emerald-50 text-emerald-600 shrink-0">Aujourd&apos;hui</span>
-                            ) : null}
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-2">
+                              <p className={`text-sm font-bold truncate group-hover:text-emerald-600 transition-colors ${isPast ? "text-gray-500" : "text-gray-900"}`}>{evt.nom}</p>
+                              {!evt.cover_url && isToday && (
+                                <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-md bg-emerald-50 text-emerald-600 shrink-0">Live</span>
+                              )}
+                              {!evt.cover_url && isPast && (
+                                <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-md bg-gray-100 text-gray-400 shrink-0">Terminé</span>
+                              )}
+                            </div>
+                            <p className="text-[12px] text-gray-400 truncate mt-0.5">{evt.lieu}{evt.ville ? ` · ${evt.ville}` : ""}</p>
+                            <div className="flex items-center gap-2 mt-1.5">
+                              <span className="text-[11px] text-emerald-600 font-bold">{evt.total_vendu || 0} billet{(evt.total_vendu || 0) > 1 ? "s" : ""}</span>
+                              <div className="flex-1 h-1 bg-gray-100 rounded-full overflow-hidden max-w-[60px]">
+                                <div className="h-full bg-emerald-400 rounded-full" style={{ width: `${Math.min(fillPct, 100)}%` }} />
+                              </div>
+                              {parseFloat(evt.revenus) > 0 && (
+                                <span className="text-[11px] text-gray-900 font-black">{formatMontant(parseFloat(evt.revenus), devise)}</span>
+                              )}
+                            </div>
                           </div>
-                          <p className="text-xs text-gray-400 truncate mt-0.5">{evt.lieu}{evt.ville ? ` · ${evt.ville}` : ""}</p>
-                          <div className="flex items-center gap-3 mt-1.5">
-                            <span className="text-[11px] text-emerald-600 font-bold">{evt.total_vendu || 0} billet{(evt.total_vendu || 0) > 1 ? "s" : ""}</span>
-                            {parseFloat(evt.revenus) > 0 && (
-                              <span className="text-[11px] text-gray-900 font-black">{formatMontant(parseFloat(evt.revenus), devise)}</span>
-                            )}
-                          </div>
+                          <ChevronRight className="w-4 h-4 text-gray-300 shrink-0 group-hover:text-emerald-400 transition-colors" />
                         </div>
-                        <ChevronRight className="w-4 h-4 text-gray-300 shrink-0" />
                       </button>
                     );
                   })}
