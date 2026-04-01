@@ -4,7 +4,6 @@ import Link from "next/link";
 import { useState } from "react";
 import {
   ArrowRight,
-  Check,
   CircleDollarSign,
   Calendar,
   Shield,
@@ -194,62 +193,6 @@ export default function HomePage() {
                 <p className="absolute bottom-3 left-3 text-[13px] font-medium text-white">{item.label}</p>
               </div>
             ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ═══════ HOW IT WORKS — 3 steps inline ═══════ */}
-      <section className="py-16 sm:py-24 bg-neutral-50">
-        <div className="max-w-3xl mx-auto px-4 sm:px-6 text-center">
-          <h2 className="text-xl sm:text-3xl font-semibold tracking-tight mb-10 sm:mb-14 text-neutral-900">3 étapes. C&apos;est tout.</h2>
-          <div className="flex flex-col sm:flex-row items-center sm:items-start gap-8 sm:gap-6">
-            {[
-              { n: "1", title: "Créez", desc: "Nom, date, billets." },
-              { n: "2", title: "Partagez", desc: "Un lien, c'est tout." },
-              { n: "3", title: "Scannez", desc: "QR code à l'entrée." },
-            ].map((s, i) => (
-              <div key={i} className="flex-1 flex flex-col items-center">
-                <div className="w-9 h-9 bg-neutral-900 rounded-full flex items-center justify-center text-white font-semibold text-sm mb-3">{s.n}</div>
-                <p className="text-sm font-semibold text-neutral-900 mb-0.5">{s.title}</p>
-                <p className="text-xs text-neutral-400">{s.desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ═══════ PRICING — One-liner ═══════ */}
-      <section id="tarifs" className="py-16 sm:py-24">
-        <div className="max-w-2xl mx-auto px-4 sm:px-6 text-center">
-          <h2 className="text-xl sm:text-3xl font-semibold tracking-tight mb-3 text-neutral-900">
-            0 frais pour l&apos;organisateur.
-          </h2>
-          <p className="text-sm sm:text-base text-neutral-400 mb-8 max-w-md mx-auto">
-            Vous fixez le prix, vous recevez 100%. L&apos;acheteur paye un petit frais de service.
-          </p>
-          <div className="inline-flex items-baseline gap-1 mb-6">
-            <span className="text-5xl sm:text-6xl font-bold text-neutral-900">0</span>
-            <span className="text-lg sm:text-xl font-medium text-neutral-400">FCFA / mois</span>
-          </div>
-          <div className="flex flex-wrap justify-center gap-4 text-[13px] text-neutral-400">
-            <span className="flex items-center gap-1.5"><Check className="w-3.5 h-3.5 text-neutral-900" />Mobile Money & Carte</span>
-            <span className="flex items-center gap-1.5"><Check className="w-3.5 h-3.5 text-neutral-900" />Billets gratuits = 0 frais</span>
-            <span className="flex items-center gap-1.5"><Check className="w-3.5 h-3.5 text-neutral-900" />Sans engagement</span>
-          </div>
-        </div>
-      </section>
-
-      {/* ═══════ FINAL CTA ═══════ */}
-      <section className="pb-20 sm:pb-28">
-        <div className="max-w-3xl mx-auto px-4 sm:px-6">
-          <div className="bg-neutral-900 rounded-2xl p-10 sm:p-16 text-center">
-            <h2 className="text-2xl sm:text-3xl font-semibold text-white tracking-tight mb-4">
-              Lancez votre événement.
-            </h2>
-            <p className="text-sm text-neutral-500 mb-7">Gratuit. Sans abonnement. En 5 minutes.</p>
-            <Link href="/inscription" className="inline-flex items-center gap-2 px-7 py-3 bg-white text-neutral-900 font-medium rounded-full hover:bg-neutral-100 transition-all text-sm">
-              Commencer <ArrowRight className="w-3.5 h-3.5" />
-            </Link>
           </div>
         </div>
       </section>
