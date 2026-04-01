@@ -5,8 +5,8 @@ import { useState } from "react";
 import { Menu, X, LogIn, ArrowRight } from "lucide-react";
 
 const navLinks = [
-  { href: "/#fonctionnalites", label: "Features" },
-  { href: "/#tarifs", label: "Pricing" },
+  { href: "/#fonctionnalites", label: "Fonctionnalités" },
+  { href: "/#tarifs", label: "Tarifs" },
 ];
 
 export default function Navbar() {
@@ -44,13 +44,13 @@ export default function Navbar() {
               className="flex items-center gap-1.5 px-3 py-1.5 text-sm text-neutral-500 hover:text-neutral-900 transition-colors font-medium rounded-lg hover:bg-neutral-50"
             >
               <LogIn className="w-3.5 h-3.5" />
-              Log in
+              Connexion
             </Link>
             <Link
               href="/inscription"
               className="flex items-center gap-1.5 bg-neutral-900 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-neutral-800 transition-colors"
             >
-              Sign up
+              Inscription
               <ArrowRight className="w-3.5 h-3.5" />
             </Link>
           </div>
@@ -85,14 +85,14 @@ export default function Navbar() {
                 onClick={() => setIsOpen(false)}
               >
                 <LogIn className="w-4 h-4" />
-                Log in
+                Connexion
               </Link>
               <Link
                 href="/inscription"
                 className="flex items-center justify-center gap-2 bg-neutral-900 text-white px-4 py-2.5 rounded-lg text-sm font-medium mt-1"
                 onClick={() => setIsOpen(false)}
               >
-                Sign up
+                Inscription
                 <ArrowRight className="w-3.5 h-3.5" />
               </Link>
             </div>

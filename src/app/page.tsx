@@ -34,9 +34,9 @@ export default function HomePage() {
 
           <nav className="hidden md:flex items-center gap-8">
             {[
-              { label: "Features", href: "#fonctionnalites" },
-              { label: "Use Cases", href: "#pourqui" },
-              { label: "Pricing", href: "#tarifs" },
+              { label: "Fonctionnalités", href: "#fonctionnalites" },
+              { label: "Pour qui ?", href: "#pourqui" },
+              { label: "Tarifs", href: "#tarifs" },
             ].map((l) => (
               <a key={l.href} href={l.href} className="text-sm text-neutral-400 hover:text-neutral-900 transition-colors">{l.label}</a>
             ))}
@@ -44,7 +44,7 @@ export default function HomePage() {
 
           <div className="flex items-center gap-3">
             <Link href="/connexion" className="hidden sm:block text-sm text-neutral-500 hover:text-neutral-900 transition-colors">
-              Log in
+              Connexion
             </Link>
             <Link href="/inscription" className="hidden sm:flex items-center gap-1.5 text-sm font-medium bg-blue-600 text-white px-4 py-2 rounded-full hover:bg-blue-700 transition-all shadow-sm shadow-blue-600/20">
               Créer ma billetterie <ArrowRight className="w-3.5 h-3.5" />
@@ -63,9 +63,9 @@ export default function HomePage() {
           <div className="md:hidden border-t border-neutral-100 pb-4 pt-3 px-4 animate-fade-in">
             <div className="flex flex-col gap-1">
               {[
-                { label: "Features", href: "#fonctionnalites" },
-                { label: "Use Cases", href: "#pourqui" },
-                { label: "Pricing", href: "#tarifs" },
+                { label: "Fonctionnalités", href: "#fonctionnalites" },
+                { label: "Pour qui ?", href: "#pourqui" },
+                { label: "Tarifs", href: "#tarifs" },
               ].map((l) => (
                 <a key={l.href} href={l.href} onClick={() => setMobileOpen(false)} className="px-3 py-2.5 rounded-lg text-neutral-600 hover:bg-neutral-50 text-sm transition-colors">
                   {l.label}
@@ -73,7 +73,7 @@ export default function HomePage() {
               ))}
               <hr className="my-2 border-neutral-100" />
               <Link href="/connexion" onClick={() => setMobileOpen(false)} className="px-3 py-2.5 rounded-lg text-neutral-600 hover:bg-neutral-50 text-sm transition-colors">
-                Log in
+                Connexion
               </Link>
               <Link href="/inscription" onClick={() => setMobileOpen(false)} className="text-center font-medium bg-blue-600 text-white px-5 py-2.5 rounded-full text-sm mt-1">
                 Créer ma billetterie
@@ -87,7 +87,7 @@ export default function HomePage() {
       <section className="pt-28 sm:pt-40 pb-0">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 text-center">
           <h1 className="text-4xl sm:text-6xl lg:text-7xl font-semibold tracking-tight leading-[1.05] mb-6">
-            Delightful events<br />start here.
+            Vos événements<br />commencent ici.
           </h1>
           <p className="text-base sm:text-lg text-neutral-400 max-w-xl mx-auto mb-8 leading-relaxed">
             Créez votre billetterie en quelques minutes, acceptez Mobile Money ou carte, et scannez chaque entrée par QR code.
@@ -179,10 +179,10 @@ export default function HomePage() {
         <div className="max-w-6xl mx-auto px-4 sm:px-6">
           <div className="text-center mb-14 sm:mb-20">
             <h2 className="text-2xl sm:text-4xl font-semibold tracking-tight mb-4">
-              Ticketing that stays simple.
+              Une billetterie qui reste simple.
             </h2>
             <p className="text-neutral-400 text-base sm:text-lg max-w-xl mx-auto">
-              Made for any event size. From 10 to 10,000 attendees.
+              Conçue pour tout type d&apos;événement. De 10 à 10 000 participants.
             </p>
           </div>
 
@@ -192,9 +192,9 @@ export default function HomePage() {
                 <Calendar className="w-5 h-5 text-neutral-600" />
               </div>
               <h3 className="text-lg font-semibold text-neutral-900 mb-2">Simple.</h3>
-              <p className="text-neutral-400 text-sm mb-5 leading-relaxed">Launch your event in clicks. No technical skills needed.</p>
+              <p className="text-neutral-400 text-sm mb-5 leading-relaxed">Créez votre événement en quelques clics. Aucune compétence technique requise.</p>
               <ul className="space-y-2.5">
-                {["Create your event for free", "Customize with your brand", "Share and sell instantly", "Track sales in real time"].map((item, i) => (
+                {["Créez votre événement gratuitement", "Personnalisez à votre image", "Partagez et vendez instantanément", "Suivez vos ventes en temps réel"].map((item, i) => (
                   <li key={i} className="flex items-start gap-2 text-sm text-neutral-500">
                     <Check className="w-4 h-4 text-neutral-900 mt-0.5 shrink-0" />{item}
                   </li>
@@ -207,9 +207,9 @@ export default function HomePage() {
                 <CircleDollarSign className="w-5 h-5 text-neutral-600" />
               </div>
               <h3 className="text-lg font-semibold text-neutral-900 mb-2">Transparent.</h3>
-              <p className="text-neutral-400 text-sm mb-5 leading-relaxed">Clear pricing, no surprises. Fees are paid by the buyer.</p>
+              <p className="text-neutral-400 text-sm mb-5 leading-relaxed">Tarifs clairs, sans surprises. Les frais sont à la charge de l&apos;acheteur.</p>
               <ul className="space-y-2.5">
-                {["0 cost for organizers", "No setup fees", "No subscription", "Free tickets = zero fees"].map((item, i) => (
+                {["0 frais pour les organisateurs", "Aucun frais d'installation", "Aucun abonnement", "Billets gratuits = zéro frais"].map((item, i) => (
                   <li key={i} className="flex items-start gap-2 text-sm text-neutral-500">
                     <Check className="w-4 h-4 text-neutral-900 mt-0.5 shrink-0" />{item}
                   </li>
@@ -221,10 +221,10 @@ export default function HomePage() {
               <div className="w-10 h-10 bg-neutral-100 rounded-lg flex items-center justify-center mb-5">
                 <Shield className="w-5 h-5 text-neutral-600" />
               </div>
-              <h3 className="text-lg font-semibold text-neutral-900 mb-2">Reliable.</h3>
-              <p className="text-neutral-400 text-sm mb-5 leading-relaxed">Every ticket is unique and tamper-proof. Zero fraud.</p>
+              <h3 className="text-lg font-semibold text-neutral-900 mb-2">Fiable.</h3>
+              <p className="text-neutral-400 text-sm mb-5 leading-relaxed">Chaque billet est unique et infalsifiable. Zéro fraude.</p>
               <ul className="space-y-2.5">
-                {["Unique QR per ticket", "Cryptographic signature", "Built-in ultra-fast scanner", "Real-time access control"].map((item, i) => (
+                {["QR code unique par billet", "Signature cryptographique", "Scanner ultra-rapide intégré", "Contrôle d'accès en temps réel"].map((item, i) => (
                   <li key={i} className="flex items-start gap-2 text-sm text-neutral-500">
                     <Check className="w-4 h-4 text-neutral-900 mt-0.5 shrink-0" />{item}
                   </li>
@@ -244,7 +244,7 @@ export default function HomePage() {
               <div className="bg-neutral-900 rounded-[2rem] p-4 pt-6 pb-6 text-white">
                 <div className="flex justify-center pt-1 pb-3"><div className="w-16 h-4 bg-black rounded-full" /></div>
                 <div className="text-center mb-4">
-                  <p className="text-[9px] font-medium text-neutral-500 uppercase tracking-widest mb-2">Your ticket</p>
+                  <p className="text-[9px] font-medium text-neutral-500 uppercase tracking-widest mb-2">Votre billet</p>
                   <div className="w-24 h-24 bg-white rounded-xl mx-auto flex items-center justify-center">
                     <QrCode className="w-14 h-14 text-neutral-900" />
                   </div>
@@ -252,9 +252,9 @@ export default function HomePage() {
                 </div>
                 <div className="space-y-1">
                   {[
-                    { name: "Afro Night — VIP", badge: "Valid" },
-                    { name: "Concert Dakar", badge: "Scanned" },
-                    { name: "Festival Abidjan", badge: "Valid" },
+                    { name: "Afro Night — VIP", badge: "Valide" },
+                    { name: "Concert Dakar", badge: "Scanné" },
+                    { name: "Festival Abidjan", badge: "Valide" },
                   ].map((t, i) => (
                     <div key={i} className="flex items-center gap-2 px-2.5 py-2 rounded-lg bg-white/[0.06]">
                       <div className="w-5 h-5 rounded bg-white/10 flex items-center justify-center shrink-0">
@@ -271,17 +271,17 @@ export default function HomePage() {
             {/* Right text */}
             <div className="flex-1 text-center lg:text-left">
               <h2 className="text-2xl sm:text-4xl font-semibold tracking-tight mb-5">
-                Your event starts with a scan.
+                Votre événement commence par un scan.
               </h2>
               <p className="text-neutral-400 text-base sm:text-lg leading-relaxed mb-8 max-w-lg mx-auto lg:mx-0">
-                80% of attendees buy from their phone. Binq offers a seamless booking experience optimized for mobile.
+                80% des participants achètent depuis leur téléphone. Binq offre une expérience de réservation fluide, optimisée pour le mobile.
               </p>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-md mx-auto lg:mx-0">
                 {[
-                  { title: "Scan < 1 second", desc: "Instant validation at the door" },
+                  { title: "Scan < 1 seconde", desc: "Validation instantanée à l'entrée" },
                   { title: "Mobile Money", desc: "Orange, MTN, Visa, Mastercard" },
-                  { title: "Tamper-proof QR", desc: "Unique cryptographic signature" },
-                  { title: "Real-time", desc: "Live sales and entry tracking" },
+                  { title: "QR infalsifiable", desc: "Signature cryptographique unique" },
+                  { title: "Temps réel", desc: "Suivi des ventes et entrées en direct" },
                 ].map((item, i) => (
                   <div key={i} className="flex items-start gap-3">
                     <div className="w-7 h-7 bg-neutral-200 rounded-lg flex items-center justify-center shrink-0 mt-0.5">
@@ -304,21 +304,21 @@ export default function HomePage() {
         <div className="max-w-6xl mx-auto px-4 sm:px-6">
           <div className="text-center mb-12 sm:mb-16">
             <h2 className="text-2xl sm:text-4xl font-semibold tracking-tight mb-3">
-              For every type of event.
+              Pour tous les types d&apos;événements.
             </h2>
             <p className="text-neutral-400 text-base sm:text-lg max-w-xl mx-auto">
-              A workshop for 10? A concert for 10,000? Binq adapts.
+              Un atelier pour 10 personnes ? Un concert pour 10 000 ? Binq s&apos;adapte.
             </p>
           </div>
 
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4">
             {[
-              { label: "Concerts & Shows", img: "https://images.unsplash.com/photo-1540039155733-5bb30b53aa14?w=600&h=400&fit=crop&q=80" },
-              { label: "Parties & Clubs", img: "https://images.unsplash.com/photo-1566737236500-c8ac43014a67?w=600&h=400&fit=crop&q=80" },
-              { label: "Workshops", img: "https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=600&h=400&fit=crop&q=80" },
-              { label: "Conferences", img: "https://images.unsplash.com/photo-1505373877841-8d25f7d46678?w=600&h=400&fit=crop&q=80" },
-              { label: "Dining", img: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=600&h=400&fit=crop&q=80" },
-              { label: "Expos & Fairs", img: "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=600&h=400&fit=crop&q=80" },
+              { label: "Concerts & Spectacles", img: "https://images.unsplash.com/photo-1540039155733-5bb30b53aa14?w=600&h=400&fit=crop&q=80" },
+              { label: "Soirées & Clubs", img: "https://images.unsplash.com/photo-1566737236500-c8ac43014a67?w=600&h=400&fit=crop&q=80" },
+              { label: "Formations & Ateliers", img: "https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=600&h=400&fit=crop&q=80" },
+              { label: "Conférences & Séminaires", img: "https://images.unsplash.com/photo-1505373877841-8d25f7d46678?w=600&h=400&fit=crop&q=80" },
+              { label: "Restaurants", img: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=600&h=400&fit=crop&q=80" },
+              { label: "Salons & Expositions", img: "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=600&h=400&fit=crop&q=80" },
             ].map((item, i) => (
               <div key={i} className="relative rounded-xl overflow-hidden aspect-[3/2]">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -337,16 +337,16 @@ export default function HomePage() {
       <section className="py-16 sm:py-24 bg-neutral-50">
         <div className="max-w-4xl mx-auto px-4 sm:px-6">
           <div className="text-center mb-12 sm:mb-16">
-            <p className="text-xs font-medium uppercase tracking-widest text-neutral-400 mb-3">How it works</p>
-            <h2 className="text-2xl sm:text-4xl font-semibold tracking-tight mb-3">3 steps. That&apos;s it.</h2>
-            <p className="text-neutral-400 text-base sm:text-lg">From zero to your first event in 5 minutes.</p>
+            <p className="text-xs font-medium uppercase tracking-widest text-neutral-400 mb-3">Comment ça marche</p>
+            <h2 className="text-2xl sm:text-4xl font-semibold tracking-tight mb-3">3 étapes. C&apos;est tout.</h2>
+            <p className="text-neutral-400 text-base sm:text-lg">De zéro à votre premier événement en 5 minutes.</p>
           </div>
 
           <div className="grid md:grid-cols-3 gap-4">
             {[
-              { step: "1", title: "Create your event", desc: "Name, date, venue, cover and ticket types. Publish in clicks.", icon: Calendar },
-              { step: "2", title: "Share & sell", desc: "Send the link to your audience. They buy in one tap.", icon: Ticket },
-              { step: "3", title: "Scan at the door", desc: "Open the scanner, validate each QR code. Fast and reliable.", icon: ScanLine },
+              { step: "1", title: "Créez votre événement", desc: "Nom, date, lieu, cover et types de billets. Publiez en quelques clics.", icon: Calendar },
+              { step: "2", title: "Partagez & vendez", desc: "Envoyez le lien à votre audience. Ils achètent en un clic.", icon: Ticket },
+              { step: "3", title: "Scannez à l'entrée", desc: "Ouvrez le scanner, validez chaque QR code. Rapide et fiable.", icon: ScanLine },
             ].map((item, i) => (
               <div key={i} className="bg-white border border-neutral-200 rounded-xl p-6 sm:p-8 text-center">
                 <div className="w-8 h-8 bg-neutral-900 rounded-lg flex items-center justify-center text-white font-medium text-sm mx-auto mb-5">
@@ -364,29 +364,29 @@ export default function HomePage() {
       <section id="tarifs" className="py-16 sm:py-24">
         <div className="max-w-4xl mx-auto px-4 sm:px-6">
           <div className="text-center mb-10 sm:mb-14">
-            <p className="text-xs font-medium uppercase tracking-widest text-neutral-400 mb-3">Pricing</p>
+            <p className="text-xs font-medium uppercase tracking-widest text-neutral-400 mb-3">Tarifs</p>
             <h2 className="text-2xl sm:text-4xl font-semibold tracking-tight">
-              You set the price.<br />You receive 100%.
+              Vous fixez le prix.<br />Vous recevez 100%.
             </h2>
           </div>
 
           <div className="max-w-md mx-auto mb-10">
             <div className="rounded-xl border border-neutral-200 overflow-hidden">
               <div className="p-5 sm:p-7 text-center border-b border-neutral-100">
-                <p className="text-xs text-neutral-400 uppercase tracking-wider mb-3">Example</p>
-                <p className="text-sm text-neutral-500 mb-1">You sell a ticket for</p>
+                <p className="text-xs text-neutral-400 uppercase tracking-wider mb-3">Exemple concret</p>
+                <p className="text-sm text-neutral-500 mb-1">Vous vendez un billet à</p>
                 <p className="text-3xl font-semibold text-neutral-900">5,000 <span className="text-lg">FCFA</span></p>
               </div>
               <div className="grid grid-cols-2 divide-x divide-neutral-100">
                 <div className="p-4 sm:p-6 text-center">
-                  <p className="text-[11px] text-neutral-400 uppercase tracking-wider mb-2">Buyer pays</p>
-                  <p className="text-xl font-semibold text-neutral-900">5,500</p>
-                  <p className="text-xs text-neutral-400 mt-0.5">FCFA (ticket + fees)</p>
+                  <p className="text-[11px] text-neutral-400 uppercase tracking-wider mb-2">L&apos;acheteur paye</p>
+                  <p className="text-xl font-semibold text-neutral-900">5 500</p>
+                  <p className="text-xs text-neutral-400 mt-0.5">FCFA (billet + frais)</p>
                 </div>
                 <div className="p-4 sm:p-6 text-center bg-neutral-50">
-                  <p className="text-[11px] text-neutral-900 uppercase tracking-wider mb-2 font-medium">You receive</p>
-                  <p className="text-xl font-semibold text-neutral-900">5,000</p>
-                  <p className="text-xs text-neutral-400 mt-0.5">FCFA — 100% of price</p>
+                  <p className="text-[11px] text-neutral-900 uppercase tracking-wider mb-2 font-medium">Vous recevez</p>
+                  <p className="text-xl font-semibold text-neutral-900">5 000</p>
+                  <p className="text-xs text-neutral-400 mt-0.5">FCFA — 100% du prix</p>
                 </div>
               </div>
             </div>
@@ -394,9 +394,9 @@ export default function HomePage() {
 
           <div className="grid sm:grid-cols-3 gap-3 max-w-2xl mx-auto">
             {[
-              { icon: CircleDollarSign, title: "Zero cost for you", desc: "No subscription, no hidden fees." },
-              { icon: Globe, title: "Mobile Money & Card", desc: "All local payment methods." },
-              { icon: Ticket, title: "Free = zero fees", desc: "Free tickets cost nothing." },
+              { icon: CircleDollarSign, title: "0 FCFA pour vous", desc: "Aucun abonnement, aucun frais caché." },
+              { icon: Globe, title: "Mobile Money & Carte", desc: "Tous les moyens de paiement locaux." },
+              { icon: Ticket, title: "Gratuit = 0 frais", desc: "Les billets gratuits ne coûtent rien." },
             ].map((item, i) => (
               <div key={i} className="bg-neutral-50 rounded-xl p-5 text-center">
                 <div className="w-9 h-9 rounded-lg bg-white border border-neutral-200 flex items-center justify-center mx-auto mb-3">
@@ -438,11 +438,11 @@ export default function HomePage() {
               <span className="font-semibold text-neutral-900 tracking-tight">Binq</span>
             </div>
             <div className="flex items-center gap-6 text-sm text-neutral-400">
-              <a href="#fonctionnalites" className="hover:text-neutral-900 transition">Features</a>
-              <a href="#pourqui" className="hover:text-neutral-900 transition">Use Cases</a>
-              <a href="#tarifs" className="hover:text-neutral-900 transition">Pricing</a>
+              <a href="#fonctionnalites" className="hover:text-neutral-900 transition">Fonctionnalités</a>
+              <a href="#pourqui" className="hover:text-neutral-900 transition">Pour qui ?</a>
+              <a href="#tarifs" className="hover:text-neutral-900 transition">Tarifs</a>
             </div>
-            <p className="text-xs text-neutral-300">&copy; {new Date().getFullYear()} Binq. All rights reserved.</p>
+            <p className="text-xs text-neutral-300">&copy; {new Date().getFullYear()} Binq. Tous droits réservés.</p>
           </div>
         </div>
       </footer>

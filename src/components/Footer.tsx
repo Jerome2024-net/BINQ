@@ -15,17 +15,17 @@ export default function Footer() {
               <span className="font-semibold text-neutral-900 tracking-tight">Binq</span>
             </div>
             <p className="text-neutral-400 text-sm leading-relaxed">
-              The modern ticketing platform for events of any size.
+              La plateforme de billetterie moderne pour tout type d&apos;événement.
             </p>
           </div>
 
           {/* Product */}
           <div>
-            <h3 className="text-neutral-900 text-sm font-semibold mb-4">Product</h3>
+            <h3 className="text-neutral-900 text-sm font-semibold mb-4">Produit</h3>
             <ul className="space-y-2.5">
               {[
-                { href: "/#fonctionnalites", label: "Features" },
-                { href: "/#tarifs", label: "Pricing" },
+                { href: "/#fonctionnalites", label: "Fonctionnalités" },
+                { href: "/#tarifs", label: "Tarifs" },
                 { href: "/dashboard", label: "Dashboard" },
               ].map((link) => (
                 <li key={link.href}>
@@ -39,11 +39,11 @@ export default function Footer() {
 
           {/* Resources */}
           <div>
-            <h3 className="text-neutral-900 text-sm font-semibold mb-4">Resources</h3>
+            <h3 className="text-neutral-900 text-sm font-semibold mb-4">Ressources</h3>
             <ul className="space-y-2.5">
               {[
-                { href: "#", label: "Help Center" },
-                { href: "#", label: "Getting Started" },
+                { href: "#", label: "Centre d'aide" },
+                { href: "#", label: "Guide de démarrage" },
                 { href: "#", label: "FAQ" },
                 { href: "#", label: "Blog" },
               ].map((link) => (
@@ -76,17 +76,17 @@ export default function Footer() {
 
         <div className="border-t border-neutral-100 mt-8 sm:mt-10 pt-6 sm:pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-neutral-300 text-xs">
-            &copy; {new Date().getFullYear()} Binq. All rights reserved.
+            &copy; {new Date().getFullYear()} Binq. Tous droits réservés.
           </p>
           <div className="flex items-center gap-6">
             <Link href="#" className="text-neutral-300 hover:text-neutral-900 text-xs transition-colors">
-              Legal
+              Mentions légales
             </Link>
             <Link href="#" className="text-neutral-300 hover:text-neutral-900 text-xs transition-colors">
-              Privacy
+              Confidentialité
             </Link>
             <Link href="#" className="text-neutral-300 hover:text-neutral-900 text-xs transition-colors">
-              Terms
+              CGU
             </Link>
           </div>
         </div>
