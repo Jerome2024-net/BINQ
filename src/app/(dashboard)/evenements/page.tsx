@@ -40,6 +40,7 @@ import {
   Users,
   UserPlus,
   UserMinus,
+  Search,
 } from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
 import { formatMontant } from "@/lib/currencies";
@@ -94,6 +95,7 @@ export default function EvenementsPage() {
   const [events, setEvents] = useState<any[]>([]);
   const [loadingEvents, setLoadingEvents] = useState(false);
   const [showAddEvent, setShowAddEvent] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
   const [evtNom, setEvtNom] = useState("");
   const [evtDesc, setEvtDesc] = useState("");
   const [evtDateDebut, setEvtDateDebut] = useState("");
@@ -663,18 +665,23 @@ export default function EvenementsPage() {
   // ═══════════════════════════════════════════════
   return (
     <div className="pb-28 lg:pb-10">
-      {/* Header — Premium dark gradient */}
-      <div className="relative bg-gradient-to-br from-gray-900 via-gray-900 to-emerald-900 px-4 pt-5 pb-5 lg:rounded-b-3xl overflow-hidden">
-        <div className="absolute top-0 right-0 w-48 h-48 bg-emerald-500/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/4" />
-        <div className="absolute bottom-0 left-0 w-32 h-32 bg-emerald-500/5 rounded-full blur-2xl translate-y-1/2" />
+      {/* Header — Compact dark gradient */}
+      <div className={`relative bg-gradient-to-br from-gray-900 via-gray-900 to-emerald-900 px-4 lg:rounded-b-3xl overflow-hidden ${
+        activeTab === "evenements" && events.length > 0 ? "pt-4 pb-4" : "pt-4 pb-4"
+      }`}>
+        {events.length > 0 && (
+          <>
+            <div className="absolute top-0 right-0 w-48 h-48 bg-emerald-500/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/4" />
+            <div className="absolute bottom-0 left-0 w-32 h-32 bg-emerald-500/5 rounded-full blur-2xl translate-y-1/2" />
+          </>
+        )}
         
         <div className="relative flex items-center justify-between">
-          <div>
-            <h1 className="text-xl lg:text-2xl font-black text-white">Mes billetteries</h1>
-            <div className="flex items-center gap-1.5 mt-0.5">
-              <div className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse" />
-              <span className="text-[11px] text-white/50 font-medium">{events.length} billetterie{events.length > 1 ? "s" : ""}</span>
-            </div>
+          <div className="flex items-center gap-3">
+            <h1 className="text-lg lg:text-xl font-black text-white">Mes billetteries</h1>
+            {events.length > 0 && (
+              <span className="text-[10px] text-white/40 font-bold bg-white/10 px-2 py-0.5 rounded-full">{events.length}</span>
+            )}
           </div>
           <button
             onClick={() => setActiveTab(activeTab === "reglages" ? "evenements" : "reglages")}
@@ -686,24 +693,24 @@ export default function EvenementsPage() {
           </button>
         </div>
 
-        {/* Stats intégrés dans le header */}
+        {/* Stats intégrés — compact row */}
         {activeTab === "evenements" && events.length > 0 && (
-          <div className="relative flex gap-2 mt-4">
-            <div className="flex-1 bg-white/10 backdrop-blur-sm rounded-2xl p-3.5 border border-white/5">
-              <div className="flex items-center gap-1.5 mb-1">
+          <div className="relative flex gap-2 mt-3">
+            <div className="flex-1 bg-white/10 backdrop-blur-sm rounded-xl px-3 py-2.5 border border-white/5">
+              <div className="flex items-center gap-1.5 mb-0.5">
                 <TrendingUp className="w-3 h-3 text-emerald-400" />
                 <span className="text-[9px] text-white/50 font-bold uppercase tracking-wider">Revenus</span>
               </div>
-              <p className="text-[16px] font-black text-white leading-tight">
+              <p className="text-[15px] font-black text-white leading-tight">
                 {formatMontant(events.reduce((sum: number, e: any) => sum + (parseFloat(e.revenus) || 0), 0), devise)}
               </p>
             </div>
-            <div className="flex-1 bg-white/10 backdrop-blur-sm rounded-2xl p-3.5 border border-white/5">
-              <div className="flex items-center gap-1.5 mb-1">
+            <div className="flex-1 bg-white/10 backdrop-blur-sm rounded-xl px-3 py-2.5 border border-white/5">
+              <div className="flex items-center gap-1.5 mb-0.5">
                 <Ticket className="w-3 h-3 text-blue-400" />
                 <span className="text-[9px] text-white/50 font-bold uppercase tracking-wider">Vendus</span>
               </div>
-              <p className="text-[16px] font-black text-white leading-tight">
+              <p className="text-[15px] font-black text-white leading-tight">
                 {events.reduce((sum: number, e: any) => sum + (e.total_vendu || 0), 0)}
                 <span className="text-[10px] text-white/40 font-semibold ml-1">billets</span>
               </p>
@@ -1271,19 +1278,19 @@ export default function EvenementsPage() {
           ) : (
             /* ═══ LISTE DES ÉVÉNEMENTS — PREMIUM ═══ */
             <div>
-              {/* Quick action buttons */}
+              {/* Quick action buttons — Nouvelle = primary, Scanner = secondary */}
               <div className="flex gap-2 mb-4">
                 <button
                   onClick={() => { hapticMedium(); setShowAddEvent(true); }}
-                  className="flex-1 flex items-center justify-center gap-2 bg-white border border-gray-200 text-gray-800 py-3.5 rounded-2xl font-bold text-[13px] transition hover:bg-gray-50 hover:border-gray-300 active:scale-[0.97] shadow-sm"
+                  className="flex-1 flex items-center justify-center gap-2 bg-gradient-to-r from-emerald-500 to-emerald-600 text-white py-3 rounded-2xl font-bold text-[13px] transition hover:from-emerald-400 hover:to-emerald-500 active:scale-[0.97] shadow-md shadow-emerald-500/20"
                 >
-                  <Plus className="w-4 h-4 text-emerald-500" /> Nouvelle billetterie
+                  <Plus className="w-4 h-4" /> Nouvelle billetterie
                 </button>
                 <button
                   onClick={() => { setScanMode(true); setScanResult(null); setScanCode(""); hapticMedium(); setTimeout(() => startCamera(), 300); }}
-                  className="flex items-center justify-center gap-2 px-5 py-3.5 bg-gradient-to-r from-emerald-500 to-emerald-600 text-white font-bold text-[13px] rounded-2xl transition hover:from-emerald-400 hover:to-emerald-500 active:scale-[0.97] shadow-md shadow-emerald-500/20"
+                  className="flex items-center justify-center gap-2 px-5 py-3 bg-white border border-gray-200 text-gray-700 font-bold text-[13px] rounded-2xl transition hover:bg-gray-50 hover:border-gray-300 active:scale-[0.97] shadow-sm"
                 >
-                  <ScanLine className="w-4 h-4" /> Scanner
+                  <ScanLine className="w-4 h-4 text-emerald-500" /> Scanner
                 </button>
               </div>
 
@@ -1314,15 +1321,22 @@ export default function EvenementsPage() {
                       </button>
                     </div>
 
-                    {/* Visual completion dots */}
-                    <div className="relative flex items-center gap-1.5 mt-4">
-                      <div className={`h-1 rounded-full transition-all duration-500 ${evtCoverPreview && evtLogoPreview ? 'bg-emerald-400 w-8' : 'bg-white/20 w-5'}`} />
-                      <div className={`h-1 rounded-full transition-all duration-500 ${evtNom.trim() && evtLieu.trim() ? 'bg-emerald-400 w-8' : 'bg-white/20 w-5'}`} />
-                      <div className={`h-1 rounded-full transition-all duration-500 ${evtDateDebut ? 'bg-emerald-400 w-8' : 'bg-white/20 w-5'}`} />
-                      <div className={`h-1 rounded-full transition-all duration-500 ${evtTicketTypes[0]?.nom ? 'bg-emerald-400 w-8' : 'bg-white/20 w-5'}`} />
-                      <span className="text-[9px] text-white/30 ml-auto font-semibold">
-                        {[evtCoverPreview && evtLogoPreview, evtNom.trim() && evtLieu.trim(), evtDateDebut, evtTicketTypes[0]?.nom].filter(Boolean).length}/4
-                      </span>
+                    {/* Visual completion bar — more visible */}
+                    <div className="relative mt-5">
+                      <div className="flex items-center gap-2 mb-2">
+                        <span className="text-[11px] font-bold text-white/70">
+                          Étape {[evtCoverPreview && evtLogoPreview, evtNom.trim() && evtLieu.trim(), evtDateDebut, evtTicketTypes[0]?.nom].filter(Boolean).length} / 4
+                        </span>
+                        <span className="text-[10px] text-white/40">
+                          {[evtCoverPreview && evtLogoPreview, evtNom.trim() && evtLieu.trim(), evtDateDebut, evtTicketTypes[0]?.nom].filter(Boolean).length === 4 ? "✓ Prêt !" : "Complétez les étapes"}
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <div className={`h-1.5 rounded-full transition-all duration-500 ${evtCoverPreview && evtLogoPreview ? 'bg-emerald-400 flex-1' : 'bg-white/15 flex-1'}`} />
+                        <div className={`h-1.5 rounded-full transition-all duration-500 ${evtNom.trim() && evtLieu.trim() ? 'bg-emerald-400 flex-1' : 'bg-white/15 flex-1'}`} />
+                        <div className={`h-1.5 rounded-full transition-all duration-500 ${evtDateDebut ? 'bg-emerald-400 flex-1' : 'bg-white/15 flex-1'}`} />
+                        <div className={`h-1.5 rounded-full transition-all duration-500 ${evtTicketTypes[0]?.nom ? 'bg-emerald-400 flex-1' : 'bg-white/15 flex-1'}`} />
+                      </div>
                     </div>
                   </div>
 
@@ -1338,14 +1352,14 @@ export default function EvenementsPage() {
                       </div>
                     </div>
 
-                    {/* Cover upload */}
+                    {/* Cover upload — taller, more prominent */}
                     <button
                       type="button"
                       onClick={() => evtFormCoverRef.current?.click()}
-                      className={`w-full h-36 rounded-2xl flex items-center justify-center overflow-hidden transition-all relative group mb-3 ${
+                      className={`w-full h-48 rounded-2xl flex items-center justify-center overflow-hidden transition-all relative group mb-3 ${
                         evtCoverPreview
                           ? "ring-2 ring-emerald-500/30 shadow-lg shadow-emerald-500/10"
-                          : "bg-gradient-to-br from-gray-50 to-gray-100 border-2 border-dashed border-gray-200 hover:border-purple-300 hover:from-purple-50/50 hover:to-pink-50/50"
+                          : "bg-gradient-to-br from-purple-50 via-violet-50 to-indigo-50 border-2 border-dashed border-purple-300 hover:border-purple-400 hover:shadow-md hover:shadow-purple-100"
                       }`}
                     >
                       {evtCoverPreview ? (
@@ -1362,11 +1376,11 @@ export default function EvenementsPage() {
                         </>
                       ) : (
                         <div className="text-center">
-                          <div className="w-12 h-12 rounded-2xl bg-white shadow-sm flex items-center justify-center mx-auto mb-2 group-hover:scale-110 transition-transform">
-                            <ImagePlus className="w-5 h-5 text-purple-400" />
+                          <div className="w-16 h-16 rounded-2xl bg-white shadow-md flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition-transform">
+                            <ImagePlus className="w-7 h-7 text-purple-500" />
                           </div>
-                          <p className="text-xs font-bold text-gray-500">Ajouter la cover</p>
-                          <p className="text-[10px] text-gray-300 mt-0.5">Image de fond de votre événement</p>
+                          <p className="text-sm font-bold text-gray-700">Ajouter la cover</p>
+                          <p className="text-[11px] text-gray-400 mt-1">Image de fond de votre événement (recommandé 16:9)</p>
                         </div>
                       )}
                     </button>
@@ -1734,17 +1748,43 @@ export default function EvenementsPage() {
               {/* Liste événements */}
               {loadingEvents ? (
                 <div className="text-center py-12"><Loader2 className="w-6 h-6 text-emerald-400 animate-spin mx-auto" /></div>
-              ) : events.length === 0 ? (
-                <div className="text-center py-16">
-                  <div className="w-16 h-16 bg-gradient-to-br from-emerald-50 to-teal-50 rounded-3xl flex items-center justify-center mx-auto mb-4 shadow-sm">
-                    <Sparkles className="w-8 h-8 text-emerald-500" />
+              ) : events.length === 0 && !showAddEvent ? (
+                <div className="flex flex-col items-center justify-center py-20 px-6">
+                  {/* Illustration centrale */}
+                  <div className="relative mb-6">
+                    <div className="w-24 h-24 bg-gradient-to-br from-emerald-100 to-teal-50 rounded-[2rem] flex items-center justify-center shadow-lg shadow-emerald-500/10">
+                      <Ticket className="w-11 h-11 text-emerald-500" />
+                    </div>
+                    <div className="absolute -top-2 -right-2 w-8 h-8 bg-gradient-to-br from-violet-400 to-purple-500 rounded-xl flex items-center justify-center shadow-md animate-bounce" style={{ animationDuration: '2s' }}>
+                      <Sparkles className="w-4 h-4 text-white" />
+                    </div>
                   </div>
-                  <p className="text-[15px] font-bold text-gray-900">Aucune billetterie</p>
-                  <p className="text-[12px] text-gray-400 mt-1.5 max-w-[220px] mx-auto">Créez votre première billetterie et commencez à vendre</p>
+                  <h3 className="text-lg font-black text-gray-900 mb-1.5">Aucune billetterie</h3>
+                  <p className="text-[13px] text-gray-400 text-center max-w-[260px] leading-relaxed mb-6">Créez votre première billetterie en quelques secondes et commencez à vendre des billets</p>
+                  <button
+                    onClick={() => { hapticMedium(); setShowAddEvent(true); }}
+                    className="flex items-center justify-center gap-2.5 bg-gradient-to-r from-emerald-500 to-emerald-600 text-white px-8 py-4 rounded-2xl font-black text-[15px] transition hover:from-emerald-400 hover:to-emerald-500 active:scale-[0.97] shadow-lg shadow-emerald-500/25"
+                  >
+                    <Plus className="w-5 h-5" /> Créer mon premier événement
+                  </button>
                 </div>
               ) : (
+                <>
+                {/* Search bar */}
+                {events.length > 1 && (
+                  <div className="relative mb-3">
+                    <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-300" />
+                    <input
+                      type="text"
+                      placeholder="Rechercher une billetterie..."
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      className="w-full bg-white border border-gray-100 rounded-xl pl-10 pr-4 py-2.5 text-sm text-gray-900 placeholder:text-gray-300 outline-none focus:border-emerald-300 focus:ring-2 focus:ring-emerald-100 transition shadow-sm"
+                    />
+                  </div>
+                )}
                 <div className="space-y-2.5 lg:grid lg:grid-cols-2 xl:grid-cols-3 lg:gap-3 lg:space-y-0">
-                  {events.map((evt: any) => {
+                  {events.filter((evt: any) => !searchQuery.trim() || evt.nom.toLowerCase().includes(searchQuery.toLowerCase()) || (evt.lieu && evt.lieu.toLowerCase().includes(searchQuery.toLowerCase())) || (evt.ville && evt.ville.toLowerCase().includes(searchQuery.toLowerCase()))).map((evt: any) => {
                     const evtDate = new Date(evt.date_debut + "T00:00:00");
                     const now = new Date();
                     const isPast = evtDate < new Date(now.getFullYear(), now.getMonth(), now.getDate());
@@ -1828,6 +1868,7 @@ export default function EvenementsPage() {
                     );
                   })}
                 </div>
+                </>
               )}
             </div>
           )}
