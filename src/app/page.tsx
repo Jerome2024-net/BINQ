@@ -22,36 +22,36 @@ export default function HomePage() {
   return (
     <div className="min-h-screen bg-white font-sans antialiased text-neutral-900 overflow-x-hidden">
 
-      {/* ═══════ HEADER ═══════ */}
-      <header className="fixed top-0 inset-x-0 z-50 bg-white border-b border-neutral-200">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 h-14 sm:h-16 flex items-center justify-between">
+      {/* ═══════ HEADER — Transparent / Floating ═══════ */}
+      <header className="fixed top-0 inset-x-0 z-[60]">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2">
-            <div className="w-7 h-7 bg-neutral-900 rounded-lg flex items-center justify-center">
-              <span className="text-white font-semibold text-xs">B</span>
+            <div className="w-8 h-8 bg-white/90 backdrop-blur-sm rounded-xl shadow-lg shadow-black/5 flex items-center justify-center">
+              <span className="text-neutral-900 font-bold text-sm">B</span>
             </div>
-            <span className="font-semibold text-lg tracking-tight">Binq</span>
+            <span className="font-semibold text-lg tracking-tight text-white drop-shadow-sm">Binq</span>
           </Link>
 
-          <nav className="hidden md:flex items-center gap-8">
+          <nav className="hidden md:flex items-center gap-6">
             {[
               { label: "Fonctionnalités", href: "#fonctionnalites" },
               { label: "Pour qui ?", href: "#pourqui" },
               { label: "Tarifs", href: "#tarifs" },
             ].map((l) => (
-              <a key={l.href} href={l.href} className="text-sm text-neutral-400 hover:text-neutral-900 transition-colors">{l.label}</a>
+              <a key={l.href} href={l.href} className="text-sm text-white/70 hover:text-white transition-colors">{l.label}</a>
             ))}
           </nav>
 
           <div className="flex items-center gap-3">
-            <Link href="/connexion" className="hidden sm:block text-sm text-neutral-500 hover:text-neutral-900 transition-colors">
+            <Link href="/connexion" className="hidden sm:block text-sm text-white/70 hover:text-white transition-colors">
               Connexion
             </Link>
-            <Link href="/inscription" className="hidden sm:flex items-center gap-1.5 text-sm font-medium bg-blue-600 text-white px-4 py-2 rounded-full hover:bg-blue-700 transition-all shadow-sm shadow-blue-600/20">
+            <Link href="/inscription" className="hidden sm:flex items-center gap-1.5 text-sm font-medium bg-white/90 backdrop-blur-sm text-neutral-900 px-4 py-2 rounded-full hover:bg-white transition-all shadow-lg shadow-black/10">
               Créer ma billetterie <ArrowRight className="w-3.5 h-3.5" />
             </Link>
             <button
               onClick={() => setMobileOpen(!mobileOpen)}
-              className="md:hidden p-2 rounded-lg text-neutral-700 hover:bg-neutral-100 transition-colors"
+              className="md:hidden p-2 rounded-lg text-white/80 hover:bg-white/10 transition-colors"
             >
               {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
@@ -60,7 +60,7 @@ export default function HomePage() {
 
         {/* Mobile menu */}
         {mobileOpen && (
-          <div className="md:hidden border-t border-neutral-100 pb-4 pt-3 px-4 animate-fade-in">
+          <div className="md:hidden bg-white/95 backdrop-blur-xl border-t border-neutral-100 pb-4 pt-3 px-4 mx-3 mt-1 rounded-2xl shadow-xl animate-fade-in">
             <div className="flex flex-col gap-1">
               {[
                 { label: "Fonctionnalités", href: "#fonctionnalites" },
@@ -83,95 +83,163 @@ export default function HomePage() {
         )}
       </header>
 
-      {/* ═══════ HERO ═══════ */}
-      <section className="pt-28 sm:pt-40 pb-0">
-        <div className="max-w-3xl mx-auto px-4 sm:px-6 text-center">
-          <h1 className="text-4xl sm:text-6xl lg:text-7xl font-semibold tracking-tight leading-[1.05] mb-6">
-            Vos événements<br />commencent ici.
+      {/* ═══════ HERO — Immersive 3D Mockup ═══════ */}
+      <section className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden">
+        {/* Pastel radial gradient background */}
+        <div
+          className="absolute inset-0 -z-10"
+          style={{
+            background: "radial-gradient(ellipse 120% 80% at 50% 40%, #c7d2fe 0%, #e0e7ff 20%, #fce7f3 40%, #fef3c7 60%, #ddd6fe 80%, #f0f9ff 100%)"
+          }}
+        />
+        {/* Soft noise overlay */}
+        <div className="absolute inset-0 -z-10 opacity-30" style={{ backgroundImage: "radial-gradient(circle at 20% 80%, rgba(120,119,198,0.15) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(255,182,193,0.2) 0%, transparent 50%)" }} />
+
+        {/* ── Title + CTA ── */}
+        <div className="relative z-20 text-center px-4 sm:px-6 pt-24 sm:pt-28 mb-8 sm:mb-12">
+          <h1 className="text-4xl sm:text-6xl lg:text-[4.5rem] font-extrabold tracking-tight leading-[1.08] mb-5 text-neutral-900">
+            Créez des moments<br /><span className="bg-gradient-to-r from-blue-600 via-violet-500 to-pink-500 bg-clip-text text-transparent">inoubliables.</span>
           </h1>
-          <p className="text-base sm:text-lg text-neutral-400 max-w-xl mx-auto mb-8 leading-relaxed">
-            Créez votre billetterie en quelques minutes, acceptez Mobile Money ou carte, et scannez chaque entrée par QR code.
+          <p className="text-base sm:text-lg text-neutral-500 max-w-lg mx-auto mb-7 leading-relaxed">
+            Billetterie, paiement Mobile Money, scan QR — tout en un seul endroit. Lancez-vous en 5 minutes.
           </p>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-3">
-            <Link href="/inscription" className="w-full sm:w-auto flex items-center justify-center gap-2 px-8 py-3.5 bg-blue-600 text-white font-medium rounded-full hover:bg-blue-700 transition-all text-[15px] active:scale-[0.97] shadow-lg shadow-blue-600/25">
-              Créer ma billetterie <ArrowRight className="w-4 h-4" />
-            </Link>
-          </div>
-          <p className="text-xs text-neutral-300 mb-16 sm:mb-20">Gratuit &middot; Sans abonnement &middot; Sans engagement</p>
+          <Link href="/inscription" className="inline-flex items-center justify-center gap-2 px-8 py-3.5 bg-blue-600 text-white font-semibold rounded-full hover:bg-blue-700 transition-all text-[15px] active:scale-[0.97] shadow-xl shadow-blue-600/30">
+            Créer ma billetterie <ArrowRight className="w-4 h-4" />
+          </Link>
+          <p className="text-xs text-neutral-400 mt-4">Gratuit &middot; Sans abonnement &middot; Sans engagement</p>
         </div>
 
-        {/* ═══ HERO VISUAL — Luma-style event cards showcase ═══ */}
-        <div className="relative max-w-6xl mx-auto px-4 sm:px-6">
-          {/* Fade-out bottom */}
-          <div className="absolute bottom-0 inset-x-0 h-32 bg-gradient-to-t from-white to-transparent z-10 pointer-events-none" />
+        {/* ── 3D Scene: Phone + Floating Objects ── */}
+        <div className="relative z-10 w-full max-w-lg mx-auto px-4 mb-[-40px] sm:mb-[-60px]" style={{ perspective: "1200px" }}>
 
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-4 sm:gap-5">
-            {/* Card 1 — Large featured */}
-            <div className="md:col-span-2 rounded-2xl overflow-hidden border border-neutral-200 bg-white group">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=900&h=500&fit=crop&q=80" alt="Event" className="w-full aspect-[16/9] object-cover" />
-              <div className="p-4 sm:p-5">
-                <div className="flex items-center gap-2 mb-2">
-                  <div className="w-10 h-10 rounded-lg bg-blue-50 flex flex-col items-center justify-center">
-                    <span className="text-[10px] font-semibold text-blue-600 uppercase leading-none">AVR</span>
-                    <span className="text-sm font-bold text-blue-700 leading-none">12</span>
-                  </div>
-                  <div>
-                    <p className="text-sm font-semibold text-neutral-900">Afro Night Festival</p>
-                    <p className="text-xs text-neutral-400">Dakar &middot; 2,400 participants</p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-2 mt-3">
-                  <div className="flex -space-x-1.5">
-                    {[...Array(4)].map((_, i) => (
-                      <div key={i} className="w-6 h-6 rounded-full border-2 border-white" style={{ background: ['#3b82f6', '#8b5cf6', '#f59e0b', '#10b981'][i] }} />
-                    ))}
-                  </div>
-                  <span className="text-xs text-neutral-400">+2,396 inscrits</span>
-                </div>
+          {/* ── Floating Object 1 — Ticket (top-left) ── */}
+          <div
+            className="absolute -left-4 sm:left-2 top-4 sm:top-8 z-30 animate-float-slow"
+            style={{ filter: "drop-shadow(0 20px 40px rgba(0,0,0,0.15))" }}
+          >
+            <div className="bg-white rounded-2xl p-3.5 sm:p-4 flex items-center gap-3 border border-neutral-100" style={{ transform: "rotate(-6deg)" }}>
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-pink-500 to-rose-400 flex items-center justify-center shrink-0">
+                <Ticket className="w-5 h-5 text-white" />
               </div>
-            </div>
-
-            {/* Right column — stacked cards */}
-            <div className="flex flex-col gap-4 sm:gap-5">
-              {/* Card 2 */}
-              <div className="rounded-2xl overflow-hidden border border-neutral-200 bg-white">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=500&h=300&fit=crop&q=80" alt="Conference" className="w-full aspect-[4/3] object-cover" />
-                <div className="p-3 sm:p-4">
-                  <div className="flex items-center gap-2">
-                    <div className="w-9 h-9 rounded-lg bg-violet-50 flex flex-col items-center justify-center">
-                      <span className="text-[9px] font-semibold text-violet-600 uppercase leading-none">MAI</span>
-                      <span className="text-xs font-bold text-violet-700 leading-none">03</span>
-                    </div>
-                    <div>
-                      <p className="text-[13px] font-semibold text-neutral-900">Tech Summit</p>
-                      <p className="text-[11px] text-neutral-400">Abidjan &middot; 500 places</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Card 3 */}
-              <div className="rounded-2xl overflow-hidden border border-neutral-200 bg-white">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src="https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=500&h=300&fit=crop&q=80" alt="Concert" className="w-full aspect-[4/3] object-cover" />
-                <div className="p-3 sm:p-4">
-                  <div className="flex items-center gap-2">
-                    <div className="w-9 h-9 rounded-lg bg-amber-50 flex flex-col items-center justify-center">
-                      <span className="text-[9px] font-semibold text-amber-600 uppercase leading-none">JUN</span>
-                      <span className="text-xs font-bold text-amber-700 leading-none">21</span>
-                    </div>
-                    <div>
-                      <p className="text-[13px] font-semibold text-neutral-900">Summer Vibes</p>
-                      <p className="text-[11px] text-neutral-400">Lomé &middot; 1,200 places</p>
-                    </div>
-                  </div>
-                </div>
+              <div>
+                <p className="text-[13px] font-bold text-neutral-900 leading-tight">Billet VIP</p>
+                <p className="text-[11px] text-neutral-400">5 000 FCFA</p>
               </div>
             </div>
           </div>
+
+          {/* ── Floating Object 2 — Badge participants (top-right) ── */}
+          <div
+            className="absolute -right-2 sm:right-4 top-0 sm:top-6 z-30 animate-float-medium"
+            style={{ filter: "drop-shadow(0 16px 32px rgba(0,0,0,0.12))", animationDelay: "1s" }}
+          >
+            <div className="bg-white rounded-2xl px-4 py-3 border border-neutral-100 text-center" style={{ transform: "rotate(5deg)" }}>
+              <p className="text-2xl sm:text-3xl font-extrabold text-neutral-900 leading-none">100</p>
+              <p className="text-[10px] font-semibold text-neutral-400 uppercase tracking-wider mt-0.5">participants</p>
+            </div>
+          </div>
+
+          {/* ── Floating Object 3 — Calendar (bottom-left) ── */}
+          <div
+            className="absolute -left-6 sm:left-0 bottom-20 sm:bottom-28 z-30 animate-float-fast"
+            style={{ filter: "drop-shadow(0 24px 48px rgba(0,0,0,0.18))", animationDelay: "2s" }}
+          >
+            <div className="bg-white rounded-2xl p-3.5 border border-neutral-100" style={{ transform: "rotate(-4deg)" }}>
+              <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-500 flex items-center justify-center mb-1.5">
+                <Calendar className="w-5 h-5 text-white" />
+              </div>
+              <p className="text-[10px] font-bold text-neutral-900 text-center">12 Avr</p>
+            </div>
+          </div>
+
+          {/* ── Floating Object 4 — QR badge (bottom-right) ── */}
+          <div
+            className="absolute -right-4 sm:right-2 bottom-16 sm:bottom-24 z-30 animate-float-gentle"
+            style={{ filter: "drop-shadow(0 20px 40px rgba(0,0,0,0.14))", animationDelay: "0.5s" }}
+          >
+            <div className="bg-white rounded-2xl p-3 border border-neutral-100 flex items-center gap-2.5" style={{ transform: "rotate(3deg)" }}>
+              <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center shrink-0">
+                <QrCode className="w-4 h-4 text-white" />
+              </div>
+              <div>
+                <p className="text-[11px] font-bold text-emerald-600 leading-tight">Scanné ✓</p>
+                <p className="text-[10px] text-neutral-400">Entrée validée</p>
+              </div>
+            </div>
+          </div>
+
+          {/* ── iPhone Mockup ── */}
+          <div
+            className="relative mx-auto w-[260px] sm:w-[290px]"
+            style={{
+              filter: "drop-shadow(0 40px 80px rgba(0,0,0,0.2)) drop-shadow(0 16px 32px rgba(0,0,0,0.1))",
+              transform: "rotateX(2deg)",
+            }}
+          >
+            {/* Phone frame */}
+            <div className="bg-neutral-900 rounded-[2.8rem] p-[10px] relative">
+              {/* Notch */}
+              <div className="absolute top-0 inset-x-0 flex justify-center z-20 pt-[10px]">
+                <div className="w-[90px] h-[26px] bg-neutral-900 rounded-b-2xl" />
+              </div>
+
+              {/* Screen */}
+              <div className="bg-white rounded-[2.2rem] overflow-hidden relative">
+                {/* Status bar */}
+                <div className="h-12 bg-white flex items-end justify-between px-6 pb-1 pt-6">
+                  <span className="text-[10px] font-semibold text-neutral-900">9:41</span>
+                  <div className="flex items-center gap-1">
+                    <div className="w-3.5 h-2 bg-neutral-900 rounded-sm" />
+                    <div className="w-1.5 h-2 bg-neutral-400 rounded-sm" />
+                  </div>
+                </div>
+
+                {/* Event content */}
+                <div className="px-0">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src="https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=600&h=380&fit=crop&q=80"
+                    alt="Afro Night Festival"
+                    className="w-full aspect-[16/10] object-cover"
+                  />
+                  <div className="px-5 py-4">
+                    <div className="flex items-center gap-1 mb-2">
+                      <div className="w-2 h-2 rounded-full bg-pink-500" />
+                      <span className="text-[10px] font-semibold text-pink-500 uppercase tracking-wider">Live</span>
+                    </div>
+                    <h3 className="text-[15px] font-extrabold text-neutral-900 leading-snug mb-1">Afro Night Festival</h3>
+                    <p className="text-[11px] text-neutral-400 mb-1">Sam. 12 Avril · 21h00</p>
+                    <p className="text-[11px] text-neutral-400 mb-4">📍 Dakar, Sénégal</p>
+
+                    {/* Avatars */}
+                    <div className="flex items-center gap-2 mb-4">
+                      <div className="flex -space-x-1.5">
+                        {[...Array(5)].map((_, i) => (
+                          <div key={i} className="w-6 h-6 rounded-full border-[1.5px] border-white" style={{ background: ['#3b82f6', '#ec4899', '#8b5cf6', '#f59e0b', '#10b981'][i] }} />
+                        ))}
+                      </div>
+                      <span className="text-[10px] text-neutral-400">+2,400 inscrits</span>
+                    </div>
+
+                    {/* CTA Button */}
+                    <button className="w-full py-3 bg-gradient-to-r from-pink-500 to-rose-500 text-white font-bold text-sm rounded-2xl shadow-lg shadow-pink-500/30 active:scale-[0.98] transition-transform">
+                      Réserver · 5 000 FCFA
+                    </button>
+                  </div>
+                </div>
+
+                {/* Bottom bar */}
+                <div className="flex items-center justify-center pb-3 pt-1">
+                  <div className="w-28 h-1 bg-neutral-200 rounded-full" />
+                </div>
+              </div>
+            </div>
+          </div>
+
         </div>
+
+        {/* Bottom fade into white */}
+        <div className="absolute bottom-0 inset-x-0 h-32 bg-gradient-to-t from-white to-transparent z-20 pointer-events-none" />
       </section>
 
       {/* ═══════ 3 PILLARS ═══════ */}
