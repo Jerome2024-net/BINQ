@@ -80,10 +80,10 @@ export default function HomePage() {
         {/* ── Text ── */}
         <div className="relative z-10 text-center px-4 sm:px-6 pt-28 sm:pt-36">
           <h1 className="text-[2.75rem] sm:text-7xl lg:text-8xl font-extrabold tracking-tight leading-[1.02] mb-5 text-white">
-            Billetterie<br />simple.
+            Créez des moments<br /><span className="bg-gradient-to-r from-cyan-400 via-blue-400 to-violet-400 bg-clip-text text-transparent">inoubliables.</span>
           </h1>
           <p className="text-base sm:text-lg text-white/50 max-w-sm mx-auto mb-8 leading-relaxed font-light">
-            Créez, vendez et scannez vos billets. Mobile Money, QR code, zéro friction.
+            Billetterie, paiement Mobile Money, scan QR — tout en un seul endroit.
           </p>
           <Link href="/inscription" className="inline-flex items-center gap-2 px-7 py-3 bg-white text-neutral-900 font-semibold rounded-full hover:bg-white/90 transition-all text-sm shadow-2xl shadow-white/10">
             Commencer gratuitement <ArrowRight className="w-3.5 h-3.5" />
