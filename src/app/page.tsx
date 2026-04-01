@@ -26,10 +26,10 @@ export default function HomePage() {
       <header className="fixed top-0 inset-x-0 z-[60]">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-white/90 backdrop-blur-sm rounded-xl shadow-lg shadow-black/5 flex items-center justify-center">
-              <span className="text-neutral-900 font-bold text-sm">B</span>
+            <div className="w-8 h-8 bg-neutral-900 rounded-xl shadow-lg shadow-black/10 flex items-center justify-center">
+              <span className="text-white font-bold text-sm">B</span>
             </div>
-            <span className="font-semibold text-lg tracking-tight text-white drop-shadow-sm">Binq</span>
+            <span className="font-semibold text-lg tracking-tight text-neutral-900">Binq</span>
           </Link>
 
           <nav className="hidden md:flex items-center gap-6">
@@ -38,20 +38,20 @@ export default function HomePage() {
               { label: "Pour qui ?", href: "#pourqui" },
               { label: "Tarifs", href: "#tarifs" },
             ].map((l) => (
-              <a key={l.href} href={l.href} className="text-sm text-white/70 hover:text-white transition-colors">{l.label}</a>
+              <a key={l.href} href={l.href} className="text-sm text-neutral-400 hover:text-neutral-900 transition-colors">{l.label}</a>
             ))}
           </nav>
 
           <div className="flex items-center gap-3">
-            <Link href="/connexion" className="hidden sm:block text-sm text-white/70 hover:text-white transition-colors">
+            <Link href="/connexion" className="hidden sm:block text-sm text-neutral-500 hover:text-neutral-900 transition-colors">
               Connexion
             </Link>
-            <Link href="/inscription" className="hidden sm:flex items-center gap-1.5 text-sm font-medium bg-white/90 backdrop-blur-sm text-neutral-900 px-4 py-2 rounded-full hover:bg-white transition-all shadow-lg shadow-black/10">
+            <Link href="/inscription" className="hidden sm:flex items-center gap-1.5 text-sm font-medium bg-blue-600 text-white px-4 py-2 rounded-full hover:bg-blue-700 transition-all shadow-sm shadow-blue-600/20">
               Créer ma billetterie <ArrowRight className="w-3.5 h-3.5" />
             </Link>
             <button
               onClick={() => setMobileOpen(!mobileOpen)}
-              className="md:hidden p-2 rounded-lg text-white/80 hover:bg-white/10 transition-colors"
+              className="md:hidden p-2 rounded-lg text-neutral-700 hover:bg-neutral-100/60 transition-colors"
             >
               {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
@@ -83,22 +83,16 @@ export default function HomePage() {
         )}
       </header>
 
-      {/* ═══════ HERO — Immersive 3D Mockup ═══════ */}
-      <section className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden">
-        {/* Pastel radial gradient background */}
-        <div
-          className="absolute inset-0 -z-10"
-          style={{
-            background: "radial-gradient(ellipse 120% 80% at 50% 40%, #c7d2fe 0%, #e0e7ff 20%, #fce7f3 40%, #fef3c7 60%, #ddd6fe 80%, #f0f9ff 100%)"
-          }}
-        />
-        {/* Soft noise overlay */}
-        <div className="absolute inset-0 -z-10 opacity-30" style={{ backgroundImage: "radial-gradient(circle at 20% 80%, rgba(120,119,198,0.15) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(255,182,193,0.2) 0%, transparent 50%)" }} />
+      {/* ═══════ HERO — Hublot 3D Ocean ═══════ */}
+      <section className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden bg-[#f8fafb]">
+
+        {/* Subtle background texture */}
+        <div className="absolute inset-0 -z-10" style={{ background: "radial-gradient(ellipse 100% 70% at 50% 30%, #e0f2fe 0%, #f0f9ff 30%, #f8fafb 70%)" }} />
 
         {/* ── Title + CTA ── */}
-        <div className="relative z-20 text-center px-4 sm:px-6 pt-24 sm:pt-28 mb-8 sm:mb-12">
+        <div className="relative z-30 text-center px-4 sm:px-6 pt-24 sm:pt-28 mb-10 sm:mb-14">
           <h1 className="text-4xl sm:text-6xl lg:text-[4.5rem] font-extrabold tracking-tight leading-[1.08] mb-5 text-neutral-900">
-            Créez des moments<br /><span className="bg-gradient-to-r from-blue-600 via-violet-500 to-pink-500 bg-clip-text text-transparent">inoubliables.</span>
+            Créez des moments<br /><span className="bg-gradient-to-r from-cyan-500 via-blue-600 to-violet-600 bg-clip-text text-transparent">inoubliables.</span>
           </h1>
           <p className="text-base sm:text-lg text-neutral-500 max-w-lg mx-auto mb-7 leading-relaxed">
             Billetterie, paiement Mobile Money, scan QR — tout en un seul endroit. Lancez-vous en 5 minutes.
@@ -109,133 +103,172 @@ export default function HomePage() {
           <p className="text-xs text-neutral-400 mt-4">Gratuit &middot; Sans abonnement &middot; Sans engagement</p>
         </div>
 
-        {/* ── 3D Scene: Phone + Floating Objects ── */}
-        <div className="relative z-10 w-full max-w-lg mx-auto px-4 mb-[-40px] sm:mb-[-60px]" style={{ perspective: "1200px" }}>
+        {/* ══ 3D SCENE — Hublot + Phone + Floating Objects ══ */}
+        <div className="relative z-10 w-full flex items-center justify-center px-4 pb-8 sm:pb-12" style={{ perspective: "1400px" }}>
 
-          {/* ── Floating Object 1 — Ticket (top-left) ── */}
-          <div
-            className="absolute -left-4 sm:left-2 top-4 sm:top-8 z-30 animate-float-slow"
-            style={{ filter: "drop-shadow(0 20px 40px rgba(0,0,0,0.15))" }}
-          >
-            <div className="bg-white rounded-2xl p-3.5 sm:p-4 flex items-center gap-3 border border-neutral-100" style={{ transform: "rotate(-6deg)" }}>
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-pink-500 to-rose-400 flex items-center justify-center shrink-0">
-                <Ticket className="w-5 h-5 text-white" />
-              </div>
-              <div>
-                <p className="text-[13px] font-bold text-neutral-900 leading-tight">Billet VIP</p>
-                <p className="text-[11px] text-neutral-400">5 000 FCFA</p>
+          {/* ── The Porthole (Hublot) ── */}
+          <div className="relative w-[340px] h-[340px] sm:w-[460px] sm:h-[460px] lg:w-[540px] lg:h-[540px] rounded-full overflow-visible">
+
+            {/* Ocean circle background */}
+            <div className="absolute inset-0 rounded-full overflow-hidden shadow-[0_0_120px_rgba(6,182,212,0.25)]">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&h=800&fit=crop&q=80"
+                alt="Ocean"
+                className="w-full h-full object-cover scale-110"
+              />
+              {/* Turquoise gradient overlay to unify tones */}
+              <div className="absolute inset-0" style={{ background: "radial-gradient(circle at 50% 60%, rgba(6,182,212,0.2) 0%, rgba(14,116,144,0.35) 70%, rgba(8,47,73,0.5) 100%)" }} />
+              {/* Caustics / light ripple effect */}
+              <div className="absolute inset-0 opacity-20 animate-float-gentle" style={{ background: "radial-gradient(ellipse at 35% 30%, rgba(255,255,255,0.6) 0%, transparent 40%), radial-gradient(ellipse at 70% 55%, rgba(255,255,255,0.4) 0%, transparent 35%)" }} />
+            </div>
+
+            {/* Inner border ring for glass effect */}
+            <div className="absolute inset-0 rounded-full border-[3px] border-white/30 pointer-events-none z-[5]" />
+            {/* Outer glow ring */}
+            <div className="absolute -inset-2 rounded-full border border-cyan-200/20 pointer-events-none" />
+
+            {/* ════ FLOATING OBJECTS ════ */}
+
+            {/* ── Object 1 — Billet Binq (top-left, IN FRONT z-40) ── */}
+            <div
+              className="absolute -top-4 -left-4 sm:-top-2 sm:-left-6 z-40 animate-float-slow"
+              style={{ filter: "drop-shadow(0 24px 48px rgba(0,0,0,0.18))" }}
+            >
+              <div className="bg-white rounded-2xl p-3 sm:p-3.5 flex items-center gap-2.5 border border-neutral-100/80 backdrop-blur-sm" style={{ transform: "rotate(-8deg)" }}>
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-pink-500 to-rose-400 flex items-center justify-center shrink-0">
+                  <Ticket className="w-5 h-5 text-white" />
+                </div>
+                <div>
+                  <p className="text-[12px] font-bold text-neutral-900 leading-tight">Billet VIP</p>
+                  <p className="text-[10px] text-neutral-400">5 000 FCFA</p>
+                </div>
               </div>
             </div>
-          </div>
 
-          {/* ── Floating Object 2 — Badge participants (top-right) ── */}
-          <div
-            className="absolute -right-2 sm:right-4 top-0 sm:top-6 z-30 animate-float-medium"
-            style={{ filter: "drop-shadow(0 16px 32px rgba(0,0,0,0.12))", animationDelay: "1s" }}
-          >
-            <div className="bg-white rounded-2xl px-4 py-3 border border-neutral-100 text-center" style={{ transform: "rotate(5deg)" }}>
-              <p className="text-2xl sm:text-3xl font-extrabold text-neutral-900 leading-none">100</p>
-              <p className="text-[10px] font-semibold text-neutral-400 uppercase tracking-wider mt-0.5">participants</p>
-            </div>
-          </div>
-
-          {/* ── Floating Object 3 — Calendar (bottom-left) ── */}
-          <div
-            className="absolute -left-6 sm:left-0 bottom-20 sm:bottom-28 z-30 animate-float-fast"
-            style={{ filter: "drop-shadow(0 24px 48px rgba(0,0,0,0.18))", animationDelay: "2s" }}
-          >
-            <div className="bg-white rounded-2xl p-3.5 border border-neutral-100" style={{ transform: "rotate(-4deg)" }}>
-              <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-500 flex items-center justify-center mb-1.5">
-                <Calendar className="w-5 h-5 text-white" />
-              </div>
-              <p className="text-[10px] font-bold text-neutral-900 text-center">12 Avr</p>
-            </div>
-          </div>
-
-          {/* ── Floating Object 4 — QR badge (bottom-right) ── */}
-          <div
-            className="absolute -right-4 sm:right-2 bottom-16 sm:bottom-24 z-30 animate-float-gentle"
-            style={{ filter: "drop-shadow(0 20px 40px rgba(0,0,0,0.14))", animationDelay: "0.5s" }}
-          >
-            <div className="bg-white rounded-2xl p-3 border border-neutral-100 flex items-center gap-2.5" style={{ transform: "rotate(3deg)" }}>
-              <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center shrink-0">
-                <QrCode className="w-4 h-4 text-white" />
-              </div>
-              <div>
-                <p className="text-[11px] font-bold text-emerald-600 leading-tight">Scanné ✓</p>
-                <p className="text-[10px] text-neutral-400">Entrée validée</p>
+            {/* ── Object 2 — Emoji Party (top-right, BEHIND z-[2]) ── */}
+            <div
+              className="absolute -top-6 -right-2 sm:-top-4 sm:-right-4 z-[2] animate-float-medium"
+              style={{ filter: "drop-shadow(0 12px 24px rgba(0,0,0,0.1))", animationDelay: "0.8s" }}
+            >
+              <div className="bg-white/90 backdrop-blur-md rounded-2xl px-4 py-3 border border-neutral-100/60 text-center" style={{ transform: "rotate(6deg)" }}>
+                <p className="text-3xl sm:text-4xl leading-none mb-0.5">🎉</p>
+                <p className="text-[9px] font-bold text-neutral-400 uppercase tracking-wider">Let&apos;s go!</p>
               </div>
             </div>
-          </div>
 
-          {/* ── iPhone Mockup ── */}
-          <div
-            className="relative mx-auto w-[260px] sm:w-[290px]"
-            style={{
-              filter: "drop-shadow(0 40px 80px rgba(0,0,0,0.2)) drop-shadow(0 16px 32px rgba(0,0,0,0.1))",
-              transform: "rotateX(2deg)",
-            }}
-          >
-            {/* Phone frame */}
-            <div className="bg-neutral-900 rounded-[2.8rem] p-[10px] relative">
-              {/* Notch */}
-              <div className="absolute top-0 inset-x-0 flex justify-center z-20 pt-[10px]">
-                <div className="w-[90px] h-[26px] bg-neutral-900 rounded-b-2xl" />
+            {/* ── Object 3 — Badge "Vendu" (bottom-left, IN FRONT z-40) ── */}
+            <div
+              className="absolute -bottom-2 -left-6 sm:bottom-4 sm:-left-10 z-40 animate-float-fast"
+              style={{ filter: "drop-shadow(0 28px 56px rgba(0,0,0,0.2))", animationDelay: "1.5s" }}
+            >
+              <div className="bg-white rounded-2xl p-3 sm:p-3.5 border border-neutral-100/80 flex items-center gap-2.5" style={{ transform: "rotate(-3deg)" }}>
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center shrink-0">
+                  <Check className="w-5 h-5 text-white" />
+                </div>
+                <div>
+                  <p className="text-[12px] font-bold text-emerald-600 leading-tight">Vendu !</p>
+                  <p className="text-[10px] text-neutral-400">Paiement confirmé</p>
+                </div>
               </div>
+            </div>
 
-              {/* Screen */}
-              <div className="bg-white rounded-[2.2rem] overflow-hidden relative">
-                {/* Status bar */}
-                <div className="h-12 bg-white flex items-end justify-between px-6 pb-1 pt-6">
-                  <span className="text-[10px] font-semibold text-neutral-900">9:41</span>
-                  <div className="flex items-center gap-1">
-                    <div className="w-3.5 h-2 bg-neutral-900 rounded-sm" />
-                    <div className="w-1.5 h-2 bg-neutral-400 rounded-sm" />
-                  </div>
+            {/* ── Object 4 — Calendar (bottom-right, BEHIND z-[2]) ── */}
+            <div
+              className="absolute -bottom-4 -right-4 sm:bottom-2 sm:-right-8 z-[2] animate-float-gentle"
+              style={{ filter: "drop-shadow(0 16px 32px rgba(0,0,0,0.12))", animationDelay: "2.2s" }}
+            >
+              <div className="bg-white/90 backdrop-blur-md rounded-2xl p-3 border border-neutral-100/60 text-center" style={{ transform: "rotate(5deg)" }}>
+                <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-500 flex items-center justify-center mx-auto mb-1">
+                  <Calendar className="w-5 h-5 text-white" />
+                </div>
+                <p className="text-[10px] font-bold text-neutral-900">12 Avril</p>
+              </div>
+            </div>
+
+            {/* ── Object 5 — Stats badge (right-center, IN FRONT z-40) ── */}
+            <div
+              className="absolute top-1/2 -right-8 sm:-right-14 -translate-y-1/2 z-40 animate-float-medium"
+              style={{ filter: "drop-shadow(0 20px 40px rgba(0,0,0,0.15))", animationDelay: "0.3s" }}
+            >
+              <div className="bg-white rounded-2xl px-3.5 py-3 border border-neutral-100/80 text-center" style={{ transform: "rotate(4deg)" }}>
+                <p className="text-2xl sm:text-3xl font-extrabold text-neutral-900 leading-none">2.4k</p>
+                <p className="text-[9px] font-bold text-neutral-400 uppercase tracking-wider mt-0.5">inscrits</p>
+              </div>
+            </div>
+
+            {/* ════ IPHONE MOCKUP (CENTER, POP-OUT) ════ */}
+            <div
+              className="absolute left-1/2 -translate-x-1/2 -top-8 sm:-top-14 z-20 w-[220px] sm:w-[260px]"
+              style={{
+                filter: "drop-shadow(0 50px 100px rgba(0,0,0,0.25)) drop-shadow(0 20px 40px rgba(0,0,0,0.12))",
+                transform: "translateX(-50%) rotateX(3deg) rotateY(-1deg)",
+              }}
+            >
+              {/* Phone frame */}
+              <div className="bg-neutral-900 rounded-[2.4rem] sm:rounded-[2.8rem] p-[8px] sm:p-[10px] relative">
+                {/* Notch */}
+                <div className="absolute top-0 inset-x-0 flex justify-center z-20 pt-[8px] sm:pt-[10px]">
+                  <div className="w-[72px] sm:w-[90px] h-[22px] sm:h-[26px] bg-neutral-900 rounded-b-xl sm:rounded-b-2xl" />
                 </div>
 
-                {/* Event content */}
-                <div className="px-0">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src="https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=600&h=380&fit=crop&q=80"
-                    alt="Afro Night Festival"
-                    className="w-full aspect-[16/10] object-cover"
-                  />
-                  <div className="px-5 py-4">
-                    <div className="flex items-center gap-1 mb-2">
-                      <div className="w-2 h-2 rounded-full bg-pink-500" />
-                      <span className="text-[10px] font-semibold text-pink-500 uppercase tracking-wider">Live</span>
-                    </div>
-                    <h3 className="text-[15px] font-extrabold text-neutral-900 leading-snug mb-1">Afro Night Festival</h3>
-                    <p className="text-[11px] text-neutral-400 mb-1">Sam. 12 Avril · 21h00</p>
-                    <p className="text-[11px] text-neutral-400 mb-4">📍 Dakar, Sénégal</p>
+                {/* Screen */}
+                <div className="bg-white rounded-[2rem] sm:rounded-[2.2rem] overflow-hidden relative">
+                  {/* Turquoise reflection overlay on screen */}
+                  <div className="absolute inset-0 z-[15] pointer-events-none opacity-[0.08]" style={{ background: "linear-gradient(145deg, rgba(6,182,212,0.6) 0%, transparent 40%, rgba(6,182,212,0.3) 70%, transparent 100%)" }} />
 
-                    {/* Avatars */}
-                    <div className="flex items-center gap-2 mb-4">
-                      <div className="flex -space-x-1.5">
-                        {[...Array(5)].map((_, i) => (
-                          <div key={i} className="w-6 h-6 rounded-full border-[1.5px] border-white" style={{ background: ['#3b82f6', '#ec4899', '#8b5cf6', '#f59e0b', '#10b981'][i] }} />
-                        ))}
+                  {/* Status bar */}
+                  <div className="h-10 sm:h-12 bg-white flex items-end justify-between px-5 sm:px-6 pb-1 pt-5 sm:pt-6">
+                    <span className="text-[9px] sm:text-[10px] font-semibold text-neutral-900">9:41</span>
+                    <div className="flex items-center gap-1">
+                      <div className="w-3 sm:w-3.5 h-1.5 sm:h-2 bg-neutral-900 rounded-sm" />
+                      <div className="w-1 sm:w-1.5 h-1.5 sm:h-2 bg-neutral-400 rounded-sm" />
+                    </div>
+                  </div>
+
+                  {/* Event content */}
+                  <div className="px-0">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src="https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=600&h=380&fit=crop&q=80"
+                      alt="Afro Night Festival"
+                      className="w-full aspect-[16/10] object-cover"
+                    />
+                    <div className="px-4 sm:px-5 py-3 sm:py-4">
+                      <div className="flex items-center gap-1 mb-1.5 sm:mb-2">
+                        <div className="w-1.5 sm:w-2 h-1.5 sm:h-2 rounded-full bg-pink-500" />
+                        <span className="text-[9px] sm:text-[10px] font-semibold text-pink-500 uppercase tracking-wider">Live</span>
                       </div>
-                      <span className="text-[10px] text-neutral-400">+2,400 inscrits</span>
+                      <h3 className="text-[13px] sm:text-[15px] font-extrabold text-neutral-900 leading-snug mb-0.5 sm:mb-1">Afro Night Festival</h3>
+                      <p className="text-[10px] sm:text-[11px] text-neutral-400 mb-0.5 sm:mb-1">Sam. 12 Avril · 21h00</p>
+                      <p className="text-[10px] sm:text-[11px] text-neutral-400 mb-3 sm:mb-4">📍 Dakar, Sénégal</p>
+
+                      {/* Avatars */}
+                      <div className="flex items-center gap-1.5 sm:gap-2 mb-3 sm:mb-4">
+                        <div className="flex -space-x-1.5">
+                          {[...Array(5)].map((_, i) => (
+                            <div key={i} className="w-5 sm:w-6 h-5 sm:h-6 rounded-full border-[1.5px] border-white" style={{ background: ['#3b82f6', '#ec4899', '#8b5cf6', '#f59e0b', '#10b981'][i] }} />
+                          ))}
+                        </div>
+                        <span className="text-[9px] sm:text-[10px] text-neutral-400">+2,400</span>
+                      </div>
+
+                      {/* CTA Button */}
+                      <button className="w-full py-2.5 sm:py-3 bg-gradient-to-r from-pink-500 to-rose-500 text-white font-bold text-xs sm:text-sm rounded-xl sm:rounded-2xl shadow-lg shadow-pink-500/30">
+                        Réserver · 5 000 FCFA
+                      </button>
                     </div>
-
-                    {/* CTA Button */}
-                    <button className="w-full py-3 bg-gradient-to-r from-pink-500 to-rose-500 text-white font-bold text-sm rounded-2xl shadow-lg shadow-pink-500/30 active:scale-[0.98] transition-transform">
-                      Réserver · 5 000 FCFA
-                    </button>
                   </div>
-                </div>
 
-                {/* Bottom bar */}
-                <div className="flex items-center justify-center pb-3 pt-1">
-                  <div className="w-28 h-1 bg-neutral-200 rounded-full" />
+                  {/* Bottom bar */}
+                  <div className="flex items-center justify-center pb-2 sm:pb-3 pt-0.5 sm:pt-1">
+                    <div className="w-20 sm:w-28 h-1 bg-neutral-200 rounded-full" />
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
 
+          </div>{/* end porthole */}
         </div>
 
         {/* Bottom fade into white */}
