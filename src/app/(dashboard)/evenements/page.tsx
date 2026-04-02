@@ -1236,19 +1236,28 @@ export default function EvenementsPage() {
                 </div>
               )}
 
-              {/* Creation Form — Luma Clean */}
+              {/* Creation Form — Luma Clean + Live Ticket Preview */}
               {showAddEvent && (
-                <div className="mb-8 animate-fade-in lg:max-w-xl lg:mx-auto">
+                <div className="mb-8 animate-fade-in">
                   {/* Header */}
-                  <div className="flex items-center justify-between mb-6">
+                  <div className="flex items-center justify-between mb-6 lg:max-w-none">
                     <div>
                       <h3 className="text-lg font-semibold text-neutral-900">New Event</h3>
                       <p className="text-sm text-neutral-400 mt-0.5">Fill in the details to create your event</p>
                     </div>
-                    <button onClick={() => setShowAddEvent(false)} className="w-8 h-8 rounded-lg flex items-center justify-center hover:bg-neutral-100 transition text-neutral-400">
-                      <X className="w-4 h-4" />
-                    </button>
+                    <div className="flex items-center gap-2">
+                      <button onClick={() => setShowTicketPreview(!showTicketPreview)} className="lg:hidden flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-neutral-100 text-neutral-600 hover:bg-neutral-200 transition">
+                        <Eye className="w-3.5 h-3.5" /> {showTicketPreview ? "Form" : "Preview"}
+                      </button>
+                      <button onClick={() => setShowAddEvent(false)} className="w-8 h-8 rounded-lg flex items-center justify-center hover:bg-neutral-100 transition text-neutral-400">
+                        <X className="w-4 h-4" />
+                      </button>
+                    </div>
                   </div>
+
+                  <div className="flex gap-8 lg:gap-10">
+                    {/* ── LEFT: Form Fields ── */}
+                    <div className={`flex-1 min-w-0 lg:max-w-lg ${showTicketPreview ? "hidden lg:block" : ""}`}>
 
                   {/* Cover + Logo */}
                   <div className="mb-5">
@@ -1393,6 +1402,145 @@ export default function EvenementsPage() {
                     {savingEvent ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
                     {savingEvent ? "Creating..." : "Create Event"}
                   </button>
+
+                    </div>{/* END form fields */}
+
+                    {/* ── RIGHT: Live Ticket Preview ── */}
+                    <div className={`lg:w-[340px] shrink-0 lg:sticky lg:top-4 lg:self-start ${showTicketPreview ? "" : "hidden lg:block"}`}>
+                      <div className="bg-neutral-50 rounded-2xl p-5 border border-neutral-100">
+                        <p className="text-[10px] font-semibold text-neutral-400 uppercase tracking-wider mb-3 flex items-center gap-1.5">
+                          <Eye className="w-3 h-3" /> Live Preview
+                        </p>
+
+                        {/* Ticket Card */}
+                        <div className="bg-white rounded-xl overflow-hidden shadow-lg shadow-neutral-200/60 border border-neutral-100">
+                          {/* Cover area */}
+                          <div className="relative h-36 bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 overflow-hidden">
+                            {evtCoverPreview ? (
+                              <img src={evtCoverPreview} alt="" className="w-full h-full object-cover" />
+                            ) : (
+                              <div className="w-full h-full flex items-center justify-center">
+                                <div className="text-center">
+                                  <ImagePlus className="w-6 h-6 text-neutral-300 mx-auto mb-1" />
+                                  <p className="text-[10px] text-neutral-300">Cover image</p>
+                                </div>
+                              </div>
+                            )}
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
+
+                            {/* Logo overlay */}
+                            <div className="absolute bottom-3 left-3 flex items-end gap-2.5">
+                              <div className="w-10 h-10 rounded-lg bg-white/20 backdrop-blur-md border border-white/30 overflow-hidden flex items-center justify-center shadow-sm">
+                                {evtLogoPreview ? (
+                                  <img src={evtLogoPreview} alt="" className="w-full h-full object-cover" />
+                                ) : (
+                                  <Star className="w-4 h-4 text-white/60" />
+                                )}
+                              </div>
+                              <div className="pb-0.5">
+                                <p className="text-white text-xs font-bold leading-tight drop-shadow-sm line-clamp-1">
+                                  {evtNom || "Event Name"}
+                                </p>
+                                <p className="text-white/70 text-[9px] drop-shadow-sm">
+                                  {boutique?.nom || "Organizer"}
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Ticket info */}
+                          <div className="px-4 py-3.5">
+                            <div className="flex items-start justify-between gap-3 mb-3">
+                              <div className="min-w-0 flex-1">
+                                <h4 className="text-sm font-bold text-neutral-900 leading-snug line-clamp-2">
+                                  {evtNom || "Nom de l'événement"}
+                                </h4>
+                                <div className="mt-2 space-y-1">
+                                  {evtDateDebut && (
+                                    <p className="text-[11px] text-neutral-500 flex items-center gap-1.5">
+                                      <Calendar className="w-3 h-3 text-neutral-400 shrink-0" />
+                                      {new Date(evtDateDebut + "T00:00:00").toLocaleDateString("fr-FR", { weekday: "short", day: "numeric", month: "short", year: "numeric" })}
+                                      {evtHeureDebut ? ` · ${evtHeureDebut.slice(0, 5)}` : ""}
+                                    </p>
+                                  )}
+                                  {evtLieu && (
+                                    <p className="text-[11px] text-neutral-500 flex items-center gap-1.5">
+                                      <MapPin className="w-3 h-3 text-neutral-400 shrink-0" />
+                                      <span className="truncate">{evtLieu}{evtVille ? `, ${evtVille}` : ""}</span>
+                                    </p>
+                                  )}
+                                </div>
+                              </div>
+                            </div>
+
+                            {/* Dotted separator */}
+                            <div className="border-t border-dashed border-neutral-200 my-3 relative">
+                              <div className="absolute -left-6 -top-2.5 w-5 h-5 rounded-full bg-neutral-50" />
+                              <div className="absolute -right-6 -top-2.5 w-5 h-5 rounded-full bg-neutral-50" />
+                            </div>
+
+                            {/* QR + Ticket info */}
+                            <div className="flex items-center gap-3">
+                              <div className="bg-white p-1.5 rounded-lg border border-neutral-100 shadow-sm shrink-0">
+                                <QRCodeSVG
+                                  value={evtNom ? `BINQ-PREVIEW-${evtNom.slice(0, 20)}` : "BINQ-TICKET-PREVIEW"}
+                                  size={64}
+                                  level="M"
+                                  bgColor="transparent"
+                                />
+                              </div>
+                              <div className="flex-1 min-w-0">
+                                <p className="text-[10px] text-neutral-400 uppercase tracking-wider font-semibold mb-0.5">Billet</p>
+                                <p className="text-xs font-bold text-neutral-900 truncate">
+                                  {evtTicketTypes[0]?.nom || "Standard"}
+                                </p>
+                                <p className="text-xs font-bold text-blue-600 mt-0.5">
+                                  {evtTicketTypes[0]?.prix ? formatMontant(parseFloat(evtTicketTypes[0].prix), devise) : "Gratuit"}
+                                </p>
+                                <p className="text-[9px] text-neutral-300 mt-1 font-mono">
+                                  BINQ-XXXX-XXXX
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Bottom branding */}
+                          <div className="bg-neutral-50 px-4 py-2 flex items-center justify-between border-t border-neutral-100">
+                            <div className="flex items-center gap-1.5">
+                              <div className="w-4 h-4 bg-gradient-to-br from-blue-500 to-blue-600 rounded flex items-center justify-center">
+                                <Star className="w-2 h-2 text-white fill-white" />
+                              </div>
+                              <span className="text-[10px] font-semibold text-neutral-400">Binq</span>
+                            </div>
+                            <span className="text-[9px] text-neutral-300">Powered by Binq</span>
+                          </div>
+                        </div>
+
+                        {/* Ticket types preview */}
+                        {evtTicketTypes.length > 1 && (
+                          <div className="mt-3 space-y-1.5">
+                            <p className="text-[10px] font-semibold text-neutral-400 uppercase tracking-wider">Types de billets</p>
+                            {evtTicketTypes.map((t, i) => (
+                              <div key={i} className="flex items-center justify-between bg-white rounded-lg px-3 py-2 border border-neutral-100">
+                                <div className="flex items-center gap-2">
+                                  <Ticket className="w-3 h-3 text-neutral-400" />
+                                  <span className="text-xs font-medium text-neutral-700">{t.nom || `Type ${i + 1}`}</span>
+                                </div>
+                                <span className="text-xs font-bold text-blue-600">
+                                  {t.prix ? formatMontant(parseFloat(t.prix), devise) : "Gratuit"}
+                                </span>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+
+                        <p className="text-[10px] text-neutral-300 text-center mt-4">
+                          Aperçu en temps réel du billet
+                        </p>
+                      </div>
+                    </div>{/* END preview panel */}
+
+                  </div>{/* END flex container */}
                 </div>
               )}
 
