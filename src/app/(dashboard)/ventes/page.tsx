@@ -55,7 +55,7 @@ export default function VentesPage() {
   if (loading) {
     return (
       <div className="min-h-[60vh] flex items-center justify-center">
-        <div className="w-6 h-6 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin" />
+        <div className="w-6 h-6 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
@@ -74,7 +74,7 @@ export default function VentesPage() {
       {/* Total généré — carte principale */}
       <div className="mt-6 bg-gray-900 rounded-2xl p-5">
         <div className="flex items-center gap-2 mb-2">
-          <TrendingUp className="w-4 h-4 text-emerald-400" />
+          <TrendingUp className="w-4 h-4 text-blue-400" />
           <span className="text-xs text-gray-400 font-semibold uppercase tracking-wide">Total généré</span>
         </div>
         <p className="text-[32px] font-black text-white leading-none">

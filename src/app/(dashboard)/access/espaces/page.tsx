@@ -184,7 +184,7 @@ export default function EspacesPage() {
     return (
       <AccessLayout>
         <div className="flex items-center justify-center min-h-[40vh]">
-          <div className="w-7 h-7 border-[3px] border-emerald-500 border-t-transparent rounded-full animate-spin" />
+          <div className="w-7 h-7 border-[3px] border-blue-500 border-t-transparent rounded-full animate-spin" />
         </div>
       </AccessLayout>
     );
@@ -200,7 +200,7 @@ export default function EspacesPage() {
         </div>
         <button
           onClick={openCreate}
-          className="flex items-center gap-1.5 bg-emerald-500 text-white text-[13px] font-bold px-4 py-2.5 rounded-2xl active:scale-[0.97] transition-transform shadow-lg shadow-emerald-500/25"
+          className="flex items-center gap-1.5 bg-blue-500 text-white text-[13px] font-bold px-4 py-2.5 rounded-2xl active:scale-[0.97] transition-transform shadow-lg shadow-blue-500/25"
         >
           <Plus className="w-4 h-4" />
           Nouveau
@@ -210,8 +210,8 @@ export default function EspacesPage() {
       {/* List */}
       {spaces.length === 0 ? (
         <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-8 text-center">
-          <div className="w-14 h-14 bg-emerald-500/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
-            <MapPin className="w-7 h-7 text-emerald-600" />
+          <div className="w-14 h-14 bg-blue-500/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
+            <MapPin className="w-7 h-7 text-blue-600" />
           </div>
           <p className="text-[16px] font-bold text-gray-900 mb-1">Aucun espace</p>
           <p className="text-[13px] text-gray-500 mb-4">
@@ -219,7 +219,7 @@ export default function EspacesPage() {
           </p>
           <button
             onClick={openCreate}
-            className="inline-flex items-center gap-2 bg-emerald-500 text-white text-[14px] font-bold px-5 py-2.5 rounded-2xl active:scale-[0.97] transition-transform shadow-lg shadow-emerald-500/25"
+            className="inline-flex items-center gap-2 bg-blue-500 text-white text-[14px] font-bold px-5 py-2.5 rounded-2xl active:scale-[0.97] transition-transform shadow-lg shadow-blue-500/25"
           >
             <Plus className="w-4 h-4" />
             Créer un espace
@@ -234,8 +234,8 @@ export default function EspacesPage() {
             >
               <div className="flex items-start justify-between mb-3">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-emerald-500/10 rounded-xl flex items-center justify-center">
-                    <MapPin className="w-5 h-5 text-emerald-600" />
+                  <div className="w-10 h-10 bg-blue-500/10 rounded-xl flex items-center justify-center">
+                    <MapPin className="w-5 h-5 text-blue-600" />
                   </div>
                   <div>
                     <p className="text-[15px] font-bold text-gray-900">{space.nom}</p>
@@ -249,7 +249,7 @@ export default function EspacesPage() {
                   className="active:scale-[0.95] transition-transform"
                 >
                   {space.actif ? (
-                    <ToggleRight className="w-7 h-7 text-emerald-500" />
+                    <ToggleRight className="w-7 h-7 text-blue-500" />
                   ) : (
                     <ToggleLeft className="w-7 h-7 text-gray-300" />
                   )}
@@ -260,7 +260,7 @@ export default function EspacesPage() {
                 <span className={`inline-flex items-center gap-1 text-[11px] font-semibold px-2 py-1 rounded-lg ${
                   (space.mode || "controle") === "pointeuse"
                     ? "bg-blue-50 text-blue-600"
-                    : "bg-emerald-50 text-emerald-600"
+                    : "bg-blue-50 text-blue-600"
                 }`}>
                   {(space.mode || "controle") === "pointeuse" ? (
                     <><QrCode className="w-3 h-3" /> Pointeuse</>
@@ -349,12 +349,12 @@ export default function EspacesPage() {
                     onClick={() => setForm({ ...form, mode: "controle" })}
                     className={`p-3 rounded-xl border-2 text-left transition-all ${
                       form.mode === "controle"
-                        ? "border-emerald-500 bg-emerald-50"
+                        ? "border-blue-500 bg-blue-50"
                         : "border-gray-200 bg-white"
                     }`}
                   >
-                    <Shield className={`w-5 h-5 mb-1.5 ${form.mode === "controle" ? "text-emerald-600" : "text-gray-400"}`} />
-                    <p className={`text-[13px] font-bold ${form.mode === "controle" ? "text-emerald-700" : "text-gray-700"}`}>Contrôlé</p>
+                    <Shield className={`w-5 h-5 mb-1.5 ${form.mode === "controle" ? "text-blue-600" : "text-gray-400"}`} />
+                    <p className={`text-[13px] font-bold ${form.mode === "controle" ? "text-blue-700" : "text-gray-700"}`}>Contrôlé</p>
                     <p className="text-[11px] text-gray-500">Un gardien scanne les badges</p>
                   </button>
                   <button
@@ -382,7 +382,7 @@ export default function EspacesPage() {
                   value={form.nom}
                   onChange={(e) => setForm({ ...form, nom: e.target.value })}
                   placeholder="Ex: Bureau principal"
-                  className="w-full px-4 py-3 rounded-xl border border-gray-200 text-[14px] focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-500"
+                  className="w-full px-4 py-3 rounded-xl border border-gray-200 text-[14px] focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500"
                 />
               </div>
 
@@ -395,7 +395,7 @@ export default function EspacesPage() {
                   value={form.adresse}
                   onChange={(e) => setForm({ ...form, adresse: e.target.value })}
                   placeholder="Ex: 10 rue de la Paix, Paris"
-                  className="w-full px-4 py-3 rounded-xl border border-gray-200 text-[14px] focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-500"
+                  className="w-full px-4 py-3 rounded-xl border border-gray-200 text-[14px] focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500"
                 />
               </div>
 
@@ -409,7 +409,7 @@ export default function EspacesPage() {
                     type="time"
                     value={form.horaire_debut}
                     onChange={(e) => setForm({ ...form, horaire_debut: e.target.value })}
-                    className="w-full px-4 py-3 rounded-xl border border-gray-200 text-[14px] focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-500"
+                    className="w-full px-4 py-3 rounded-xl border border-gray-200 text-[14px] focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500"
                   />
                 </div>
                 <div>
@@ -420,7 +420,7 @@ export default function EspacesPage() {
                     type="time"
                     value={form.horaire_fin}
                     onChange={(e) => setForm({ ...form, horaire_fin: e.target.value })}
-                    className="w-full px-4 py-3 rounded-xl border border-gray-200 text-[14px] focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-500"
+                    className="w-full px-4 py-3 rounded-xl border border-gray-200 text-[14px] focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500"
                   />
                 </div>
               </div>
@@ -440,7 +440,7 @@ export default function EspacesPage() {
                         onClick={() => toggleJour(jour.key)}
                         className={`px-3 py-1.5 rounded-lg text-[12px] font-semibold transition-all ${
                           active
-                            ? "bg-emerald-500 text-white"
+                            ? "bg-blue-500 text-white"
                             : "bg-gray-100 text-gray-500"
                         }`}
                       >
@@ -455,7 +455,7 @@ export default function EspacesPage() {
             <button
               onClick={handleSave}
               disabled={saving}
-              className="w-full mt-6 bg-emerald-500 text-white text-[15px] font-bold py-3.5 rounded-2xl active:scale-[0.97] transition-transform shadow-lg shadow-emerald-500/25 disabled:opacity-50"
+              className="w-full mt-6 bg-blue-500 text-white text-[15px] font-bold py-3.5 rounded-2xl active:scale-[0.97] transition-transform shadow-lg shadow-blue-500/25 disabled:opacity-50"
             >
               {saving ? (
                 <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin mx-auto" />
@@ -506,7 +506,7 @@ export default function EspacesPage() {
                 onClick={() => copyPointeuseLink(showQR.space_code!)}
                 className="flex-1 flex items-center justify-center gap-1.5 text-[13px] font-bold text-gray-700 bg-gray-100 py-2.5 rounded-xl active:scale-[0.97] transition-transform"
               >
-                {copied ? <Check className="w-4 h-4 text-emerald-500" /> : <Copy className="w-4 h-4" />}
+                {copied ? <Check className="w-4 h-4 text-blue-500" /> : <Copy className="w-4 h-4" />}
                 {copied ? "Copié !" : "Copier le lien"}
               </button>
               <a

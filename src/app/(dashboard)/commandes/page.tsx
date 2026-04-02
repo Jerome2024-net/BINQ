@@ -47,7 +47,7 @@ interface Stats {
 const statutConfig: Record<string, { label: string; icon: typeof Clock; color: string; bg: string }> = {
   payee: { label: "Payée", icon: Clock, color: "text-amber-600", bg: "bg-amber-50" },
   confirmee: { label: "Confirmée", icon: CheckCircle2, color: "text-blue-600", bg: "bg-blue-50" },
-  livree: { label: "Livrée", icon: Truck, color: "text-emerald-600", bg: "bg-emerald-50" },
+  livree: { label: "Livrée", icon: Truck, color: "text-blue-600", bg: "bg-blue-50" },
   annulee: { label: "Annulée", icon: XCircle, color: "text-red-500", bg: "bg-red-50" },
 };
 
@@ -75,7 +75,7 @@ export default function CommandesPage() {
   if (loading) {
     return (
       <div className="min-h-[60vh] flex items-center justify-center">
-        <div className="w-6 h-6 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin" />
+        <div className="w-6 h-6 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
@@ -108,7 +108,7 @@ export default function CommandesPage() {
           <p className="text-[13px] text-gray-500 mb-6">Partagez vos événements pour recevoir des ventes</p>
           <Link
             href="/evenements"
-            className="inline-flex items-center gap-2 px-6 py-3 rounded-2xl bg-emerald-500 text-white text-[14px] font-bold hover:bg-emerald-400 transition-all active:scale-[0.97]"
+            className="inline-flex items-center gap-2 px-6 py-3 rounded-2xl bg-blue-500 text-white text-[14px] font-bold hover:bg-blue-400 transition-all active:scale-[0.97]"
           >
             <Store className="w-4 h-4" />
             Mes événements
@@ -152,7 +152,7 @@ export default function CommandesPage() {
                 </div>
 
                 {/* Price */}
-                <p className="text-[14px] font-bold text-emerald-600 shrink-0">
+                <p className="text-[14px] font-bold text-blue-600 shrink-0">
                   +{formatMontant(c.montant, dv)}
                 </p>
               </div>

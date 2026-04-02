@@ -198,7 +198,7 @@ export default function ScannerPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
-        <div className="w-7 h-7 border-[3px] border-emerald-500 border-t-transparent rounded-full animate-spin" />
+        <div className="w-7 h-7 border-[3px] border-blue-500 border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
@@ -207,8 +207,8 @@ export default function ScannerPage() {
     return (
       <div className="px-5 py-10">
         <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-8 text-center max-w-md mx-auto">
-          <div className="w-14 h-14 bg-emerald-500/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
-            <ScanLine className="w-7 h-7 text-emerald-600" />
+          <div className="w-14 h-14 bg-blue-500/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
+            <ScanLine className="w-7 h-7 text-blue-600" />
           </div>
           <p className="text-[16px] font-bold text-gray-900 mb-1">Aucun espace configuré</p>
           <p className="text-[13px] text-gray-500 mb-4">
@@ -216,7 +216,7 @@ export default function ScannerPage() {
           </p>
           <Link
             href="/access/espaces"
-            className="inline-flex items-center gap-2 bg-emerald-500 text-white text-[14px] font-bold px-5 py-2.5 rounded-2xl active:scale-[0.97] transition-transform shadow-lg shadow-emerald-500/25"
+            className="inline-flex items-center gap-2 bg-blue-500 text-white text-[14px] font-bold px-5 py-2.5 rounded-2xl active:scale-[0.97] transition-transform shadow-lg shadow-blue-500/25"
           >
             Créer un espace
           </Link>
@@ -238,8 +238,8 @@ export default function ScannerPage() {
               <ArrowLeft className="w-5 h-5 text-white" />
             </button>
           ) : (
-            <div className="w-9 h-9 rounded-xl bg-emerald-500/10 flex items-center justify-center">
-              <Shield className="w-5 h-5 text-emerald-600" />
+            <div className="w-9 h-9 rounded-xl bg-blue-500/10 flex items-center justify-center">
+              <Shield className="w-5 h-5 text-blue-600" />
             </div>
           )}
           <div>
@@ -278,7 +278,7 @@ export default function ScannerPage() {
               fullscreen
                 ? "bg-white/10 text-white border border-white/20"
                 : "bg-white border border-gray-200 text-gray-900"
-            } focus:outline-none focus:ring-2 focus:ring-emerald-500/30`}
+            } focus:outline-none focus:ring-2 focus:ring-blue-500/30`}
           >
             {spaces.map((s) => (
               <option key={s.id} value={s.id} className="text-gray-900">
@@ -297,7 +297,7 @@ export default function ScannerPage() {
             onClick={() => { setScanType("entree"); hapticMedium(); }}
             className={`flex items-center gap-1.5 px-3.5 py-3 text-[13px] font-semibold transition-all ${
               scanType === "entree"
-                ? "bg-emerald-500 text-white"
+                ? "bg-blue-500 text-white"
                 : fullscreen
                 ? "bg-white/10 text-gray-400"
                 : "bg-white text-gray-500"
@@ -331,9 +331,9 @@ export default function ScannerPage() {
         {!scanning && (
           <div className="absolute inset-0 flex flex-col items-center justify-center">
             <div className={`w-16 h-16 rounded-2xl flex items-center justify-center mb-4 ${
-              fullscreen ? "bg-white/10" : "bg-emerald-500/10"
+              fullscreen ? "bg-white/10" : "bg-blue-500/10"
             }`}>
-              <ScanLine className={`w-8 h-8 ${fullscreen ? "text-white" : "text-emerald-600"}`} />
+              <ScanLine className={`w-8 h-8 ${fullscreen ? "text-white" : "text-blue-600"}`} />
             </div>
             <p className={`text-[15px] font-bold mb-1 ${fullscreen ? "text-white" : "text-gray-900"}`}>
               Prêt à scanner
@@ -343,7 +343,7 @@ export default function ScannerPage() {
             </p>
             <button
               onClick={startScanner}
-              className="bg-emerald-500 text-white text-[15px] font-bold px-8 py-3 rounded-2xl active:scale-[0.97] transition-transform shadow-lg shadow-emerald-500/25"
+              className="bg-blue-500 text-white text-[15px] font-bold px-8 py-3 rounded-2xl active:scale-[0.97] transition-transform shadow-lg shadow-blue-500/25"
             >
               Activer la caméra
             </button>
@@ -354,7 +354,7 @@ export default function ScannerPage() {
         {result && (
           <div className={`absolute inset-0 flex items-center justify-center ${
             result.statut === "autorise"
-              ? "bg-emerald-500/90"
+              ? "bg-blue-500/90"
               : "bg-red-500/90"
           } backdrop-blur-sm animate-fade-up`}>
             <div className="text-center text-white p-6">

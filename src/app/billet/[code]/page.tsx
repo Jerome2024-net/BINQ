@@ -247,7 +247,7 @@ export default function BilletPage() {
   }
 
   const statusConfig: Record<string, { label: string; color: string; icon: any; bg: string }> = {
-    valid: { label: "Valide", color: "text-emerald-400", icon: Check, bg: "bg-emerald-500/10 border-emerald-500/20" },
+    valid: { label: "Valide", color: "text-blue-400", icon: Check, bg: "bg-blue-500/10 border-blue-500/20" },
     used: { label: "Utilisé", color: "text-gray-400", icon: Check, bg: "bg-gray-500/10 border-gray-500/20" },
     cancelled: { label: "Annulé", color: "text-red-400", icon: X, bg: "bg-red-500/10 border-red-500/20" },
     expired: { label: "Expiré", color: "text-yellow-400", icon: AlertCircle, bg: "bg-yellow-500/10 border-yellow-500/20" },
@@ -423,7 +423,7 @@ export default function BilletPage() {
           <button
             onClick={downloadTicketAsImage}
             disabled={saving}
-            className="w-full bg-emerald-500 hover:bg-emerald-600 active:scale-[0.98] text-white rounded-2xl p-4 flex items-center gap-3 transition disabled:opacity-60"
+            className="w-full bg-blue-500 hover:bg-blue-600 active:scale-[0.98] text-white rounded-2xl p-4 flex items-center gap-3 transition disabled:opacity-60"
           >
             <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center shrink-0">
               {saving ? (

@@ -113,7 +113,7 @@ export default function PointeusePage({ params }: { params: { code: string } }) 
       {result && (
         <div
           className={`fixed inset-0 z-50 flex items-center justify-center p-6 ${
-            result.statut === "autorise" ? "bg-emerald-500" : "bg-red-500"
+            result.statut === "autorise" ? "bg-blue-500" : "bg-red-500"
           }`}
           onClick={() => setResult(null)}
         >
@@ -155,13 +155,13 @@ export default function PointeusePage({ params }: { params: { code: string } }) 
       {/* Header */}
       <div className="pt-10 pb-4 px-5">
         <div className="flex items-center gap-3 mb-1">
-          <div className="w-10 h-10 bg-emerald-500/20 rounded-xl flex items-center justify-center">
-            <Shield className="w-5 h-5 text-emerald-400" />
+          <div className="w-10 h-10 bg-blue-500/20 rounded-xl flex items-center justify-center">
+            <Shield className="w-5 h-5 text-blue-400" />
           </div>
           <div>
             <h1 className="text-white text-[18px] font-black leading-tight">Binq Access</h1>
             {spaceName && (
-              <p className="text-emerald-400 text-[13px] font-semibold">{spaceName}</p>
+              <p className="text-blue-400 text-[13px] font-semibold">{spaceName}</p>
             )}
           </div>
         </div>
@@ -176,7 +176,7 @@ export default function PointeusePage({ params }: { params: { code: string } }) 
             placeholder="Rechercher votre nom..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-12 pr-4 py-3.5 bg-gray-900 border border-gray-800 rounded-2xl text-white text-[16px] placeholder-gray-600 focus:outline-none focus:border-emerald-500/50 focus:ring-1 focus:ring-emerald-500/25 transition-all"
+            className="w-full pl-12 pr-4 py-3.5 bg-gray-900 border border-gray-800 rounded-2xl text-white text-[16px] placeholder-gray-600 focus:outline-none focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/25 transition-all"
             autoComplete="off"
             autoFocus
           />
@@ -187,7 +187,7 @@ export default function PointeusePage({ params }: { params: { code: string } }) 
       <div className="flex-1 overflow-y-auto px-5 pb-20">
         {loading ? (
           <div className="flex items-center justify-center py-16">
-            <Loader2 className="w-8 h-8 text-emerald-400 animate-spin" />
+            <Loader2 className="w-8 h-8 text-blue-400 animate-spin" />
           </div>
         ) : error ? (
           <div className="text-center py-16">
@@ -218,8 +218,8 @@ export default function PointeusePage({ params }: { params: { code: string } }) 
                     className="w-12 h-12 rounded-full object-cover"
                   />
                 ) : (
-                  <div className="w-12 h-12 rounded-full bg-emerald-500/15 flex items-center justify-center">
-                    <span className="text-emerald-400 font-bold text-[15px]">
+                  <div className="w-12 h-12 rounded-full bg-blue-500/15 flex items-center justify-center">
+                    <span className="text-blue-400 font-bold text-[15px]">
                       {initials(m)}
                     </span>
                   </div>
@@ -242,7 +242,7 @@ export default function PointeusePage({ params }: { params: { code: string } }) 
       {/* Submitting overlay */}
       {submitting && (
         <div className="fixed inset-0 z-40 bg-gray-950/80 flex items-center justify-center">
-          <Loader2 className="w-10 h-10 text-emerald-400 animate-spin" />
+          <Loader2 className="w-10 h-10 text-blue-400 animate-spin" />
         </div>
       )}
 

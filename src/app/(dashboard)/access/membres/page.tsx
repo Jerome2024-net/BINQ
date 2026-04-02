@@ -223,7 +223,7 @@ export default function MembresPage() {
     return (
       <AccessLayout>
         <div className="flex items-center justify-center min-h-[40vh]">
-          <div className="w-7 h-7 border-[3px] border-emerald-500 border-t-transparent rounded-full animate-spin" />
+          <div className="w-7 h-7 border-[3px] border-blue-500 border-t-transparent rounded-full animate-spin" />
         </div>
       </AccessLayout>
     );
@@ -240,7 +240,7 @@ export default function MembresPage() {
         <button
           onClick={openCreate}
           disabled={spaces.length === 0}
-          className="flex items-center gap-1.5 bg-emerald-500 text-white text-[13px] font-bold px-4 py-2.5 rounded-2xl active:scale-[0.97] transition-transform shadow-lg shadow-emerald-500/25 disabled:opacity-50"
+          className="flex items-center gap-1.5 bg-blue-500 text-white text-[13px] font-bold px-4 py-2.5 rounded-2xl active:scale-[0.97] transition-transform shadow-lg shadow-blue-500/25 disabled:opacity-50"
         >
           <Plus className="w-4 h-4" />
           Nouveau
@@ -255,7 +255,7 @@ export default function MembresPage() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Rechercher..."
-            className="w-full pl-9 pr-4 py-2.5 rounded-xl border border-gray-200 text-[13px] focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-500"
+            className="w-full pl-9 pr-4 py-2.5 rounded-xl border border-gray-200 text-[13px] focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500"
           />
         </div>
         <div className="relative">
@@ -263,7 +263,7 @@ export default function MembresPage() {
           <select
             value={filterSpace}
             onChange={(e) => setFilterSpace(e.target.value)}
-            className="pl-8 pr-8 py-2.5 rounded-xl border border-gray-200 text-[13px] bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-500 appearance-none"
+            className="pl-8 pr-8 py-2.5 rounded-xl border border-gray-200 text-[13px] bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500 appearance-none"
           >
             <option value="">Tous les espaces</option>
             {spaces.map((s) => (
@@ -285,8 +285,8 @@ export default function MembresPage() {
       {/* List */}
       {filtered.length === 0 ? (
         <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-8 text-center">
-          <div className="w-14 h-14 bg-emerald-500/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
-            <Users className="w-7 h-7 text-emerald-600" />
+          <div className="w-14 h-14 bg-blue-500/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
+            <Users className="w-7 h-7 text-blue-600" />
           </div>
           <p className="text-[16px] font-bold text-gray-900 mb-1">
             {search ? "Aucun résultat" : "Aucun membre"}
@@ -305,8 +305,8 @@ export default function MembresPage() {
               className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4"
             >
               <div className="flex items-center gap-3 mb-3">
-                <div className="w-10 h-10 rounded-full bg-emerald-500/10 flex items-center justify-center flex-shrink-0">
-                  <UserCircle2 className="w-6 h-6 text-emerald-600" />
+                <div className="w-10 h-10 rounded-full bg-blue-500/10 flex items-center justify-center flex-shrink-0">
+                  <UserCircle2 className="w-6 h-6 text-blue-600" />
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">
@@ -327,7 +327,7 @@ export default function MembresPage() {
                   className="active:scale-[0.95] transition-transform flex-shrink-0"
                 >
                   {m.actif ? (
-                    <ToggleRight className="w-7 h-7 text-emerald-500" />
+                    <ToggleRight className="w-7 h-7 text-blue-500" />
                   ) : (
                     <ToggleLeft className="w-7 h-7 text-gray-300" />
                   )}
@@ -409,7 +409,7 @@ export default function MembresPage() {
                 <select
                   value={form.space_id}
                   onChange={(e) => setForm({ ...form, space_id: e.target.value })}
-                  className="w-full px-4 py-3 rounded-xl border border-gray-200 text-[14px] bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-500"
+                  className="w-full px-4 py-3 rounded-xl border border-gray-200 text-[14px] bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500"
                 >
                   <option value="">Sélectionner un espace</option>
                   {spaces.map((s) => (
@@ -425,7 +425,7 @@ export default function MembresPage() {
                     value={form.prenom}
                     onChange={(e) => setForm({ ...form, prenom: e.target.value })}
                     placeholder="Prénom"
-                    className="w-full px-4 py-3 rounded-xl border border-gray-200 text-[14px] focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-500"
+                    className="w-full px-4 py-3 rounded-xl border border-gray-200 text-[14px] focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500"
                   />
                 </div>
                 <div>
@@ -434,7 +434,7 @@ export default function MembresPage() {
                     value={form.nom}
                     onChange={(e) => setForm({ ...form, nom: e.target.value })}
                     placeholder="Nom"
-                    className="w-full px-4 py-3 rounded-xl border border-gray-200 text-[14px] focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-500"
+                    className="w-full px-4 py-3 rounded-xl border border-gray-200 text-[14px] focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500"
                   />
                 </div>
               </div>
@@ -446,7 +446,7 @@ export default function MembresPage() {
                   value={form.email}
                   onChange={(e) => setForm({ ...form, email: e.target.value })}
                   placeholder="email@exemple.com"
-                  className="w-full px-4 py-3 rounded-xl border border-gray-200 text-[14px] focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-500"
+                  className="w-full px-4 py-3 rounded-xl border border-gray-200 text-[14px] focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500"
                 />
               </div>
 
@@ -457,7 +457,7 @@ export default function MembresPage() {
                   value={form.telephone}
                   onChange={(e) => setForm({ ...form, telephone: e.target.value })}
                   placeholder="+225 07 00 00 00"
-                  className="w-full px-4 py-3 rounded-xl border border-gray-200 text-[14px] focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-500"
+                  className="w-full px-4 py-3 rounded-xl border border-gray-200 text-[14px] focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500"
                 />
               </div>
 
@@ -471,7 +471,7 @@ export default function MembresPage() {
                       onClick={() => setForm({ ...form, role: r.value })}
                       className={`flex-1 py-2.5 rounded-xl text-[13px] font-semibold transition-all ${
                         form.role === r.value
-                          ? "bg-emerald-500 text-white"
+                          ? "bg-blue-500 text-white"
                           : "bg-gray-100 text-gray-500"
                       }`}
                     >
@@ -488,7 +488,7 @@ export default function MembresPage() {
                     type="date"
                     value={form.date_debut}
                     onChange={(e) => setForm({ ...form, date_debut: e.target.value })}
-                    className="w-full px-4 py-3 rounded-xl border border-gray-200 text-[14px] focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-500"
+                    className="w-full px-4 py-3 rounded-xl border border-gray-200 text-[14px] focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500"
                   />
                 </div>
                 <div>
@@ -497,7 +497,7 @@ export default function MembresPage() {
                     type="date"
                     value={form.date_fin}
                     onChange={(e) => setForm({ ...form, date_fin: e.target.value })}
-                    className="w-full px-4 py-3 rounded-xl border border-gray-200 text-[14px] focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-500"
+                    className="w-full px-4 py-3 rounded-xl border border-gray-200 text-[14px] focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500"
                   />
                 </div>
               </div>
@@ -506,7 +506,7 @@ export default function MembresPage() {
             <button
               onClick={handleSave}
               disabled={saving}
-              className="w-full mt-6 bg-emerald-500 text-white text-[15px] font-bold py-3.5 rounded-2xl active:scale-[0.97] transition-transform shadow-lg shadow-emerald-500/25 disabled:opacity-50"
+              className="w-full mt-6 bg-blue-500 text-white text-[15px] font-bold py-3.5 rounded-2xl active:scale-[0.97] transition-transform shadow-lg shadow-blue-500/25 disabled:opacity-50"
             >
               {saving ? (
                 <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin mx-auto" />
@@ -548,7 +548,7 @@ export default function MembresPage() {
               {showBadge.prenom} {showBadge.nom}
             </p>
             <p className="text-[13px] text-gray-500 mb-1">{showBadge.access_spaces?.nom}</p>
-            <p className="text-[14px] font-mono font-bold text-emerald-600 mb-4">
+            <p className="text-[14px] font-mono font-bold text-blue-600 mb-4">
               {showBadge.qr_code}
             </p>
 
@@ -557,13 +557,13 @@ export default function MembresPage() {
                 onClick={() => copyBadgeLink(showBadge.qr_code)}
                 className="flex-1 flex items-center justify-center gap-1.5 text-[13px] font-bold text-gray-700 bg-gray-100 py-2.5 rounded-xl active:scale-[0.97] transition-transform"
               >
-                {copied ? <Check className="w-4 h-4 text-emerald-500" /> : <Copy className="w-4 h-4" />}
+                {copied ? <Check className="w-4 h-4 text-blue-500" /> : <Copy className="w-4 h-4" />}
                 {copied ? "Copié !" : "Copier le lien"}
               </button>
               <a
                 href={`/binq-access/badge/${showBadge.qr_code}`}
                 target="_blank"
-                className="flex-1 flex items-center justify-center gap-1.5 text-[13px] font-bold text-white bg-emerald-500 py-2.5 rounded-xl active:scale-[0.97] transition-transform shadow-lg shadow-emerald-500/25"
+                className="flex-1 flex items-center justify-center gap-1.5 text-[13px] font-bold text-white bg-blue-500 py-2.5 rounded-xl active:scale-[0.97] transition-transform shadow-lg shadow-blue-500/25"
               >
                 <Download className="w-4 h-4" />
                 Voir le badge

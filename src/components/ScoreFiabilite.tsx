@@ -167,9 +167,9 @@ export default function ScoreFiabilite({
 
       {/* Stats */}
       <div className="grid grid-cols-2 gap-3">
-        <div className="bg-emerald-50 rounded-xl p-3">
+        <div className="bg-blue-50 rounded-xl p-3">
           <p className="text-slate-400 text-[11px] mb-1">A temps</p>
-          <p className="text-emerald-600 text-xl font-bold">
+          <p className="text-blue-600 text-xl font-bold">
             {score.paiementsATemps}
           </p>
         </div>

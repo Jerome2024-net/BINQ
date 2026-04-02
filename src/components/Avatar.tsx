@@ -29,7 +29,7 @@ const radiusClasses = {
 // Couleurs basées sur les initiales pour varier les avatars
 const avatarColors = [
   "bg-primary-600",
-  "bg-emerald-600",
+  "bg-blue-600",
   "bg-blue-600",
   "bg-purple-600",
   "bg-amber-600",

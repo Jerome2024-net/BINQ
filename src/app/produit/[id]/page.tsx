@@ -182,21 +182,21 @@ export default function ProduitPage() {
       <div className="min-h-screen bg-white flex items-center justify-center px-4">
         <SuccessConfetti />
         <div className="bg-gray-50/80 rounded-3xl p-8 max-w-md w-full text-center border border-gray-200/50 backdrop-blur-xl animate-in zoom-in-95 duration-300">
-          <div className="w-20 h-20 bg-emerald-50 rounded-full flex items-center justify-center mx-auto mb-4">
-            <CheckCircle2 className="w-10 h-10 text-emerald-600" />
+          <div className="w-20 h-20 bg-blue-50 rounded-full flex items-center justify-center mx-auto mb-4">
+            <CheckCircle2 className="w-10 h-10 text-blue-600" />
           </div>
           <h1 className="text-2xl font-black text-gray-900 mb-1">Achat effectue !</h1>
-          <p className="text-lg font-bold text-emerald-600 mb-1">{produit.nom}</p>
+          <p className="text-lg font-bold text-blue-600 mb-1">{produit.nom}</p>
           <p className="text-2xl font-black text-gray-900 mb-4">{formatMontant(produit.prix, devise)}</p>
 
           <div className="bg-gray-50/50 rounded-xl p-3 mb-5 border border-gray-200/50 text-left space-y-1.5">
             <div className="flex justify-between text-xs"><span className="text-gray-500">Boutique</span><span className="text-gray-700 font-semibold">{produit.boutique.nom}</span></div>
             <div className="flex justify-between text-xs"><span className="text-gray-500">Reference</span><span className="text-gray-700 font-mono">{boughtRef}</span></div>
-            <div className="flex justify-between text-xs"><span className="text-gray-500">Paiement</span><span className="text-emerald-600 font-semibold">Carte / Mobile Money</span></div>
+            <div className="flex justify-between text-xs"><span className="text-gray-500">Paiement</span><span className="text-blue-600 font-semibold">Carte / Mobile Money</span></div>
           </div>
 
           <div className="flex gap-2">
-            <Link href={`/boutique/${produit.boutique.slug}`} className="flex-1 inline-flex items-center justify-center gap-2 bg-emerald-500 text-white px-4 py-3 rounded-xl font-bold hover:bg-emerald-600 transition text-sm">
+            <Link href={`/boutique/${produit.boutique.slug}`} className="flex-1 inline-flex items-center justify-center gap-2 bg-blue-500 text-white px-4 py-3 rounded-xl font-bold hover:bg-blue-600 transition text-sm">
               <Store className="w-4 h-4" />Retour a la boutique
             </Link>
           </div>
@@ -244,7 +244,7 @@ export default function ProduitPage() {
         <h2 className="text-xl font-black text-gray-900">{produit.nom}</h2>
 
         <div className="flex items-baseline gap-2 mt-2">
-          <span className="text-2xl font-black text-emerald-600">{formatMontant(produit.prix, devise)}</span>
+          <span className="text-2xl font-black text-blue-600">{formatMontant(produit.prix, devise)}</span>
           {hasPromo && (
             <span className="text-sm text-gray-400 line-through">{formatMontant(produit.prix_barre!, devise)}</span>
           )}
@@ -275,7 +275,7 @@ export default function ProduitPage() {
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-1.5">
               <span className="font-bold text-gray-900 text-sm truncate">{produit.boutique.nom}</span>
-              {produit.boutique.is_verified && <BadgeCheck className="w-4 h-4 text-emerald-500 shrink-0" />}
+              {produit.boutique.is_verified && <BadgeCheck className="w-4 h-4 text-blue-500 shrink-0" />}
             </div>
             {produit.boutique.ville && (
               <span className="text-[11px] text-gray-500 flex items-center gap-0.5 mt-0.5"><MapPin className="w-3 h-3" />{produit.boutique.ville}</span>
@@ -339,7 +339,7 @@ export default function ProduitPage() {
           {!user ? (
             <div className="text-center">
               <p className="text-sm text-gray-500 mb-3">Connectez-vous pour acheter</p>
-              <Link href={`/connexion?redirect=/produit/${produit.id}`} className="w-full inline-flex items-center justify-center gap-2 bg-emerald-500 text-white py-3.5 rounded-xl font-bold hover:bg-emerald-600 transition">
+              <Link href={`/connexion?redirect=/produit/${produit.id}`} className="w-full inline-flex items-center justify-center gap-2 bg-blue-500 text-white py-3.5 rounded-xl font-bold hover:bg-blue-600 transition">
                 <LogIn className="w-5 h-5" />Se connecter
               </Link>
             </div>
@@ -355,7 +355,7 @@ export default function ProduitPage() {
             <button
               onClick={handleBuy}
               disabled={buying}
-              className="w-full flex items-center justify-center gap-2.5 bg-emerald-500 hover:bg-emerald-600 text-white py-4 rounded-2xl font-bold text-base transition-all disabled:opacity-50 active:scale-[0.98] shadow-lg shadow-emerald-500/20"
+              className="w-full flex items-center justify-center gap-2.5 bg-blue-500 hover:bg-blue-600 text-white py-4 rounded-2xl font-bold text-base transition-all disabled:opacity-50 active:scale-[0.98] shadow-lg shadow-blue-500/20"
             >
               {buying ? (
                 <><Loader2 className="w-5 h-5 animate-spin" />Paiement en cours...</>

@@ -187,7 +187,7 @@ export default function PayPage() {
           <p className="text-gray-600 mb-6">{error}</p>
           <button
             onClick={() => window.history.length > 1 ? router.back() : router.push("/")}
-            className="inline-flex items-center gap-2 bg-emerald-500 text-white px-6 py-3 rounded-xl font-semibold hover:bg-emerald-600 transition active:scale-95"
+            className="inline-flex items-center gap-2 bg-blue-500 text-white px-6 py-3 rounded-xl font-semibold hover:bg-blue-600 transition active:scale-95"
           >
             Retour
           </button>
@@ -212,11 +212,11 @@ export default function PayPage() {
       <div className="min-h-screen bg-white flex items-center justify-center px-4">
         <SuccessConfetti />
         <div className="bg-gray-50/80 rounded-3xl p-8 max-w-md w-full text-center border border-gray-200/50 backdrop-blur-xl animate-in zoom-in-95 duration-300">
-          <div className="w-20 h-20 bg-emerald-50 rounded-full flex items-center justify-center mx-auto mb-4 animate-in zoom-in duration-500">
-            <CheckCircle2 className="w-10 h-10 text-emerald-600" />
+          <div className="w-20 h-20 bg-blue-50 rounded-full flex items-center justify-center mx-auto mb-4 animate-in zoom-in duration-500">
+            <CheckCircle2 className="w-10 h-10 text-blue-600" />
           </div>
           <h1 className="text-2xl font-black text-gray-900 mb-1">Paiement effectué !</h1>
-          <p className="text-3xl font-black text-emerald-600 mb-2">{formatMontant(paidMontant, linkDevise)}</p>
+          <p className="text-3xl font-black text-blue-600 mb-2">{formatMontant(paidMontant, linkDevise)}</p>
           <p className="text-gray-600 text-sm mb-1">
             À <span className="text-gray-900 font-semibold">{link?.createur.prenom} {link?.createur.nom}</span>
           </p>
@@ -225,7 +225,7 @@ export default function PayPage() {
             <div className="flex justify-between text-xs"><span className="text-gray-700">Référence</span><span className="text-gray-700 font-mono">{paidRef}</span></div>
             <div className="flex justify-between text-xs"><span className="text-gray-700">Méthode</span><span className="text-gray-700">{paidMethod}</span></div>
             <div className="flex justify-between text-xs"><span className="text-gray-700">Date</span><span className="text-gray-700">{paidDate}</span></div>
-            <div className="flex justify-between text-xs"><span className="text-gray-700">Statut</span><span className="text-emerald-600 font-semibold">Confirmé</span></div>
+            <div className="flex justify-between text-xs"><span className="text-gray-700">Statut</span><span className="text-blue-600 font-semibold">Confirmé</span></div>
           </div>
 
           <div className="flex flex-col items-center my-3">
@@ -238,7 +238,7 @@ export default function PayPage() {
           <div className="flex items-center gap-2">
             <button
               onClick={() => router.push("/")}
-              className="flex-1 inline-flex items-center justify-center gap-2 bg-emerald-500 text-white px-4 py-3 rounded-xl font-bold hover:bg-emerald-600 transition text-sm"
+              className="flex-1 inline-flex items-center justify-center gap-2 bg-blue-500 text-white px-4 py-3 rounded-xl font-bold hover:bg-blue-600 transition text-sm"
             >
               Fermer
             </button>
@@ -283,7 +283,7 @@ export default function PayPage() {
             <p className="text-gray-600 text-sm mb-6">Ce type de lien n&apos;est plus pris en charge.</p>
             <button
               onClick={() => window.history.length > 1 ? router.back() : router.push("/")}
-              className="inline-flex items-center gap-2 bg-emerald-500 text-white px-6 py-3 rounded-xl font-semibold hover:bg-emerald-600 transition active:scale-95"
+              className="inline-flex items-center gap-2 bg-blue-500 text-white px-6 py-3 rounded-xl font-semibold hover:bg-blue-600 transition active:scale-95"
             >
               Retour
             </button>
@@ -463,7 +463,7 @@ export default function PayPage() {
                 <button
                   onClick={handlePay}
                   disabled={paying || !selectedMethod || currentAmount <= 0 || (selectedMethod !== null && isMobileMoneyMethod(selectedMethod) && !phoneNumber.trim())}
-                  className="w-full flex items-center justify-center gap-2.5 bg-emerald-500 hover:bg-emerald-600 text-white py-4 rounded-2xl font-bold text-base transition-all disabled:opacity-40 disabled:cursor-not-allowed active:scale-[0.98] shadow-lg shadow-emerald-500/20"
+                  className="w-full flex items-center justify-center gap-2.5 bg-blue-500 hover:bg-blue-600 text-white py-4 rounded-2xl font-bold text-base transition-all disabled:opacity-40 disabled:cursor-not-allowed active:scale-[0.98] shadow-lg shadow-blue-500/20"
                 >
                   {paying ? (
                     <><Loader2 className="w-5 h-5 animate-spin" />Traitement en cours...</>
@@ -480,7 +480,7 @@ export default function PayPage() {
                 {!user && (
                   <div className="mt-5 bg-gray-50 rounded-2xl p-4 border border-gray-200 text-center">
                     <div className="flex items-center justify-center gap-2 mb-2">
-                      <Zap className="w-5 h-5 text-emerald-500" />
+                      <Zap className="w-5 h-5 text-blue-500" />
                       <p className="text-sm font-bold text-gray-900">Vous aussi, vendez avec Binq</p>
                     </div>
                     <p className="text-xs text-gray-600 mb-3">
@@ -488,7 +488,7 @@ export default function PayPage() {
                     </p>
                     <Link
                       href={`/inscription?redirect=/pay/${code}`}
-                      className="inline-flex items-center justify-center gap-2 bg-emerald-500 text-white px-5 py-2.5 rounded-xl font-bold text-sm hover:bg-emerald-600 transition active:scale-95"
+                      className="inline-flex items-center justify-center gap-2 bg-blue-500 text-white px-5 py-2.5 rounded-xl font-bold text-sm hover:bg-blue-600 transition active:scale-95"
                     >
                       <Download className="w-4 h-4" />
                       Cr&eacute;er mon compte &mdash; Gratuit

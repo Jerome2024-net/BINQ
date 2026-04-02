@@ -67,7 +67,7 @@
     @apply inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium;
   }
   .badge-success {
-    @apply badge bg-emerald-50 text-emerald-700;
+    @apply badge bg-blue-50 text-blue-700;
   }
   .badge-warning {
     @apply badge bg-amber-50 text-amber-700;

@@ -252,7 +252,7 @@ export default function BoutiquePage() {
 
         {/* Badges sous le hero */}
         <div className="px-4 py-3 flex items-center gap-2 overflow-x-auto no-scrollbar">
-          <span className="flex-shrink-0 flex items-center gap-1.5 bg-emerald-50 text-emerald-700 text-[11px] font-semibold px-3 py-1.5 rounded-full">
+          <span className="flex-shrink-0 flex items-center gap-1.5 bg-blue-50 text-blue-700 text-[11px] font-semibold px-3 py-1.5 rounded-full">
             <ShieldCheck className="w-3 h-3" />Paiement securise
           </span>
           {boutique.is_verified && (
@@ -408,7 +408,7 @@ export default function BoutiquePage() {
             {/* Trust badges */}
             <div className="flex items-center gap-2 mt-3 pt-3 border-t border-gray-50">
               <span className="flex items-center gap-1 text-[11px] text-gray-500">
-                <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" />Paiement securise avec Binq
+                <ShieldCheck className="w-3.5 h-3.5 text-blue-500" />Paiement securise avec Binq
               </span>
               {boutique.is_verified && (
                 <span className="flex items-center gap-1 text-[11px] text-blue-600 font-medium">

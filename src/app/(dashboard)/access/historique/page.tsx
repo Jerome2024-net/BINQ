@@ -88,7 +88,7 @@ export default function HistoriquePage() {
     return (
       <AccessLayout>
         <div className="flex items-center justify-center min-h-[40vh]">
-          <div className="w-7 h-7 border-[3px] border-emerald-500 border-t-transparent rounded-full animate-spin" />
+          <div className="w-7 h-7 border-[3px] border-blue-500 border-t-transparent rounded-full animate-spin" />
         </div>
       </AccessLayout>
     );
@@ -111,7 +111,7 @@ export default function HistoriquePage() {
           <select
             value={filterSpace}
             onChange={(e) => setFilterSpace(e.target.value)}
-            className="pl-8 pr-8 py-2.5 rounded-xl border border-gray-200 text-[13px] bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-500 appearance-none"
+            className="pl-8 pr-8 py-2.5 rounded-xl border border-gray-200 text-[13px] bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500 appearance-none"
           >
             <option value="">Tous les espaces</option>
             {spaces.map((s) => (
@@ -125,7 +125,7 @@ export default function HistoriquePage() {
           <select
             value={filterStatut}
             onChange={(e) => setFilterStatut(e.target.value)}
-            className="pl-8 pr-8 py-2.5 rounded-xl border border-gray-200 text-[13px] bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-500 appearance-none"
+            className="pl-8 pr-8 py-2.5 rounded-xl border border-gray-200 text-[13px] bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500 appearance-none"
           >
             <option value="">Tous les statuts</option>
             <option value="autorise">Autorisé</option>
@@ -138,7 +138,7 @@ export default function HistoriquePage() {
           <select
             value={limit}
             onChange={(e) => setLimit(Number(e.target.value))}
-            className="pl-8 pr-8 py-2.5 rounded-xl border border-gray-200 text-[13px] bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-500 appearance-none"
+            className="pl-8 pr-8 py-2.5 rounded-xl border border-gray-200 text-[13px] bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500 appearance-none"
           >
             <option value={25}>25 derniers</option>
             <option value={50}>50 derniers</option>
@@ -151,8 +151,8 @@ export default function HistoriquePage() {
       {/* Logs */}
       {Object.keys(grouped).length === 0 ? (
         <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-8 text-center">
-          <div className="w-14 h-14 bg-emerald-500/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
-            <ClipboardList className="w-7 h-7 text-emerald-600" />
+          <div className="w-14 h-14 bg-blue-500/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
+            <ClipboardList className="w-7 h-7 text-blue-600" />
           </div>
           <p className="text-[16px] font-bold text-gray-900 mb-1">Aucun historique</p>
           <p className="text-[13px] text-gray-500">
@@ -174,11 +174,11 @@ export default function HistoriquePage() {
                   >
                     <div
                       className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${
-                        log.statut === "autorise" ? "bg-emerald-500/10" : "bg-red-500/10"
+                        log.statut === "autorise" ? "bg-blue-500/10" : "bg-red-500/10"
                       }`}
                     >
                       {log.statut === "autorise" ? (
-                        <ShieldCheck className="w-5 h-5 text-emerald-600" />
+                        <ShieldCheck className="w-5 h-5 text-blue-600" />
                       ) : (
                         <ShieldX className="w-5 h-5 text-red-500" />
                       )}
@@ -190,7 +190,7 @@ export default function HistoriquePage() {
                         </p>
                         <span className={`text-[10px] font-semibold px-1.5 py-0.5 rounded-full flex-shrink-0 ${
                           log.type === "entree"
-                            ? "bg-emerald-50 text-emerald-600"
+                            ? "bg-blue-50 text-blue-600"
                             : "bg-blue-50 text-blue-600"
                         }`}>
                           {log.type === "entree" ? "Entrée" : "Sortie"}
@@ -206,7 +206,7 @@ export default function HistoriquePage() {
                       <span
                         className={`text-[11px] font-semibold px-2 py-0.5 rounded-full ${
                           log.statut === "autorise"
-                            ? "bg-emerald-50 text-emerald-600"
+                            ? "bg-blue-50 text-blue-600"
                             : "bg-red-50 text-red-500"
                         }`}
                       >

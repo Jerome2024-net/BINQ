@@ -86,7 +86,7 @@ export default function ProfilPage() {
     <div className="max-w-5xl mx-auto space-y-6">
       {/* Header avec banner */}
       <div className="card overflow-hidden">
-        <div className="h-28 bg-gradient-to-r from-primary-600 to-emerald-500 -mx-6 -mt-6 relative">
+        <div className="h-28 bg-gradient-to-r from-primary-600 to-blue-500 -mx-6 -mt-6 relative">
           <div className="absolute inset-0 bg-black/5"></div>
           <button className="absolute bottom-3 right-4 bg-white/20 hover:bg-white/30 backdrop-blur-sm text-gray-900 px-3 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1.5 transition-colors">
             <Camera className="w-3.5 h-3.5" />
@@ -160,7 +160,7 @@ export default function ProfilPage() {
       {/* Stats rapides */}
       <div className="grid grid-cols-2 lg:grid-cols-3 gap-3">
         <div className="card py-4 text-center">
-          <p className="text-2xl font-bold text-emerald-600">Vendeur</p>
+          <p className="text-2xl font-bold text-blue-600">Vendeur</p>
           <p className="text-xs text-gray-700 flex items-center justify-center gap-1 mt-1">
             <ShoppingBag className="w-3 h-3" /> Statut
           </p>

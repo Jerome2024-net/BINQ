@@ -27,7 +27,7 @@ export default function BadgeContent({ member }: BadgeProps) {
       case "visiteur":
         return "bg-blue-500";
       default:
-        return "bg-emerald-500";
+        return "bg-blue-500";
     }
   };
 

@@ -32,17 +32,17 @@ function SuccessContent() {
   const isMobile = method && !isCard && method !== "binq";
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-emerald-50 to-white flex items-center justify-center px-4">
+    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white flex items-center justify-center px-4">
       {showConfetti && <SuccessConfetti />}
 
       <div className="max-w-md w-full text-center">
         <div className="bg-white rounded-3xl shadow-xl shadow-gray-200/50 border border-gray-100 p-8 animate-in zoom-in-95 duration-300">
           {/* Icon */}
-          <div className="w-20 h-20 bg-emerald-50 rounded-full flex items-center justify-center mx-auto mb-5 animate-in zoom-in duration-500">
+          <div className="w-20 h-20 bg-blue-50 rounded-full flex items-center justify-center mx-auto mb-5 animate-in zoom-in duration-500">
             {isMobile ? (
-              <Clock className="w-10 h-10 text-emerald-600" />
+              <Clock className="w-10 h-10 text-blue-600" />
             ) : (
-              <CheckCircle2 className="w-10 h-10 text-emerald-600" />
+              <CheckCircle2 className="w-10 h-10 text-blue-600" />
             )}
           </div>
 
@@ -86,7 +86,7 @@ function SuccessContent() {
             ) : isMobile ? (
               <Smartphone className="w-4 h-4 text-orange-500" />
             ) : (
-              <Wallet className="w-4 h-4 text-emerald-500" />
+              <Wallet className="w-4 h-4 text-blue-500" />
             )}
             <span className="text-sm font-medium text-gray-700">
               {isCard
@@ -112,7 +112,7 @@ function SuccessContent() {
           <div className="space-y-3">
             <Link
               href="/dashboard"
-              className="w-full inline-flex items-center justify-center gap-2 bg-emerald-500 text-white px-6 py-3.5 rounded-xl font-bold hover:bg-emerald-400 transition"
+              className="w-full inline-flex items-center justify-center gap-2 bg-blue-500 text-white px-6 py-3.5 rounded-xl font-bold hover:bg-blue-400 transition"
             >
               <Wallet className="w-5 h-5" />
               Aller au tableau de bord
@@ -143,7 +143,7 @@ export default function PaymentSuccessPage() {
     <Suspense
       fallback={
         <div className="min-h-screen bg-white flex items-center justify-center">
-          <div className="w-8 h-8 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin" />
+          <div className="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin" />
         </div>
       }
     >

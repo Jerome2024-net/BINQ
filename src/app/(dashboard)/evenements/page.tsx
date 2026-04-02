@@ -1206,7 +1206,7 @@ export default function EvenementsPage() {
                             </div>
                           </div>
                           <span className={`text-xs font-medium px-2 py-0.5 rounded-md ${
-                            t.statut === "valid" ? "bg-emerald-50 text-emerald-600" :
+                            t.statut === "valid" ? "bg-blue-50 text-blue-600" :
                             t.statut === "used" ? "bg-neutral-100 text-neutral-500" :
                             "bg-red-50 text-red-500"
                           }`}>

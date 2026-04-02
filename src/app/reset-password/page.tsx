@@ -54,7 +54,7 @@ function ResetPasswordForm() {
 
   const strength = getPasswordStrength(password);
   const strengthLabel = ["", "Très faible", "Faible", "Moyen", "Fort", "Très fort"][strength] || "";
-  const strengthColor = ["", "bg-red-500", "bg-orange-500", "bg-yellow-500", "bg-green-500", "bg-emerald-500"][strength] || "";
+  const strengthColor = ["", "bg-red-500", "bg-orange-500", "bg-yellow-500", "bg-green-500", "bg-blue-500"][strength] || "";
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -265,7 +265,7 @@ export default function ResetPasswordPage() {
   return (
     <Suspense fallback={
       <div className="min-h-screen bg-white flex items-center justify-center">
-        <Loader2 className="w-8 h-8 animate-spin text-emerald-600" />
+        <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
       </div>
     }>
       <ResetPasswordForm />

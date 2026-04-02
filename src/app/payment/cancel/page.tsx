@@ -33,7 +33,7 @@ function CancelContent() {
             {code ? (
               <Link
                 href={`/pay/${code}`}
-                className="w-full inline-flex items-center justify-center gap-2 bg-emerald-500 text-white px-6 py-3.5 rounded-xl font-bold hover:bg-emerald-400 transition"
+                className="w-full inline-flex items-center justify-center gap-2 bg-blue-500 text-white px-6 py-3.5 rounded-xl font-bold hover:bg-blue-400 transition"
               >
                 <RefreshCw className="w-5 h-5" />
                 Réessayer le paiement
@@ -41,7 +41,7 @@ function CancelContent() {
             ) : (
               <Link
                 href="/dashboard"
-                className="w-full inline-flex items-center justify-center gap-2 bg-emerald-500 text-white px-6 py-3.5 rounded-xl font-bold hover:bg-emerald-400 transition"
+                className="w-full inline-flex items-center justify-center gap-2 bg-blue-500 text-white px-6 py-3.5 rounded-xl font-bold hover:bg-blue-400 transition"
               >
                 <ArrowLeft className="w-5 h-5" />
                 Retour à l&apos;accueil
@@ -71,7 +71,7 @@ export default function PaymentCancelPage() {
     <Suspense
       fallback={
         <div className="min-h-screen bg-white flex items-center justify-center">
-          <div className="w-8 h-8 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin" />
+          <div className="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin" />
         </div>
       }
     >

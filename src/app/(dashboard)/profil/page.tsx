@@ -186,16 +186,16 @@ export default function ProfilPage() {
       </div>
 
       {/* Profile Card */}
-      <div className="relative rounded-2xl overflow-hidden bg-gradient-to-br from-emerald-600/20 to-emerald-900/10 border border-gray-200/50">
+      <div className="relative rounded-2xl overflow-hidden bg-gradient-to-br from-blue-600/20 to-blue-900/10 border border-gray-200/50">
         {/* Banner */}
-        <div className="h-24 bg-gradient-to-r from-emerald-500/30 to-cyan-500/20" />
+        <div className="h-24 bg-gradient-to-r from-blue-500/30 to-cyan-500/20" />
 
         {/* Avatar + Info */}
         <div className="px-5 pb-5">
           <div className="flex items-end gap-4 -mt-10 relative z-10">
             {/* Avatar */}
             <div className="relative group">
-              <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center ring-4 ring-[#0a0a0a] shadow-xl overflow-hidden">
+              <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center ring-4 ring-[#0a0a0a] shadow-xl overflow-hidden">
                 {user.avatar ? (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img src={user.avatar} alt="" className="w-full h-full object-cover" />
@@ -215,7 +215,7 @@ export default function ProfilPage() {
               <div className="flex items-center gap-2 flex-wrap">
                 <h2 className="text-lg font-bold">{user.prenom} {user.nom}</h2>
                 {user.badgeVerifie && (
-                  <span className="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">
+                  <span className="inline-flex items-center gap-1 text-[10px] font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded-full">
                     <CheckCircle2 className="w-3 h-3" />
                     Vérifié
                   </span>
@@ -245,7 +245,7 @@ export default function ProfilPage() {
           </div>
 
           {user.bio && (
-            <p className="text-sm text-gray-600 mt-3 leading-relaxed border-l-2 border-emerald-200/60 pl-3">
+            <p className="text-sm text-gray-600 mt-3 leading-relaxed border-l-2 border-blue-200/60 pl-3">
               {user.bio}
             </p>
           )}
@@ -261,8 +261,8 @@ export default function ProfilPage() {
       {/* Stats */}
       <div className="grid grid-cols-3 gap-3">
         <div className="bg-gray-50 border border-gray-200/50 rounded-2xl p-4 text-center">
-          <ShoppingBag className="w-4 h-4 text-emerald-600 mx-auto mb-1.5" />
-          <p className="text-lg font-bold text-emerald-600">Vendeur</p>
+          <ShoppingBag className="w-4 h-4 text-blue-600 mx-auto mb-1.5" />
+          <p className="text-lg font-bold text-blue-600">Vendeur</p>
           <p className="text-[10px] text-gray-700 mt-0.5">Statut</p>
         </div>
         <div className="bg-gray-50 border border-gray-200/50 rounded-2xl p-4 text-center">
@@ -285,7 +285,7 @@ export default function ProfilPage() {
             onClick={() => setActiveTab(tab.key)}
             className={`flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-xs font-semibold transition-all ${
               activeTab === tab.key
-                ? "bg-emerald-50 text-emerald-600"
+                ? "bg-blue-50 text-blue-600"
                 : "text-gray-700 hover:text-gray-800"
             }`}
           >
@@ -300,7 +300,7 @@ export default function ProfilPage() {
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="bg-gray-50 border border-gray-200/50 rounded-2xl p-5 space-y-4">
             <h3 className="text-sm font-bold flex items-center gap-2">
-              <UserIcon className="w-4 h-4 text-emerald-600" />
+              <UserIcon className="w-4 h-4 text-blue-600" />
               Informations personnelles
             </h3>
 
@@ -311,7 +311,7 @@ export default function ProfilPage() {
                   type="text"
                   value={formData.prenom}
                   onChange={(e) => setFormData({ ...formData, prenom: e.target.value })}
-                  className="w-full bg-gray-50/80 border border-gray-200/60 rounded-xl px-3 py-2.5 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:border-emerald-200 focus:ring-1 focus:ring-emerald-200 transition-all"
+                  className="w-full bg-gray-50/80 border border-gray-200/60 rounded-xl px-3 py-2.5 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:border-blue-200 focus:ring-1 focus:ring-blue-200 transition-all"
                   required
                 />
               </div>
@@ -321,7 +321,7 @@ export default function ProfilPage() {
                   type="text"
                   value={formData.nom}
                   onChange={(e) => setFormData({ ...formData, nom: e.target.value })}
-                  className="w-full bg-gray-50/80 border border-gray-200/60 rounded-xl px-3 py-2.5 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:border-emerald-200 focus:ring-1 focus:ring-emerald-200 transition-all"
+                  className="w-full bg-gray-50/80 border border-gray-200/60 rounded-xl px-3 py-2.5 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:border-blue-200 focus:ring-1 focus:ring-blue-200 transition-all"
                   required
                 />
               </div>
@@ -348,7 +348,7 @@ export default function ProfilPage() {
                 type="tel"
                 value={formData.telephone}
                 onChange={(e) => setFormData({ ...formData, telephone: e.target.value })}
-                className="w-full bg-gray-50/80 border border-gray-200/60 rounded-xl px-3 py-2.5 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:border-emerald-200 focus:ring-1 focus:ring-emerald-200 transition-all"
+                className="w-full bg-gray-50/80 border border-gray-200/60 rounded-xl px-3 py-2.5 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:border-blue-200 focus:ring-1 focus:ring-blue-200 transition-all"
                 placeholder="+221 77 000 00 00"
               />
             </div>
@@ -356,7 +356,7 @@ export default function ProfilPage() {
 
           <div className="bg-gray-50 border border-gray-200/50 rounded-2xl p-5 space-y-4">
             <h3 className="text-sm font-bold flex items-center gap-2">
-              <FileText className="w-4 h-4 text-emerald-600" />
+              <FileText className="w-4 h-4 text-blue-600" />
               À propos
             </h3>
 
@@ -365,7 +365,7 @@ export default function ProfilPage() {
               <textarea
                 value={formData.bio}
                 onChange={(e) => setFormData({ ...formData, bio: e.target.value })}
-                className="w-full bg-gray-50/80 border border-gray-200/60 rounded-xl px-3 py-2.5 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:border-emerald-200 focus:ring-1 focus:ring-emerald-200 transition-all min-h-[80px] resize-none"
+                className="w-full bg-gray-50/80 border border-gray-200/60 rounded-xl px-3 py-2.5 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:border-blue-200 focus:ring-1 focus:ring-blue-200 transition-all min-h-[80px] resize-none"
                 placeholder="Présentez-vous en quelques mots..."
                 maxLength={200}
               />
@@ -381,7 +381,7 @@ export default function ProfilPage() {
                   type="text"
                   value={formData.profession}
                   onChange={(e) => setFormData({ ...formData, profession: e.target.value })}
-                  className="w-full bg-gray-50/80 border border-gray-200/60 rounded-xl px-3 py-2.5 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:border-emerald-200 focus:ring-1 focus:ring-emerald-200 transition-all"
+                  className="w-full bg-gray-50/80 border border-gray-200/60 rounded-xl px-3 py-2.5 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:border-blue-200 focus:ring-1 focus:ring-blue-200 transition-all"
                   placeholder="Ex: Commerçant"
                 />
               </div>
@@ -393,7 +393,7 @@ export default function ProfilPage() {
                   type="text"
                   value={formData.ville}
                   onChange={(e) => setFormData({ ...formData, ville: e.target.value })}
-                  className="w-full bg-gray-50/80 border border-gray-200/60 rounded-xl px-3 py-2.5 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:border-emerald-200 focus:ring-1 focus:ring-emerald-200 transition-all"
+                  className="w-full bg-gray-50/80 border border-gray-200/60 rounded-xl px-3 py-2.5 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:border-blue-200 focus:ring-1 focus:ring-blue-200 transition-all"
                   placeholder="Ex: Dakar"
                 />
               </div>
@@ -407,7 +407,7 @@ export default function ProfilPage() {
                 type="text"
                 value={formData.pays}
                 onChange={(e) => setFormData({ ...formData, pays: e.target.value })}
-                className="w-full bg-gray-50/80 border border-gray-200/60 rounded-xl px-3 py-2.5 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:border-emerald-200 focus:ring-1 focus:ring-emerald-200 transition-all"
+                className="w-full bg-gray-50/80 border border-gray-200/60 rounded-xl px-3 py-2.5 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:border-blue-200 focus:ring-1 focus:ring-blue-200 transition-all"
                 placeholder="Ex: Sénégal"
               />
             </div>
@@ -416,7 +416,7 @@ export default function ProfilPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-emerald-500 hover:bg-emerald-600 disabled:opacity-50 text-white font-bold py-3 rounded-2xl flex items-center justify-center gap-2 transition-colors text-sm"
+            className="w-full bg-blue-500 hover:bg-blue-600 disabled:opacity-50 text-white font-bold py-3 rounded-2xl flex items-center justify-center gap-2 transition-colors text-sm"
           >
             {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
             Enregistrer les modifications
@@ -430,7 +430,7 @@ export default function ProfilPage() {
           {/* Change password */}
           <div className="bg-gray-50 border border-gray-200/50 rounded-2xl p-5 space-y-4">
             <h3 className="text-sm font-bold flex items-center gap-2">
-              <Lock className="w-4 h-4 text-emerald-600" />
+              <Lock className="w-4 h-4 text-blue-600" />
               Changer le mot de passe
             </h3>
 
@@ -440,7 +440,7 @@ export default function ProfilPage() {
                 type="password"
                 value={passwords.current}
                 onChange={(e) => setPasswords({ ...passwords, current: e.target.value })}
-                className="w-full bg-gray-50/80 border border-gray-200/60 rounded-xl px-3 py-2.5 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:border-emerald-200 focus:ring-1 focus:ring-emerald-200 transition-all"
+                className="w-full bg-gray-50/80 border border-gray-200/60 rounded-xl px-3 py-2.5 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:border-blue-200 focus:ring-1 focus:ring-blue-200 transition-all"
                 placeholder="••••••••"
               />
             </div>
@@ -452,7 +452,7 @@ export default function ProfilPage() {
                   type="password"
                   value={passwords.newPass}
                   onChange={(e) => setPasswords({ ...passwords, newPass: e.target.value })}
-                  className="w-full bg-gray-50/80 border border-gray-200/60 rounded-xl px-3 py-2.5 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:border-emerald-200 focus:ring-1 focus:ring-emerald-200 transition-all"
+                  className="w-full bg-gray-50/80 border border-gray-200/60 rounded-xl px-3 py-2.5 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:border-blue-200 focus:ring-1 focus:ring-blue-200 transition-all"
                   placeholder="••••••••"
                 />
               </div>
@@ -462,7 +462,7 @@ export default function ProfilPage() {
                   type="password"
                   value={passwords.confirm}
                   onChange={(e) => setPasswords({ ...passwords, confirm: e.target.value })}
-                  className="w-full bg-gray-50/80 border border-gray-200/60 rounded-xl px-3 py-2.5 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:border-emerald-200 focus:ring-1 focus:ring-emerald-200 transition-all"
+                  className="w-full bg-gray-50/80 border border-gray-200/60 rounded-xl px-3 py-2.5 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:border-blue-200 focus:ring-1 focus:ring-blue-200 transition-all"
                   placeholder="••••••••"
                 />
               </div>
@@ -472,7 +472,7 @@ export default function ProfilPage() {
               type="button"
               onClick={handleChangePassword}
               disabled={loading}
-              className="w-full bg-emerald-500 hover:bg-emerald-600 disabled:opacity-50 text-white font-bold py-3 rounded-2xl flex items-center justify-center gap-2 transition-colors text-sm"
+              className="w-full bg-blue-500 hover:bg-blue-600 disabled:opacity-50 text-white font-bold py-3 rounded-2xl flex items-center justify-center gap-2 transition-colors text-sm"
             >
               {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Shield className="w-4 h-4" />}
               Changer le mot de passe
@@ -482,15 +482,15 @@ export default function ProfilPage() {
           {/* Verification */}
           <div className="bg-gray-50 border border-gray-200/50 rounded-2xl p-5">
             <h3 className="text-sm font-bold flex items-center gap-2 mb-4">
-              <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+              <CheckCircle2 className="w-4 h-4 text-blue-600" />
               Vérification du profil
             </h3>
 
             {user.badgeVerifie ? (
-              <div className="flex items-center gap-3 p-4 bg-emerald-50 border border-emerald-200/40 rounded-xl">
-                <CheckCircle2 className="w-6 h-6 text-emerald-600" />
+              <div className="flex items-center gap-3 p-4 bg-blue-50 border border-blue-200/40 rounded-xl">
+                <CheckCircle2 className="w-6 h-6 text-blue-600" />
                 <div>
-                  <p className="text-sm font-bold text-emerald-600">Profil vérifié</p>
+                  <p className="text-sm font-bold text-blue-600">Profil vérifié</p>
                   <p className="text-xs text-gray-600">Votre identité a été confirmée</p>
                 </div>
               </div>
@@ -518,7 +518,7 @@ export default function ProfilPage() {
           {/* Active Sessions */}
           <div className="bg-gray-50 border border-gray-200/50 rounded-2xl p-5">
             <h3 className="text-sm font-bold flex items-center gap-2 mb-4">
-              <Settings className="w-4 h-4 text-emerald-600" />
+              <Settings className="w-4 h-4 text-blue-600" />
               Sessions & Sécurité
             </h3>
             <div className="space-y-3">
@@ -547,7 +547,7 @@ export default function ProfilPage() {
           {/* Notifications */}
           <div className="bg-gray-50 border border-gray-200/50 rounded-2xl p-5 space-y-4">
             <h3 className="text-sm font-bold flex items-center gap-2">
-              <Bell className="w-4 h-4 text-emerald-600" />
+              <Bell className="w-4 h-4 text-blue-600" />
               Notifications
             </h3>
 
@@ -570,7 +570,7 @@ export default function ProfilPage() {
           {/* Visibilité */}
           <div className="bg-gray-50 border border-gray-200/50 rounded-2xl p-5 space-y-4">
             <h3 className="text-sm font-bold flex items-center gap-2">
-              {preferences.profilPublic ? <Eye className="w-4 h-4 text-emerald-600" /> : <EyeOff className="w-4 h-4 text-gray-600" />}
+              {preferences.profilPublic ? <Eye className="w-4 h-4 text-blue-600" /> : <EyeOff className="w-4 h-4 text-gray-600" />}
               Visibilité
             </h3>
 
@@ -586,7 +586,7 @@ export default function ProfilPage() {
           <button
             onClick={handleSavePreferences}
             disabled={loading}
-            className="w-full bg-emerald-500 hover:bg-emerald-600 disabled:opacity-50 text-white font-bold py-3 rounded-2xl flex items-center justify-center gap-2 transition-colors text-sm"
+            className="w-full bg-blue-500 hover:bg-blue-600 disabled:opacity-50 text-white font-bold py-3 rounded-2xl flex items-center justify-center gap-2 transition-colors text-sm"
           >
             {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
             Enregistrer les préférences
@@ -595,7 +595,7 @@ export default function ProfilPage() {
           {/* Quick Links */}
           <div className="bg-gray-50 border border-gray-200/50 rounded-2xl p-5">
             <h3 className="text-sm font-bold flex items-center gap-2 mb-4">
-              <Settings className="w-4 h-4 text-emerald-600" />
+              <Settings className="w-4 h-4 text-blue-600" />
               Raccourcis
             </h3>
             <div className="space-y-2">
@@ -642,13 +642,13 @@ function ToggleRow({
       className="w-full flex items-center justify-between p-3 bg-gray-50/50 border border-gray-200/50 rounded-xl hover:bg-gray-100/50 transition-colors"
     >
       <div className="flex items-center gap-3 text-left">
-        <Icon className={`w-4 h-4 ${value ? "text-emerald-600" : "text-gray-600"}`} />
+        <Icon className={`w-4 h-4 ${value ? "text-blue-600" : "text-gray-600"}`} />
         <div>
           <p className="text-sm font-medium">{label}</p>
           <p className="text-[10px] text-gray-700">{description}</p>
         </div>
       </div>
-      <div className={`w-10 h-5.5 rounded-full relative transition-colors ${value ? "bg-emerald-500" : "bg-gray-200"}`} style={{ width: 40, height: 22 }}>
+      <div className={`w-10 h-5.5 rounded-full relative transition-colors ${value ? "bg-blue-500" : "bg-gray-200"}`} style={{ width: 40, height: 22 }}>
         <div
           className={`absolute top-0.5 w-[18px] h-[18px] bg-white rounded-full shadow transition-transform ${value ? "translate-x-[20px]" : "translate-x-0.5"}`}
         />

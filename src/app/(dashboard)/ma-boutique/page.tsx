@@ -585,7 +585,7 @@ export default function MaBoutiquePage() {
   if (loading) {
     return (
       <div className="min-h-screen bg-white flex items-center justify-center">
-        <Loader2 className="w-8 h-8 text-emerald-600 animate-spin" />
+        <Loader2 className="w-8 h-8 text-blue-600 animate-spin" />
       </div>
     );
   }
@@ -604,8 +604,8 @@ export default function MaBoutiquePage() {
         </div>
         <p className="text-[15px] font-bold text-gray-900 mb-1">Scannez pour payer</p>
         <div className="flex items-center gap-2 mt-3 mb-10 animate-pulse">
-          <div className="w-2 h-2 bg-emerald-500 rounded-full" />
-          <span className="text-[13px] font-semibold text-emerald-600">En attente de paiement</span>
+          <div className="w-2 h-2 bg-blue-500 rounded-full" />
+          <span className="text-[13px] font-semibold text-blue-600">En attente de paiement</span>
         </div>
         <button
           onClick={() => setModeCaisse(false)}
@@ -631,7 +631,7 @@ export default function MaBoutiquePage() {
                 value={formNom}
                 onChange={(e) => setFormNom(e.target.value)}
                 placeholder="Ex: Événements Abidjan"
-                className="w-full border border-gray-200 rounded-xl px-4 py-3.5 text-[15px] text-gray-900 outline-none focus:border-emerald-500 transition placeholder:text-gray-300"
+                className="w-full border border-gray-200 rounded-xl px-4 py-3.5 text-[15px] text-gray-900 outline-none focus:border-blue-500 transition placeholder:text-gray-300"
                 autoFocus
               />
             </div>
@@ -641,7 +641,7 @@ export default function MaBoutiquePage() {
               <select
                 value={formCat}
                 onChange={(e) => setFormCat(e.target.value)}
-                className="w-full border border-gray-200 rounded-xl px-4 py-3.5 text-[15px] text-gray-900 outline-none focus:border-emerald-500 transition bg-white"
+                className="w-full border border-gray-200 rounded-xl px-4 py-3.5 text-[15px] text-gray-900 outline-none focus:border-blue-500 transition bg-white"
               >
                 <option value="">Choisir une catégorie</option>
                 {categories.map((c) => (
@@ -653,7 +653,7 @@ export default function MaBoutiquePage() {
             <button
               onClick={handleCreateBoutique}
               disabled={creating || !formNom.trim()}
-              className="w-full flex items-center justify-center py-4 bg-emerald-500 hover:bg-emerald-400 text-white font-bold text-[15px] rounded-2xl transition disabled:opacity-40 active:scale-[0.97] mt-2"
+              className="w-full flex items-center justify-center py-4 bg-blue-500 hover:bg-blue-400 text-white font-bold text-[15px] rounded-2xl transition disabled:opacity-40 active:scale-[0.97] mt-2"
             >
               {creating ? <Loader2 className="w-5 h-5 animate-spin" /> : "Continuer"}
             </button>
@@ -688,7 +688,7 @@ export default function MaBoutiquePage() {
           <button
             onClick={handleEncaisser}
             disabled={!encaisserMontant || parseFloat(encaisserMontant) <= 0}
-            className="w-full max-w-xs py-4 bg-emerald-500 hover:bg-emerald-400 text-white rounded-2xl font-black text-lg transition disabled:opacity-30 active:scale-[0.98] shadow-lg shadow-emerald-500/20"
+            className="w-full max-w-xs py-4 bg-blue-500 hover:bg-blue-400 text-white rounded-2xl font-black text-lg transition disabled:opacity-30 active:scale-[0.98] shadow-lg shadow-blue-500/20"
           >
             Générer le QR
           </button>
@@ -709,12 +709,12 @@ export default function MaBoutiquePage() {
         <p className="text-[36px] font-black text-gray-900 mb-1">{formatMontant(amount, devise)}</p>
         <p className="text-[15px] font-bold text-gray-900 mb-1">Scannez pour payer</p>
         <div className="flex items-center gap-2 mt-3 mb-10 animate-pulse">
-          <div className="w-2 h-2 bg-emerald-500 rounded-full" />
-          <span className="text-[13px] font-semibold text-emerald-600">En attente de paiement</span>
+          <div className="w-2 h-2 bg-blue-500 rounded-full" />
+          <span className="text-[13px] font-semibold text-blue-600">En attente de paiement</span>
         </div>
         <button
           onClick={() => { hapticSuccess(); resetEncaisser(); }}
-          className="w-full max-w-xs py-4 bg-emerald-500 hover:bg-emerald-400 text-white rounded-2xl font-bold text-[15px] transition active:scale-[0.97]"
+          className="w-full max-w-xs py-4 bg-blue-500 hover:bg-blue-400 text-white rounded-2xl font-bold text-[15px] transition active:scale-[0.97]"
         >
           Nouvelle vente
         </button>
@@ -736,14 +736,14 @@ export default function MaBoutiquePage() {
           <div>
             <h1 className="text-xl lg:text-2xl font-black text-gray-900">Mes événements</h1>
             <div className="flex items-center gap-1.5 mt-0.5">
-              <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full" />
+              <div className="w-1.5 h-1.5 bg-blue-500 rounded-full" />
               <span className="text-[11px] text-gray-400">{events.length} événement{events.length > 1 ? "s" : ""}</span>
             </div>
           </div>
           <button
             onClick={() => setActiveTab(activeTab === "reglages" ? "evenements" : "reglages")}
             className={`w-9 h-9 rounded-xl flex items-center justify-center transition ${
-              activeTab === "reglages" ? "bg-emerald-500 text-white" : "bg-gray-100 text-gray-400 hover:bg-gray-200"
+              activeTab === "reglages" ? "bg-blue-500 text-white" : "bg-gray-100 text-gray-400 hover:bg-gray-200"
             }`}
           >
             <Settings className="w-4 h-4" />
@@ -755,7 +755,7 @@ export default function MaBoutiquePage() {
       {activeTab === "evenements" && (
         <div className="px-4 mb-4 mt-1">
           <div className="flex gap-2 lg:gap-4">
-            <div className="flex-1 bg-emerald-500 rounded-2xl p-3.5 lg:p-5">
+            <div className="flex-1 bg-blue-500 rounded-2xl p-3.5 lg:p-5">
               <div className="flex items-center gap-1.5 mb-1">
                 <TrendingUp className="w-3 h-3 text-white/70" />
                 <span className="text-[10px] text-white/70 font-semibold uppercase tracking-wide">Revenus</span>
@@ -792,14 +792,14 @@ export default function MaBoutiquePage() {
 
           {/* État dynamique */}
           <div className="flex items-center gap-2 mt-3 mb-8 animate-pulse">
-            <div className="w-2 h-2 bg-emerald-500 rounded-full" />
-            <span className="text-[13px] font-semibold text-emerald-600">En attente de paiement</span>
+            <div className="w-2 h-2 bg-blue-500 rounded-full" />
+            <span className="text-[13px] font-semibold text-blue-600">En attente de paiement</span>
           </div>
 
           {/* Actions */}
           <button
             onClick={() => { setEncaisserMode(true); hapticMedium(); }}
-            className="w-full max-w-xs py-4 bg-emerald-500 hover:bg-emerald-400 text-white rounded-2xl font-bold text-[15px] transition active:scale-[0.97] mb-3"
+            className="w-full max-w-xs py-4 bg-blue-500 hover:bg-blue-400 text-white rounded-2xl font-bold text-[15px] transition active:scale-[0.97] mb-3"
           >
             Encaisser un montant
           </button>
@@ -843,7 +843,7 @@ export default function MaBoutiquePage() {
         <div className="px-4">
           <button
             onClick={() => { hapticMedium(); setShowAddProduct(true); }}
-            className="w-full flex items-center justify-center gap-2 bg-emerald-50 hover:bg-emerald-100 text-emerald-600 py-3.5 rounded-xl font-bold text-sm transition border border-emerald-200/50 mb-4"
+            className="w-full flex items-center justify-center gap-2 bg-blue-50 hover:bg-blue-100 text-blue-600 py-3.5 rounded-xl font-bold text-sm transition border border-blue-200/50 mb-4"
           >
             <Plus className="w-4 h-4" />Ajouter un produit
           </button>
@@ -878,7 +878,7 @@ export default function MaBoutiquePage() {
                     </div>
                   ) : (
                     <button type="button" onClick={() => prodImageRef.current?.click()}
-                      className="w-full mt-1.5 flex items-center justify-center gap-2 bg-gray-50 border-2 border-dashed border-gray-200 rounded-xl py-8 text-sm text-gray-500 hover:border-emerald-400 hover:text-emerald-600 transition"
+                      className="w-full mt-1.5 flex items-center justify-center gap-2 bg-gray-50 border-2 border-dashed border-gray-200 rounded-xl py-8 text-sm text-gray-500 hover:border-blue-400 hover:text-blue-600 transition"
                     >
                       <Camera className="w-5 h-5" />Prendre ou choisir une photo
                     </button>
@@ -888,43 +888,43 @@ export default function MaBoutiquePage() {
                 <div>
                   <label className="text-xs font-semibold text-gray-700">Nom du produit *</label>
                   <input value={prodNom} onChange={(e) => setProdNom(e.target.value)} placeholder="Ex: Burger Classic"
-                    className="w-full mt-1 bg-gray-50 border border-gray-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-emerald-500 transition" />
+                    className="w-full mt-1 bg-gray-50 border border-gray-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-blue-500 transition" />
                 </div>
 
                 <div className="grid grid-cols-2 gap-3">
                   <div>
                     <label className="text-xs font-semibold text-gray-700">Prix *</label>
                     <input type="number" inputMode="numeric" value={prodPrix} onChange={(e) => setProdPrix(e.target.value)} placeholder="2 500"
-                      className="w-full mt-1 bg-gray-50 border border-gray-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-emerald-500 transition" />
+                      className="w-full mt-1 bg-gray-50 border border-gray-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-blue-500 transition" />
                   </div>
                   <div>
                     <label className="text-xs font-semibold text-gray-700">Ancien prix</label>
                     <input type="number" value={prodPrixBarre} onChange={(e) => setProdPrixBarre(e.target.value)} placeholder="3 000"
-                      className="w-full mt-1 bg-gray-50 border border-gray-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-emerald-500 transition" />
+                      className="w-full mt-1 bg-gray-50 border border-gray-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-blue-500 transition" />
                   </div>
                 </div>
 
                 <div>
                   <label className="text-xs font-semibold text-gray-700">Description <span className="text-gray-400">(optionnel)</span></label>
                   <textarea value={prodDesc} onChange={(e) => setProdDesc(e.target.value)} rows={2} placeholder="Décrivez votre produit..."
-                    className="w-full mt-1 bg-gray-50 border border-gray-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-emerald-500 transition resize-none" />
+                    className="w-full mt-1 bg-gray-50 border border-gray-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-blue-500 transition resize-none" />
                 </div>
 
                 <div className="grid grid-cols-2 gap-3">
                   <div>
                     <label className="text-xs font-semibold text-gray-700">Catégorie</label>
                     <input value={prodCategorie} onChange={(e) => setProdCategorie(e.target.value)} placeholder="Boissons"
-                      className="w-full mt-1 bg-gray-50 border border-gray-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-emerald-500 transition" />
+                      className="w-full mt-1 bg-gray-50 border border-gray-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-blue-500 transition" />
                   </div>
                   <div>
                     <label className="text-xs font-semibold text-gray-700">Stock</label>
                     <input type="number" value={prodStock} onChange={(e) => setProdStock(e.target.value)} placeholder="Illimité"
-                      className="w-full mt-1 bg-gray-50 border border-gray-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-emerald-500 transition" />
+                      className="w-full mt-1 bg-gray-50 border border-gray-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-blue-500 transition" />
                   </div>
                 </div>
 
                 <button onClick={handleAddProduct} disabled={saving || !prodNom.trim() || !prodPrix}
-                  className="w-full flex items-center justify-center gap-2 bg-emerald-500 hover:bg-emerald-400 text-white py-3.5 rounded-xl font-bold transition disabled:opacity-50 active:scale-[0.98]"
+                  className="w-full flex items-center justify-center gap-2 bg-blue-500 hover:bg-blue-400 text-white py-3.5 rounded-xl font-bold transition disabled:opacity-50 active:scale-[0.98]"
                 >
                   {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
                   {saving ? "Ajout..." : "Ajouter le produit"}
@@ -955,7 +955,7 @@ export default function MaBoutiquePage() {
                     </div>
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-bold text-gray-900 truncate">{p.nom}</p>
-                      <p className="text-xs font-bold text-emerald-600">{formatMontant(p.prix, devise)}</p>
+                      <p className="text-xs font-bold text-blue-600">{formatMontant(p.prix, devise)}</p>
                       {p.ventes > 0 && <p className="text-[10px] text-gray-400">{p.ventes} vendu{p.ventes > 1 ? "s" : ""}</p>}
                     </div>
                     <div className="flex items-center gap-1">
@@ -967,7 +967,7 @@ export default function MaBoutiquePage() {
                             navigator.clipboard.writeText(qrLink).then(() => showToast("success", "Copié", "Lien copié")).catch(() => {});
                           }
                         }}
-                        className="p-2 rounded-lg hover:bg-emerald-50 text-gray-400 hover:text-emerald-600 transition" title="Partager"
+                        className="p-2 rounded-lg hover:bg-blue-50 text-gray-400 hover:text-blue-600 transition" title="Partager"
                       ><Share2 className="w-4 h-4" /></button>
                       <button onClick={() => handleDeleteProduct(p.id)} disabled={deletingId === p.id}
                         className="p-2 rounded-lg hover:bg-red-50 text-gray-400 hover:text-red-500 transition"
@@ -1013,10 +1013,10 @@ export default function MaBoutiquePage() {
                         {/* Overlay cadre */}
                         <div className="absolute inset-0 pointer-events-none flex items-center justify-center">
                           <div className="w-72 h-72 border-2 border-white/30 rounded-2xl relative">
-                            <div className="absolute top-0 left-0 w-10 h-10 border-t-4 border-l-4 border-emerald-400 rounded-tl-xl" />
-                            <div className="absolute top-0 right-0 w-10 h-10 border-t-4 border-r-4 border-emerald-400 rounded-tr-xl" />
-                            <div className="absolute bottom-0 left-0 w-10 h-10 border-b-4 border-l-4 border-emerald-400 rounded-bl-xl" />
-                            <div className="absolute bottom-0 right-0 w-10 h-10 border-b-4 border-r-4 border-emerald-400 rounded-br-xl" />
+                            <div className="absolute top-0 left-0 w-10 h-10 border-t-4 border-l-4 border-blue-400 rounded-tl-xl" />
+                            <div className="absolute top-0 right-0 w-10 h-10 border-t-4 border-r-4 border-blue-400 rounded-tr-xl" />
+                            <div className="absolute bottom-0 left-0 w-10 h-10 border-b-4 border-l-4 border-blue-400 rounded-bl-xl" />
+                            <div className="absolute bottom-0 right-0 w-10 h-10 border-b-4 border-r-4 border-blue-400 rounded-br-xl" />
                           </div>
                         </div>
                         {scanning && (
@@ -1036,7 +1036,7 @@ export default function MaBoutiquePage() {
                     <div className="flex-1 flex flex-col items-center justify-center px-6">
                       <button
                         onClick={startCamera}
-                        className="w-full max-w-sm py-16 bg-emerald-500 text-white rounded-2xl font-bold transition hover:bg-emerald-600 active:scale-[0.97] flex flex-col items-center justify-center gap-3 mb-4"
+                        className="w-full max-w-sm py-16 bg-blue-500 text-white rounded-2xl font-bold transition hover:bg-blue-600 active:scale-[0.97] flex flex-col items-center justify-center gap-3 mb-4"
                       >
                         <div className="w-16 h-16 bg-white/10 rounded-full flex items-center justify-center">
                           <Camera className="w-8 h-8 text-white" />
@@ -1062,14 +1062,14 @@ export default function MaBoutiquePage() {
                             value={scanCode}
                             onChange={(e) => setScanCode(e.target.value)}
                             placeholder="Code ou URL du billet"
-                            className="flex-1 bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-sm text-white placeholder-white/30 outline-none focus:border-emerald-400 transition font-mono"
+                            className="flex-1 bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-sm text-white placeholder-white/30 outline-none focus:border-blue-400 transition font-mono"
                             onKeyDown={(e) => e.key === "Enter" && handleScanTicket()}
                             autoFocus
                           />
                           <button
                             onClick={handleScanTicket}
                             disabled={scanning || !scanCode.trim()}
-                            className="px-5 py-3 bg-emerald-500 text-white rounded-xl font-bold text-sm transition hover:bg-emerald-600 active:scale-[0.97] disabled:opacity-50"
+                            className="px-5 py-3 bg-blue-500 text-white rounded-xl font-bold text-sm transition hover:bg-blue-600 active:scale-[0.97] disabled:opacity-50"
                           >
                             {scanning ? <Loader2 className="w-4 h-4 animate-spin" /> : <Check className="w-4 h-4" />}
                           </button>
@@ -1174,7 +1174,7 @@ export default function MaBoutiquePage() {
               <div className="grid grid-cols-2 gap-2 lg:gap-4 mb-4">
                 <button
                   onClick={() => { setScanMode(true); setScanResult(null); setScanCode(""); setTimeout(() => startCamera(), 300); }}
-                  className="flex items-center justify-center gap-2 bg-emerald-500 text-white py-3.5 rounded-xl font-bold text-sm transition hover:bg-emerald-600 active:scale-[0.97]"
+                  className="flex items-center justify-center gap-2 bg-blue-500 text-white py-3.5 rounded-xl font-bold text-sm transition hover:bg-blue-600 active:scale-[0.97]"
                 >
                   <ScanLine className="w-4 h-4" /> Scanner
                 </button>
@@ -1194,7 +1194,7 @@ export default function MaBoutiquePage() {
               <a
                 href={`/evenement/${selectedEvent.id}`}
                 target="_blank"
-                className="w-full flex items-center justify-center gap-2 bg-emerald-50 text-emerald-700 py-3 rounded-xl font-bold text-sm mb-5 transition hover:bg-emerald-100 border border-emerald-200/50"
+                className="w-full flex items-center justify-center gap-2 bg-blue-50 text-blue-700 py-3 rounded-xl font-bold text-sm mb-5 transition hover:bg-blue-100 border border-blue-200/50"
               >
                 <Eye className="w-4 h-4" /> Voir la page publique
               </a>
@@ -1224,7 +1224,7 @@ export default function MaBoutiquePage() {
                 <div className="flex items-center justify-between mb-2">
                   <h3 className="text-sm font-bold text-gray-700">Billets vendus</h3>
                   {!loadingTickets && (
-                    <button onClick={() => loadEventTickets(selectedEvent.id)} className="text-xs text-emerald-600 font-semibold">
+                    <button onClick={() => loadEventTickets(selectedEvent.id)} className="text-xs text-blue-600 font-semibold">
                       Rafraîchir
                     </button>
                   )}
@@ -1246,7 +1246,7 @@ export default function MaBoutiquePage() {
                           {t.ticket_types?.nom && <p className="text-[10px] text-gray-400">{t.ticket_types.nom}</p>}
                         </div>
                         <span className={`text-xs font-bold px-2.5 py-1 rounded-lg ${
-                          t.statut === "valid" ? "bg-emerald-50 text-emerald-600" :
+                          t.statut === "valid" ? "bg-blue-50 text-blue-600" :
                           t.statut === "used" ? "bg-gray-100 text-gray-500" :
                           "bg-red-50 text-red-500"
                         }`}>
@@ -1264,7 +1264,7 @@ export default function MaBoutiquePage() {
               {/* CTA Créer */}
               <button
                 onClick={() => { hapticMedium(); setShowAddEvent(true); }}
-                className="w-full flex items-center justify-center gap-2 bg-emerald-500 hover:bg-emerald-600 text-white py-3.5 rounded-xl font-bold text-sm transition active:scale-[0.97] mb-2.5"
+                className="w-full flex items-center justify-center gap-2 bg-blue-500 hover:bg-blue-600 text-white py-3.5 rounded-xl font-bold text-sm transition active:scale-[0.97] mb-2.5"
               >
                 <Plus className="w-4 h-4" /> Créer un événement
               </button>
@@ -1272,7 +1272,7 @@ export default function MaBoutiquePage() {
               {/* CTA Scanner — séparé */}
               <button
                 onClick={() => { setScanMode(true); setScanResult(null); setScanCode(""); hapticMedium(); setTimeout(() => startCamera(), 300); }}
-                className="w-full flex items-center justify-center gap-2.5 bg-gradient-to-r from-emerald-500 to-emerald-600 text-white py-3.5 rounded-xl font-bold text-sm transition hover:from-emerald-400 hover:to-emerald-500 active:scale-[0.97] mb-4 shadow-sm shadow-emerald-500/20"
+                className="w-full flex items-center justify-center gap-2.5 bg-gradient-to-r from-blue-500 to-blue-600 text-white py-3.5 rounded-xl font-bold text-sm transition hover:from-blue-400 hover:to-blue-500 active:scale-[0.97] mb-4 shadow-sm shadow-blue-500/20"
               >
                 <div className="w-7 h-7 bg-white/15 rounded-lg flex items-center justify-center">
                   <ScanLine className="w-4 h-4" />
@@ -1288,7 +1288,7 @@ export default function MaBoutiquePage() {
                     <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full blur-2xl -translate-y-1/2 translate-x-1/2" />
                     <div className="absolute bottom-0 left-0 w-24 h-24 bg-pink-400/10 rounded-full blur-xl translate-y-1/2 -translate-x-1/4" />
                     <div className="absolute top-4 right-16 w-2 h-2 bg-yellow-300/60 rounded-full animate-pulse" />
-                    <div className="absolute bottom-6 right-8 w-1.5 h-1.5 bg-emerald-300/60 rounded-full animate-pulse" style={{ animationDelay: '1s' }} />
+                    <div className="absolute bottom-6 right-8 w-1.5 h-1.5 bg-blue-300/60 rounded-full animate-pulse" style={{ animationDelay: '1s' }} />
                     
                     <div className="relative flex items-start justify-between">
                       <div>
@@ -1307,10 +1307,10 @@ export default function MaBoutiquePage() {
                     </div>
 
                     <div className="relative flex items-center gap-1.5 mt-4">
-                      <div className={`h-1 rounded-full transition-all duration-500 ${evtCoverPreview && evtLogoPreview ? 'bg-emerald-400 w-8' : 'bg-white/20 w-5'}`} />
-                      <div className={`h-1 rounded-full transition-all duration-500 ${evtNom.trim() && evtLieu.trim() ? 'bg-emerald-400 w-8' : 'bg-white/20 w-5'}`} />
-                      <div className={`h-1 rounded-full transition-all duration-500 ${evtDateDebut ? 'bg-emerald-400 w-8' : 'bg-white/20 w-5'}`} />
-                      <div className={`h-1 rounded-full transition-all duration-500 ${evtTicketTypes[0]?.nom ? 'bg-emerald-400 w-8' : 'bg-white/20 w-5'}`} />
+                      <div className={`h-1 rounded-full transition-all duration-500 ${evtCoverPreview && evtLogoPreview ? 'bg-blue-400 w-8' : 'bg-white/20 w-5'}`} />
+                      <div className={`h-1 rounded-full transition-all duration-500 ${evtNom.trim() && evtLieu.trim() ? 'bg-blue-400 w-8' : 'bg-white/20 w-5'}`} />
+                      <div className={`h-1 rounded-full transition-all duration-500 ${evtDateDebut ? 'bg-blue-400 w-8' : 'bg-white/20 w-5'}`} />
+                      <div className={`h-1 rounded-full transition-all duration-500 ${evtTicketTypes[0]?.nom ? 'bg-blue-400 w-8' : 'bg-white/20 w-5'}`} />
                       <span className="text-[9px] text-white/30 ml-auto font-semibold">
                         {[evtCoverPreview && evtLogoPreview, evtNom.trim() && evtLieu.trim(), evtDateDebut, evtTicketTypes[0]?.nom].filter(Boolean).length}/4
                       </span>
@@ -1331,7 +1331,7 @@ export default function MaBoutiquePage() {
 
                     <button type="button" onClick={() => evtFormCoverRef.current?.click()}
                       className={`w-full h-36 rounded-2xl flex items-center justify-center overflow-hidden transition-all relative group mb-3 ${
-                        evtCoverPreview ? "ring-2 ring-emerald-500/30 shadow-lg shadow-emerald-500/10" : "bg-gradient-to-br from-gray-50 to-gray-100 border-2 border-dashed border-gray-200 hover:border-purple-300 hover:from-purple-50/50 hover:to-pink-50/50"
+                        evtCoverPreview ? "ring-2 ring-blue-500/30 shadow-lg shadow-blue-500/10" : "bg-gradient-to-br from-gray-50 to-gray-100 border-2 border-dashed border-gray-200 hover:border-purple-300 hover:from-purple-50/50 hover:to-pink-50/50"
                       }`}>
                       {evtCoverPreview ? (
                         <>
@@ -1339,7 +1339,7 @@ export default function MaBoutiquePage() {
                           <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300 flex items-end justify-center pb-4">
                             <span className="bg-white/90 backdrop-blur-sm text-gray-900 text-xs font-bold px-3 py-1.5 rounded-full flex items-center gap-1.5"><Camera className="w-3 h-3" /> Changer</span>
                           </div>
-                          <div className="absolute top-2 right-2 w-6 h-6 rounded-full bg-emerald-500 flex items-center justify-center shadow-lg"><Check className="w-3 h-3 text-white" /></div>
+                          <div className="absolute top-2 right-2 w-6 h-6 rounded-full bg-blue-500 flex items-center justify-center shadow-lg"><Check className="w-3 h-3 text-white" /></div>
                         </>
                       ) : (
                         <div className="text-center">
@@ -1355,7 +1355,7 @@ export default function MaBoutiquePage() {
                     <div className="flex items-center gap-3 bg-white rounded-2xl border border-gray-100 p-3 shadow-sm">
                       <button type="button" onClick={() => evtFormLogoRef.current?.click()}
                         className={`w-16 h-16 rounded-2xl flex items-center justify-center overflow-hidden transition-all relative group shrink-0 ${
-                          evtLogoPreview ? "ring-2 ring-emerald-500/30 shadow-md" : "bg-gradient-to-br from-violet-50 to-purple-50 border-2 border-dashed border-purple-200 hover:border-purple-400"
+                          evtLogoPreview ? "ring-2 ring-blue-500/30 shadow-md" : "bg-gradient-to-br from-violet-50 to-purple-50 border-2 border-dashed border-purple-200 hover:border-purple-400"
                         }`}>
                         {evtLogoPreview ? (
                           <>
@@ -1370,7 +1370,7 @@ export default function MaBoutiquePage() {
                         <p className="text-xs font-bold text-gray-900">Logo / Photo de profil</p>
                         <p className="text-[10px] text-gray-400 mt-0.5">Visible sur la page et les billets</p>
                       </div>
-                      {evtLogoPreview && (<div className="w-5 h-5 rounded-full bg-emerald-500 flex items-center justify-center shrink-0"><Check className="w-3 h-3 text-white" /></div>)}
+                      {evtLogoPreview && (<div className="w-5 h-5 rounded-full bg-blue-500 flex items-center justify-center shrink-0"><Check className="w-3 h-3 text-white" /></div>)}
                     </div>
                   </div>
 
@@ -1436,20 +1436,20 @@ export default function MaBoutiquePage() {
                   {/* ── Section 3: Billets ── */}
                   <div className="relative mb-3">
                     <div className="flex items-center gap-2.5 mb-3">
-                      <div className="w-6 h-6 rounded-lg bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center shadow-sm shadow-emerald-500/30">
+                      <div className="w-6 h-6 rounded-lg bg-gradient-to-br from-blue-500 to-teal-600 flex items-center justify-center shadow-sm shadow-blue-500/30">
                         <Ticket className="w-3 h-3 text-white" />
                       </div>
                       <div className="flex-1">
                         <p className="text-[13px] font-bold text-gray-900">Billetterie</p>
                         <p className="text-[10px] text-gray-400">Définissez vos types de billets</p>
                       </div>
-                      <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">{evtTicketTypes.length} type{evtTicketTypes.length > 1 ? "s" : ""}</span>
+                      <span className="text-[10px] font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded-full">{evtTicketTypes.length} type{evtTicketTypes.length > 1 ? "s" : ""}</span>
                     </div>
                     <div className="space-y-2.5">
                       {evtTicketTypes.map((ticket, idx) => (
                         <div key={idx} className="bg-white rounded-2xl border border-gray-100 shadow-sm p-3.5 relative overflow-hidden group">
                           <div className={`absolute top-0 left-0 w-1 h-full rounded-r-full ${
-                            idx === 0 ? 'bg-gradient-to-b from-emerald-400 to-teal-500' :
+                            idx === 0 ? 'bg-gradient-to-b from-blue-400 to-teal-500' :
                             idx === 1 ? 'bg-gradient-to-b from-violet-400 to-purple-500' :
                             idx === 2 ? 'bg-gradient-to-b from-amber-400 to-orange-500' :
                             'bg-gradient-to-b from-blue-400 to-indigo-500'
@@ -1470,14 +1470,14 @@ export default function MaBoutiquePage() {
                               <label className="text-[9px] font-bold text-gray-400 uppercase tracking-wider">Prix</label>
                               <div className="flex items-center gap-1 mt-0.5">
                                 <input type="number" inputMode="numeric" value={ticket.prix} onChange={(e) => { const arr = [...evtTicketTypes]; arr[idx] = {...arr[idx], prix: e.target.value}; setEvtTicketTypes(arr); }}
-                                  placeholder="0 = gratuit" className="w-full bg-gray-50 border border-gray-100 rounded-lg px-2.5 py-2 text-sm font-bold text-gray-900 placeholder:text-gray-300 outline-none focus:border-emerald-400 focus:ring-1 focus:ring-emerald-400/20 transition" />
+                                  placeholder="0 = gratuit" className="w-full bg-gray-50 border border-gray-100 rounded-lg px-2.5 py-2 text-sm font-bold text-gray-900 placeholder:text-gray-300 outline-none focus:border-blue-400 focus:ring-1 focus:ring-blue-400/20 transition" />
                                 <span className="text-[10px] text-gray-400 font-bold shrink-0">{devise}</span>
                               </div>
                             </div>
                             <div className="w-20">
                               <label className="text-[9px] font-bold text-gray-400 uppercase tracking-wider">Places</label>
                               <input type="number" inputMode="numeric" value={ticket.qty} onChange={(e) => { const arr = [...evtTicketTypes]; arr[idx] = {...arr[idx], qty: e.target.value}; setEvtTicketTypes(arr); }}
-                                placeholder="100" className="w-full bg-gray-50 border border-gray-100 rounded-lg px-2.5 py-2 text-sm text-center font-bold text-gray-900 placeholder:text-gray-300 outline-none focus:border-emerald-400 focus:ring-1 focus:ring-emerald-400/20 transition mt-0.5" />
+                                placeholder="100" className="w-full bg-gray-50 border border-gray-100 rounded-lg px-2.5 py-2 text-sm text-center font-bold text-gray-900 placeholder:text-gray-300 outline-none focus:border-blue-400 focus:ring-1 focus:ring-blue-400/20 transition mt-0.5" />
                             </div>
                           </div>
                         </div>
@@ -1570,9 +1570,9 @@ export default function MaBoutiquePage() {
                                     <div className="border-t-2 border-dashed border-gray-200 absolute top-1/2 left-5 right-5" />
                                   </div>
                                   <div className="p-4 pt-2">
-                                    <div className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 mb-3">
-                                      <Check className="w-2.5 h-2.5 text-emerald-500" />
-                                      <span className="text-[9px] font-bold text-emerald-500">Valide</span>
+                                    <div className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 mb-3">
+                                      <Check className="w-2.5 h-2.5 text-blue-500" />
+                                      <span className="text-[9px] font-bold text-blue-500">Valide</span>
                                     </div>
                                     <div className="flex justify-center mb-4">
                                       <div className="bg-white p-2.5 rounded-xl border-2 border-gray-100">
@@ -1631,7 +1631,7 @@ export default function MaBoutiquePage() {
                   </button>
                   <div className="flex items-center justify-center gap-2 mt-3 mb-1">
                     <div className="flex items-center gap-1">
-                      <div className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                      <div className="w-1.5 h-1.5 rounded-full bg-blue-400" />
                       <span className="text-[10px] text-gray-400">En ligne immédiatement</span>
                     </div>
                     <span className="text-gray-200">·</span>
@@ -1669,14 +1669,14 @@ export default function MaBoutiquePage() {
                         {evt.logo_url ? (
                           <div className="relative shrink-0">
                             <img src={evt.logo_url} alt="" className="w-14 h-14 rounded-xl object-cover" />
-                            {isToday && <div className="absolute -top-1 -right-1 w-3 h-3 bg-emerald-500 rounded-full border-2 border-white" />}
+                            {isToday && <div className="absolute -top-1 -right-1 w-3 h-3 bg-blue-500 rounded-full border-2 border-white" />}
                           </div>
                         ) : (
                           <div className={`w-14 h-14 rounded-xl flex flex-col items-center justify-center shrink-0 ${
-                            isPast ? "bg-gray-200" : isToday ? "bg-emerald-500" : "bg-gray-900"
+                            isPast ? "bg-gray-200" : isToday ? "bg-blue-500" : "bg-gray-900"
                           }`}>
                             <span className={`text-[10px] font-bold uppercase leading-none ${
-                              isPast ? "text-gray-500" : isToday ? "text-emerald-100" : "text-gray-400"
+                              isPast ? "text-gray-500" : isToday ? "text-blue-100" : "text-gray-400"
                             }`}>
                               {evtDate.toLocaleDateString("fr-FR", { month: "short" })}
                             </span>
@@ -1695,12 +1695,12 @@ export default function MaBoutiquePage() {
                             {isPast ? (
                               <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-md bg-gray-100 text-gray-400 shrink-0">Terminé</span>
                             ) : isToday ? (
-                              <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-md bg-emerald-50 text-emerald-600 shrink-0">Aujourd&apos;hui</span>
+                              <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-md bg-blue-50 text-blue-600 shrink-0">Aujourd&apos;hui</span>
                             ) : null}
                           </div>
                           <p className="text-xs text-gray-400 truncate mt-0.5">{evt.lieu}{evt.ville ? ` · ${evt.ville}` : ""}</p>
                           <div className="flex items-center gap-3 mt-1.5">
-                            <span className="text-[11px] text-emerald-600 font-bold">{evt.total_vendu || 0} billet{(evt.total_vendu || 0) > 1 ? "s" : ""}</span>
+                            <span className="text-[11px] text-blue-600 font-bold">{evt.total_vendu || 0} billet{(evt.total_vendu || 0) > 1 ? "s" : ""}</span>
                             {parseFloat(evt.revenus) > 0 && (
                               <span className="text-[11px] text-gray-900 font-black">{formatMontant(parseFloat(evt.revenus), devise)}</span>
                             )}
@@ -1739,7 +1739,7 @@ export default function MaBoutiquePage() {
                     <p className="text-[11px] text-gray-400">{new Date(c.created_at).toLocaleDateString("fr-FR", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}</p>
                   </div>
                   <span className={`text-xs font-bold px-2.5 py-1 rounded-lg ${
-                    c.statut === "paye" || c.statut === "payé" ? "bg-emerald-50 text-emerald-600" : "bg-yellow-50 text-yellow-600"
+                    c.statut === "paye" || c.statut === "payé" ? "bg-blue-50 text-blue-600" : "bg-yellow-50 text-yellow-600"
                   }`}>
                     {c.statut === "paye" || c.statut === "payé" ? "✓ Payé" : c.statut}
                   </span>
@@ -1777,7 +1777,7 @@ export default function MaBoutiquePage() {
                 <label className="text-xs font-bold text-gray-700 mb-1.5 block">Logo</label>
                 <input ref={logoInputRef} type="file" accept="image/jpeg,image/png,image/webp" onChange={handleUploadLogo} className="hidden" />
                 <button onClick={() => logoInputRef.current?.click()} disabled={uploadingLogo}
-                  className="w-full flex items-center justify-center gap-2 bg-gray-50 border border-gray-200 rounded-xl py-3 text-sm text-gray-600 font-semibold hover:border-emerald-400 hover:text-emerald-600 transition disabled:opacity-50"
+                  className="w-full flex items-center justify-center gap-2 bg-gray-50 border border-gray-200 rounded-xl py-3 text-sm text-gray-600 font-semibold hover:border-blue-400 hover:text-blue-600 transition disabled:opacity-50"
                 >
                   {uploadingLogo ? <Loader2 className="w-4 h-4 animate-spin" /> : <Camera className="w-4 h-4" />}
                   {boutique.logo_url ? "Changer le logo" : "Ajouter un logo"}
@@ -1792,7 +1792,7 @@ export default function MaBoutiquePage() {
                   <img src={boutique.banner_url} alt="" className="w-full h-20 object-cover rounded-lg mb-2 border border-gray-100" />
                 )}
                 <button onClick={() => bannerInputRef.current?.click()} disabled={uploadingBanner}
-                  className="w-full flex items-center justify-center gap-2 bg-gray-50 border border-gray-200 rounded-xl py-3 text-sm text-gray-600 font-semibold hover:border-emerald-400 hover:text-emerald-600 transition disabled:opacity-50"
+                  className="w-full flex items-center justify-center gap-2 bg-gray-50 border border-gray-200 rounded-xl py-3 text-sm text-gray-600 font-semibold hover:border-blue-400 hover:text-blue-600 transition disabled:opacity-50"
                 >
                   {uploadingBanner ? <Loader2 className="w-4 h-4 animate-spin" /> : <ImagePlus className="w-4 h-4" />}
                   {boutique.banner_url ? "Changer la couverture" : "Ajouter une couverture"}
@@ -1815,11 +1815,11 @@ export default function MaBoutiquePage() {
               }}
                 className="flex-1 flex items-center justify-center gap-1.5 bg-gray-100 hover:bg-gray-200 text-gray-700 py-2.5 rounded-xl text-xs font-bold transition"
               >
-                {copied ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5" />}
+                {copied ? <Check className="w-3.5 h-3.5 text-blue-600" /> : <Copy className="w-3.5 h-3.5" />}
                 {copied ? "Copié !" : "Copier le lien"}
               </button>
               <button onClick={handleShare}
-                className="flex-1 flex items-center justify-center gap-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 py-2.5 rounded-xl text-xs font-bold transition"
+                className="flex-1 flex items-center justify-center gap-1.5 bg-blue-50 hover:bg-blue-100 text-blue-700 py-2.5 rounded-xl text-xs font-bold transition"
               ><Share2 className="w-3.5 h-3.5" />Partager</button>
             </div>
             <div className="grid grid-cols-4 gap-1.5 mt-2">

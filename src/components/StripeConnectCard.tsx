@@ -69,7 +69,7 @@ export default function StripeConnectCard() {
   return (
     <div className={`rounded-2xl border-2 p-5 ${
       isVerified
-        ? "border-green-200 bg-gradient-to-r from-green-50 to-emerald-50"
+        ? "border-green-200 bg-gradient-to-r from-green-50 to-blue-50"
         : hasAccount
         ? "border-amber-200 bg-gradient-to-r from-amber-50 to-orange-50"
         : "border-primary-200 bg-gradient-to-r from-primary-50 to-primary-50/50"

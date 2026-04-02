@@ -8,7 +8,7 @@ export default function QRCodeRedirect() {
   useEffect(() => { router.replace("/evenements"); }, [router]);
   return (
     <div className="min-h-[60vh] flex items-center justify-center">
-      <div className="w-6 h-6 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin" />
+      <div className="w-6 h-6 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
     </div>
   );
 }

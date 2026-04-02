@@ -154,7 +154,7 @@ function TicketSuccessContent() {
   return (
     <div className="min-h-screen bg-black flex flex-col items-center justify-center px-6">
       {/* Confirmation */}
-      <div className="w-20 h-20 bg-emerald-500 rounded-full flex items-center justify-center mb-5 animate-in zoom-in-75 duration-300">
+      <div className="w-20 h-20 bg-blue-500 rounded-full flex items-center justify-center mb-5 animate-in zoom-in-75 duration-300">
         <Check className="w-10 h-10 text-white" />
       </div>
       <h1 className="text-2xl font-black text-white mb-2">
@@ -179,7 +179,7 @@ function TicketSuccessContent() {
           <Link
             key={t.qr_code}
             href={`/billet/${t.qr_code}`}
-            className="block w-full bg-emerald-500 text-white rounded-2xl p-4 text-center font-bold text-sm transition hover:bg-emerald-600 active:scale-[0.98]"
+            className="block w-full bg-blue-500 text-white rounded-2xl p-4 text-center font-bold text-sm transition hover:bg-blue-600 active:scale-[0.98]"
           >
             <div className="flex items-center justify-center gap-2">
               <Ticket className="w-5 h-5" />

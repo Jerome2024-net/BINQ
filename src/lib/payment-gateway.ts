@@ -43,8 +43,8 @@ export const PAYMENT_METHODS: PaymentMethod[] = [
     feePercent: 0,
     requiresAuth: true,
     available: true,
-    color: "bg-emerald-500",
-    textColor: "text-emerald-600",
+    color: "bg-blue-500",
+    textColor: "text-blue-600",
     countries: ["SN", "CI", "ML", "BF", "BJ", "TG", "NE", "GW", "FR", "BE"],
   },
   {

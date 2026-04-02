@@ -45,7 +45,7 @@ export default function ScanResultOverlay({ result, onScanNext, onClose }: ScanR
 
   // Color scheme based on result
   const bg = isValid
-    ? "from-emerald-500 via-emerald-600 to-emerald-700"
+    ? "from-blue-500 via-blue-600 to-blue-700"
     : isAlreadyUsed
     ? "from-orange-500 via-orange-600 to-orange-700"
     : "from-red-500 via-red-600 to-red-700";
@@ -110,8 +110,8 @@ export default function ScanResultOverlay({ result, onScanNext, onClose }: ScanR
           }`}
         >
           <div className={`w-28 h-28 ${iconBg} rounded-full flex items-center justify-center mb-6 mx-auto`}>
-            <div className={`w-20 h-20 bg-white rounded-full flex items-center justify-center ${isValid ? "shadow-lg shadow-emerald-800/30" : ""}`}>
-              <StatusIcon className={`w-10 h-10 ${isValid ? "text-emerald-600" : isAlreadyUsed ? "text-orange-600" : "text-red-600"}`} />
+            <div className={`w-20 h-20 bg-white rounded-full flex items-center justify-center ${isValid ? "shadow-lg shadow-blue-800/30" : ""}`}>
+              <StatusIcon className={`w-10 h-10 ${isValid ? "text-blue-600" : isAlreadyUsed ? "text-orange-600" : "text-red-600"}`} />
             </div>
           </div>
         </div>
@@ -139,7 +139,7 @@ export default function ScanResultOverlay({ result, onScanNext, onClose }: ScanR
           >
             <div className="bg-white/20 backdrop-blur-sm rounded-2xl px-6 py-3 flex items-center gap-3">
               <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center">
-                <span className="text-lg font-black text-emerald-600">#{ticket.entry_number}</span>
+                <span className="text-lg font-black text-blue-600">#{ticket.entry_number}</span>
               </div>
               <div>
                 <p className="text-white font-bold text-sm">Entrée n°{ticket.entry_number}</p>

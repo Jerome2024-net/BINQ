@@ -99,7 +99,7 @@ export default function HomePage() {
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
                 <div className="absolute bottom-0 left-0 right-0 p-5">
                   <div className="inline-flex items-center gap-1.5 bg-white/15 backdrop-blur-md rounded-full px-2.5 py-1 mb-3">
-                    <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                    <div className="w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse" />
                     <span className="text-[8px] font-semibold text-white/80 uppercase tracking-[0.12em]">En vente</span>
                   </div>
                   <h3 className="text-[24px] sm:text-[28px] font-black text-white leading-[0.92] tracking-tight mb-1">

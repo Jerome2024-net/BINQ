@@ -90,7 +90,7 @@ function statutBadge(statut: string) {
   switch (statut) {
     case "pending": return { label: "En attente", icon: Clock, cls: "text-amber-600 bg-amber-50" };
     case "processing": return { label: "En cours", icon: Loader2, cls: "text-blue-600 bg-blue-50" };
-    case "completed": return { label: "Effectué", icon: CheckCircle2, cls: "text-emerald-600 bg-emerald-50" };
+    case "completed": return { label: "Effectué", icon: CheckCircle2, cls: "text-blue-600 bg-blue-50" };
     case "failed": return { label: "Échoué", icon: XCircle, cls: "text-red-600 bg-red-50" };
     case "cancelled": return { label: "Annulé", icon: XCircle, cls: "text-gray-600 bg-gray-50" };
     default: return { label: statut, icon: Clock, cls: "text-gray-600 bg-gray-50" };
@@ -247,7 +247,7 @@ export default function PortefeuillePage() {
   if (loading) {
     return (
       <div className="min-h-[60vh] flex items-center justify-center">
-        <div className="w-6 h-6 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin" />
+        <div className="w-6 h-6 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
@@ -275,13 +275,13 @@ export default function PortefeuillePage() {
               onClick={() => { setNewMethodType(mt.value); hapticMedium(); }}
               className={`w-full flex items-center gap-3.5 p-4 rounded-2xl border transition-all ${
                 newMethodType === mt.value
-                  ? "border-emerald-500 bg-emerald-50"
+                  ? "border-blue-500 bg-blue-50"
                   : "border-gray-100 bg-white hover:border-gray-200"
               }`}
             >
               <mt.icon className={`w-5 h-5 ${mt.color}`} />
               <span className="text-[14px] font-semibold text-gray-900">{mt.label}</span>
-              {newMethodType === mt.value && <Check className="w-4 h-4 text-emerald-500 ml-auto" />}
+              {newMethodType === mt.value && <Check className="w-4 h-4 text-blue-500 ml-auto" />}
             </button>
           ))}
         </div>
@@ -297,7 +297,7 @@ export default function PortefeuillePage() {
               value={newMethodNumero}
               onChange={(e) => setNewMethodNumero(e.target.value)}
               placeholder={newMethodType === "bank_transfer" ? "CI00 0000 0000 0000" : "07 XX XX XX XX"}
-              className="w-full px-4 py-3.5 rounded-2xl border border-gray-200 text-[15px] font-medium focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/10 transition-all"
+              className="w-full px-4 py-3.5 rounded-2xl border border-gray-200 text-[15px] font-medium focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10 transition-all"
             />
 
             <p className="text-[13px] font-semibold text-gray-500 mt-6 mb-3">Nom du titulaire (optionnel)</p>
@@ -306,13 +306,13 @@ export default function PortefeuillePage() {
               value={newMethodNom}
               onChange={(e) => setNewMethodNom(e.target.value)}
               placeholder="Nom complet"
-              className="w-full px-4 py-3.5 rounded-2xl border border-gray-200 text-[15px] font-medium focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/10 transition-all"
+              className="w-full px-4 py-3.5 rounded-2xl border border-gray-200 text-[15px] font-medium focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10 transition-all"
             />
 
             <button
               onClick={handleAddMethod}
               disabled={!newMethodNumero || newMethodNumero.length < 8 || addingMethod}
-              className="w-full mt-8 py-4 bg-emerald-500 text-white font-bold text-[15px] rounded-2xl hover:bg-emerald-400 transition-all active:scale-[0.97] disabled:opacity-50 disabled:active:scale-100"
+              className="w-full mt-8 py-4 bg-blue-500 text-white font-bold text-[15px] rounded-2xl hover:bg-blue-400 transition-all active:scale-[0.97] disabled:opacity-50 disabled:active:scale-100"
             >
               {addingMethod ? (
                 <Loader2 className="w-5 h-5 animate-spin mx-auto" />
@@ -348,7 +348,7 @@ export default function PortefeuillePage() {
             <p className="text-[13px] text-gray-500 mb-6">Ajoutez MoMo, Wave ou un autre moyen</p>
             <button
               onClick={() => { setView("add-method"); hapticMedium(); }}
-              className="px-6 py-3 bg-emerald-500 text-white font-bold text-[14px] rounded-2xl hover:bg-emerald-400 transition-all active:scale-[0.97]"
+              className="px-6 py-3 bg-blue-500 text-white font-bold text-[14px] rounded-2xl hover:bg-blue-400 transition-all active:scale-[0.97]"
             >
               Ajouter un moyen
             </button>
@@ -366,7 +366,7 @@ export default function PortefeuillePage() {
                       setView("withdraw-amount");
                       hapticMedium();
                     }}
-                    className="w-full flex items-center gap-3.5 p-4 rounded-2xl border border-gray-100 bg-white hover:border-emerald-200 hover:bg-emerald-50/30 transition-all"
+                    className="w-full flex items-center gap-3.5 p-4 rounded-2xl border border-gray-100 bg-white hover:border-blue-200 hover:bg-blue-50/30 transition-all"
                   >
                     <div className="w-10 h-10 rounded-xl bg-gray-50 flex items-center justify-center">
                       <meta.icon className={`w-5 h-5 ${meta.color}`} />
@@ -383,7 +383,7 @@ export default function PortefeuillePage() {
 
             <button
               onClick={() => { setView("add-method"); hapticMedium(); }}
-              className="w-full flex items-center justify-center gap-2 py-3.5 text-[14px] font-semibold text-emerald-600 hover:bg-emerald-50 rounded-2xl transition-colors"
+              className="w-full flex items-center justify-center gap-2 py-3.5 text-[14px] font-semibold text-blue-600 hover:bg-blue-50 rounded-2xl transition-colors"
             >
               <Plus className="w-4 h-4" />
               Ajouter un moyen
@@ -428,7 +428,7 @@ export default function PortefeuillePage() {
             onChange={(e) => setWithdrawAmount(e.target.value)}
             placeholder="0"
             autoFocus
-            className="w-full text-center text-[36px] font-black py-6 bg-gray-50 rounded-2xl border-2 border-gray-100 focus:border-emerald-500 focus:bg-white focus:outline-none transition-all"
+            className="w-full text-center text-[36px] font-black py-6 bg-gray-50 rounded-2xl border-2 border-gray-100 focus:border-blue-500 focus:bg-white focus:outline-none transition-all"
           />
           <span className="absolute right-5 top-1/2 -translate-y-1/2 text-[14px] font-bold text-gray-400">FCFA</span>
         </div>
@@ -447,7 +447,7 @@ export default function PortefeuillePage() {
             <div className="h-px bg-gray-200" />
             <div className="flex justify-between text-[14px]">
               <span className="font-bold text-gray-900">Vous recevez</span>
-              <span className="font-black text-emerald-600">{formatMontant(net, devise)}</span>
+              <span className="font-black text-blue-600">{formatMontant(net, devise)}</span>
             </div>
           </div>
         )}
@@ -469,7 +469,7 @@ export default function PortefeuillePage() {
             }
           }}
           disabled={!isValid}
-          className="w-full py-4 bg-emerald-500 text-white font-bold text-[15px] rounded-2xl hover:bg-emerald-400 transition-all active:scale-[0.97] disabled:opacity-50 disabled:active:scale-100"
+          className="w-full py-4 bg-blue-500 text-white font-bold text-[15px] rounded-2xl hover:bg-blue-400 transition-all active:scale-[0.97] disabled:opacity-50 disabled:active:scale-100"
         >
           Continuer
         </button>
@@ -526,7 +526,7 @@ export default function PortefeuillePage() {
             </div>
             <div className="flex justify-between text-[14px] pt-1">
               <span className="font-bold">Vous recevez</span>
-              <span className="font-black text-emerald-600">{formatMontant(net, devise)}</span>
+              <span className="font-black text-blue-600">{formatMontant(net, devise)}</span>
             </div>
           </div>
         </div>
@@ -534,7 +534,7 @@ export default function PortefeuillePage() {
         <button
           onClick={handleWithdraw}
           disabled={withdrawing}
-          className="w-full py-4 bg-emerald-500 text-white font-bold text-[15px] rounded-2xl hover:bg-emerald-400 transition-all active:scale-[0.97] disabled:opacity-50"
+          className="w-full py-4 bg-blue-500 text-white font-bold text-[15px] rounded-2xl hover:bg-blue-400 transition-all active:scale-[0.97] disabled:opacity-50"
         >
           {withdrawing ? (
             <Loader2 className="w-5 h-5 animate-spin mx-auto" />
@@ -552,8 +552,8 @@ export default function PortefeuillePage() {
   if (view === "withdraw-success" && lastWithdrawal) {
     return (
       <div className="px-5 pt-16 pb-28 lg:pb-10 text-center">
-        <div className="w-20 h-20 bg-emerald-50 rounded-full flex items-center justify-center mx-auto mb-6">
-          <CheckCircle2 className="w-10 h-10 text-emerald-500" />
+        <div className="w-20 h-20 bg-blue-50 rounded-full flex items-center justify-center mx-auto mb-6">
+          <CheckCircle2 className="w-10 h-10 text-blue-500" />
         </div>
 
         <h1 className="text-[22px] font-black text-gray-900 mb-2">Retrait envoyé !</h1>
@@ -575,7 +575,7 @@ export default function PortefeuillePage() {
               setLastWithdrawal(null);
               loadData();
             }}
-            className="w-full py-4 bg-emerald-500 text-white font-bold text-[15px] rounded-2xl hover:bg-emerald-400 transition-all active:scale-[0.97]"
+            className="w-full py-4 bg-blue-500 text-white font-bold text-[15px] rounded-2xl hover:bg-blue-400 transition-all active:scale-[0.97]"
           >
             Retour au portefeuille
           </button>
@@ -628,9 +628,9 @@ export default function PortefeuillePage() {
               const isPositive = item.montant > 0;
               return (
                 <div key={item.id} className="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-50 transition-colors">
-                  <div className={`w-9 h-9 rounded-xl flex items-center justify-center ${isPositive ? "bg-emerald-50" : "bg-gray-50"}`}>
+                  <div className={`w-9 h-9 rounded-xl flex items-center justify-center ${isPositive ? "bg-blue-50" : "bg-gray-50"}`}>
                     {isPositive ? (
-                      <ArrowDownLeft className="w-4 h-4 text-emerald-500" />
+                      <ArrowDownLeft className="w-4 h-4 text-blue-500" />
                     ) : (
                       <ArrowUpRight className="w-4 h-4 text-gray-400" />
                     )}
@@ -646,7 +646,7 @@ export default function PortefeuillePage() {
                       )}
                     </div>
                   </div>
-                  <p className={`text-[14px] font-bold ${isPositive ? "text-emerald-600" : "text-gray-900"}`}>
+                  <p className={`text-[14px] font-bold ${isPositive ? "text-blue-600" : "text-gray-900"}`}>
                     {isPositive ? "+" : ""}{formatMontant(Math.abs(item.montant), devise)}
                   </p>
                 </div>
@@ -688,7 +688,7 @@ export default function PortefeuillePage() {
           }}
           className="flex flex-col items-center gap-2"
         >
-          <div className="w-14 h-14 rounded-2xl bg-emerald-500 flex items-center justify-center shadow-lg shadow-emerald-500/25 hover:bg-emerald-400 transition-all active:scale-95">
+          <div className="w-14 h-14 rounded-2xl bg-blue-500 flex items-center justify-center shadow-lg shadow-blue-500/25 hover:bg-blue-400 transition-all active:scale-95">
             <ArrowUpRight className="w-6 h-6 text-white" />
           </div>
           <span className="text-[12px] font-semibold text-gray-600">Retirer</span>
@@ -740,7 +740,7 @@ export default function PortefeuillePage() {
           <p className="text-[13px] font-semibold text-gray-500">Moyens de retrait</p>
           <button
             onClick={() => { setView("add-method"); hapticMedium(); }}
-            className="text-[12px] font-semibold text-emerald-600 flex items-center gap-1"
+            className="text-[12px] font-semibold text-blue-600 flex items-center gap-1"
           >
             <Plus className="w-3.5 h-3.5" /> Ajouter
           </button>
@@ -749,7 +749,7 @@ export default function PortefeuillePage() {
         {methods.length === 0 ? (
           <button
             onClick={() => { setView("add-method"); hapticMedium(); }}
-            className="w-full p-5 rounded-2xl border-2 border-dashed border-gray-200 text-center hover:border-emerald-300 hover:bg-emerald-50/30 transition-all"
+            className="w-full p-5 rounded-2xl border-2 border-dashed border-gray-200 text-center hover:border-blue-300 hover:bg-blue-50/30 transition-all"
           >
             <Plus className="w-6 h-6 text-gray-300 mx-auto mb-2" />
             <p className="text-[13px] font-semibold text-gray-500">Ajouter MoMo, Wave...</p>
@@ -768,7 +768,7 @@ export default function PortefeuillePage() {
                     <p className="text-[11px] text-gray-500">{m.numero}</p>
                   </div>
                   {m.is_default && (
-                    <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-lg">Par défaut</span>
+                    <span className="text-[10px] font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded-lg">Par défaut</span>
                   )}
                   <button
                     onClick={() => handleDeleteMethod(m.id)}
@@ -790,7 +790,7 @@ export default function PortefeuillePage() {
             <p className="text-[13px] font-semibold text-gray-500">Transactions récentes</p>
             <button
               onClick={() => { setView("history"); hapticMedium(); }}
-              className="text-[12px] font-semibold text-emerald-600"
+              className="text-[12px] font-semibold text-blue-600"
             >
               Voir tout
             </button>
@@ -800,9 +800,9 @@ export default function PortefeuillePage() {
               const isPositive = t.montant > 0;
               return (
                 <div key={t.id} className="flex items-center gap-3 p-2.5 rounded-xl">
-                  <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${isPositive ? "bg-emerald-50" : "bg-gray-50"}`}>
+                  <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${isPositive ? "bg-blue-50" : "bg-gray-50"}`}>
                     {isPositive ? (
-                      <ArrowDownLeft className="w-3.5 h-3.5 text-emerald-500" />
+                      <ArrowDownLeft className="w-3.5 h-3.5 text-blue-500" />
                     ) : (
                       <ArrowUpRight className="w-3.5 h-3.5 text-gray-400" />
                     )}
@@ -811,7 +811,7 @@ export default function PortefeuillePage() {
                     <p className="text-[12px] font-semibold text-gray-900 truncate">{t.description || t.type}</p>
                     <p className="text-[10px] text-gray-400">{formatDate(t.created_at)}</p>
                   </div>
-                  <p className={`text-[13px] font-bold ${isPositive ? "text-emerald-600" : "text-gray-600"}`}>
+                  <p className={`text-[13px] font-bold ${isPositive ? "text-blue-600" : "text-gray-600"}`}>
                     {isPositive ? "+" : ""}{formatMontant(Math.abs(t.montant), devise)}
                   </p>
                 </div>

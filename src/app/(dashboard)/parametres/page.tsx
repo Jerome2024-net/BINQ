@@ -87,8 +87,8 @@ export default function ParametresPage() {
         <div className="divide-y divide-gray-100">
           <Link href="/profil" className="flex items-center justify-between px-5 py-3.5 hover:bg-gray-50/50 transition-colors">
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-lg bg-emerald-50 flex items-center justify-center">
-                <User className="w-4 h-4 text-emerald-600" />
+              <div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center">
+                <User className="w-4 h-4 text-blue-600" />
               </div>
               <div>
                 <p className="text-sm font-medium">Mon Profil</p>
@@ -150,7 +150,7 @@ export default function ParametresPage() {
           <button
             onClick={saveNotifications}
             disabled={loading}
-            className="w-full bg-emerald-50 hover:bg-emerald-100/60 text-emerald-600 font-bold py-2.5 rounded-xl flex items-center justify-center gap-2 transition-colors text-sm"
+            className="w-full bg-blue-50 hover:bg-blue-100/60 text-blue-600 font-bold py-2.5 rounded-xl flex items-center justify-center gap-2 transition-colors text-sm"
           >
             {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Bell className="w-4 h-4" />}
             Sauvegarder
@@ -174,7 +174,7 @@ export default function ParametresPage() {
                 <p className="text-[10px] text-gray-700">Langue de l&apos;application</p>
               </div>
             </div>
-            <span className="text-sm text-emerald-600 font-medium">Français</span>
+            <span className="text-sm text-blue-600 font-medium">Français</span>
           </div>
 
           <div className="flex items-center justify-between px-5 py-3.5">
@@ -187,7 +187,7 @@ export default function ParametresPage() {
                 <p className="text-[10px] text-gray-700">Devise par défaut</p>
               </div>
             </div>
-            <span className="text-sm text-emerald-600 font-medium">XOF (FCFA)</span>
+            <span className="text-sm text-blue-600 font-medium">XOF (FCFA)</span>
           </div>
 
           <div className="flex items-center justify-between px-5 py-3.5">
@@ -200,7 +200,7 @@ export default function ParametresPage() {
                 <p className="text-[10px] text-gray-700">Apparence de l&apos;application</p>
               </div>
             </div>
-            <span className="text-sm text-emerald-600 font-medium">Sombre</span>
+            <span className="text-sm text-blue-600 font-medium">Sombre</span>
           </div>
         </div>
       </div>
@@ -327,13 +327,13 @@ function ToggleRow({
       className="w-full flex items-center justify-between p-3 bg-gray-50/50 border border-gray-200/50 rounded-xl hover:bg-gray-100/50 transition-colors"
     >
       <div className="flex items-center gap-3 text-left">
-        <Icon className={`w-4 h-4 ${value ? "text-emerald-600" : "text-gray-600"}`} />
+        <Icon className={`w-4 h-4 ${value ? "text-blue-600" : "text-gray-600"}`} />
         <div>
           <p className="text-sm font-medium">{label}</p>
           <p className="text-[10px] text-gray-700">{description}</p>
         </div>
       </div>
-      <div className={`rounded-full relative transition-colors ${value ? "bg-emerald-500" : "bg-gray-200"}`} style={{ width: 40, height: 22 }}>
+      <div className={`rounded-full relative transition-colors ${value ? "bg-blue-500" : "bg-gray-200"}`} style={{ width: 40, height: 22 }}>
         <div
           className={`absolute top-0.5 w-[18px] h-[18px] bg-white rounded-full shadow transition-transform ${value ? "translate-x-[20px]" : "translate-x-0.5"}`}
         />

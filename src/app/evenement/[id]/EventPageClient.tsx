@@ -187,7 +187,7 @@ export default function EvenementPage() {
   if (loading) {
     return (
       <div className="min-h-screen bg-white flex items-center justify-center">
-        <Loader2 className="w-8 h-8 text-emerald-500 animate-spin" />
+        <Loader2 className="w-8 h-8 text-blue-500 animate-spin" />
       </div>
     );
   }
@@ -199,7 +199,7 @@ export default function EvenementPage() {
         <AlertCircle className="w-12 h-12 text-gray-400 mb-4" />
         <p className="text-gray-900 font-bold text-lg mb-2">Événement introuvable</p>
         <p className="text-gray-500 text-sm mb-6">Cet événement n&apos;existe pas ou n&apos;est plus disponible</p>
-        <button onClick={() => router.back()} className="px-6 py-3 bg-emerald-500 text-white rounded-xl font-bold text-sm">
+        <button onClick={() => router.back()} className="px-6 py-3 bg-blue-500 text-white rounded-xl font-bold text-sm">
           Retour
         </button>
       </div>
@@ -213,7 +213,7 @@ export default function EvenementPage() {
     return (
       <div className="min-h-screen bg-white flex flex-col items-center justify-center px-6">
         {/* Confirmation */}
-        <div className="w-20 h-20 bg-emerald-500 rounded-full flex items-center justify-center mb-5 animate-in zoom-in-75 duration-300">
+        <div className="w-20 h-20 bg-blue-500 rounded-full flex items-center justify-center mb-5 animate-in zoom-in-75 duration-300">
           <Check className="w-10 h-10 text-white" />
         </div>
         <h1 className="text-2xl font-black text-gray-900 mb-2">Ton billet est confirmé 🎉</h1>
@@ -227,7 +227,7 @@ export default function EvenementPage() {
             <a
               key={code}
               href={`/billet/${code}`}
-              className="block w-full bg-emerald-500 text-white rounded-2xl p-4 text-center font-bold text-sm transition hover:bg-emerald-600 active:scale-[0.98]"
+              className="block w-full bg-blue-500 text-white rounded-2xl p-4 text-center font-bold text-sm transition hover:bg-blue-600 active:scale-[0.98]"
             >
               <Ticket className="w-5 h-5 mx-auto mb-1" />
               {ticketCodes.length > 1 ? `Voir le billet ${i + 1}` : "Voir mon billet"}
@@ -285,7 +285,7 @@ export default function EvenementPage() {
             <div className="mt-4 flex items-center justify-center gap-2">
               <div className="flex -space-x-2">
                 {[...Array(Math.min(3, totalParticipants))].map((_, i) => (
-                  <div key={i} className="w-7 h-7 bg-gradient-to-br from-emerald-400 to-emerald-500 rounded-full border-2 border-white flex items-center justify-center">
+                  <div key={i} className="w-7 h-7 bg-gradient-to-br from-blue-400 to-blue-500 rounded-full border-2 border-white flex items-center justify-center">
                     <Users className="w-3 h-3 text-white" />
                   </div>
                 ))}
@@ -306,7 +306,7 @@ export default function EvenementPage() {
 
         {/* Footer */}
         <div className="mt-12 text-center">
-          <p className="text-[11px] text-gray-400 font-medium">Propulsé par <span className="text-emerald-600 font-bold">Binq</span></p>
+          <p className="text-[11px] text-gray-400 font-medium">Propulsé par <span className="text-blue-600 font-bold">Binq</span></p>
         </div>
       </div>
     );
@@ -325,7 +325,7 @@ export default function EvenementPage() {
             <div className="absolute inset-0 bg-gradient-to-t from-white via-transparent to-transparent" />
           </div>
         ) : (
-          <div className="w-full h-40 bg-gradient-to-br from-emerald-500 to-emerald-600 relative">
+          <div className="w-full h-40 bg-gradient-to-br from-blue-500 to-blue-600 relative">
             <div className="absolute inset-0 bg-gradient-to-t from-white to-transparent" />
           </div>
         )}
@@ -385,7 +385,7 @@ export default function EvenementPage() {
               <div className="flex items-center gap-2">
                 <div className="flex -space-x-1.5">
                   {[...Array(Math.min(4, totalParticipants))].map((_, i) => (
-                    <div key={i} className="w-6 h-6 bg-gradient-to-br from-emerald-400 to-emerald-500 rounded-full border-[1.5px] border-white flex items-center justify-center">
+                    <div key={i} className="w-6 h-6 bg-gradient-to-br from-blue-400 to-blue-500 rounded-full border-[1.5px] border-white flex items-center justify-center">
                       <Users className="w-2.5 h-2.5 text-white" />
                     </div>
                   ))}
@@ -410,7 +410,7 @@ export default function EvenementPage() {
               <div className="h-1.5 bg-gray-200 rounded-full overflow-hidden">
                 <div
                   className={`h-full rounded-full transition-all duration-500 ${
-                    fillPercent >= 90 ? "bg-red-500" : fillPercent >= 70 ? "bg-orange-500" : "bg-emerald-500"
+                    fillPercent >= 90 ? "bg-red-500" : fillPercent >= 70 ? "bg-orange-500" : "bg-blue-500"
                   }`}
                   style={{ width: `${fillPercent}%` }}
                 />
@@ -421,8 +421,8 @@ export default function EvenementPage() {
 
         {/* Date */}
         <div className="flex items-start gap-3 mb-3">
-          <div className="w-10 h-10 bg-emerald-50 rounded-xl flex items-center justify-center shrink-0">
-            <Calendar className="w-5 h-5 text-emerald-600" />
+          <div className="w-10 h-10 bg-blue-50 rounded-xl flex items-center justify-center shrink-0">
+            <Calendar className="w-5 h-5 text-blue-600" />
           </div>
           <div>
             <p className="text-sm font-bold text-gray-900 capitalize">{formatDate(event.date_debut)}</p>
@@ -440,8 +440,8 @@ export default function EvenementPage() {
 
         {/* Lieu */}
         <div className="flex items-start gap-3 mb-4">
-          <div className="w-10 h-10 bg-emerald-50 rounded-xl flex items-center justify-center shrink-0">
-            <MapPin className="w-5 h-5 text-emerald-600" />
+          <div className="w-10 h-10 bg-blue-50 rounded-xl flex items-center justify-center shrink-0">
+            <MapPin className="w-5 h-5 text-blue-600" />
           </div>
           <div>
             <p className="text-sm font-bold text-gray-900">{event.lieu}</p>
@@ -481,10 +481,10 @@ export default function EvenementPage() {
                   disabled={soldOut}
                   className={`w-full text-left rounded-2xl p-4 transition border-2 ${
                     isSelected
-                      ? "bg-emerald-50 border-emerald-500"
+                      ? "bg-blue-50 border-blue-500"
                       : soldOut
                       ? "bg-gray-50 border-transparent opacity-50 cursor-not-allowed"
-                      : "bg-gray-50 border-transparent hover:border-emerald-300"
+                      : "bg-gray-50 border-transparent hover:border-blue-300"
                   }`}
                 >
                   <div className="flex items-center justify-between mb-1">
@@ -508,10 +508,10 @@ export default function EvenementPage() {
                   {/* Indicateur sélection */}
                   {isSelected && (
                     <div className="mt-2 flex items-center gap-1">
-                      <div className="w-4 h-4 bg-emerald-500 rounded-full flex items-center justify-center">
+                      <div className="w-4 h-4 bg-blue-500 rounded-full flex items-center justify-center">
                         <Check className="w-3 h-3 text-white" />
                       </div>
-                      <span className="text-xs font-bold text-emerald-600">Sélectionné</span>
+                      <span className="text-xs font-bold text-blue-600">Sélectionné</span>
                     </div>
                   )}
                 </button>
@@ -554,7 +554,7 @@ export default function EvenementPage() {
                 value={buyerName}
                 onChange={(e) => setBuyerName(e.target.value)}
                 placeholder="Nom complet"
-                className="w-full bg-white border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-900 placeholder-gray-400 outline-none focus:border-emerald-400 transition"
+                className="w-full bg-white border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-900 placeholder-gray-400 outline-none focus:border-blue-400 transition"
               />
             </div>
 
@@ -566,7 +566,7 @@ export default function EvenementPage() {
                 onChange={(e) => setBuyerPhone(e.target.value)}
                 placeholder="+225 07 00 00 00"
                 type="tel"
-                className="w-full bg-white border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-900 placeholder-gray-400 outline-none focus:border-emerald-400 transition"
+                className="w-full bg-white border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-900 placeholder-gray-400 outline-none focus:border-blue-400 transition"
               />
             </div>
 
@@ -578,7 +578,7 @@ export default function EvenementPage() {
                 onChange={(e) => setBuyerEmail(e.target.value)}
                 placeholder="email@exemple.com"
                 type="email"
-                className="w-full bg-white border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-900 placeholder-gray-400 outline-none focus:border-emerald-400 transition"
+                className="w-full bg-white border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-900 placeholder-gray-400 outline-none focus:border-blue-400 transition"
               />
             </div>
 
@@ -616,7 +616,7 @@ export default function EvenementPage() {
             <button
               onClick={handleBuy}
               disabled={buying || !buyerName.trim()}
-              className="w-full py-4 bg-emerald-500 text-white rounded-2xl font-bold text-[15px] transition hover:bg-emerald-600 active:scale-[0.98] disabled:opacity-50 flex items-center justify-center gap-2"
+              className="w-full py-4 bg-blue-500 text-white rounded-2xl font-bold text-[15px] transition hover:bg-blue-600 active:scale-[0.98] disabled:opacity-50 flex items-center justify-center gap-2"
             >
               {buying ? (
                 <Loader2 className="w-5 h-5 animate-spin" />
@@ -635,7 +635,7 @@ export default function EvenementPage() {
       <div className="fixed bottom-0 left-0 right-0 bg-gradient-to-t from-white via-white to-transparent pt-8 pb-6 px-5 pointer-events-none">
         <div className="text-center pointer-events-auto">
           <p className="text-[11px] text-gray-400 font-medium">
-            Propulsé par <span className="text-emerald-600 font-bold">Binq</span>
+            Propulsé par <span className="text-blue-600 font-bold">Binq</span>
           </p>
         </div>
       </div>

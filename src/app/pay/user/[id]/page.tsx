@@ -167,7 +167,7 @@ export default function PayUserPage() {
           <p className="text-gray-600 mb-6">{error}</p>
           <button
             onClick={() => window.history.length > 1 ? router.back() : router.push("/")}
-            className="inline-flex items-center gap-2 bg-emerald-500 text-white px-6 py-3 rounded-xl font-semibold hover:bg-emerald-600 transition active:scale-95"
+            className="inline-flex items-center gap-2 bg-blue-500 text-white px-6 py-3 rounded-xl font-semibold hover:bg-blue-600 transition active:scale-95"
           >
             Retour
           </button>
@@ -190,11 +190,11 @@ export default function PayUserPage() {
       <div className="min-h-screen bg-white flex items-center justify-center px-4">
         <SuccessConfetti />
         <div className="bg-gray-50/80 rounded-3xl p-8 max-w-md w-full text-center border border-gray-200/50 backdrop-blur-xl animate-in zoom-in-95 duration-300">
-          <div className="w-20 h-20 bg-emerald-50 rounded-full flex items-center justify-center mx-auto mb-4 animate-in zoom-in duration-500">
-            <CheckCircle2 className="w-10 h-10 text-emerald-600" />
+          <div className="w-20 h-20 bg-blue-50 rounded-full flex items-center justify-center mx-auto mb-4 animate-in zoom-in duration-500">
+            <CheckCircle2 className="w-10 h-10 text-blue-600" />
           </div>
           <h1 className="text-2xl font-black text-gray-900 mb-1">Paiement effectue !</h1>
-          <p className="text-3xl font-black text-emerald-600 mb-2">{formatMontant(sentMontant, devise)}</p>
+          <p className="text-3xl font-black text-blue-600 mb-2">{formatMontant(sentMontant, devise)}</p>
           <p className="text-gray-600 text-sm mb-1">
             {"Vendeur : "}<span className="text-gray-900 font-semibold">{targetUser.prenom} {targetUser.nom}</span>
           </p>
@@ -203,7 +203,7 @@ export default function PayUserPage() {
           <div className="bg-gray-50/50 rounded-xl p-3 my-4 border border-gray-200/50 text-left space-y-1.5">
             <div className="flex justify-between text-xs"><span className="text-gray-700">Reference</span><span className="text-gray-700 font-mono">{sentRef}</span></div>
             <div className="flex justify-between text-xs"><span className="text-gray-700">Date</span><span className="text-gray-700">{sentDate}</span></div>
-            <div className="flex justify-between text-xs"><span className="text-gray-700">Statut</span><span className="text-emerald-600 font-semibold">Confirme</span></div>
+            <div className="flex justify-between text-xs"><span className="text-gray-700">Statut</span><span className="text-blue-600 font-semibold">Confirme</span></div>
           </div>
 
           {/* QR Receipt */}
@@ -224,7 +224,7 @@ export default function PayUserPage() {
           <div className="flex items-center gap-2">
             <Link
               href="/"
-              className="flex-1 inline-flex items-center justify-center gap-2 bg-emerald-500 text-white px-4 py-3 rounded-xl font-bold hover:bg-emerald-600 transition text-sm"
+              className="flex-1 inline-flex items-center justify-center gap-2 bg-blue-500 text-white px-4 py-3 rounded-xl font-bold hover:bg-blue-600 transition text-sm"
             >
               Fermer
             </Link>
@@ -290,7 +290,7 @@ export default function PayUserPage() {
                     onClick={() => { setDevise(d); setSelectedMethod(null); }}
                     className={`flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-sm font-bold transition-all ${
                       devise === d
-                        ? "bg-emerald-500 text-white border border-emerald-500"
+                        ? "bg-blue-500 text-white border border-blue-500"
                         : "bg-gray-50/50 text-gray-600 border border-gray-200/50 hover:bg-gray-100/50"
                     }`}
                   >
@@ -355,9 +355,9 @@ export default function PayUserPage() {
                         )}
                       </div>
                       <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
-                        isActive ? "border-emerald-500" : "border-gray-300"
+                        isActive ? "border-blue-500" : "border-gray-300"
                       }`}>
-                        {isActive && <div className="w-2.5 h-2.5 rounded-full bg-emerald-500" />}
+                        {isActive && <div className="w-2.5 h-2.5 rounded-full bg-blue-500" />}
                       </div>
                     </button>
                   );
@@ -378,7 +378,7 @@ export default function PayUserPage() {
                 </div>
                 <div className="flex justify-between pt-1 border-t border-gray-200/50">
                   <span className="text-gray-900 font-bold">Total</span>
-                  <span className="text-emerald-600 font-bold">{formatMontant(fees.totalPayeur, devise)}</span>
+                  <span className="text-blue-600 font-bold">{formatMontant(fees.totalPayeur, devise)}</span>
                 </div>
               </div>
             )}
@@ -400,7 +400,7 @@ export default function PayUserPage() {
             <button
               onClick={handlePay}
               disabled={sending || !montant || parsedMontant <= 0 || !selectedMethod}
-              className="w-full flex items-center justify-center gap-2 bg-emerald-500 text-white py-3.5 rounded-xl font-bold hover:bg-emerald-600 transition disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full flex items-center justify-center gap-2 bg-blue-500 text-white py-3.5 rounded-xl font-bold hover:bg-blue-600 transition disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {sending ? (
                 <Loader2 className="w-5 h-5 animate-spin" />

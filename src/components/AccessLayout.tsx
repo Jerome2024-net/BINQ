@@ -35,8 +35,8 @@ export default function AccessLayout({
     <div>
       {/* Header */}
       <div className="flex items-center gap-2.5 mb-5">
-        <div className="w-9 h-9 rounded-xl bg-emerald-500/10 flex items-center justify-center">
-          <Shield className="w-5 h-5 text-emerald-600" />
+        <div className="w-9 h-9 rounded-xl bg-blue-500/10 flex items-center justify-center">
+          <Shield className="w-5 h-5 text-blue-600" />
         </div>
         <h1 className="text-[22px] font-black text-gray-900">Binq Access</h1>
       </div>
@@ -51,7 +51,7 @@ export default function AccessLayout({
               href={tab.href}
               className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-[13px] font-semibold whitespace-nowrap transition-all ${
                 active
-                  ? "bg-emerald-500 text-white shadow-md shadow-emerald-500/25"
+                  ? "bg-blue-500 text-white shadow-md shadow-blue-500/25"
                   : "bg-gray-100 text-gray-500 hover:bg-gray-200 active:scale-[0.97]"
               }`}
             >
