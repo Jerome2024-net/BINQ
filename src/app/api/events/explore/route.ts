@@ -22,7 +22,7 @@ export async function GET(req: NextRequest) {
     let query = supabase
       .from("events")
       .select(
-        "id, nom, description, date_debut, heure_debut, date_fin, lieu, ville, cover_url, logo_url, devise, total_vendu, boutique_id"
+        "id, nom, description, date_debut, heure_debut, date_fin, lieu, ville, cover_url, logo_url, devise, total_vendu, boutique_id, boutiques(nom, slug, logo_url, is_verified)"
       )
       .eq("is_published", true)
       .eq("is_active", true)

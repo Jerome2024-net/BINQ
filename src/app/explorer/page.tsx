@@ -28,6 +28,12 @@ interface EventPublic {
   devise: string;
   total_vendu: number;
   boutique_id: string;
+  boutiques: {
+    nom: string;
+    slug: string;
+    logo_url: string | null;
+    is_verified: boolean;
+  } | null;
 }
 
 const CITIES = ["Cotonou"];
@@ -335,11 +341,20 @@ export default function ExplorerPublicPage() {
                           </span>
                         </p>
                       )}
-                      {event.total_vendu > 0 && (
-                        <p className="text-[11px] text-neutral-300 mt-2">
-                          {event.total_vendu} inscrit
-                          {event.total_vendu > 1 ? "s" : ""}
-                        </p>
+
+                      {/* Organizer — Luma style */}
+                      {event.boutiques && (
+                        <div className="flex items-center gap-2 mt-3 pt-3 border-t border-neutral-100">
+                          <div className="w-6 h-6 rounded-full bg-neutral-100 overflow-hidden flex items-center justify-center shrink-0">
+                            {event.boutiques.logo_url ? (
+                              // eslint-disable-next-line @next/next/no-img-element
+                              <img src={event.boutiques.logo_url} alt={event.boutiques.nom} className="w-full h-full object-cover" />
+                            ) : (
+                              <span className="text-[10px] font-bold text-neutral-400">{event.boutiques.nom.charAt(0)}</span>
+                            )}
+                          </div>
+                          <span className="text-xs text-neutral-500 font-medium truncate">Par {event.boutiques.nom}</span>
+                        </div>
                       )}
                     </div>
                   </Link>
