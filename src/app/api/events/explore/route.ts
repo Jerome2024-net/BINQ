@@ -22,7 +22,7 @@ export async function GET(req: NextRequest) {
     let query = supabase
       .from("events")
       .select(
-        "id, nom, description, date_debut, heure_debut, date_fin, lieu, ville, cover_url, logo_url, devise, total_vendu, boutique_id, boutiques(nom, slug, logo_url, is_verified)"
+        "id, nom, description, date_debut, heure_debut, date_fin, lieu, ville, cover_url, logo_url, devise, total_vendu, boutique_id"
       )
       .eq("is_published", true)
       .eq("is_active", true)
@@ -39,10 +39,35 @@ export async function GET(req: NextRequest) {
       query = query.ilike("ville", `%${ville}%`);
     }
 
-    const { data, error } = await query;
+    const { data: events, error } = await query;
     if (error) throw error;
 
-    return NextResponse.json({ events: data || [] });
+    // Fetch organizer info for each unique boutique_id
+    const boutiqueIds = [
+      ...new Set((events || []).map((e: any) => e.boutique_id).filter(Boolean)),
+    ];
+
+    let boutiquesMap: Record<string, any> = {};
+    if (boutiqueIds.length > 0) {
+      const { data: boutiques } = await supabase
+        .from("boutiques")
+        .select("id, nom, slug, logo_url, is_verified")
+        .in("id", boutiqueIds);
+
+      if (boutiques) {
+        for (const b of boutiques) {
+          boutiquesMap[b.id] = b;
+        }
+      }
+    }
+
+    // Merge organizer info into events
+    const enriched = (events || []).map((e: any) => ({
+      ...e,
+      boutiques: boutiquesMap[e.boutique_id] || null,
+    }));
+
+    return NextResponse.json({ events: enriched });
   } catch (err: any) {
     return NextResponse.json(
       { error: err.message || "Erreur serveur" },
