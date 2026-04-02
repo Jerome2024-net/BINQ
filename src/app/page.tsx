@@ -20,17 +20,12 @@ export default function HomePage() {
       {/* ═══════ HEADER — Ultra-minimal Transparent ═══════ */}
       <header className="fixed top-0 inset-x-0 z-[60]">
         <div className="max-w-6xl mx-auto px-5 sm:px-8 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-6">
-            <Link href="/" className="flex items-center gap-2">
-              <div className="w-7 h-7 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center shadow-sm shadow-blue-500/30">
-                <Star className="w-3.5 h-3.5 text-white fill-white" />
-              </div>
-              <span className="font-semibold text-[15px] tracking-tight text-neutral-900">Binq</span>
-            </Link>
-            <Link href="/explorer" className="hidden md:inline-flex items-center gap-1 text-[13px] text-neutral-500 hover:text-neutral-900 transition-colors font-medium">
-              Explorer les events <ArrowRight className="w-3 h-3" />
-            </Link>
-          </div>
+          <Link href="/" className="flex items-center gap-2">
+            <div className="w-7 h-7 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center shadow-sm shadow-blue-500/30">
+              <Star className="w-3.5 h-3.5 text-white fill-white" />
+            </div>
+            <span className="font-semibold text-[15px] tracking-tight text-neutral-900">Binq</span>
+          </Link>
 
           <div className="flex items-center gap-5">
             <Link href="/connexion" className="text-[13px] text-neutral-600 hover:text-neutral-900 transition-colors font-medium">
@@ -52,8 +47,8 @@ export default function HomePage() {
         {mobileOpen && (
           <div className="md:hidden bg-white/95 backdrop-blur-xl border border-neutral-100 pb-4 pt-3 px-4 mx-3 mt-1 rounded-2xl shadow-xl animate-fade-in">
             <div className="flex flex-col gap-1">
-              <Link href="/explorer" onClick={() => setMobileOpen(false)} className="px-3 py-2.5 rounded-lg text-neutral-600 hover:bg-neutral-50 text-sm transition-colors flex items-center gap-1">
-                Explorer les events <ArrowRight className="w-3 h-3" />
+              <Link href="/explorer" onClick={() => setMobileOpen(false)} className="px-3 py-2.5 rounded-lg text-neutral-600 hover:bg-neutral-50 text-sm transition-colors">
+                Explorer les événements
               </Link>
               <Link href="/connexion" onClick={() => setMobileOpen(false)} className="px-3 py-2.5 rounded-lg text-neutral-600 hover:bg-neutral-50 text-sm transition-colors">
                 Connexion
@@ -205,9 +200,9 @@ export default function HomePage() {
               <span className="font-semibold text-neutral-900 tracking-tight">Binq</span>
             </div>
             <div className="flex items-center gap-6 text-sm text-neutral-400">
+              <Link href="/explorer" className="hover:text-neutral-900 transition">Explorer</Link>
               <a href="#fonctionnalites" className="hover:text-neutral-900 transition">Fonctionnalités</a>
               <a href="#pourqui" className="hover:text-neutral-900 transition">Pour qui ?</a>
-              <a href="#tarifs" className="hover:text-neutral-900 transition">Tarifs</a>
             </div>
             <p className="text-xs text-neutral-300">&copy; {new Date().getFullYear()} Binq. Tous droits réservés.</p>
           </div>
