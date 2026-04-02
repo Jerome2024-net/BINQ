@@ -39,6 +39,9 @@ export default function HomePage() {
             <Link href="/connexion" className="text-[13px] text-neutral-600 hover:text-neutral-900 transition-colors font-medium">
               Connexion
             </Link>
+            <Link href="/inscription" className="hidden md:inline-flex text-[13px] px-4 py-1.5 bg-blue-600 text-white rounded-full font-medium hover:bg-blue-700 transition-colors">
+              Inscription
+            </Link>
             <button
               onClick={() => setMobileOpen(!mobileOpen)}
               className="md:hidden p-2 rounded-lg text-neutral-700 hover:bg-neutral-100 transition-colors"
@@ -63,6 +66,9 @@ export default function HomePage() {
               <hr className="my-2 border-neutral-100" />
               <Link href="/connexion" onClick={() => setMobileOpen(false)} className="px-3 py-2.5 rounded-lg text-neutral-600 hover:bg-neutral-50 text-sm transition-colors">
                 Connexion
+              </Link>
+              <Link href="/inscription" onClick={() => setMobileOpen(false)} className="px-3 py-2.5 rounded-lg bg-blue-600 text-white text-sm text-center font-medium">
+                Inscription
               </Link>
             </div>
           </div>
