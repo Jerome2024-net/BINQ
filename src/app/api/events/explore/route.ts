@@ -43,9 +43,9 @@ export async function GET(req: NextRequest) {
     if (error) throw error;
 
     // Fetch organizer info for each unique boutique_id
-    const boutiqueIds = [
-      ...new Set((events || []).map((e: any) => e.boutique_id).filter(Boolean)),
-    ];
+    const boutiqueIds = Array.from(
+      new Set((events || []).map((e: any) => e.boutique_id).filter(Boolean))
+    );
 
     let boutiquesMap: Record<string, any> = {};
     if (boutiqueIds.length > 0) {
