@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { Menu, X, LogIn, ArrowRight } from "lucide-react";
+import { Menu, X, LogIn, ArrowRight, Star } from "lucide-react";
 
 const navLinks = [
   { href: "/#fonctionnalites", label: "Fonctionnalités" },
@@ -18,8 +18,8 @@ export default function Navbar() {
         <div className="flex justify-between items-center h-14">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2">
-            <div className="w-7 h-7 bg-neutral-900 rounded-lg flex items-center justify-center">
-              <span className="text-white font-semibold text-xs">B</span>
+            <div className="w-7 h-7 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center shadow-sm shadow-blue-500/30">
+              <Star className="w-3.5 h-3.5 text-white fill-white" />
             </div>
             <span className="font-semibold text-neutral-900 tracking-tight">Binq</span>
           </Link>
@@ -48,7 +48,7 @@ export default function Navbar() {
             </Link>
             <Link
               href="/inscription"
-              className="flex items-center gap-1.5 bg-neutral-900 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-neutral-800 transition-colors"
+              className="flex items-center gap-1.5 bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors"
             >
               Inscription
               <ArrowRight className="w-3.5 h-3.5" />
@@ -89,7 +89,7 @@ export default function Navbar() {
               </Link>
               <Link
                 href="/inscription"
-                className="flex items-center justify-center gap-2 bg-neutral-900 text-white px-4 py-2.5 rounded-lg text-sm font-medium mt-1"
+                className="flex items-center justify-center gap-2 bg-blue-600 text-white px-4 py-2.5 rounded-lg text-sm font-medium mt-1"
                 onClick={() => setIsOpen(false)}
               >
                 Inscription
