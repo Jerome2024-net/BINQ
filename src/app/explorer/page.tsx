@@ -350,27 +350,6 @@ export default function ExplorerPublicPage() {
         </div>
       </section>
 
-      {/* ═══════ CTA BANNER ═══════ */}
-      <section className="pb-16 sm:pb-24">
-        <div className="max-w-3xl mx-auto px-5 sm:px-8">
-          <div className="bg-neutral-900 rounded-2xl p-8 sm:p-12 text-center">
-            <h2 className="text-xl sm:text-2xl font-bold text-white mb-2">
-              Vous organisez un événement ?
-            </h2>
-            <p className="text-neutral-400 text-sm mb-6 max-w-sm mx-auto">
-              Créez une page événement, invitez vos proches et vendez vos
-              billets en quelques minutes.
-            </p>
-            <Link
-              href="/inscription"
-              className="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 text-white font-semibold rounded-full hover:bg-blue-700 transition-colors text-sm"
-            >
-              Créer mon événement <ArrowRight className="w-3.5 h-3.5" />
-            </Link>
-          </div>
-        </div>
-      </section>
-
       {/* ═══════ FOOTER ═══════ */}
       <footer className="border-t border-neutral-100 py-8 sm:py-10">
         <div className="max-w-6xl mx-auto px-5 sm:px-8">
