@@ -20,17 +20,19 @@ export default function HomePage() {
       {/* ═══════ HEADER — Ultra-minimal Transparent ═══════ */}
       <header className="fixed top-0 inset-x-0 z-[60]">
         <div className="max-w-6xl mx-auto px-5 sm:px-8 h-16 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2">
-            <div className="w-7 h-7 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center shadow-sm shadow-blue-500/30">
-              <Star className="w-3.5 h-3.5 text-white fill-white" />
-            </div>
-            <span className="font-semibold text-[15px] tracking-tight text-neutral-900">Binq</span>
-          </Link>
-
-          <div className="flex items-center gap-5">
-            <Link href="/explorer" className="hidden md:inline-flex items-center gap-1 text-[13px] text-neutral-600 hover:text-neutral-900 transition-colors font-medium">
+          <div className="flex items-center gap-6">
+            <Link href="/" className="flex items-center gap-2">
+              <div className="w-7 h-7 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center shadow-sm shadow-blue-500/30">
+                <Star className="w-3.5 h-3.5 text-white fill-white" />
+              </div>
+              <span className="font-semibold text-[15px] tracking-tight text-neutral-900">Binq</span>
+            </Link>
+            <Link href="/explorer" className="hidden md:inline-flex items-center gap-1 text-[13px] text-neutral-500 hover:text-neutral-900 transition-colors font-medium">
               Explorer les events <ArrowRight className="w-3 h-3" />
             </Link>
+          </div>
+
+          <div className="flex items-center gap-5">
             <Link href="/connexion" className="text-[13px] text-neutral-600 hover:text-neutral-900 transition-colors font-medium">
               Connexion
             </Link>
