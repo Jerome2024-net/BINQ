@@ -16,7 +16,6 @@ export async function middleware(request: NextRequest) {
   const path = request.nextUrl.pathname;
   if (
     path.startsWith("/tontines") ||
-    path.startsWith("/explorer") ||
     path.startsWith("/rejoindre") ||
     path.startsWith("/membres")
   ) {
