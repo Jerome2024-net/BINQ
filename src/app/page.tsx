@@ -85,7 +85,7 @@ export default function HomePage() {
           <p className="text-base sm:text-lg text-neutral-500 max-w-sm mx-auto mb-8 leading-relaxed">
             Créez une page événement, invitez vos proches et vendez vos billets. Organisez un moment mémorable dès aujourd&apos;hui.
           </p>
-          <Link href="/inscription" className="inline-flex items-center gap-2 px-7 py-3 bg-neutral-900 text-white font-semibold rounded-full hover:bg-neutral-800 transition-all text-sm shadow-xl shadow-neutral-900/20">
+          <Link href="/inscription" className="inline-flex items-center gap-2 px-7 py-3 bg-blue-600 text-white font-semibold rounded-full hover:bg-blue-700 transition-all text-sm shadow-xl shadow-blue-600/20">
             Créer ma billetterie <ArrowRight className="w-3.5 h-3.5" />
           </Link>
         </div>
@@ -133,7 +133,7 @@ export default function HomePage() {
                   </div>
                   <span className="text-[11px] font-bold text-neutral-900">5 000 FCFA</span>
                 </div>
-                <button className="w-full py-3 bg-neutral-900 text-white font-bold text-[13px] rounded-full">
+                <button className="w-full py-3 bg-blue-600 text-white font-bold text-[13px] rounded-full">
                   Réserver
                 </button>
               </div>
