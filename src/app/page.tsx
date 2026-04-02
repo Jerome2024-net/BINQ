@@ -28,6 +28,9 @@ export default function HomePage() {
           </Link>
 
           <div className="flex items-center gap-5">
+            <Link href="/explorer" className="text-[13px] text-neutral-600 hover:text-neutral-900 transition-colors font-medium">
+              Explorer
+            </Link>
             <Link href="/connexion" className="text-[13px] text-neutral-600 hover:text-neutral-900 transition-colors font-medium">
               Connexion
             </Link>
