@@ -28,6 +28,9 @@ export default function HomePage() {
           </Link>
 
           <div className="flex items-center gap-5">
+            <Link href="/explorer" className="hidden md:inline-flex items-center gap-1 text-[13px] text-neutral-600 hover:text-neutral-900 transition-colors font-medium">
+              Explorer les events <ArrowRight className="w-3 h-3" />
+            </Link>
             <Link href="/connexion" className="text-[13px] text-neutral-600 hover:text-neutral-900 transition-colors font-medium">
               Connexion
             </Link>
@@ -47,6 +50,9 @@ export default function HomePage() {
         {mobileOpen && (
           <div className="md:hidden bg-white/95 backdrop-blur-xl border border-neutral-100 pb-4 pt-3 px-4 mx-3 mt-1 rounded-2xl shadow-xl animate-fade-in">
             <div className="flex flex-col gap-1">
+              <Link href="/explorer" onClick={() => setMobileOpen(false)} className="px-3 py-2.5 rounded-lg text-neutral-600 hover:bg-neutral-50 text-sm transition-colors flex items-center gap-1">
+                Explorer les events <ArrowRight className="w-3 h-3" />
+              </Link>
               <Link href="/connexion" onClick={() => setMobileOpen(false)} className="px-3 py-2.5 rounded-lg text-neutral-600 hover:bg-neutral-50 text-sm transition-colors">
                 Connexion
               </Link>
