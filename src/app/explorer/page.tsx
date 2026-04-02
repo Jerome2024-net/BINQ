@@ -30,7 +30,7 @@ interface EventPublic {
   boutique_id: string;
 }
 
-const CITIES = ["Dakar", "Abidjan", "Douala", "Lomé", "Cotonou", "Bamako", "Conakry", "Kinshasa"];
+const CITIES = ["Cotonou"];
 
 function formatDate(dateStr: string, heureStr?: string | null) {
   const d = new Date(dateStr + "T00:00:00");
