@@ -105,15 +105,20 @@ const EVENT_CATEGORIES = [
 /* ─── Skeleton ─── */
 function SkeletonCard() {
   return (
-    <div className="animate-pulse flex flex-row sm:flex-col rounded-xl sm:rounded-2xl overflow-hidden bg-white border border-gray-100">
-      {/* Image placeholder */}
-      <div className="w-28 min-h-[100px] sm:w-full sm:min-h-0 sm:aspect-[16/9] bg-gray-100 shrink-0" />
-      {/* Text placeholder */}
-      <div className="flex-1 p-3 sm:p-4 space-y-2.5 sm:space-y-3">
-        <div className="h-4 w-4/5 bg-gray-100 rounded" />
-        <div className="h-3 w-24 bg-gray-100 rounded-full" />
-        <div className="h-3 w-2/3 bg-gray-100 rounded" />
-        <div className="h-3 w-1/3 bg-gray-100 rounded" />
+    <div className="animate-pulse rounded-2xl overflow-hidden bg-white border border-gray-100/80">
+      <div className="aspect-[5/3] bg-gray-100" />
+      <div className="p-5 space-y-3">
+        <div className="h-4 w-3/4 bg-gray-100 rounded-md" />
+        <div className="space-y-2">
+          <div className="h-3.5 w-40 bg-gray-100 rounded-md" />
+          <div className="h-3.5 w-28 bg-gray-100 rounded-md" />
+        </div>
+        <div className="pt-3 border-t border-gray-100">
+          <div className="flex items-center gap-2.5">
+            <div className="w-6 h-6 bg-gray-100 rounded-full" />
+            <div className="h-3 w-24 bg-gray-100 rounded-md" />
+          </div>
+        </div>
       </div>
     </div>
   );
@@ -490,7 +495,7 @@ export default function ExplorerPublicPage() {
         {loading ? (
           <div className="space-y-8">
             <SkeletonFeatured />
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-5">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
               {Array.from({ length: 6 }).map((_, i) => (
                 <SkeletonCard key={i} />
               ))}
@@ -642,7 +647,7 @@ export default function ExplorerPublicPage() {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-5">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
                   {group.events.map((event) => (
                     <EventCard key={event.id} event={event} />
                   ))}
@@ -714,115 +719,107 @@ export default function ExplorerPublicPage() {
 /* ═══════ EVENT CARD ═══════ */
 function EventCard({ event }: { event: EventPublic }) {
   const isFree = event.min_price === 0;
+  const dateObj = new Date(event.date_debut);
+  const day = dateObj.toLocaleDateString("fr-FR", { day: "2-digit" });
+  const month = dateObj.toLocaleDateString("fr-FR", { month: "short" }).replace(".", "");
 
   return (
     <Link
       href={`/evenement/${event.id}`}
-      className="group flex flex-row sm:flex-col bg-white rounded-xl sm:rounded-2xl overflow-hidden border border-gray-100 hover:border-violet-200/60 hover:shadow-lg hover:shadow-violet-100/30 transition-all duration-300"
+      className="group bg-white rounded-2xl overflow-hidden hover:shadow-xl hover:shadow-gray-200/60 transition-all duration-300 border border-gray-100/80 hover:border-gray-200"
     >
-      {/* ── COVER ── */}
-      {/* Mobile: fixed-width square thumbnail | Desktop: wide 16/9 banner */}
-      <div className="relative w-28 min-h-[100px] sm:w-full sm:min-h-0 sm:aspect-[16/9] bg-gray-100 overflow-hidden shrink-0">
+      {/* ── IMAGE ── */}
+      <div className="relative aspect-[5/3] bg-gray-50 overflow-hidden">
         {event.cover_url ? (
           <Image
             src={event.cover_url}
             alt={event.nom}
             fill
-            className="object-cover group-hover:scale-105 transition-transform duration-500"
+            className="object-cover group-hover:scale-[1.03] transition-transform duration-700 ease-out"
             unoptimized
           />
         ) : event.logo_url ? (
           <div className="absolute inset-0 bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center">
-            <Image src={event.logo_url} alt="" width={48} height={48} className="rounded-xl object-cover" unoptimized />
+            <Image src={event.logo_url} alt="" width={52} height={52} className="rounded-2xl object-cover opacity-60" unoptimized />
           </div>
         ) : (
-          <div className="absolute inset-0 bg-gradient-to-br from-violet-50 to-blue-50 flex items-center justify-center">
-            <CalendarDays className="w-8 h-8 text-violet-200" />
+          <div className="absolute inset-0 bg-gradient-to-br from-violet-50 via-white to-blue-50 flex items-center justify-center">
+            <CalendarDays className="w-10 h-10 text-violet-200/60" />
           </div>
         )}
 
-        {/* Desktop-only date badge */}
-        <div className="hidden sm:block absolute top-2.5 left-2.5 bg-white/95 backdrop-blur-sm rounded-lg px-2.5 py-1.5 shadow-sm text-center leading-none">
-          <p className="text-[11px] font-extrabold text-violet-600 uppercase">
-            {new Date(event.date_debut).toLocaleDateString("fr-FR", { day: "2-digit", month: "short" })}
-          </p>
+        {/* Soft gradient overlay at bottom */}
+        <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-black/20 to-transparent" />
+
+        {/* Date chip — top left */}
+        <div className="absolute top-3 left-3 bg-white rounded-xl px-2.5 py-2 shadow-md shadow-black/8 text-center min-w-[44px]">
+          <p className="text-[15px] font-extrabold text-gray-900 leading-none">{day}</p>
+          <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-wide mt-0.5">{month}</p>
         </div>
 
-        {/* Desktop-only price badge */}
-        <div className="hidden sm:block absolute top-2.5 right-2.5">
+        {/* Price — top right */}
+        <div className="absolute top-3 right-3">
           {isFree ? (
-            <span className="px-2 py-1 bg-emerald-500 text-white text-[10px] font-bold rounded-md shadow-sm">Gratuit</span>
+            <span className="px-3 py-1.5 bg-emerald-500 text-white text-[11px] font-bold rounded-lg shadow-md shadow-emerald-500/25">
+              Gratuit
+            </span>
           ) : (
-            <span className="px-2 py-1 bg-white/95 backdrop-blur-sm text-gray-900 text-[10px] font-bold rounded-md shadow-sm">
+            <span className="px-3 py-1.5 bg-white text-gray-900 text-[11px] font-bold rounded-lg shadow-md shadow-black/8">
               {event.min_price.toLocaleString("fr-FR")} {event.devise}
             </span>
           )}
         </div>
       </div>
 
-      {/* ── BODY ── */}
-      <div className="flex flex-col justify-between flex-1 min-w-0 p-3 sm:p-4 sm:pb-3.5 gap-1 sm:gap-0">
-        <div className="min-w-0">
-          {/* L1 — TITLE: biggest, boldest */}
-          <h3 className="font-bold text-[14px] sm:text-[15px] text-gray-900 leading-snug line-clamp-2 group-hover:text-violet-700 transition-colors">
-            {event.nom}
-          </h3>
+      {/* ── CONTENT ── */}
+      <div className="p-5 space-y-3">
+        {/* Title */}
+        <h3 className="font-semibold text-[15px] text-gray-900 leading-snug line-clamp-2 group-hover:text-violet-700 transition-colors">
+          {event.nom}
+        </h3>
 
-          {/* L2 — DATE + TIME: accent color, clear secondary */}
-          <p className="mt-1 sm:mt-2 text-[11px] sm:text-[13px] font-semibold text-violet-600 flex items-center gap-1">
-            <CalendarDays className="w-3 h-3 sm:w-3.5 sm:h-3.5 shrink-0" />
+        {/* Info rows */}
+        <div className="space-y-2">
+          {/* Date + time */}
+          <div className="flex items-center gap-2 text-[13px] text-gray-500">
+            <CalendarDays className="w-4 h-4 text-violet-400 shrink-0" />
             <span>{formatDateShort(event.date_debut)}</span>
             {event.heure_debut && (
-              <>
-                <span className="text-violet-300">·</span>
-                <span className="text-violet-500/80 font-medium">{formatTime(event.heure_debut)}</span>
-              </>
+              <span className="text-gray-300">·</span>
             )}
-          </p>
-
-          {/* L3 — LOCATION: muted tertiary */}
-          {event.lieu && (
-            <p className="mt-0.5 sm:mt-1.5 text-[10px] sm:text-[12px] text-gray-400 truncate flex items-center gap-1">
-              <MapPin className="w-2.5 h-2.5 sm:w-3 sm:h-3 shrink-0 text-gray-300" />
-              {event.lieu}
-            </p>
-          )}
-        </div>
-
-        {/* L4 — FOOTER: organizer + price (mobile) / sold count (desktop) */}
-        <div className="flex items-center gap-2 mt-1.5 sm:mt-3 sm:pt-2.5 sm:border-t sm:border-gray-100">
-          {event.boutiques && (
-            <div className="flex items-center gap-1.5 min-w-0">
-              <div className="w-4 h-4 sm:w-5 sm:h-5 rounded-full bg-gray-100 overflow-hidden flex items-center justify-center shrink-0 ring-1 ring-gray-200/50">
-                {event.boutiques.logo_url ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img src={event.boutiques.logo_url} alt="" className="w-full h-full object-cover" />
-                ) : (
-                  <span className="text-[7px] sm:text-[8px] font-bold text-gray-400">{event.boutiques.nom.charAt(0)}</span>
-                )}
-              </div>
-              <span className="text-[10px] sm:text-[11px] text-gray-400 truncate font-medium">{event.boutiques.nom}</span>
-            </div>
-          )}
-
-          {/* Mobile: inline price pill */}
-          <div className="sm:hidden ml-auto shrink-0">
-            {isFree ? (
-              <span className="px-2 py-0.5 bg-emerald-50 text-emerald-600 text-[10px] font-bold rounded-md">Gratuit</span>
-            ) : (
-              <span className="px-2 py-0.5 bg-violet-50 text-violet-700 text-[10px] font-bold rounded-md">
-                {event.min_price.toLocaleString("fr-FR")} {event.devise}
-              </span>
+            {event.heure_debut && (
+              <span className="text-gray-400">{formatTime(event.heure_debut)}</span>
             )}
           </div>
 
-          {/* Desktop: attendee count */}
-          {event.total_vendu > 0 && (
-            <span className="hidden sm:flex ml-auto items-center gap-1 text-[11px] text-gray-300 font-medium">
-              <Users className="w-3 h-3" />+{event.total_vendu}
-            </span>
+          {/* Location */}
+          {event.lieu && (
+            <div className="flex items-center gap-2 text-[13px] text-gray-400">
+              <MapPin className="w-4 h-4 text-gray-300 shrink-0" />
+              <span className="truncate">{event.lieu}</span>
+            </div>
           )}
         </div>
+
+        {/* Organizer */}
+        {event.boutiques && (
+          <div className="flex items-center gap-2.5 pt-3 border-t border-gray-100">
+            <div className="w-6 h-6 rounded-full bg-gray-100 overflow-hidden flex items-center justify-center shrink-0">
+              {event.boutiques.logo_url ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={event.boutiques.logo_url} alt="" className="w-full h-full object-cover" />
+              ) : (
+                <span className="text-[9px] font-bold text-gray-400">{event.boutiques.nom.charAt(0)}</span>
+              )}
+            </div>
+            <span className="text-[12px] text-gray-500 font-medium truncate">{event.boutiques.nom}</span>
+            {event.total_vendu > 0 && (
+              <span className="ml-auto flex items-center gap-1 text-[11px] text-gray-300">
+                <Users className="w-3.5 h-3.5" />{event.total_vendu}
+              </span>
+            )}
+          </div>
+        )}
       </div>
     </Link>
   );
