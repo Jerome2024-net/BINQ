@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import Link from "next/link";
 import {
   Search,
@@ -11,6 +11,11 @@ import {
   X,
   Menu,
   Users,
+  Share2,
+  Check,
+  ChevronDown,
+  Ticket,
+  AlertCircle,
 } from "lucide-react";
 
 interface EventPublic {
@@ -27,6 +32,9 @@ interface EventPublic {
   devise: string;
   total_vendu: number;
   boutique_id: string;
+  min_price: number;
+  total_capacity: number;
+  total_sold: number;
   boutiques: {
     nom: string;
     slug: string;
@@ -61,30 +69,84 @@ function formatDateHeader(dateStr: string) {
   return `${dayNum} ${month} · ${dayName}`;
 }
 
+function formatPrice(price: number, devise: string) {
+  if (price === 0) return "Gratuit";
+  return `${price.toLocaleString("fr-FR")} ${devise}`;
+}
+
+function getCapacityStatus(totalCapacity: number, totalSold: number) {
+  if (totalCapacity <= 0) return null;
+  const ratio = totalSold / totalCapacity;
+  if (ratio >= 1) return { label: "Complet", color: "bg-red-50 text-red-600" };
+  if (ratio >= 0.9) return { label: "Presque complet", color: "bg-orange-50 text-orange-600" };
+  if (ratio >= 0.75) return { label: "Places limitées", color: "bg-amber-50 text-amber-600" };
+  return null;
+}
+
+/* ─── Skeleton placeholders ─── */
+function SkeletonRow() {
+  return (
+    <div className="flex items-start gap-4 py-4 border-b border-neutral-50 -mx-3 px-3 animate-pulse">
+      <div className="flex-1 min-w-0 space-y-2.5">
+        <div className="h-3 w-12 bg-neutral-100 rounded" />
+        <div className="h-4 w-3/4 bg-neutral-100 rounded" />
+        <div className="h-3 w-1/3 bg-neutral-100 rounded" />
+        <div className="h-3 w-1/2 bg-neutral-100 rounded" />
+      </div>
+      <div className="w-[88px] h-[88px] sm:w-[100px] sm:h-[100px] rounded-xl bg-neutral-100 shrink-0" />
+    </div>
+  );
+}
+
+function SkeletonGroup() {
+  return (
+    <div>
+      <div className="py-3 border-b border-neutral-100">
+        <div className="h-3.5 w-40 bg-neutral-100 rounded animate-pulse" />
+      </div>
+      <SkeletonRow />
+      <SkeletonRow />
+    </div>
+  );
+}
+
+const PAGE_SIZE = 20;
+
 export default function ExplorerPublicPage() {
   const [events, setEvents] = useState<EventPublic[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [hasMore, setHasMore] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [copiedId, setCopiedId] = useState<string | null>(null);
 
-  const fetchEvents = async (search?: string) => {
+  const fetchEvents = useCallback(async (search?: string, offset = 0, append = false) => {
     try {
       const params = new URLSearchParams();
       if (search) params.set("search", search);
-      params.set("limit", "50");
+      params.set("limit", String(PAGE_SIZE));
+      params.set("offset", String(offset));
       const res = await fetch(`/api/events/explore?${params}`);
       const data = await res.json();
-      setEvents(data.events || []);
+      const newEvents: EventPublic[] = data.events || [];
+      setHasMore(!!data.hasMore);
+      if (append) {
+        setEvents((prev) => [...prev, ...newEvents]);
+      } else {
+        setEvents(newEvents);
+      }
     } catch {
       /* ignore */
     } finally {
       setLoading(false);
+      setLoadingMore(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
     fetchEvents();
-  }, []);
+  }, [fetchEvents]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -92,7 +154,30 @@ export default function ExplorerPublicPage() {
       fetchEvents(searchQuery || undefined);
     }, 400);
     return () => clearTimeout(timer);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchQuery]);
+
+  const loadMore = () => {
+    setLoadingMore(true);
+    fetchEvents(searchQuery || undefined, events.length, true);
+  };
+
+  const handleShare = async (e: React.MouseEvent, event: EventPublic) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const url = `${window.location.origin}/evenement/${event.id}`;
+    try {
+      if (navigator.share) {
+        await navigator.share({ title: event.nom, url });
+      } else {
+        await navigator.clipboard.writeText(url);
+        setCopiedId(event.id);
+        setTimeout(() => setCopiedId(null), 2000);
+      }
+    } catch {
+      /* user cancelled */
+    }
+  };
 
   // Group events by date (Luma-style)
   const groupedEvents = useMemo(() => {
@@ -163,7 +248,7 @@ export default function ExplorerPublicPage() {
         )}
       </header>
 
-      {/* ═══════ HERO — Luma style: city name + subtitle ═══════ */}
+      {/* ═══════ HERO ═══════ */}
       <section className="pt-10 sm:pt-16 pb-6 sm:pb-10">
         <div className="max-w-3xl mx-auto px-5 sm:px-8">
           <h1 className="text-2xl sm:text-4xl font-extrabold tracking-tight text-neutral-900 mb-2">
@@ -173,7 +258,7 @@ export default function ExplorerPublicPage() {
             Découvrez les événements les plus populaires à Cotonou et ne manquez rien.
           </p>
 
-          {/* Search bar — Luma style */}
+          {/* Search bar */}
           <div className="relative">
             <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-400" />
             <input
@@ -192,16 +277,19 @@ export default function ExplorerPublicPage() {
         </div>
       </section>
 
-      {/* ═══════ EVENTS — Luma list layout grouped by date ═══════ */}
+      {/* ═══════ EVENTS LIST ═══════ */}
       <section className="pb-20 sm:pb-28">
         <div className="max-w-3xl mx-auto px-5 sm:px-8">
           <h2 className="text-[13px] font-semibold text-neutral-400 uppercase tracking-wider mb-6">
             Événements
           </h2>
 
+          {/* Skeleton loading */}
           {loading ? (
-            <div className="flex items-center justify-center py-20">
-              <Loader2 className="w-6 h-6 text-neutral-400 animate-spin" />
+            <div>
+              <SkeletonGroup />
+              <SkeletonGroup />
+              <SkeletonGroup />
             </div>
           ) : events.length === 0 ? (
             <div className="text-center py-20">
@@ -214,7 +302,7 @@ export default function ExplorerPublicPage() {
               <p className="text-sm text-neutral-400 max-w-xs mx-auto mb-6">
                 {searchQuery
                   ? "Essayez une autre recherche."
-                  : "Il n'y a pas encore d'événements publiés. Revenez bientôt !"}
+                  : "Il n'y a pas encore d'événements à venir. Revenez bientôt !"}
               </p>
               {searchQuery && (
                 <button
@@ -226,103 +314,162 @@ export default function ExplorerPublicPage() {
               )}
             </div>
           ) : (
-            <div className="space-y-0">
+            <div>
               {groupedEvents.map((group) => (
                 <div key={group.date}>
-                  {/* Date header — Luma style */}
+                  {/* Date header */}
                   <div className="sticky top-14 z-10 bg-white/90 backdrop-blur-sm py-3 border-b border-neutral-100">
                     <span className="text-[13px] font-bold text-neutral-900 capitalize">
                       {group.label}
                     </span>
                   </div>
 
-                  {/* Events for this date */}
+                  {/* Events */}
                   <div>
-                    {group.events.map((event) => (
-                      <Link
-                        key={event.id}
-                        href={`/evenement/${event.id}`}
-                        className="group flex items-start gap-4 py-4 border-b border-neutral-50 hover:bg-neutral-50/50 -mx-3 px-3 rounded-xl transition-colors"
-                      >
-                        {/* Left: time + info */}
-                        <div className="flex-1 min-w-0">
-                          {/* Time */}
-                          {event.heure_debut && (
-                            <p className="text-[13px] font-medium text-neutral-400 mb-1">
-                              {formatTime(event.heure_debut)}
-                            </p>
-                          )}
+                    {group.events.map((event) => {
+                      const capacityStatus = getCapacityStatus(event.total_capacity, event.total_sold);
+                      const isFree = event.min_price === 0;
+                      const isCopied = copiedId === event.id;
 
-                          {/* Title */}
-                          <h3 className="font-semibold text-neutral-900 text-[15px] leading-snug line-clamp-2 group-hover:text-blue-600 transition-colors">
-                            {event.nom}
-                          </h3>
+                      return (
+                        <Link
+                          key={event.id}
+                          href={`/evenement/${event.id}`}
+                          className="group flex items-start gap-4 py-4 border-b border-neutral-50 hover:bg-neutral-50/50 -mx-3 px-3 rounded-xl transition-colors relative"
+                        >
+                          {/* Left: info */}
+                          <div className="flex-1 min-w-0">
+                            {/* Time */}
+                            {event.heure_debut && (
+                              <p className="text-[13px] font-medium text-neutral-400 mb-1">
+                                {formatTime(event.heure_debut)}
+                              </p>
+                            )}
 
-                          {/* Organizer — Luma "By Name" style */}
-                          {event.boutiques && (
-                            <div className="flex items-center gap-1.5 mt-1.5">
-                              <div className="w-4 h-4 rounded-full bg-neutral-100 overflow-hidden flex items-center justify-center shrink-0">
-                                {event.boutiques.logo_url ? (
-                                  // eslint-disable-next-line @next/next/no-img-element
-                                  <img src={event.boutiques.logo_url} alt="" className="w-full h-full object-cover" />
-                                ) : (
-                                  <span className="text-[8px] font-bold text-neutral-400">
-                                    {event.boutiques.nom.charAt(0)}
-                                  </span>
-                                )}
+                            {/* Title */}
+                            <h3 className="font-semibold text-neutral-900 text-[15px] leading-snug line-clamp-2 group-hover:text-blue-600 transition-colors">
+                              {event.nom}
+                            </h3>
+
+                            {/* Organizer */}
+                            {event.boutiques && (
+                              <div className="flex items-center gap-1.5 mt-1.5">
+                                <div className="w-4 h-4 rounded-full bg-neutral-100 overflow-hidden flex items-center justify-center shrink-0">
+                                  {event.boutiques.logo_url ? (
+                                    // eslint-disable-next-line @next/next/no-img-element
+                                    <img src={event.boutiques.logo_url} alt="" className="w-full h-full object-cover" />
+                                  ) : (
+                                    <span className="text-[8px] font-bold text-neutral-400">
+                                      {event.boutiques.nom.charAt(0)}
+                                    </span>
+                                  )}
+                                </div>
+                                <span className="text-xs text-neutral-400 truncate">
+                                  Par {event.boutiques.nom}
+                                </span>
                               </div>
-                              <span className="text-xs text-neutral-400 truncate">
-                                Par {event.boutiques.nom}
+                            )}
+
+                            {/* Location */}
+                            {event.lieu && (
+                              <p className="text-xs text-neutral-400 mt-1.5 flex items-center gap-1">
+                                <MapPin className="w-3 h-3 shrink-0" />
+                                <span className="truncate">{event.lieu}</span>
+                              </p>
+                            )}
+
+                            {/* Badges row: price + capacity + registered */}
+                            <div className="flex items-center gap-2 mt-2.5 flex-wrap">
+                              {/* Price badge */}
+                              <span className={`inline-flex items-center gap-1 text-[11px] font-semibold px-2 py-0.5 rounded-full ${
+                                isFree
+                                  ? "bg-green-50 text-green-600"
+                                  : "bg-blue-50 text-blue-600"
+                              }`}>
+                                <Ticket className="w-3 h-3" />
+                                {formatPrice(event.min_price, event.devise)}
                               </span>
-                            </div>
-                          )}
 
-                          {/* Location */}
-                          {event.lieu && (
-                            <p className="text-xs text-neutral-400 mt-1.5 flex items-center gap-1">
-                              <MapPin className="w-3 h-3 shrink-0" />
-                              <span className="truncate">{event.lieu}</span>
-                            </p>
-                          )}
+                              {/* Capacity status */}
+                              {capacityStatus && (
+                                <span className={`inline-flex items-center gap-1 text-[11px] font-semibold px-2 py-0.5 rounded-full ${capacityStatus.color}`}>
+                                  <AlertCircle className="w-3 h-3" />
+                                  {capacityStatus.label}
+                                </span>
+                              )}
 
-                          {/* Registered count */}
-                          {event.total_vendu > 0 && (
-                            <div className="flex items-center gap-1 mt-2">
-                              <Users className="w-3 h-3 text-neutral-300" />
-                              <span className="text-xs text-neutral-400">+{event.total_vendu}</span>
+                              {/* Registered count */}
+                              {event.total_vendu > 0 && (
+                                <span className="inline-flex items-center gap-1 text-[11px] text-neutral-400 font-medium">
+                                  <Users className="w-3 h-3" />
+                                  +{event.total_vendu}
+                                </span>
+                              )}
                             </div>
-                          )}
-                        </div>
+                          </div>
 
-                        {/* Right: cover thumbnail — Luma 120x120 square */}
-                        <div className="w-[88px] h-[88px] sm:w-[100px] sm:h-[100px] rounded-xl overflow-hidden bg-neutral-100 shrink-0">
-                          {event.cover_url ? (
-                            // eslint-disable-next-line @next/next/no-img-element
-                            <img
-                              src={event.cover_url}
-                              alt={event.nom}
-                              className="w-full h-full object-cover"
-                            />
-                          ) : event.logo_url ? (
-                            <div className="w-full h-full bg-gradient-to-br from-neutral-50 to-neutral-100 flex items-center justify-center">
-                              {/* eslint-disable-next-line @next/next/no-img-element */}
-                              <img
-                                src={event.logo_url}
-                                alt={event.nom}
-                                className="w-10 h-10 rounded-lg object-cover"
-                              />
+                          {/* Right: thumbnail + share */}
+                          <div className="flex flex-col items-end gap-2 shrink-0">
+                            <div className="w-[88px] h-[88px] sm:w-[100px] sm:h-[100px] rounded-xl overflow-hidden bg-neutral-100">
+                              {event.cover_url ? (
+                                // eslint-disable-next-line @next/next/no-img-element
+                                <img
+                                  src={event.cover_url}
+                                  alt={event.nom}
+                                  className="w-full h-full object-cover"
+                                />
+                              ) : event.logo_url ? (
+                                <div className="w-full h-full bg-gradient-to-br from-neutral-50 to-neutral-100 flex items-center justify-center">
+                                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                                  <img
+                                    src={event.logo_url}
+                                    alt={event.nom}
+                                    className="w-10 h-10 rounded-lg object-cover"
+                                  />
+                                </div>
+                              ) : (
+                                <div className="w-full h-full bg-gradient-to-br from-neutral-50 to-neutral-100 flex items-center justify-center">
+                                  <CalendarDays className="w-6 h-6 text-neutral-300" />
+                                </div>
+                              )}
                             </div>
-                          ) : (
-                            <div className="w-full h-full bg-gradient-to-br from-neutral-50 to-neutral-100 flex items-center justify-center">
-                              <CalendarDays className="w-6 h-6 text-neutral-300" />
-                            </div>
-                          )}
-                        </div>
-                      </Link>
-                    ))}
+                            {/* Share button */}
+                            <button
+                              onClick={(e) => handleShare(e, event)}
+                              className="p-1.5 rounded-lg text-neutral-300 hover:text-neutral-600 hover:bg-neutral-100 transition-colors"
+                              title="Partager"
+                            >
+                              {isCopied ? (
+                                <Check className="w-3.5 h-3.5 text-green-500" />
+                              ) : (
+                                <Share2 className="w-3.5 h-3.5" />
+                              )}
+                            </button>
+                          </div>
+                        </Link>
+                      );
+                    })}
                   </div>
                 </div>
               ))}
+
+              {/* Load more button */}
+              {hasMore && (
+                <div className="flex justify-center pt-8">
+                  <button
+                    onClick={loadMore}
+                    disabled={loadingMore}
+                    className="inline-flex items-center gap-2 px-6 py-2.5 text-sm font-medium text-neutral-600 bg-neutral-50 border border-neutral-200 rounded-xl hover:bg-neutral-100 transition-colors disabled:opacity-50"
+                  >
+                    {loadingMore ? (
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                    ) : (
+                      <ChevronDown className="w-4 h-4" />
+                    )}
+                    {loadingMore ? "Chargement..." : "Charger plus"}
+                  </button>
+                </div>
+              )}
             </div>
           )}
         </div>
