@@ -12,7 +12,6 @@ import {
   ChevronDown,
   MapPin,
   Users,
-  ChevronRight,
   Flame,
   Sparkles,
 } from "lucide-react";
@@ -785,13 +784,35 @@ function EventCard({ event }: { event: EventPublic }) {
       </div>
 
       {/* Body */}
-      <div className="p-4">
-        <h3 className="font-semibold text-[15px] text-gray-900 leading-snug line-clamp-2 group-hover:text-violet-700 transition-colors">
+      <div className="p-4 pb-3.5">
+        {/* ── LEVEL 1: Title (biggest, boldest, darkest) ── */}
+        <h3 className="font-bold text-[16px] text-gray-900 leading-[1.3] line-clamp-2 group-hover:text-violet-700 transition-colors tracking-[-0.01em]">
           {event.nom}
         </h3>
 
+        {/* ── LEVEL 2: Date + Time (prominent secondary info) ── */}
+        <p className="mt-2 text-[13px] font-semibold text-violet-600 flex items-center gap-1.5">
+          <CalendarDays className="w-3.5 h-3.5" />
+          {formatDateShort(event.date_debut)}
+          {event.heure_debut && (
+            <span className="text-gray-300 font-normal">·</span>
+          )}
+          {event.heure_debut && (
+            <span className="text-gray-500 font-medium">{formatTime(event.heure_debut)}</span>
+          )}
+        </p>
+
+        {/* ── LEVEL 3: Location (important but tertiary) ── */}
+        {event.lieu && (
+          <div className="flex items-center gap-1.5 mt-1.5 text-[12px] text-gray-400">
+            <MapPin className="w-3 h-3 shrink-0 text-gray-300" />
+            <span className="truncate">{event.lieu}</span>
+          </div>
+        )}
+
+        {/* ── LEVEL 4: Organizer (subtle, small) ── */}
         {event.boutiques && (
-          <div className="flex items-center gap-2 mt-2.5">
+          <div className="flex items-center gap-2 mt-3 pt-3 border-t border-gray-100/80">
             <div className="w-5 h-5 rounded-full bg-gray-100 overflow-hidden flex items-center justify-center shrink-0 ring-1 ring-gray-200/50">
               {event.boutiques.logo_url ? (
                 // eslint-disable-next-line @next/next/no-img-element
@@ -801,39 +822,21 @@ function EventCard({ event }: { event: EventPublic }) {
                   className="w-full h-full object-cover"
                 />
               ) : (
-                <span className="text-[9px] font-bold text-gray-400">
+                <span className="text-[8px] font-bold text-gray-400">
                   {event.boutiques.nom.charAt(0)}
                 </span>
               )}
             </div>
-            <span className="text-[13px] text-gray-500 truncate">
-              Par {event.boutiques.nom}
+            <span className="text-[11px] text-gray-400 truncate font-medium">
+              {event.boutiques.nom}
             </span>
-          </div>
-        )}
-
-        {event.lieu && (
-          <div className="flex items-center gap-1.5 mt-2 text-[13px] text-gray-400">
-            <MapPin className="w-3.5 h-3.5 shrink-0" />
-            <span className="truncate">{event.lieu}</span>
-          </div>
-        )}
-
-        <div className="flex items-center justify-between mt-3 pt-3 border-t border-gray-50">
-          <div className="flex items-center gap-3">
             {event.total_vendu > 0 && (
-              <span className="flex items-center gap-1 text-[12px] text-gray-400 font-medium">
-                <Users className="w-3.5 h-3.5" />+{event.total_vendu}
-              </span>
-            )}
-            {event.ville && (
-              <span className="text-[12px] text-gray-300 font-medium">
-                {event.ville}
+              <span className="ml-auto flex items-center gap-1 text-[11px] text-gray-300 font-medium">
+                <Users className="w-3 h-3" />+{event.total_vendu}
               </span>
             )}
           </div>
-          <ChevronRight className="w-4 h-4 text-gray-300 group-hover:text-violet-500 group-hover:translate-x-0.5 transition-all" />
-        </div>
+        )}
       </div>
     </Link>
   );
