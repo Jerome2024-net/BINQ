@@ -2,20 +2,14 @@
 
 import { useState, useEffect, useMemo, useCallback } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import {
   Search,
-  MapPin,
   CalendarDays,
   Loader2,
-  Star,
   X,
   Menu,
-  Users,
-  Share2,
-  Check,
   ChevronDown,
-  Ticket,
-  AlertCircle,
 } from "lucide-react";
 
 interface EventPublic {
@@ -45,7 +39,11 @@ interface EventPublic {
 
 function formatTime(heureStr: string | null) {
   if (!heureStr) return "";
-  return heureStr.slice(0, 5);
+  const [h, m] = heureStr.split(":");
+  const hour = parseInt(h, 10);
+  const ampm = hour >= 12 ? "PM" : "AM";
+  const h12 = hour % 12 || 12;
+  return `${h12}:${m} ${ampm}`;
 }
 
 function formatDateHeader(dateStr: string) {
@@ -58,42 +56,39 @@ function formatDateHeader(dateStr: string) {
 
   const dayName = d.toLocaleDateString("fr-FR", { weekday: "long" });
   const dayNum = d.getDate();
-  const month = d.toLocaleDateString("fr-FR", { month: "long" });
+  const month = d.toLocaleDateString("fr-FR", { month: "short" });
+
+  const capDay = dayName.charAt(0).toUpperCase() + dayName.slice(1);
 
   if (eventDate.getTime() === today.getTime()) {
-    return `Aujourd'hui · ${dayName}`;
+    return `Aujourd'hui|${capDay}`;
   }
   if (eventDate.getTime() === tomorrow.getTime()) {
-    return `Demain · ${dayName}`;
+    return `Demain|${capDay}`;
   }
-  return `${dayNum} ${month} · ${dayName}`;
+  return `${dayNum} ${month.charAt(0).toUpperCase() + month.slice(1)}|${capDay}`;
 }
 
-function formatPrice(price: number, devise: string) {
-  if (price === 0) return "Gratuit";
-  return `${price.toLocaleString("fr-FR")} ${devise}`;
-}
-
-function getCapacityStatus(totalCapacity: number, totalSold: number) {
+function getCapacityLabel(totalCapacity: number, totalSold: number) {
   if (totalCapacity <= 0) return null;
   const ratio = totalSold / totalCapacity;
-  if (ratio >= 1) return { label: "Complet", color: "bg-red-50 text-red-600" };
-  if (ratio >= 0.9) return { label: "Presque complet", color: "bg-orange-50 text-orange-600" };
-  if (ratio >= 0.75) return { label: "Places limitées", color: "bg-amber-50 text-amber-600" };
+  if (ratio >= 1) return "Complet";
+  if (ratio >= 0.85) return "Presque complet";
+  if (ratio >= 0.7) return "Liste d'attente";
   return null;
 }
 
-/* ─── Skeleton placeholders ─── */
+/* ─── Skeleton ─── */
 function SkeletonRow() {
   return (
-    <div className="flex items-start gap-4 py-4 border-b border-neutral-50 -mx-3 px-3 animate-pulse">
-      <div className="flex-1 min-w-0 space-y-2.5">
-        <div className="h-3 w-12 bg-neutral-100 rounded" />
-        <div className="h-4 w-3/4 bg-neutral-100 rounded" />
-        <div className="h-3 w-1/3 bg-neutral-100 rounded" />
-        <div className="h-3 w-1/2 bg-neutral-100 rounded" />
+    <div className="flex items-center gap-5 py-5 animate-pulse">
+      <div className="flex-1 min-w-0 space-y-3">
+        <div className="h-3.5 w-16 bg-neutral-100 rounded-md" />
+        <div className="h-5 w-4/5 bg-neutral-100 rounded-md" />
+        <div className="h-3.5 w-2/5 bg-neutral-100 rounded-md" />
+        <div className="h-3 w-1/3 bg-neutral-100 rounded-md" />
       </div>
-      <div className="w-[88px] h-[88px] sm:w-[100px] sm:h-[100px] rounded-xl bg-neutral-100 shrink-0" />
+      <div className="w-[120px] h-[120px] rounded-xl bg-neutral-100 shrink-0" />
     </div>
   );
 }
@@ -101,11 +96,14 @@ function SkeletonRow() {
 function SkeletonGroup() {
   return (
     <div>
-      <div className="py-3 border-b border-neutral-100">
-        <div className="h-3.5 w-40 bg-neutral-100 rounded animate-pulse" />
+      <div className="pt-8 pb-4">
+        <div className="h-4 w-44 bg-neutral-100 rounded-md animate-pulse" />
       </div>
-      <SkeletonRow />
-      <SkeletonRow />
+      <div className="divide-y divide-neutral-100">
+        <SkeletonRow />
+        <SkeletonRow />
+        <SkeletonRow />
+      </div>
     </div>
   );
 }
@@ -119,7 +117,6 @@ export default function ExplorerPublicPage() {
   const [hasMore, setHasMore] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [copiedId, setCopiedId] = useState<string | null>(null);
 
   const fetchEvents = useCallback(async (search?: string, offset = 0, append = false) => {
     try {
@@ -162,24 +159,7 @@ export default function ExplorerPublicPage() {
     fetchEvents(searchQuery || undefined, events.length, true);
   };
 
-  const handleShare = async (e: React.MouseEvent, event: EventPublic) => {
-    e.preventDefault();
-    e.stopPropagation();
-    const url = `${window.location.origin}/evenement/${event.id}`;
-    try {
-      if (navigator.share) {
-        await navigator.share({ title: event.nom, url });
-      } else {
-        await navigator.clipboard.writeText(url);
-        setCopiedId(event.id);
-        setTimeout(() => setCopiedId(null), 2000);
-      }
-    } catch {
-      /* user cancelled */
-    }
-  };
-
-  // Group events by date (Luma-style)
+  /* Group events by date */
   const groupedEvents = useMemo(() => {
     const groups: { date: string; label: string; events: EventPublic[] }[] = [];
     const map = new Map<string, EventPublic[]>();
@@ -199,35 +179,33 @@ export default function ExplorerPublicPage() {
   }, [events]);
 
   return (
-    <div className="min-h-screen bg-white font-sans antialiased text-neutral-900">
+    <div className="min-h-screen bg-white text-[#1a1a1a]" style={{ fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" }}>
       {/* ═══════ HEADER ═══════ */}
-      <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-xl border-b border-neutral-100">
-        <div className="max-w-3xl mx-auto px-5 sm:px-8 h-14 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2">
-            <div className="w-7 h-7 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center shadow-sm shadow-blue-500/30">
-              <Star className="w-3.5 h-3.5 text-white fill-white" />
+      <header className="sticky top-0 z-50 bg-white/90 backdrop-blur-lg border-b border-black/[0.06]">
+        <div className="max-w-[680px] mx-auto px-5 h-14 flex items-center justify-between">
+          <Link href="/" className="flex items-center gap-2.5">
+            <div className="w-7 h-7 bg-[#1a1a1a] rounded-lg flex items-center justify-center">
+              <span className="text-white font-bold text-xs">B</span>
             </div>
-            <span className="font-semibold text-[15px] tracking-tight text-neutral-900">
-              Binq
-            </span>
+            <span className="font-semibold text-[15px] tracking-[-0.01em]">Binq</span>
           </Link>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2">
             <Link
               href="/connexion"
-              className="text-[13px] text-neutral-500 hover:text-neutral-900 transition-colors font-medium"
+              className="hidden sm:inline-flex text-[13px] text-[#666] hover:text-[#1a1a1a] transition-colors font-medium px-3 py-1.5"
             >
               Connexion
             </Link>
             <Link
               href="/inscription"
-              className="hidden sm:inline-flex text-[13px] px-4 py-1.5 bg-neutral-900 text-white rounded-full font-medium hover:bg-neutral-800 transition-colors"
+              className="hidden sm:inline-flex text-[13px] px-4 py-1.5 bg-[#1a1a1a] text-white rounded-full font-medium hover:bg-[#333] transition-colors"
             >
               Créer un événement
             </Link>
             <button
               onClick={() => setMobileOpen(!mobileOpen)}
-              className="sm:hidden p-2 rounded-lg text-neutral-700 hover:bg-neutral-100 transition-colors"
+              className="sm:hidden p-2 rounded-lg text-[#666] hover:bg-neutral-50 transition-colors"
             >
               {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
@@ -235,12 +213,12 @@ export default function ExplorerPublicPage() {
         </div>
 
         {mobileOpen && (
-          <div className="sm:hidden bg-white border-t border-neutral-100 pb-4 pt-3 px-5">
+          <div className="sm:hidden bg-white border-t border-black/[0.06] pb-4 pt-3 px-5">
             <div className="flex flex-col gap-1">
-              <Link href="/connexion" onClick={() => setMobileOpen(false)} className="px-3 py-2.5 rounded-lg text-neutral-600 hover:bg-neutral-50 text-sm">
+              <Link href="/connexion" onClick={() => setMobileOpen(false)} className="px-3 py-2.5 rounded-lg text-[#666] hover:bg-neutral-50 text-sm">
                 Connexion
               </Link>
-              <Link href="/inscription" onClick={() => setMobileOpen(false)} className="px-3 py-2.5 rounded-lg bg-neutral-900 text-white text-sm text-center font-medium">
+              <Link href="/inscription" onClick={() => setMobileOpen(false)} className="px-3 py-2.5 rounded-lg bg-[#1a1a1a] text-white text-sm text-center font-medium">
                 Créer un événement
               </Link>
             </div>
@@ -249,28 +227,32 @@ export default function ExplorerPublicPage() {
       </header>
 
       {/* ═══════ HERO ═══════ */}
-      <section className="pt-10 sm:pt-16 pb-6 sm:pb-10">
-        <div className="max-w-3xl mx-auto px-5 sm:px-8">
-          <h1 className="text-2xl sm:text-4xl font-extrabold tracking-tight text-neutral-900 mb-2">
+      <section className="pt-12 sm:pt-20 pb-8 sm:pb-12">
+        <div className="max-w-[680px] mx-auto px-5">
+          <p className="text-[13px] text-[#999] font-medium tracking-wide uppercase mb-3">
+            Que se passe-t-il à
+          </p>
+          <h1 className="text-[32px] sm:text-[44px] font-bold tracking-[-0.03em] leading-[1.1] text-[#1a1a1a] mb-3">
             Cotonou
           </h1>
-          <p className="text-neutral-400 text-sm sm:text-[15px] leading-relaxed max-w-lg mb-8">
-            Découvrez les événements les plus populaires à Cotonou et ne manquez rien.
+          <p className="text-[#999] text-[15px] leading-relaxed max-w-md mb-10">
+            Découvrez les événements les plus populaires à Cotonou et soyez
+            notifié des nouveaux événements avant qu&apos;ils n&apos;affichent complet.
           </p>
 
-          {/* Search bar */}
-          <div className="relative">
-            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-400" />
+          {/* Search */}
+          <div className="relative max-w-md">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-[#bbb]" />
             <input
               type="text"
               placeholder="Rechercher un événement..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full bg-neutral-50 border border-neutral-200 rounded-xl pl-10 pr-10 py-2.5 text-sm text-neutral-900 placeholder-neutral-400 outline-none focus:border-neutral-300 focus:ring-1 focus:ring-neutral-200 transition-all"
+              className="w-full bg-[#f8f8f8] border border-[#eee] rounded-[12px] pl-11 pr-10 py-3 text-[14px] text-[#1a1a1a] placeholder-[#bbb] outline-none focus:border-[#ddd] focus:bg-white transition-all"
             />
             {searchQuery && (
-              <button onClick={() => setSearchQuery("")} className="absolute right-3.5 top-1/2 -translate-y-1/2">
-                <X className="w-4 h-4 text-neutral-400 hover:text-neutral-600" />
+              <button onClick={() => setSearchQuery("")} className="absolute right-4 top-1/2 -translate-y-1/2">
+                <X className="w-4 h-4 text-[#bbb] hover:text-[#666]" />
               </button>
             )}
           </div>
@@ -278,28 +260,29 @@ export default function ExplorerPublicPage() {
       </section>
 
       {/* ═══════ EVENTS LIST ═══════ */}
-      <section className="pb-20 sm:pb-28">
-        <div className="max-w-3xl mx-auto px-5 sm:px-8">
-          <h2 className="text-[13px] font-semibold text-neutral-400 uppercase tracking-wider mb-6">
-            Événements
-          </h2>
+      <section className="pb-24 sm:pb-32">
+        <div className="max-w-[680px] mx-auto px-5">
+          <div className="flex items-center justify-between mb-2">
+            <h2 className="text-[13px] font-semibold text-[#999] uppercase tracking-[0.08em]">
+              Événements
+            </h2>
+          </div>
 
           {/* Skeleton loading */}
           {loading ? (
             <div>
               <SkeletonGroup />
               <SkeletonGroup />
-              <SkeletonGroup />
             </div>
           ) : events.length === 0 ? (
-            <div className="text-center py-20">
-              <div className="w-14 h-14 rounded-2xl bg-neutral-50 flex items-center justify-center mx-auto mb-4">
-                <CalendarDays className="w-6 h-6 text-neutral-300" />
+            <div className="text-center py-24">
+              <div className="w-16 h-16 rounded-2xl bg-[#f8f8f8] flex items-center justify-center mx-auto mb-5">
+                <CalendarDays className="w-7 h-7 text-[#ccc]" />
               </div>
-              <h3 className="text-base font-semibold text-neutral-900 mb-1">
+              <h3 className="text-[17px] font-semibold text-[#1a1a1a] mb-1.5">
                 Aucun événement trouvé
               </h3>
-              <p className="text-sm text-neutral-400 max-w-xs mx-auto mb-6">
+              <p className="text-[14px] text-[#999] max-w-[280px] mx-auto mb-6">
                 {searchQuery
                   ? "Essayez une autre recherche."
                   : "Il n'y a pas encore d'événements à venir. Revenez bientôt !"}
@@ -307,7 +290,7 @@ export default function ExplorerPublicPage() {
               {searchQuery && (
                 <button
                   onClick={() => setSearchQuery("")}
-                  className="text-sm text-neutral-900 font-medium hover:underline"
+                  className="text-[14px] text-[#1a1a1a] font-medium hover:underline"
                 >
                   Réinitialiser
                 </button>
@@ -317,134 +300,121 @@ export default function ExplorerPublicPage() {
             <div>
               {groupedEvents.map((group) => (
                 <div key={group.date}>
-                  {/* Date header */}
-                  <div className="sticky top-14 z-10 bg-white/90 backdrop-blur-sm py-3 border-b border-neutral-100">
-                    <span className="text-[13px] font-bold text-neutral-900 capitalize">
-                      {group.label}
+                  {/* ── Date header (Luma-style) ── */}
+                  <div className="sticky top-14 z-10 bg-white pt-8 pb-4">
+                    <span className="text-[15px] font-semibold text-[#1a1a1a] tracking-[-0.01em]">
+                      {(() => {
+                        const idx = group.label.indexOf("|");
+                        if (idx === -1) return group.label;
+                        const primary = group.label.slice(0, idx);
+                        const secondary = group.label.slice(idx + 1);
+                        return (
+                          <>
+                            {primary}
+                            <span className="text-[#999] font-normal">{secondary}</span>
+                          </>
+                        );
+                      })()}
                     </span>
                   </div>
 
-                  {/* Events */}
-                  <div>
+                  {/* ── Event rows ── */}
+                  <div className="divide-y divide-[#f0f0f0]">
                     {group.events.map((event) => {
-                      const capacityStatus = getCapacityStatus(event.total_capacity, event.total_sold);
-                      const isFree = event.min_price === 0;
-                      const isCopied = copiedId === event.id;
+                      const capacityLabel = getCapacityLabel(event.total_capacity, event.total_sold);
 
                       return (
                         <Link
                           key={event.id}
                           href={`/evenement/${event.id}`}
-                          className="group flex items-start gap-4 py-4 border-b border-neutral-50 hover:bg-neutral-50/50 -mx-3 px-3 rounded-xl transition-colors relative"
+                          className="group flex items-center gap-5 py-5 -mx-4 px-4 rounded-2xl hover:bg-[#fafafa] transition-colors duration-150"
                         >
-                          {/* Left: info */}
+                          {/* Left: event info */}
                           <div className="flex-1 min-w-0">
                             {/* Time */}
                             {event.heure_debut && (
-                              <p className="text-[13px] font-medium text-neutral-400 mb-1">
+                              <p className="text-[13px] font-medium text-[#999] mb-1.5 tracking-wide">
                                 {formatTime(event.heure_debut)}
                               </p>
                             )}
 
                             {/* Title */}
-                            <h3 className="font-semibold text-neutral-900 text-[15px] leading-snug line-clamp-2 group-hover:text-blue-600 transition-colors">
+                            <h3 className="font-semibold text-[16px] text-[#1a1a1a] leading-[1.35] line-clamp-2 tracking-[-0.01em] group-hover:text-[#1a1a1a]">
                               {event.nom}
                             </h3>
 
                             {/* Organizer */}
                             {event.boutiques && (
-                              <div className="flex items-center gap-1.5 mt-1.5">
-                                <div className="w-4 h-4 rounded-full bg-neutral-100 overflow-hidden flex items-center justify-center shrink-0">
+                              <div className="flex items-center gap-2 mt-2">
+                                <div className="w-[18px] h-[18px] rounded-full bg-[#f0f0f0] overflow-hidden flex items-center justify-center shrink-0 ring-1 ring-black/[0.04]">
                                   {event.boutiques.logo_url ? (
                                     // eslint-disable-next-line @next/next/no-img-element
                                     <img src={event.boutiques.logo_url} alt="" className="w-full h-full object-cover" />
                                   ) : (
-                                    <span className="text-[8px] font-bold text-neutral-400">
-                                      {event.boutiques.nom.charAt(0)}
+                                    <span className="text-[9px] font-semibold text-[#999]">
+                                      {event.boutiques.nom.charAt(0).toUpperCase()}
                                     </span>
                                   )}
                                 </div>
-                                <span className="text-xs text-neutral-400 truncate">
+                                <span className="text-[13px] text-[#666] truncate">
                                   Par {event.boutiques.nom}
                                 </span>
                               </div>
                             )}
 
-                            {/* Location */}
-                            {event.lieu && (
-                              <p className="text-xs text-neutral-400 mt-1.5 flex items-center gap-1">
-                                <MapPin className="w-3 h-3 shrink-0" />
-                                <span className="truncate">{event.lieu}</span>
-                              </p>
-                            )}
-
-                            {/* Badges row: price + capacity + registered */}
-                            <div className="flex items-center gap-2 mt-2.5 flex-wrap">
-                              {/* Price badge */}
-                              <span className={`inline-flex items-center gap-1 text-[11px] font-semibold px-2 py-0.5 rounded-full ${
-                                isFree
-                                  ? "bg-green-50 text-green-600"
-                                  : "bg-blue-50 text-blue-600"
-                              }`}>
-                                <Ticket className="w-3 h-3" />
-                                {formatPrice(event.min_price, event.devise)}
-                              </span>
-
-                              {/* Capacity status */}
-                              {capacityStatus && (
-                                <span className={`inline-flex items-center gap-1 text-[11px] font-semibold px-2 py-0.5 rounded-full ${capacityStatus.color}`}>
-                                  <AlertCircle className="w-3 h-3" />
-                                  {capacityStatus.label}
-                                </span>
+                            {/* Location + capacity + count (all on one line, like Luma) */}
+                            <div className="flex items-center gap-0 mt-1.5 text-[13px] text-[#999] min-w-0">
+                              {event.lieu && (
+                                <span className="truncate max-w-[200px] sm:max-w-[300px]">{event.lieu}</span>
                               )}
-
-                              {/* Registered count */}
+                              {capacityLabel && (
+                                <>
+                                  <span className="mx-2 text-[#ddd]">·</span>
+                                  <span className="text-[#e08a00] font-medium whitespace-nowrap">{capacityLabel}</span>
+                                </>
+                              )}
                               {event.total_vendu > 0 && (
-                                <span className="inline-flex items-center gap-1 text-[11px] text-neutral-400 font-medium">
-                                  <Users className="w-3 h-3" />
+                                <span className="ml-auto pl-4 text-[13px] text-[#999] whitespace-nowrap tabular-nums">
                                   +{event.total_vendu}
                                 </span>
                               )}
                             </div>
+
+                            {/* Price hint (subtle, only for paid events) */}
+                            {event.min_price > 0 && (
+                              <p className="text-[12px] text-[#bbb] mt-1">
+                                À partir de {event.min_price.toLocaleString("fr-FR")} {event.devise}
+                              </p>
+                            )}
                           </div>
 
-                          {/* Right: thumbnail + share */}
-                          <div className="flex flex-col items-end gap-2 shrink-0">
-                            <div className="w-[88px] h-[88px] sm:w-[100px] sm:h-[100px] rounded-xl overflow-hidden bg-neutral-100">
-                              {event.cover_url ? (
-                                // eslint-disable-next-line @next/next/no-img-element
-                                <img
-                                  src={event.cover_url}
+                          {/* Right: square cover image (120×120, like Luma) */}
+                          <div className="w-[100px] h-[100px] sm:w-[120px] sm:h-[120px] rounded-xl overflow-hidden bg-[#f5f5f5] shrink-0 ring-1 ring-black/[0.04]">
+                            {event.cover_url ? (
+                              <Image
+                                src={event.cover_url}
+                                alt={event.nom}
+                                width={120}
+                                height={120}
+                                className="w-full h-full object-cover"
+                                unoptimized
+                              />
+                            ) : event.logo_url ? (
+                              <div className="w-full h-full bg-gradient-to-br from-[#f8f8f8] to-[#f0f0f0] flex items-center justify-center">
+                                <Image
+                                  src={event.logo_url}
                                   alt={event.nom}
-                                  className="w-full h-full object-cover"
+                                  width={48}
+                                  height={48}
+                                  className="w-12 h-12 rounded-lg object-cover"
+                                  unoptimized
                                 />
-                              ) : event.logo_url ? (
-                                <div className="w-full h-full bg-gradient-to-br from-neutral-50 to-neutral-100 flex items-center justify-center">
-                                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                                  <img
-                                    src={event.logo_url}
-                                    alt={event.nom}
-                                    className="w-10 h-10 rounded-lg object-cover"
-                                  />
-                                </div>
-                              ) : (
-                                <div className="w-full h-full bg-gradient-to-br from-neutral-50 to-neutral-100 flex items-center justify-center">
-                                  <CalendarDays className="w-6 h-6 text-neutral-300" />
-                                </div>
-                              )}
-                            </div>
-                            {/* Share button */}
-                            <button
-                              onClick={(e) => handleShare(e, event)}
-                              className="p-1.5 rounded-lg text-neutral-300 hover:text-neutral-600 hover:bg-neutral-100 transition-colors"
-                              title="Partager"
-                            >
-                              {isCopied ? (
-                                <Check className="w-3.5 h-3.5 text-green-500" />
-                              ) : (
-                                <Share2 className="w-3.5 h-3.5" />
-                              )}
-                            </button>
+                              </div>
+                            ) : (
+                              <div className="w-full h-full bg-gradient-to-br from-[#f8f8f8] to-[#efefef] flex items-center justify-center">
+                                <CalendarDays className="w-7 h-7 text-[#ddd]" />
+                              </div>
+                            )}
                           </div>
                         </Link>
                       );
@@ -453,20 +423,20 @@ export default function ExplorerPublicPage() {
                 </div>
               ))}
 
-              {/* Load more button */}
+              {/* Load more */}
               {hasMore && (
-                <div className="flex justify-center pt-8">
+                <div className="flex justify-center pt-10">
                   <button
                     onClick={loadMore}
                     disabled={loadingMore}
-                    className="inline-flex items-center gap-2 px-6 py-2.5 text-sm font-medium text-neutral-600 bg-neutral-50 border border-neutral-200 rounded-xl hover:bg-neutral-100 transition-colors disabled:opacity-50"
+                    className="inline-flex items-center gap-2 px-6 py-2.5 text-[14px] font-medium text-[#666] bg-[#f8f8f8] border border-[#eee] rounded-full hover:bg-[#f0f0f0] transition-colors disabled:opacity-50"
                   >
                     {loadingMore ? (
                       <Loader2 className="w-4 h-4 animate-spin" />
                     ) : (
                       <ChevronDown className="w-4 h-4" />
                     )}
-                    {loadingMore ? "Chargement..." : "Charger plus"}
+                    {loadingMore ? "Chargement..." : "Voir plus d'événements"}
                   </button>
                 </div>
               )}
@@ -476,29 +446,27 @@ export default function ExplorerPublicPage() {
       </section>
 
       {/* ═══════ FOOTER ═══════ */}
-      <footer className="border-t border-neutral-100 py-8 sm:py-10">
-        <div className="max-w-3xl mx-auto px-5 sm:px-8">
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+      <footer className="border-t border-[#f0f0f0]">
+        <div className="max-w-[680px] mx-auto px-5 py-10">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-5">
             <Link href="/" className="flex items-center gap-2">
-              <div className="w-6 h-6 bg-gradient-to-br from-blue-500 to-blue-600 rounded-md flex items-center justify-center shadow-sm shadow-blue-500/30">
-                <Star className="w-3 h-3 text-white fill-white" />
+              <div className="w-6 h-6 bg-[#1a1a1a] rounded-md flex items-center justify-center">
+                <span className="text-white font-bold text-[10px]">B</span>
               </div>
-              <span className="font-semibold text-neutral-900 tracking-tight text-sm">
-                Binq
-              </span>
+              <span className="font-semibold text-[14px] tracking-[-0.01em]">Binq</span>
             </Link>
-            <div className="flex items-center gap-6 text-sm text-neutral-400">
-              <Link href="/" className="hover:text-neutral-900 transition">
+            <div className="flex items-center gap-6 text-[13px] text-[#999]">
+              <Link href="/" className="hover:text-[#1a1a1a] transition-colors">
                 Accueil
               </Link>
-              <Link href="/explorer" className="text-neutral-900 font-medium">
+              <Link href="/explorer" className="text-[#1a1a1a] font-medium">
                 Explorer
               </Link>
-              <Link href="/connexion" className="hover:text-neutral-900 transition">
+              <Link href="/connexion" className="hover:text-[#1a1a1a] transition-colors">
                 Connexion
               </Link>
             </div>
-            <p className="text-xs text-neutral-300">
+            <p className="text-[12px] text-[#ccc]">
               &copy; {new Date().getFullYear()} Binq
             </p>
           </div>
