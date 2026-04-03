@@ -9,7 +9,7 @@ function getServiceClient() {
   );
 }
 
-// GET /api/events/explore — Public: liste des événements publiés & actifs (à venir uniquement)
+// GET /api/events/explore — Public: upcoming published events + filters
 export async function GET(req: NextRequest) {
   try {
     const supabase = getServiceClient();
@@ -17,11 +17,40 @@ export async function GET(req: NextRequest) {
 
     const search = searchParams.get("search") || "";
     const ville = searchParams.get("ville") || "";
+    const categorieSlug = searchParams.get("categorie") || "";
     const offset = Math.max(parseInt(searchParams.get("offset") || "0"), 0);
     const limit = Math.min(parseInt(searchParams.get("limit") || "20"), 50);
+    const meta = searchParams.get("meta"); // if "1", also return cities list
 
-    // Today's date in YYYY-MM-DD for filtering past events
     const today = new Date().toISOString().split("T")[0];
+
+    // If filtering by category, first get boutique_ids in that category
+    let categoryBoutiqueIds: string[] | null = null;
+    if (categorieSlug) {
+      const { data: cat } = await supabase
+        .from("categories")
+        .select("id")
+        .eq("slug", categorieSlug)
+        .single();
+
+      if (cat) {
+        const { data: catBoutiques } = await supabase
+          .from("boutiques")
+          .select("id")
+          .eq("categorie_id", cat.id);
+
+        categoryBoutiqueIds = (catBoutiques || []).map((b: any) => b.id);
+        if (categoryBoutiqueIds.length === 0) {
+          // No boutiques in this category → return empty
+          const result: any = { events: [], hasMore: false };
+          if (meta === "1") {
+            const cities = await getDistinctCities(supabase, today);
+            result.cities = cities;
+          }
+          return NextResponse.json(result);
+        }
+      }
+    }
 
     let query = supabase
       .from("events")
@@ -44,12 +73,16 @@ export async function GET(req: NextRequest) {
       query = query.ilike("ville", `%${ville}%`);
     }
 
+    if (categoryBoutiqueIds) {
+      query = query.in("boutique_id", categoryBoutiqueIds);
+    }
+
     const { data: events, error } = await query;
     if (error) throw error;
 
     const eventIds = (events || []).map((e: any) => e.id);
 
-    // Fetch organizer info for each unique boutique_id
+    // Fetch organizer info
     const boutiqueIds = Array.from(
       new Set((events || []).map((e: any) => e.boutique_id).filter(Boolean))
     );
@@ -58,7 +91,7 @@ export async function GET(req: NextRequest) {
     if (boutiqueIds.length > 0) {
       const { data: boutiques } = await supabase
         .from("boutiques")
-        .select("id, nom, slug, logo_url, is_verified")
+        .select("id, nom, slug, logo_url, is_verified, categorie_id")
         .in("id", boutiqueIds);
 
       if (boutiques) {
@@ -68,7 +101,7 @@ export async function GET(req: NextRequest) {
       }
     }
 
-    // Fetch ticket_types for pricing & capacity info
+    // Fetch ticket_types for pricing & capacity
     let ticketMap: Record<string, { min_price: number; total_capacity: number; total_sold: number }> = {};
     if (eventIds.length > 0) {
       const { data: ticketTypes } = await supabase
@@ -92,7 +125,6 @@ export async function GET(req: NextRequest) {
       }
     }
 
-    // Merge all info into events
     const enriched = (events || []).map((e: any) => {
       const tk = ticketMap[e.id];
       return {
@@ -104,14 +136,36 @@ export async function GET(req: NextRequest) {
       };
     });
 
-    // Check if there are more events beyond this page
     const hasMore = (events || []).length === limit;
 
-    return NextResponse.json({ events: enriched, hasMore });
+    const result: any = { events: enriched, hasMore };
+
+    // Optionally return distinct cities for filter UI
+    if (meta === "1") {
+      const cities = await getDistinctCities(supabase, today);
+      result.cities = cities;
+    }
+
+    return NextResponse.json(result);
   } catch (err: any) {
     return NextResponse.json(
       { error: err.message || "Erreur serveur" },
       { status: 500 }
     );
   }
+}
+
+async function getDistinctCities(supabase: any, today: string) {
+  const { data } = await supabase
+    .from("events")
+    .select("ville")
+    .eq("is_published", true)
+    .eq("is_active", true)
+    .gte("date_debut", today)
+    .not("ville", "is", null);
+
+  if (!data) return [];
+
+  const unique = Array.from(new Set(data.map((d: any) => d.ville?.trim()).filter(Boolean)));
+  return unique.sort();
 }
