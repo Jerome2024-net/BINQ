@@ -214,7 +214,7 @@ export default function EvenementPage() {
         <AlertCircle className="w-10 h-10 text-gray-300 mb-4" />
         <p className="text-gray-900 font-semibold text-lg mb-1">Événement introuvable</p>
         <p className="text-gray-400 text-sm mb-6">Cet événement n&apos;existe pas ou n&apos;est plus disponible.</p>
-        <button onClick={() => router.push("/explorer")} className="px-5 py-2.5 bg-gray-900 text-white rounded-lg text-sm font-medium">
+        <button onClick={() => router.push("/explorer")} className="px-5 py-2.5 bg-blue-600 text-white rounded-lg text-sm font-medium">
           Explorer les événements
         </button>
       </div>
@@ -227,7 +227,7 @@ export default function EvenementPage() {
   if (success && ticketCodes.length > 0) {
     return (
       <div className="min-h-screen bg-white flex flex-col items-center justify-center px-6" style={{ fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" }}>
-        <div className="w-14 h-14 bg-gray-900 rounded-2xl flex items-center justify-center mb-5">
+        <div className="w-14 h-14 bg-blue-600 rounded-2xl flex items-center justify-center mb-5">
           <Check className="w-7 h-7 text-white" />
         </div>
         <h1 className="text-[22px] font-bold text-gray-900 mb-1">Inscription confirmée</h1>
@@ -277,7 +277,7 @@ export default function EvenementPage() {
         <div className="w-full max-w-sm border border-gray-200 rounded-xl p-5 text-center">
           <p className="text-[14px] font-semibold text-gray-900 mb-1">Invite tes amis</p>
           <p className="text-[13px] text-gray-400 mb-4">Les meilleurs moments se vivent ensemble</p>
-          <button onClick={handleInviteFriends} className="w-full py-2.5 bg-gray-900 text-white rounded-lg text-sm font-medium flex items-center justify-center gap-2 hover:bg-gray-800 transition">
+          <button onClick={handleInviteFriends} className="w-full py-2.5 bg-blue-600 text-white rounded-lg text-sm font-medium flex items-center justify-center gap-2 hover:bg-blue-700 transition">
             <Send className="w-3.5 h-3.5" />
             Partager
           </button>
@@ -292,7 +292,7 @@ export default function EvenementPage() {
         <Link href="/explorer" className="mt-6 text-[13px] text-gray-400 hover:text-gray-600 transition">
           ← Retour à l&apos;Explorer
         </Link>
-        <p className="mt-10 text-[11px] text-gray-300">Propulsé par <span className="text-gray-400 font-semibold">Binq</span></p>
+        <p className="mt-10 text-[11px] text-gray-300">Propulsé par <span className="text-blue-600 font-semibold">Binq</span></p>
       </div>
     );
   }

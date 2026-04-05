@@ -248,7 +248,7 @@ export default function ExplorerPublicPage() {
       <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-xl border-b border-gray-100">
         <div className="max-w-5xl mx-auto px-5 h-14 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2">
-            <div className="w-7 h-7 bg-gray-900 rounded-lg flex items-center justify-center">
+            <div className="w-7 h-7 bg-blue-600 rounded-lg flex items-center justify-center">
               <span className="text-white font-bold text-xs">B</span>
             </div>
             <span className="font-semibold text-[15px] text-gray-900">
@@ -271,7 +271,7 @@ export default function ExplorerPublicPage() {
             </Link>
             <Link
               href="/inscription"
-              className="ml-1.5 px-4 py-1.5 text-[13px] font-semibold bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition"
+              className="ml-1.5 px-4 py-1.5 text-[13px] font-semibold bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
             >
               Créer un événement
             </Link>
@@ -309,7 +309,7 @@ export default function ExplorerPublicPage() {
             <Link
               href="/inscription"
               onClick={() => setMobileOpen(false)}
-              className="block px-3 py-2.5 text-sm font-semibold text-center bg-gray-900 text-white rounded-lg mt-1"
+              className="block px-3 py-2.5 text-sm font-semibold text-center bg-blue-600 text-white rounded-lg mt-1"
             >
               Créer un événement
             </Link>
@@ -416,8 +416,8 @@ export default function ExplorerPublicPage() {
                   onClick={() => setSelectedCategory(cat.slug)}
                   className={`flex items-center gap-1.5 px-3.5 py-2 rounded-full text-[13px] font-medium whitespace-nowrap transition shrink-0 border ${
                     active
-                      ? "bg-gray-900 text-white border-gray-900"
-                      : "bg-white text-gray-600 border-gray-200 hover:border-gray-300 hover:bg-gray-50"
+                      ? "bg-blue-600 text-white border-blue-600"
+                      : "bg-white text-gray-600 border-gray-200 hover:border-blue-300 hover:bg-blue-50"
                   }`}
                 >
                   <span>{cat.icon}</span>
@@ -510,7 +510,7 @@ export default function ExplorerPublicPage() {
         <div className="max-w-5xl mx-auto px-5 py-8">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
             <Link href="/" className="flex items-center gap-2">
-              <div className="w-6 h-6 bg-gray-900 rounded-md flex items-center justify-center">
+              <div className="w-6 h-6 bg-blue-600 rounded-md flex items-center justify-center">
                 <span className="text-white font-bold text-[9px]">B</span>
               </div>
               <span className="font-semibold text-sm text-gray-900">Binq</span>
