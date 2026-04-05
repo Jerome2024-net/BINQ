@@ -12,6 +12,7 @@ import {
   ChevronDown,
   MapPin,
   Users,
+  Star,
 } from "lucide-react";
 
 /* ─── Types ─── */
@@ -248,8 +249,8 @@ export default function ExplorerPublicPage() {
       <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-xl border-b border-gray-100">
         <div className="max-w-5xl mx-auto px-5 h-14 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2">
-            <div className="w-7 h-7 bg-blue-600 rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-xs">B</span>
+            <div className="w-7 h-7 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center shadow-sm shadow-blue-500/30">
+              <Star className="w-3.5 h-3.5 text-white fill-white" />
             </div>
             <span className="font-semibold text-[15px] text-gray-900">
               Binq
@@ -510,8 +511,8 @@ export default function ExplorerPublicPage() {
         <div className="max-w-5xl mx-auto px-5 py-8">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
             <Link href="/" className="flex items-center gap-2">
-              <div className="w-6 h-6 bg-blue-600 rounded-md flex items-center justify-center">
-                <span className="text-white font-bold text-[9px]">B</span>
+              <div className="w-6 h-6 bg-gradient-to-br from-blue-500 to-blue-600 rounded-md flex items-center justify-center shadow-sm shadow-blue-500/30">
+                <Star className="w-3 h-3 text-white fill-white" />
               </div>
               <span className="font-semibold text-sm text-gray-900">Binq</span>
             </Link>
