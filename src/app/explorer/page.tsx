@@ -251,32 +251,32 @@ export default function ExplorerPublicPage() {
     >
       {/* ═══════ NAV ═══════ */}
       <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-xl border-b border-gray-100">
-        <div className="max-w-5xl mx-auto px-5 h-14 flex items-center justify-between">
+        <div className="max-w-7xl mx-auto px-5 lg:px-10 h-14 lg:h-16 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2">
-            <div className="w-7 h-7 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center shadow-sm shadow-blue-500/30">
-              <Star className="w-3.5 h-3.5 text-white fill-white" />
+            <div className="w-7 h-7 lg:w-8 lg:h-8 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center shadow-sm shadow-blue-500/30">
+              <Star className="w-3.5 h-3.5 lg:w-4 lg:h-4 text-white fill-white" />
             </div>
-            <span className="font-semibold text-[15px] text-gray-900">
+            <span className="font-semibold text-[15px] lg:text-base text-gray-900">
               Binq
             </span>
           </Link>
 
-          <nav className="hidden sm:flex items-center gap-1">
+          <nav className="hidden sm:flex items-center gap-1 lg:gap-2">
             <Link
               href="/explorer"
-              className="px-3 py-1.5 text-[13px] font-medium text-gray-900 bg-gray-100 rounded-lg"
+              className="px-3 lg:px-4 py-1.5 lg:py-2 text-[13px] lg:text-sm font-medium text-gray-900 bg-gray-100 rounded-lg"
             >
               Explorer
             </Link>
             <Link
               href="/connexion"
-              className="px-3 py-1.5 text-[13px] font-medium text-gray-500 hover:text-gray-900 rounded-lg hover:bg-gray-50 transition"
+              className="px-3 lg:px-4 py-1.5 lg:py-2 text-[13px] lg:text-sm font-medium text-gray-500 hover:text-gray-900 rounded-lg hover:bg-gray-50 transition"
             >
               Connexion
             </Link>
             <Link
               href="/inscription"
-              className="ml-1.5 px-4 py-1.5 text-[13px] font-semibold bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+              className="ml-1.5 px-4 lg:px-5 py-1.5 lg:py-2 text-[13px] lg:text-sm font-semibold bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition shadow-sm shadow-blue-600/20"
             >
               Créer un événement
             </Link>
@@ -323,96 +323,100 @@ export default function ExplorerPublicPage() {
       </header>
 
       {/* ═══════ HERO ═══════ */}
-      <section className="pt-10 sm:pt-14 pb-8 border-b border-gray-100">
-        <div className="max-w-5xl mx-auto px-5">
-          <p className="text-[13px] font-semibold text-gray-400 uppercase tracking-widest mb-3">
-            Découvrir
-          </p>
-          <h1 className="text-[28px] sm:text-[40px] font-bold text-gray-900 tracking-tight leading-[1.15]">
-            Événements à {selectedCity || "Cotonou"}
-          </h1>
-          <p className="text-gray-400 text-[15px] sm:text-base mt-2.5 max-w-md leading-relaxed">
-            Trouvez les meilleurs événements près de chez vous. Concerts,
-            conférences, networking et plus encore.
-          </p>
-
-          {/* Search + City */}
-          <div className="flex flex-col sm:flex-row gap-2.5 mt-7">
-            {/* Search */}
-            <div className="relative flex-1 max-w-md">
-              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-              <input
-                type="text"
-                placeholder="Rechercher un événement, lieu..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full bg-gray-50 border border-gray-200 rounded-xl pl-10 pr-9 py-2.5 text-[14px] text-gray-900 placeholder-gray-400 outline-none focus:border-gray-300 focus:bg-white transition"
-              />
-              {searchQuery && (
-                <button
-                  onClick={() => setSearchQuery("")}
-                  className="absolute right-3 top-1/2 -translate-y-1/2"
-                >
-                  <X className="w-3.5 h-3.5 text-gray-400 hover:text-gray-600" />
-                </button>
-              )}
+      <section className="pt-10 sm:pt-14 lg:pt-20 pb-8 lg:pb-12 border-b border-gray-100">
+        <div className="max-w-7xl mx-auto px-5 lg:px-10">
+          <div className="lg:flex lg:items-end lg:justify-between lg:gap-10">
+            <div className="lg:max-w-xl">
+              <p className="text-[13px] font-semibold text-blue-600 uppercase tracking-widest mb-3">
+                Découvrir
+              </p>
+              <h1 className="text-[28px] sm:text-[40px] lg:text-[48px] font-bold text-gray-900 tracking-tight leading-[1.1]">
+                Événements à {selectedCity || "Cotonou"}
+              </h1>
+              <p className="text-gray-400 text-[15px] sm:text-base lg:text-lg mt-2.5 max-w-md leading-relaxed">
+                Trouvez les meilleurs événements près de chez vous. Concerts,
+                conférences, networking et plus encore.
+              </p>
             </div>
 
-            {/* City */}
-            <div className="relative" ref={cityRef}>
-              <button
-                onClick={() => setCityDropdownOpen(!cityDropdownOpen)}
-                className="flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-[14px] hover:border-gray-300 transition min-w-[180px] justify-between"
-              >
-                <span className="flex items-center gap-2">
-                  <MapPin className="w-4 h-4 text-gray-400" />
-                  <span
-                    className={
-                      selectedCity ? "text-gray-900" : "text-gray-400"
-                    }
-                  >
-                    {selectedCity || "Toutes les villes"}
-                  </span>
-                </span>
-                <ChevronDown
-                  className={`w-3.5 h-3.5 text-gray-400 transition-transform ${cityDropdownOpen ? "rotate-180" : ""}`}
+            {/* Search + City — side-by-side on desktop */}
+            <div className="flex flex-col sm:flex-row gap-2.5 mt-7 lg:mt-0 lg:shrink-0">
+              {/* Search */}
+              <div className="relative flex-1 sm:max-w-md lg:w-72">
+                <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                <input
+                  type="text"
+                  placeholder="Rechercher un événement, lieu..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full bg-gray-50 border border-gray-200 rounded-xl pl-10 pr-9 py-2.5 lg:py-3 text-[14px] text-gray-900 placeholder-gray-400 outline-none focus:border-blue-300 focus:bg-white focus:ring-2 focus:ring-blue-100 transition"
                 />
-              </button>
-
-              {cityDropdownOpen && (
-                <div className="absolute top-full left-0 mt-1.5 w-full min-w-[200px] bg-white rounded-xl shadow-lg border border-gray-100 py-1.5 z-50 max-h-60 overflow-y-auto">
+                {searchQuery && (
                   <button
-                    onClick={() => {
-                      setSelectedCity("");
-                      setCityDropdownOpen(false);
-                    }}
-                    className={`w-full text-left px-4 py-2 text-[13px] hover:bg-gray-50 transition ${!selectedCity ? "text-gray-900 font-medium" : "text-gray-600"}`}
+                    onClick={() => setSearchQuery("")}
+                    className="absolute right-3 top-1/2 -translate-y-1/2"
                   >
-                    Toutes les villes
+                    <X className="w-3.5 h-3.5 text-gray-400 hover:text-gray-600" />
                   </button>
-                  {cities.map((city) => (
+                )}
+              </div>
+
+              {/* City */}
+              <div className="relative" ref={cityRef}>
+                <button
+                  onClick={() => setCityDropdownOpen(!cityDropdownOpen)}
+                  className="flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 lg:py-3 text-[14px] hover:border-gray-300 transition min-w-[180px] lg:min-w-[200px] justify-between"
+                >
+                  <span className="flex items-center gap-2">
+                    <MapPin className="w-4 h-4 text-gray-400" />
+                    <span
+                      className={
+                        selectedCity ? "text-gray-900" : "text-gray-400"
+                      }
+                    >
+                      {selectedCity || "Toutes les villes"}
+                    </span>
+                  </span>
+                  <ChevronDown
+                    className={`w-3.5 h-3.5 text-gray-400 transition-transform ${cityDropdownOpen ? "rotate-180" : ""}`}
+                  />
+                </button>
+
+                {cityDropdownOpen && (
+                  <div className="absolute top-full left-0 mt-1.5 w-full min-w-[200px] bg-white rounded-xl shadow-lg border border-gray-100 py-1.5 z-50 max-h-60 overflow-y-auto">
                     <button
-                      key={city}
                       onClick={() => {
-                        setSelectedCity(city);
+                        setSelectedCity("");
                         setCityDropdownOpen(false);
                       }}
-                      className={`w-full text-left px-4 py-2 text-[13px] hover:bg-gray-50 transition ${selectedCity === city ? "text-gray-900 font-medium" : "text-gray-600"}`}
+                      className={`w-full text-left px-4 py-2 text-[13px] hover:bg-gray-50 transition ${!selectedCity ? "text-gray-900 font-medium" : "text-gray-600"}`}
                     >
-                      {city}
+                      Toutes les villes
                     </button>
-                  ))}
-                </div>
-              )}
+                    {cities.map((city) => (
+                      <button
+                        key={city}
+                        onClick={() => {
+                          setSelectedCity(city);
+                          setCityDropdownOpen(false);
+                        }}
+                        className={`w-full text-left px-4 py-2 text-[13px] hover:bg-gray-50 transition ${selectedCity === city ? "text-gray-900 font-medium" : "text-gray-600"}`}
+                      >
+                        {city}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </div>
       </section>
 
       {/* ═══════ CATEGORY TABS ═══════ */}
-      <section className="sticky top-14 z-40 bg-white border-b border-gray-100">
-        <div className="max-w-5xl mx-auto px-5">
-          <div className="flex gap-1.5 overflow-x-auto py-3 scrollbar-none -mx-1 px-1">
+      <section className="sticky top-14 lg:top-16 z-40 bg-white border-b border-gray-100">
+        <div className="max-w-7xl mx-auto px-5 lg:px-10">
+          <div className="flex gap-1.5 lg:gap-2 overflow-x-auto py-3 lg:py-4 scrollbar-none -mx-1 px-1">
             {EVENT_CATEGORIES.map((cat) => {
               const active = selectedCategory === cat.slug;
               return (
@@ -435,11 +439,11 @@ export default function ExplorerPublicPage() {
       </section>
 
       {/* ═══════ CONTENT ═══════ */}
-      <main className="max-w-5xl mx-auto px-5 pb-20 pt-8">
+      <main className="max-w-7xl mx-auto px-5 lg:px-10 pb-20 pt-8 lg:pt-10">
         {loading ? (
           /* Skeleton */
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-8">
-            {Array.from({ length: 6 }).map((_, i) => (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-6 lg:gap-x-7 gap-y-8 lg:gap-y-10">
+            {Array.from({ length: 8 }).map((_, i) => (
               <SkeletonCard key={i} />
             ))}
           </div>
@@ -476,12 +480,12 @@ export default function ExplorerPublicPage() {
             {groupedEvents.map((group) => (
               <section key={group.date}>
                 {/* Date header */}
-                <h2 className="text-[15px] font-semibold text-gray-900 capitalize mb-5">
+                <h2 className="text-[15px] lg:text-lg font-semibold text-gray-900 capitalize mb-5 lg:mb-6">
                   {group.label}
                 </h2>
 
                 {/* Cards grid */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-8">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-6 lg:gap-x-7 gap-y-8 lg:gap-y-10">
                   {group.events.map((event) => (
                     <EventCard key={event.id} event={event} />
                   ))}
@@ -511,16 +515,21 @@ export default function ExplorerPublicPage() {
       </main>
 
       {/* ═══════ FOOTER ═══════ */}
-      <footer className="border-t border-gray-100">
-        <div className="max-w-5xl mx-auto px-5 py-8">
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-            <Link href="/" className="flex items-center gap-2">
-              <div className="w-6 h-6 bg-gradient-to-br from-blue-500 to-blue-600 rounded-md flex items-center justify-center shadow-sm shadow-blue-500/30">
-                <Star className="w-3 h-3 text-white fill-white" />
-              </div>
-              <span className="font-semibold text-sm text-gray-900">Binq</span>
-            </Link>
-            <div className="flex items-center gap-5 text-[13px] text-gray-400">
+      <footer className="border-t border-gray-100 bg-gray-50/50">
+        <div className="max-w-7xl mx-auto px-5 lg:px-10 py-10 lg:py-14">
+          <div className="lg:flex lg:items-start lg:justify-between lg:gap-10">
+            <div className="mb-6 lg:mb-0">
+              <Link href="/" className="flex items-center gap-2 mb-3">
+                <div className="w-7 h-7 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center shadow-sm shadow-blue-500/30">
+                  <Star className="w-3.5 h-3.5 text-white fill-white" />
+                </div>
+                <span className="font-semibold text-[15px] text-gray-900">Binq</span>
+              </Link>
+              <p className="text-sm text-gray-400 max-w-xs leading-relaxed">
+                La plateforme de billetterie qui simplifie l&apos;organisation et la découverte d&apos;événements.
+              </p>
+            </div>
+            <div className="flex items-center gap-6 text-[13px] lg:text-sm text-gray-400">
               <Link href="/" className="hover:text-gray-900 transition">
                 Accueil
               </Link>
@@ -536,9 +545,17 @@ export default function ExplorerPublicPage() {
               >
                 Connexion
               </Link>
+              <Link
+                href="/inscription"
+                className="hover:text-gray-900 transition"
+              >
+                Créer un événement
+              </Link>
             </div>
+          </div>
+          <div className="mt-8 pt-6 border-t border-gray-200/60 flex flex-col sm:flex-row items-center justify-between gap-2">
             <p className="text-xs text-gray-300">
-              &copy; {new Date().getFullYear()} Binq
+              &copy; {new Date().getFullYear()} Binq. Tous droits réservés.
             </p>
           </div>
         </div>
@@ -556,7 +573,7 @@ function EventCard({ event }: { event: EventPublic }) {
   return (
     <Link href={`/evenement/${event.id}`} className="group block">
       {/* Image */}
-      <div className="relative rounded-xl overflow-hidden bg-gray-100 aspect-[16/10] mb-3">
+      <div className="relative rounded-xl lg:rounded-2xl overflow-hidden bg-gray-100 aspect-[16/10] mb-3 shadow-sm group-hover:shadow-md transition-shadow duration-300">
         {event.cover_url ? (
           <Image
             src={event.cover_url}
