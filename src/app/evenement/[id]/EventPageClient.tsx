@@ -12,6 +12,7 @@ import {
   Share2,
   Ticket,
   Users,
+  User,
   Minus,
   Plus,
   Check,
@@ -20,6 +21,8 @@ import {
   Send,
   Sparkles,
   ExternalLink,
+  Store,
+  BadgeCheck,
 } from "lucide-react";
 import { formatMontant } from "@/lib/currencies";
 import type { DeviseCode } from "@/lib/currencies";
@@ -54,6 +57,18 @@ interface Event {
   is_active: boolean;
   total_vendu: number;
   ticket_types: TicketType[];
+  boutique: {
+    id: string;
+    nom: string;
+    slug: string;
+    logo_url: string | null;
+    is_verified: boolean;
+  } | null;
+  organisateur: {
+    id: string;
+    nom: string;
+    avatar_url: string | null;
+  } | null;
 }
 
 /* ─── Helpers ─── */
@@ -434,6 +449,48 @@ export default function EvenementPage() {
             {event.ville && <p className="text-xs text-gray-500">{event.ville}</p>}
           </div>
         </div>
+
+        {/* Organisateur */}
+        {event.organisateur && (
+          <div className="flex items-start gap-3 mb-4">
+            <div className="w-10 h-10 bg-blue-50 rounded-xl flex items-center justify-center shrink-0 overflow-hidden">
+              {event.organisateur.avatar_url ? (
+                <img src={event.organisateur.avatar_url} alt={event.organisateur.nom} className="w-10 h-10 object-cover rounded-xl" />
+              ) : (
+                <User className="w-5 h-5 text-blue-600" />
+              )}
+            </div>
+            <div>
+              <p className="text-sm font-bold text-gray-900 flex items-center gap-1">
+                {event.organisateur.nom}
+                {event.boutique?.is_verified && (
+                  <BadgeCheck className="w-4 h-4 text-blue-500" />
+                )}
+              </p>
+              <p className="text-xs text-gray-500">Organisateur</p>
+            </div>
+          </div>
+        )}
+        {!event.organisateur && event.boutique && (
+          <Link href={`/boutique/${event.boutique.slug}`} className="flex items-start gap-3 mb-4 group">
+            <div className="w-10 h-10 bg-blue-50 rounded-xl flex items-center justify-center shrink-0 overflow-hidden">
+              {event.boutique.logo_url ? (
+                <img src={event.boutique.logo_url} alt={event.boutique.nom} className="w-10 h-10 object-cover rounded-xl" />
+              ) : (
+                <Store className="w-5 h-5 text-blue-600" />
+              )}
+            </div>
+            <div>
+              <p className="text-sm font-bold text-gray-900 group-hover:text-blue-600 transition flex items-center gap-1">
+                {event.boutique.nom}
+                {event.boutique.is_verified && (
+                  <BadgeCheck className="w-4 h-4 text-blue-500" />
+                )}
+              </p>
+              <p className="text-xs text-gray-500">Organisateur</p>
+            </div>
+          </Link>
+        )}
 
         {/* Description */}
         {event.description && (

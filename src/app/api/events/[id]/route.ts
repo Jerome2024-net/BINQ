@@ -42,7 +42,35 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
       event.ticket_types.sort((a: any, b: any) => a.ordre - b.ordre);
     }
 
-    return NextResponse.json(event);
+    // Récupérer la boutique organisatrice
+    let boutique = null;
+    if (event.boutique_id) {
+      const { data: boutiqueData } = await supabase
+        .from("boutiques")
+        .select("id, nom, slug, logo_url, is_verified, categorie_id")
+        .eq("id", event.boutique_id)
+        .single();
+      boutique = boutiqueData || null;
+    }
+
+    // Récupérer le profil de l'organisateur (créateur de l'événement)
+    let organisateur = null;
+    if (event.user_id) {
+      const { data: profileData } = await supabase
+        .from("profiles")
+        .select("id, prenom, nom, avatar")
+        .eq("id", event.user_id)
+        .single();
+      if (profileData) {
+        organisateur = {
+          id: profileData.id,
+          nom: `${profileData.prenom || ""} ${profileData.nom || ""}`.trim(),
+          avatar_url: profileData.avatar || null,
+        };
+      }
+    }
+
+    return NextResponse.json({ ...event, boutique, organisateur });
   } catch (err: any) {
     return NextResponse.json({ error: err.message || "Erreur serveur" }, { status: 500 });
   }
