@@ -348,12 +348,12 @@ export default function EvenementPage() {
       {/* ── Main content ── */}
       <div className="max-w-6xl mx-auto px-5 lg:px-10">
         {/* Desktop: two-column | Mobile: single column */}
-        <div className="lg:flex lg:gap-10 -mt-8 lg:-mt-24 relative z-10">
+        <div className="lg:flex lg:gap-10 lg:-mt-24 relative z-10">
 
           {/* ─── LEFT COLUMN: Event info ─── */}
           <div className="lg:flex-1 lg:min-w-0">
-            {/* Card header on desktop */}
-            <div className="lg:bg-white lg:rounded-2xl lg:shadow-xl lg:p-8 lg:mb-6">
+            {/* Card — always white bg on mobile too so title is readable */}
+            <div className="bg-white rounded-2xl -mt-6 relative z-10 p-5 shadow-sm lg:shadow-xl lg:p-8 lg:mb-6">
               {/* Referral Banner */}
               {referrer && (
                 <div className="mb-5 bg-purple-50 border border-purple-200 rounded-2xl p-4 animate-in slide-in-from-top-4 duration-300">
