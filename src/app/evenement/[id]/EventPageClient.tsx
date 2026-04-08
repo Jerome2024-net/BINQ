@@ -314,373 +314,374 @@ export default function EvenementPage() {
 
   // ═══ PAGE ÉVÉNEMENT ═══
   return (
-    <div className="min-h-screen bg-white">
-      {/* Desktop centered container */}
-      <div className="max-w-2xl mx-auto">
-      {/* Cover */}
+    <div className="min-h-screen bg-white" style={{ fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" }}>
+      {/* ── Cover ── */}
       <div className="relative">
         {event.cover_url ? (
-          <div className="w-full h-56 sm:h-72 lg:h-80 relative lg:rounded-b-3xl overflow-hidden">
+          <div className="w-full h-56 sm:h-72 lg:h-[420px] relative overflow-hidden">
             <img src={event.cover_url} alt={event.nom} className="w-full h-full object-cover" />
-            <div className="absolute inset-0 bg-gradient-to-t from-white via-transparent to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-black/10" />
           </div>
         ) : (
-          <div className="w-full h-40 bg-gradient-to-br from-blue-500 to-blue-600 relative">
-            <div className="absolute inset-0 bg-gradient-to-t from-white to-transparent" />
+          <div className="w-full h-40 lg:h-[320px] bg-gradient-to-br from-blue-500 via-blue-600 to-indigo-700 relative">
+            <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
           </div>
         )}
 
-        {/* Back button */}
-        <button
-          onClick={() => router.back()}
-          className="absolute top-4 left-4 w-10 h-10 bg-white/80 backdrop-blur-sm rounded-full flex items-center justify-center text-gray-700 hover:bg-white transition shadow-sm"
-        >
-          <ArrowLeft className="w-5 h-5" />
-        </button>
-
-        {/* Share */}
-        <button
-          onClick={() => {
-            const url = window.location.href;
-            if (navigator.share) {
-              navigator.share({ title: event.nom, url }).catch(() => {});
-            } else {
-              navigator.clipboard.writeText(url);
-            }
-          }}
-          className="absolute top-4 right-4 w-10 h-10 bg-white/80 backdrop-blur-sm rounded-full flex items-center justify-center text-gray-700 hover:bg-white transition shadow-sm"
-        >
-          <Share2 className="w-5 h-5" />
-        </button>
+        {/* Nav overlay */}
+        <div className="absolute top-0 left-0 right-0 flex items-center justify-between p-4 lg:px-10 lg:py-6 z-20">
+          <button
+            onClick={() => router.back()}
+            className="w-10 h-10 bg-white/90 backdrop-blur-md rounded-full flex items-center justify-center text-gray-700 hover:bg-white transition shadow-lg"
+          >
+            <ArrowLeft className="w-5 h-5" />
+          </button>
+          <button
+            onClick={handleShare}
+            className="w-10 h-10 bg-white/90 backdrop-blur-md rounded-full flex items-center justify-center text-gray-700 hover:bg-white transition shadow-lg"
+          >
+            <Share2 className="w-5 h-5" />
+          </button>
+        </div>
       </div>
 
-      {/* Event info */}
-      <div className="px-5 -mt-8 relative z-10">
-        {/* ═══ Referral Banner — "X participe à cet événement" ═══ */}
-        {referrer && (
-          <div className="mb-4 bg-purple-50 border border-purple-200 rounded-2xl p-4 animate-in slide-in-from-top-4 duration-300">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center shrink-0">
-                <Sparkles className="w-5 h-5 text-purple-500" />
-              </div>
-              <div>
-                <p className="text-sm font-bold text-gray-900">{referrer} participe à cet événement</p>
-                <p className="text-xs text-purple-600">Rejoins-le et vivez ça ensemble 🎉</p>
-              </div>
-            </div>
-          </div>
-        )}
+      {/* ── Main content ── */}
+      <div className="max-w-6xl mx-auto px-5 lg:px-10">
+        {/* Desktop: two-column | Mobile: single column */}
+        <div className="lg:flex lg:gap-10 -mt-8 lg:-mt-24 relative z-10">
 
-        <div className="flex items-center gap-3 mb-3">
-          {event.logo_url && (
-            <img src={event.logo_url} alt="" className="w-14 h-14 rounded-2xl object-cover border-2 border-white shrink-0 shadow-lg" />
-          )}
-          <h1 className="text-2xl lg:text-3xl font-black text-gray-900">{event.nom}</h1>
-        </div>
-
-        {/* ═══ Social Proof Bar ═══ */}
-        {totalParticipants > 0 && (
-          <div className="mb-4 bg-gray-50 rounded-2xl p-3.5 border border-gray-100">
-            <div className="flex items-center justify-between mb-2">
-              <div className="flex items-center gap-2">
-                <div className="flex -space-x-1.5">
-                  {[...Array(Math.min(4, totalParticipants))].map((_, i) => (
-                    <div key={i} className="w-6 h-6 bg-gradient-to-br from-blue-400 to-blue-500 rounded-full border-[1.5px] border-white flex items-center justify-center">
-                      <Users className="w-2.5 h-2.5 text-white" />
+          {/* ─── LEFT COLUMN: Event info ─── */}
+          <div className="lg:flex-1 lg:min-w-0">
+            {/* Card header on desktop */}
+            <div className="lg:bg-white lg:rounded-2xl lg:shadow-xl lg:p-8 lg:mb-6">
+              {/* Referral Banner */}
+              {referrer && (
+                <div className="mb-5 bg-purple-50 border border-purple-200 rounded-2xl p-4 animate-in slide-in-from-top-4 duration-300">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center shrink-0">
+                      <Sparkles className="w-5 h-5 text-purple-500" />
                     </div>
-                  ))}
-                  {totalParticipants > 4 && (
-                    <div className="w-6 h-6 bg-gray-100 rounded-full border-[1.5px] border-white flex items-center justify-center">
-                      <span className="text-[8px] font-bold text-gray-600">+{totalParticipants - 4}</span>
+                    <div>
+                      <p className="text-sm font-bold text-gray-900">{referrer} participe à cet événement</p>
+                      <p className="text-xs text-purple-600">Rejoins-le et vivez ça ensemble 🎉</p>
                     </div>
-                  )}
-                </div>
-                <p className="text-xs text-gray-500">
-                  <span className="font-bold text-gray-900">{totalParticipants}</span> personne{totalParticipants > 1 ? "s" : ""} participe{totalParticipants > 1 ? "nt" : ""}
-                </p>
-              </div>
-              {fillPercent >= 70 && (
-                <span className="text-[10px] font-bold text-orange-600 bg-orange-50 px-2 py-0.5 rounded-full">
-                  🔥 {fillPercent}% rempli
-                </span>
-              )}
-            </div>
-            {/* Progress bar */}
-            {totalCapacity > 0 && (
-              <div className="h-1.5 bg-gray-200 rounded-full overflow-hidden">
-                <div
-                  className={`h-full rounded-full transition-all duration-500 ${
-                    fillPercent >= 90 ? "bg-red-500" : fillPercent >= 70 ? "bg-orange-500" : "bg-blue-500"
-                  }`}
-                  style={{ width: `${fillPercent}%` }}
-                />
-              </div>
-            )}
-          </div>
-        )}
-
-        {/* Date */}
-        <div className="flex items-start gap-3 mb-3">
-          <div className="w-10 h-10 bg-blue-50 rounded-xl flex items-center justify-center shrink-0">
-            <Calendar className="w-5 h-5 text-blue-600" />
-          </div>
-          <div>
-            <p className="text-sm font-bold text-gray-900 capitalize">{fmtDate(event.date_debut)}</p>
-            {event.heure_debut && (
-              <p className="text-xs text-gray-500">
-                {fmtTime(event.heure_debut)}
-                {event.heure_fin ? ` — ${fmtTime(event.heure_fin)}` : ""}
-              </p>
-            )}
-            {event.date_fin && event.date_fin !== event.date_debut && (
-              <p className="text-xs text-gray-500">jusqu&apos;au {fmtDate(event.date_fin)}</p>
-            )}
-          </div>
-        </div>
-
-        {/* Lieu */}
-        <div className="flex items-start gap-3 mb-4">
-          <div className="w-10 h-10 bg-blue-50 rounded-xl flex items-center justify-center shrink-0">
-            <MapPin className="w-5 h-5 text-blue-600" />
-          </div>
-          <div>
-            <p className="text-sm font-bold text-gray-900">{event.lieu}</p>
-            {event.adresse && <p className="text-xs text-gray-500">{event.adresse}</p>}
-            {event.ville && <p className="text-xs text-gray-500">{event.ville}</p>}
-          </div>
-        </div>
-
-        {/* Organisateur */}
-        {event.organisateur && (
-          <div className="flex items-start gap-3 mb-4">
-            <div className="w-10 h-10 bg-blue-50 rounded-xl flex items-center justify-center shrink-0 overflow-hidden">
-              {event.organisateur.avatar_url ? (
-                <img src={event.organisateur.avatar_url} alt={event.organisateur.nom} className="w-10 h-10 object-cover rounded-xl" />
-              ) : (
-                <User className="w-5 h-5 text-blue-600" />
-              )}
-            </div>
-            <div>
-              <p className="text-sm font-bold text-gray-900 flex items-center gap-1">
-                {event.organisateur.nom}
-                {event.boutique?.is_verified && (
-                  <BadgeCheck className="w-4 h-4 text-blue-500" />
-                )}
-              </p>
-              <p className="text-xs text-gray-500">Organisateur</p>
-            </div>
-          </div>
-        )}
-        {!event.organisateur && event.boutique && (
-          <Link href={`/boutique/${event.boutique.slug}`} className="flex items-start gap-3 mb-4 group">
-            <div className="w-10 h-10 bg-blue-50 rounded-xl flex items-center justify-center shrink-0 overflow-hidden">
-              {event.boutique.logo_url ? (
-                <img src={event.boutique.logo_url} alt={event.boutique.nom} className="w-10 h-10 object-cover rounded-xl" />
-              ) : (
-                <Store className="w-5 h-5 text-blue-600" />
-              )}
-            </div>
-            <div>
-              <p className="text-sm font-bold text-gray-900 group-hover:text-blue-600 transition flex items-center gap-1">
-                {event.boutique.nom}
-                {event.boutique.is_verified && (
-                  <BadgeCheck className="w-4 h-4 text-blue-500" />
-                )}
-              </p>
-              <p className="text-xs text-gray-500">Organisateur</p>
-            </div>
-          </Link>
-        )}
-
-        {/* Description */}
-        {event.description && (
-          <div className="bg-gray-50 rounded-2xl p-4 mb-6 border border-gray-100">
-            <p className="text-sm text-gray-600 whitespace-pre-line">{event.description}</p>
-          </div>
-        )}
-      </div>
-
-      {/* Billets */}
-      <div className="px-5 pb-40">
-        <h2 className="text-lg lg:text-xl font-black text-gray-900 mb-4">Billets</h2>
-
-        {event.ticket_types.length === 0 ? (
-          <div className="text-center py-8">
-            <Ticket className="w-10 h-10 text-gray-300 mx-auto mb-2" />
-            <p className="text-sm text-gray-400">Aucun billet disponible</p>
-          </div>
-        ) : (
-          <div className="space-y-3 mb-6">
-            {event.ticket_types.map((tt) => {
-              const remaining = tt.quantite_total - tt.quantite_vendue;
-              const soldOut = remaining <= 0;
-              const isSelected = selectedType === tt.id;
-
-              return (
-                <button
-                  key={tt.id}
-                  onClick={() => !soldOut && setSelectedType(tt.id)}
-                  disabled={soldOut}
-                  className={`w-full text-left rounded-2xl p-4 transition border-2 ${
-                    isSelected
-                      ? "bg-blue-50 border-blue-500"
-                      : soldOut
-                      ? "bg-gray-50 border-transparent opacity-50 cursor-not-allowed"
-                      : "bg-gray-50 border-transparent hover:border-blue-300"
-                  }`}
-                >
-                  <div className="flex items-center justify-between mb-1">
-                    <p className="font-bold text-gray-900 text-sm">{tt.nom}</p>
-                    <p className="font-black text-gray-900 text-sm">
-                      {tt.prix > 0 ? formatMontant(tt.prix, devise) : "Gratuit"}
-                    </p>
                   </div>
-                  {tt.description && (
-                    <p className="text-xs text-gray-500 mb-2">{tt.description}</p>
-                  )}
-                  <div className="flex items-center gap-2">
-                    {soldOut ? (
-                      <span className="text-xs font-bold text-red-500">Complet</span>
-                    ) : (
-                      <span className="text-xs text-gray-400">
-                        {remaining} place{remaining > 1 ? "s" : ""} restante{remaining > 1 ? "s" : ""}
+                </div>
+              )}
+
+              {/* Title */}
+              <div className="flex items-center gap-4 mb-5">
+                {event.logo_url && (
+                  <img src={event.logo_url} alt="" className="w-14 h-14 lg:w-16 lg:h-16 rounded-2xl object-cover border-2 border-white shrink-0 shadow-lg" />
+                )}
+                <h1 className="text-2xl lg:text-[32px] lg:leading-tight font-black text-gray-900">{event.nom}</h1>
+              </div>
+
+              {/* Social Proof */}
+              {totalParticipants > 0 && (
+                <div className="mb-5 bg-gray-50 rounded-2xl p-3.5 border border-gray-100">
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center gap-2">
+                      <div className="flex -space-x-1.5">
+                        {[...Array(Math.min(4, totalParticipants))].map((_, i) => (
+                          <div key={i} className="w-6 h-6 bg-gradient-to-br from-blue-400 to-blue-500 rounded-full border-[1.5px] border-white flex items-center justify-center">
+                            <Users className="w-2.5 h-2.5 text-white" />
+                          </div>
+                        ))}
+                        {totalParticipants > 4 && (
+                          <div className="w-6 h-6 bg-gray-100 rounded-full border-[1.5px] border-white flex items-center justify-center">
+                            <span className="text-[8px] font-bold text-gray-600">+{totalParticipants - 4}</span>
+                          </div>
+                        )}
+                      </div>
+                      <p className="text-xs text-gray-500">
+                        <span className="font-bold text-gray-900">{totalParticipants}</span> personne{totalParticipants > 1 ? "s" : ""} participe{totalParticipants > 1 ? "nt" : ""}
+                      </p>
+                    </div>
+                    {fillPercent >= 70 && (
+                      <span className="text-[10px] font-bold text-orange-600 bg-orange-50 px-2 py-0.5 rounded-full">
+                        🔥 {fillPercent}% rempli
                       </span>
                     )}
                   </div>
-                  {/* Indicateur sélection */}
-                  {isSelected && (
-                    <div className="mt-2 flex items-center gap-1">
-                      <div className="w-4 h-4 bg-blue-500 rounded-full flex items-center justify-center">
-                        <Check className="w-3 h-3 text-white" />
-                      </div>
-                      <span className="text-xs font-bold text-blue-600">Sélectionné</span>
+                  {totalCapacity > 0 && (
+                    <div className="h-1.5 bg-gray-200 rounded-full overflow-hidden">
+                      <div
+                        className={`h-full rounded-full transition-all duration-500 ${
+                          fillPercent >= 90 ? "bg-red-500" : fillPercent >= 70 ? "bg-orange-500" : "bg-blue-500"
+                        }`}
+                        style={{ width: `${fillPercent}%` }}
+                      />
                     </div>
                   )}
-                </button>
-              );
-            })}
-          </div>
-        )}
-
-        {/* Formulaire d'achat */}
-        {selectedType && selectedTicketType && (
-          <div className="bg-gray-50 border border-gray-100 rounded-2xl p-5 animate-in slide-in-from-bottom-4 duration-300">
-            <h3 className="font-bold text-gray-900 mb-4">Réserver</h3>
-
-            {/* Quantité */}
-            {selectedTicketType.max_par_personne > 1 && (
-              <div className="flex items-center justify-between mb-4">
-                <span className="text-sm text-gray-500">Quantité</span>
-                <div className="flex items-center gap-3">
-                  <button
-                    onClick={() => setQty(Math.max(1, qty - 1))}
-                    className="w-8 h-8 bg-gray-200 rounded-lg flex items-center justify-center text-gray-700 hover:bg-gray-300 transition"
-                  >
-                    <Minus className="w-4 h-4" />
-                  </button>
-                  <span className="text-gray-900 font-bold w-6 text-center">{qty}</span>
-                  <button
-                    onClick={() => setQty(Math.min(selectedTicketType.max_par_personne, qty + 1))}
-                    className="w-8 h-8 bg-gray-200 rounded-lg flex items-center justify-center text-gray-700 hover:bg-gray-300 transition"
-                  >
-                    <Plus className="w-4 h-4" />
-                  </button>
                 </div>
-              </div>
-            )}
-
-            {/* Nom */}
-            <div className="mb-3">
-              <label className="text-xs font-semibold text-gray-500 mb-1 block">Votre nom *</label>
-              <input
-                value={buyerName}
-                onChange={(e) => setBuyerName(e.target.value)}
-                placeholder="Nom complet"
-                className="w-full bg-white border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-900 placeholder-gray-400 outline-none focus:border-blue-400 transition"
-              />
-            </div>
-
-            {/* Téléphone */}
-            <div className="mb-3">
-              <label className="text-xs font-semibold text-gray-500 mb-1 block">Téléphone</label>
-              <input
-                value={buyerPhone}
-                onChange={(e) => setBuyerPhone(e.target.value)}
-                placeholder="+225 07 00 00 00"
-                type="tel"
-                className="w-full bg-white border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-900 placeholder-gray-400 outline-none focus:border-blue-400 transition"
-              />
-            </div>
-
-            {/* Email */}
-            <div className="mb-5">
-              <label className="text-xs font-semibold text-gray-500 mb-1 block">Email <span className="text-gray-400">(optionnel)</span></label>
-              <input
-                value={buyerEmail}
-                onChange={(e) => setBuyerEmail(e.target.value)}
-                placeholder="email@exemple.com"
-                type="email"
-                className="w-full bg-white border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-900 placeholder-gray-400 outline-none focus:border-blue-400 transition"
-              />
-            </div>
-
-            {/* Erreur */}
-            {error && (
-              <div className="bg-red-50 border border-red-200 rounded-xl p-3 mb-4">
-                <p className="text-sm text-red-600 font-medium">{error}</p>
-              </div>
-            )}
-
-            {/* Détail prix */}
-            {sousTotal > 0 && (
-              <div className="space-y-2 mb-4">
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-gray-500">Sous-total</span>
-                  <span className="text-sm font-semibold text-gray-700">{formatMontant(sousTotal, devise)}</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-gray-500">Frais de service (10%)</span>
-                  <span className="text-sm font-semibold text-gray-700">{formatMontant(fraisService, devise)}</span>
-                </div>
-                <div className="border-t border-gray-200 pt-2 flex items-center justify-between">
-                  <span className="text-sm font-bold text-gray-900">Total</span>
-                  <span className="text-lg font-black text-gray-900">{formatMontant(total, devise)}</span>
-                </div>
-              </div>
-            )}
-            {sousTotal === 0 && (
-              <div className="flex items-center justify-between mb-4">
-                <span className="text-sm text-gray-500">Total</span>
-                <span className="text-lg font-black text-gray-900">Gratuit</span>
-              </div>
-            )}
-
-            <button
-              onClick={handleBuy}
-              disabled={buying || !buyerName.trim()}
-              className="w-full py-4 bg-blue-500 text-white rounded-2xl font-bold text-[15px] transition hover:bg-blue-600 active:scale-[0.98] disabled:opacity-50 flex items-center justify-center gap-2"
-            >
-              {buying ? (
-                <Loader2 className="w-5 h-5 animate-spin" />
-              ) : (
-                <>
-                  <Ticket className="w-5 h-5" />
-                  {total > 0 ? `Payer — ${formatMontant(total, devise)}` : "Réserver gratuitement"}
-                </>
               )}
-            </button>
-          </div>
-        )}
-      </div>
 
-      {/* Footer */}
-      <div className="fixed bottom-0 left-0 right-0 bg-gradient-to-t from-white via-white to-transparent pt-8 pb-6 px-5 pointer-events-none">
-        <div className="text-center pointer-events-auto">
-          <p className="text-[11px] text-gray-400 font-medium">
-            Propulsé par <span className="text-blue-600 font-bold">Binq</span>
-          </p>
-        </div>
-      </div>
+              {/* Date & Time */}
+              <div className="flex items-start gap-3 mb-4">
+                <div className="w-10 h-10 bg-blue-50 rounded-xl flex items-center justify-center shrink-0">
+                  <Calendar className="w-5 h-5 text-blue-600" />
+                </div>
+                <div>
+                  <p className="text-sm font-bold text-gray-900 capitalize">{fmtDate(event.date_debut)}</p>
+                  {event.heure_debut && (
+                    <p className="text-xs text-gray-500">
+                      {fmtTime(event.heure_debut)}
+                      {event.heure_fin ? ` — ${fmtTime(event.heure_fin)}` : ""}
+                    </p>
+                  )}
+                  {event.date_fin && event.date_fin !== event.date_debut && (
+                    <p className="text-xs text-gray-500">jusqu&apos;au {fmtDate(event.date_fin)}</p>
+                  )}
+                </div>
+              </div>
+
+              {/* Location */}
+              <div className="flex items-start gap-3 mb-4">
+                <div className="w-10 h-10 bg-blue-50 rounded-xl flex items-center justify-center shrink-0">
+                  <MapPin className="w-5 h-5 text-blue-600" />
+                </div>
+                <div>
+                  <p className="text-sm font-bold text-gray-900">{event.lieu}</p>
+                  {event.adresse && <p className="text-xs text-gray-500">{event.adresse}</p>}
+                  {event.ville && <p className="text-xs text-gray-500">{event.ville}</p>}
+                </div>
+              </div>
+
+              {/* Organizer */}
+              {event.organisateur && (
+                <div className="flex items-start gap-3 mb-4">
+                  <div className="w-10 h-10 bg-blue-50 rounded-xl flex items-center justify-center shrink-0 overflow-hidden">
+                    {event.organisateur.avatar_url ? (
+                      <img src={event.organisateur.avatar_url} alt={event.organisateur.nom} className="w-10 h-10 object-cover rounded-xl" />
+                    ) : (
+                      <User className="w-5 h-5 text-blue-600" />
+                    )}
+                  </div>
+                  <div>
+                    <p className="text-sm font-bold text-gray-900 flex items-center gap-1">
+                      {event.organisateur.nom}
+                      {event.boutique?.is_verified && (
+                        <BadgeCheck className="w-4 h-4 text-blue-500" />
+                      )}
+                    </p>
+                    <p className="text-xs text-gray-500">Organisateur</p>
+                  </div>
+                </div>
+              )}
+              {!event.organisateur && event.boutique && (
+                <Link href={`/boutique/${event.boutique.slug}`} className="flex items-start gap-3 mb-4 group">
+                  <div className="w-10 h-10 bg-blue-50 rounded-xl flex items-center justify-center shrink-0 overflow-hidden">
+                    {event.boutique.logo_url ? (
+                      <img src={event.boutique.logo_url} alt={event.boutique.nom} className="w-10 h-10 object-cover rounded-xl" />
+                    ) : (
+                      <Store className="w-5 h-5 text-blue-600" />
+                    )}
+                  </div>
+                  <div>
+                    <p className="text-sm font-bold text-gray-900 group-hover:text-blue-600 transition flex items-center gap-1">
+                      {event.boutique.nom}
+                      {event.boutique.is_verified && (
+                        <BadgeCheck className="w-4 h-4 text-blue-500" />
+                      )}
+                    </p>
+                    <p className="text-xs text-gray-500">Organisateur</p>
+                  </div>
+                </Link>
+              )}
+            </div>
+
+            {/* Description — separate card on desktop */}
+            {event.description && (
+              <div className="bg-gray-50 lg:bg-white rounded-2xl p-4 lg:p-8 mb-6 border border-gray-100 lg:shadow-sm lg:border-gray-200">
+                <h2 className="hidden lg:block text-lg font-bold text-gray-900 mb-3">À propos</h2>
+                <p className="text-sm lg:text-[15px] lg:leading-relaxed text-gray-600 whitespace-pre-line">{event.description}</p>
+              </div>
+            )}
+          </div>
+
+          {/* ─── RIGHT COLUMN: Tickets (sticky on desktop) ─── */}
+          <div className="lg:w-[400px] lg:shrink-0">
+            <div className="lg:sticky lg:top-6 pb-32 lg:pb-6">
+              <div className="lg:bg-white lg:border lg:border-gray-200 lg:rounded-2xl lg:shadow-xl lg:p-6">
+                <h2 className="text-lg lg:text-xl font-black text-gray-900 mb-4">Billets</h2>
+
+                {event.ticket_types.length === 0 ? (
+                  <div className="text-center py-8">
+                    <Ticket className="w-10 h-10 text-gray-300 mx-auto mb-2" />
+                    <p className="text-sm text-gray-400">Aucun billet disponible</p>
+                  </div>
+                ) : (
+                  <div className="space-y-3 mb-6">
+                    {event.ticket_types.map((tt) => {
+                      const remaining = tt.quantite_total - tt.quantite_vendue;
+                      const soldOut = remaining <= 0;
+                      const isSelected = selectedType === tt.id;
+
+                      return (
+                        <button
+                          key={tt.id}
+                          onClick={() => !soldOut && setSelectedType(tt.id)}
+                          disabled={soldOut}
+                          className={`w-full text-left rounded-2xl p-4 transition border-2 ${
+                            isSelected
+                              ? "bg-blue-50 border-blue-500"
+                              : soldOut
+                              ? "bg-gray-50 border-transparent opacity-50 cursor-not-allowed"
+                              : "bg-gray-50 border-transparent hover:border-blue-300"
+                          }`}
+                        >
+                          <div className="flex items-center justify-between mb-1">
+                            <p className="font-bold text-gray-900 text-sm">{tt.nom}</p>
+                            <p className="font-black text-gray-900 text-sm">
+                              {tt.prix > 0 ? formatMontant(tt.prix, devise) : "Gratuit"}
+                            </p>
+                          </div>
+                          {tt.description && (
+                            <p className="text-xs text-gray-500 mb-2">{tt.description}</p>
+                          )}
+                          <div className="flex items-center gap-2">
+                            {soldOut ? (
+                              <span className="text-xs font-bold text-red-500">Complet</span>
+                            ) : (
+                              <span className="text-xs text-gray-400">
+                                {remaining} place{remaining > 1 ? "s" : ""} restante{remaining > 1 ? "s" : ""}
+                              </span>
+                            )}
+                          </div>
+                          {isSelected && (
+                            <div className="mt-2 flex items-center gap-1">
+                              <div className="w-4 h-4 bg-blue-500 rounded-full flex items-center justify-center">
+                                <Check className="w-3 h-3 text-white" />
+                              </div>
+                              <span className="text-xs font-bold text-blue-600">Sélectionné</span>
+                            </div>
+                          )}
+                        </button>
+                      );
+                    })}
+                  </div>
+                )}
+
+                {/* Purchase form */}
+                {selectedType && selectedTicketType && (
+                  <div className="bg-gray-50 lg:bg-gray-50 border border-gray-100 rounded-2xl p-5 animate-in slide-in-from-bottom-4 duration-300">
+                    <h3 className="font-bold text-gray-900 mb-4">Réserver</h3>
+
+                    {/* Quantity */}
+                    {selectedTicketType.max_par_personne > 1 && (
+                      <div className="flex items-center justify-between mb-4">
+                        <span className="text-sm text-gray-500">Quantité</span>
+                        <div className="flex items-center gap-3">
+                          <button
+                            onClick={() => setQty(Math.max(1, qty - 1))}
+                            className="w-8 h-8 bg-gray-200 rounded-lg flex items-center justify-center text-gray-700 hover:bg-gray-300 transition"
+                          >
+                            <Minus className="w-4 h-4" />
+                          </button>
+                          <span className="text-gray-900 font-bold w-6 text-center">{qty}</span>
+                          <button
+                            onClick={() => setQty(Math.min(selectedTicketType.max_par_personne, qty + 1))}
+                            className="w-8 h-8 bg-gray-200 rounded-lg flex items-center justify-center text-gray-700 hover:bg-gray-300 transition"
+                          >
+                            <Plus className="w-4 h-4" />
+                          </button>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Name */}
+                    <div className="mb-3">
+                      <label className="text-xs font-semibold text-gray-500 mb-1 block">Votre nom *</label>
+                      <input
+                        value={buyerName}
+                        onChange={(e) => setBuyerName(e.target.value)}
+                        placeholder="Nom complet"
+                        className="w-full bg-white border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-900 placeholder-gray-400 outline-none focus:border-blue-400 transition"
+                      />
+                    </div>
+
+                    {/* Phone */}
+                    <div className="mb-3">
+                      <label className="text-xs font-semibold text-gray-500 mb-1 block">Téléphone</label>
+                      <input
+                        value={buyerPhone}
+                        onChange={(e) => setBuyerPhone(e.target.value)}
+                        placeholder="+225 07 00 00 00"
+                        type="tel"
+                        className="w-full bg-white border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-900 placeholder-gray-400 outline-none focus:border-blue-400 transition"
+                      />
+                    </div>
+
+                    {/* Email */}
+                    <div className="mb-5">
+                      <label className="text-xs font-semibold text-gray-500 mb-1 block">Email <span className="text-gray-400">(optionnel)</span></label>
+                      <input
+                        value={buyerEmail}
+                        onChange={(e) => setBuyerEmail(e.target.value)}
+                        placeholder="email@exemple.com"
+                        type="email"
+                        className="w-full bg-white border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-900 placeholder-gray-400 outline-none focus:border-blue-400 transition"
+                      />
+                    </div>
+
+                    {/* Error */}
+                    {error && (
+                      <div className="bg-red-50 border border-red-200 rounded-xl p-3 mb-4">
+                        <p className="text-sm text-red-600 font-medium">{error}</p>
+                      </div>
+                    )}
+
+                    {/* Price breakdown */}
+                    {sousTotal > 0 && (
+                      <div className="space-y-2 mb-4">
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm text-gray-500">Sous-total</span>
+                          <span className="text-sm font-semibold text-gray-700">{formatMontant(sousTotal, devise)}</span>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm text-gray-500">Frais de service (10%)</span>
+                          <span className="text-sm font-semibold text-gray-700">{formatMontant(fraisService, devise)}</span>
+                        </div>
+                        <div className="border-t border-gray-200 pt-2 flex items-center justify-between">
+                          <span className="text-sm font-bold text-gray-900">Total</span>
+                          <span className="text-lg font-black text-gray-900">{formatMontant(total, devise)}</span>
+                        </div>
+                      </div>
+                    )}
+                    {sousTotal === 0 && (
+                      <div className="flex items-center justify-between mb-4">
+                        <span className="text-sm text-gray-500">Total</span>
+                        <span className="text-lg font-black text-gray-900">Gratuit</span>
+                      </div>
+                    )}
+
+                    <button
+                      onClick={handleBuy}
+                      disabled={buying || !buyerName.trim()}
+                      className="w-full py-4 bg-blue-600 text-white rounded-2xl font-bold text-[15px] transition hover:bg-blue-700 active:scale-[0.98] disabled:opacity-50 flex items-center justify-center gap-2 shadow-lg shadow-blue-600/20"
+                    >
+                      {buying ? (
+                        <Loader2 className="w-5 h-5 animate-spin" />
+                      ) : (
+                        <>
+                          <Ticket className="w-5 h-5" />
+                          {total > 0 ? `Payer — ${formatMontant(total, devise)}` : "Réserver gratuitement"}
+                        </>
+                      )}
+                    </button>
+                  </div>
+                )}
+
+                {/* Powered by */}
+                <p className="text-center text-[11px] text-gray-400 font-medium mt-5">
+                  Propulsé par <span className="text-blue-600 font-bold">Binq</span>
+                </p>
+              </div>
+            </div>
+          </div>
+
+        </div>{/* end flex */}
       </div>{/* end max-w container */}
     </div>
   );
