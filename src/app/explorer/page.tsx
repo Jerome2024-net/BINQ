@@ -39,6 +39,10 @@ interface EventPublic {
     logo_url: string | null;
     is_verified: boolean;
   } | null;
+  organisateur: {
+    nom: string;
+    avatar_url: string | null;
+  } | null;
 }
 
 /* ─── Helpers ─── */
@@ -611,10 +615,17 @@ function EventCard({ event }: { event: EventPublic }) {
         )}
 
         {/* Organizer */}
-        {event.boutiques && (
+        {(event.organisateur || event.boutiques) && (
           <div className="flex items-center gap-2 pt-1.5">
             <div className="w-5 h-5 rounded-full bg-gray-100 overflow-hidden flex items-center justify-center shrink-0">
-              {event.boutiques.logo_url ? (
+              {event.organisateur?.avatar_url ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={event.organisateur.avatar_url}
+                  alt=""
+                  className="w-full h-full object-cover"
+                />
+              ) : event.boutiques?.logo_url ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
                   src={event.boutiques.logo_url}
@@ -623,12 +634,12 @@ function EventCard({ event }: { event: EventPublic }) {
                 />
               ) : (
                 <span className="text-[8px] font-bold text-gray-400">
-                  {event.boutiques.nom.charAt(0)}
+                  {(event.organisateur?.nom || event.boutiques?.nom || "?").charAt(0)}
                 </span>
               )}
             </div>
             <span className="text-[12px] text-gray-400 truncate">
-              {event.boutiques.nom}
+              {event.organisateur?.nom || event.boutiques?.nom}
             </span>
             {event.total_vendu > 0 && (
               <span className="flex items-center gap-0.5 text-[11px] text-gray-300 ml-auto">

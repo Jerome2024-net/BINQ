@@ -55,7 +55,7 @@ export async function GET(req: NextRequest) {
     let query = supabase
       .from("events")
       .select(
-        "id, nom, description, date_debut, heure_debut, date_fin, lieu, ville, cover_url, logo_url, devise, total_vendu, boutique_id"
+        "id, nom, description, date_debut, heure_debut, date_fin, lieu, ville, cover_url, logo_url, devise, total_vendu, boutique_id, user_id"
       )
       .eq("is_published", true)
       .eq("is_active", true)
@@ -101,6 +101,25 @@ export async function GET(req: NextRequest) {
       }
     }
 
+    // Fetch organizer profiles
+    const userIds = Array.from(
+      new Set((events || []).map((e: any) => e.user_id).filter(Boolean))
+    );
+
+    let profilesMap: Record<string, { prenom: string; nom: string; avatar: string | null }> = {};
+    if (userIds.length > 0) {
+      const { data: profiles } = await supabase
+        .from("profiles")
+        .select("id, prenom, nom, avatar")
+        .in("id", userIds);
+
+      if (profiles) {
+        for (const p of profiles) {
+          profilesMap[p.id] = { prenom: p.prenom, nom: p.nom, avatar: p.avatar };
+        }
+      }
+    }
+
     // Fetch ticket_types for pricing & capacity
     let ticketMap: Record<string, { min_price: number; total_capacity: number; total_sold: number }> = {};
     if (eventIds.length > 0) {
@@ -127,9 +146,16 @@ export async function GET(req: NextRequest) {
 
     const enriched = (events || []).map((e: any) => {
       const tk = ticketMap[e.id];
+      const profile = profilesMap[e.user_id];
       return {
         ...e,
         boutiques: boutiquesMap[e.boutique_id] || null,
+        organisateur: profile
+          ? {
+              nom: `${profile.prenom || ""} ${profile.nom || ""}`.trim(),
+              avatar_url: profile.avatar || null,
+            }
+          : null,
         min_price: tk ? (tk.min_price === Infinity ? 0 : tk.min_price) : 0,
         total_capacity: tk ? tk.total_capacity : 0,
         total_sold: tk ? tk.total_sold : 0,
