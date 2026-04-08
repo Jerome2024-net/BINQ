@@ -327,15 +327,12 @@ export default function ExplorerPublicPage() {
         <div className="max-w-7xl mx-auto px-5 lg:px-10">
           <div className="lg:flex lg:items-end lg:justify-between lg:gap-10">
             <div className="lg:max-w-xl">
-              <p className="text-[13px] font-semibold text-blue-600 uppercase tracking-widest mb-3">
-                Découvrir
-              </p>
               <h1 className="text-[28px] sm:text-[40px] lg:text-[48px] font-bold text-gray-900 tracking-tight leading-[1.1]">
-                Événements à {selectedCity || "Cotonou"}
+                Trouve ton prochain{" "}
+                <span className="text-blue-600">événement</span>
               </h1>
               <p className="text-gray-400 text-[15px] sm:text-base lg:text-lg mt-2.5 max-w-md leading-relaxed">
-                Trouvez les meilleurs événements près de chez vous. Concerts,
-                conférences, networking et plus encore.
+                Explore les sorties, soirées et rencontres autour de toi. Réserve ta place en un clic.
               </p>
             </div>
 
