@@ -74,14 +74,14 @@ export default function HomePage() {
         {/* ── Text ── */}
         <div className="relative z-10 text-center px-4 sm:px-6 pt-28 sm:pt-36">
           <h1 className="text-[2.75rem] sm:text-7xl lg:text-8xl font-extrabold tracking-tight leading-[1.02] mb-5">
-            <span className="text-neutral-900">Créez des moments</span><br />
-            <span className="text-blue-600">inoubliables.</span>
+            <span className="text-neutral-900">Un ticket pour</span><br />
+            <span className="text-blue-600">chaque expérience.</span>
           </h1>
           <p className="text-base sm:text-lg text-neutral-500 max-w-sm mx-auto mb-8 leading-relaxed">
-            Créez une page événement, invitez vos proches et vendez vos billets. Organisez un moment mémorable dès aujourd&apos;hui.
+            Événements, services, accès exclusifs &mdash; créez, vendez et validez vos tickets en un seul endroit.
           </p>
           <Link href="/inscription" className="inline-flex items-center gap-2 px-7 py-3 bg-blue-600 text-white font-semibold rounded-full hover:bg-blue-700 transition-all text-sm shadow-xl shadow-blue-600/20">
-            Créer ma billetterie <ArrowRight className="w-3.5 h-3.5" />
+            Commencer gratuitement <ArrowRight className="w-3.5 h-3.5" />
           </Link>
         </div>
 
@@ -129,7 +129,7 @@ export default function HomePage() {
                   <span className="text-[11px] font-bold text-neutral-900">5 000 FCFA</span>
                 </div>
                 <button className="w-full py-3 bg-blue-600 text-white font-bold text-[13px] rounded-full">
-                  Réserver
+                  Obtenir mon ticket
                 </button>
               </div>
 
@@ -151,8 +151,8 @@ export default function HomePage() {
           <div className="grid md:grid-cols-3 gap-10 sm:gap-14 text-center">
             {[
               { icon: Calendar, word: "Simple", line: "Créez et publiez en 2 minutes." },
-              { icon: CircleDollarSign, word: "Gratuit", line: "0 frais pour l'organisateur." },
-              { icon: Shield, word: "Fiable", line: "QR unique, zéro fraude." },
+              { icon: CircleDollarSign, word: "Sans commission", line: "0 frais pour l'organisateur." },
+              { icon: Shield, word: "Infalsifiable", line: "QR unique, zéro fraude." },
             ].map((item, i) => (
               <div key={i}>
                 <div className="w-11 h-11 rounded-xl bg-neutral-100 flex items-center justify-center mx-auto mb-4">
@@ -170,16 +170,16 @@ export default function HomePage() {
       <section id="pourqui" className="pb-20 sm:pb-28">
         <div className="max-w-5xl mx-auto px-4 sm:px-6">
           <h2 className="text-center text-xl sm:text-3xl font-semibold tracking-tight mb-10 sm:mb-14 text-neutral-900">
-            Pour tous vos événements.
+            Pour tous vos événements et services.
           </h2>
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5 sm:gap-3">
             {[
               { label: "Concerts", img: "https://images.unsplash.com/photo-1540039155733-5bb30b53aa14?w=600&h=400&fit=crop&q=80" },
               { label: "Soirées", img: "https://images.unsplash.com/photo-1566737236500-c8ac43014a67?w=600&h=400&fit=crop&q=80" },
+              { label: "Restaurants & Bars", img: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=600&h=400&fit=crop&q=80" },
               { label: "Formations", img: "https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=600&h=400&fit=crop&q=80" },
-              { label: "Conférences", img: "https://images.unsplash.com/photo-1505373877841-8d25f7d46678?w=600&h=400&fit=crop&q=80" },
-              { label: "Restaurants", img: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=600&h=400&fit=crop&q=80" },
-              { label: "Salons", img: "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=600&h=400&fit=crop&q=80" },
+              { label: "Spas & Bien-être", img: "https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=600&h=400&fit=crop&q=80" },
+              { label: "Coworking", img: "https://images.unsplash.com/photo-1497366216548-37526070297c?w=600&h=400&fit=crop&q=80" },
             ].map((item, i) => (
               <div key={i} className="relative rounded-xl overflow-hidden aspect-[4/3] group">
                 {/* eslint-disable-next-line @next/next/no-img-element */}

@@ -101,6 +101,9 @@ const EVENT_CATEGORIES = [
   { slug: "artisanat", label: "Art & Culture", icon: "🎨" },
   { slug: "sport", label: "Sport", icon: "⚽" },
   { slug: "education", label: "Éducation", icon: "📚" },
+  { slug: "restauration", label: "Restaurants", icon: "🍽️" },
+  { slug: "bien-etre", label: "Bien-être", icon: "💆" },
+  { slug: "coworking", label: "Coworking", icon: "💻" },
 ];
 
 /* ─── Skeletons ─── */
@@ -328,11 +331,11 @@ export default function ExplorerPublicPage() {
           <div className="lg:flex lg:items-end lg:justify-between lg:gap-10">
             <div className="lg:max-w-xl">
               <h1 className="text-[28px] sm:text-[40px] lg:text-[48px] font-bold text-gray-900 tracking-tight leading-[1.1]">
-                Trouve ton prochain{" "}
-                <span className="text-blue-600">événement</span>
+                Trouve ta prochaine{" "}
+                <span className="text-blue-600">expérience</span>
               </h1>
               <p className="text-gray-400 text-[15px] sm:text-base lg:text-lg mt-2.5 max-w-md leading-relaxed">
-                Explore les sorties, soirées et rencontres autour de toi. Réserve ta place en un clic.
+                Événements, services, accès exclusifs — réserve ta place en un clic.
               </p>
             </div>
 
@@ -343,7 +346,7 @@ export default function ExplorerPublicPage() {
                 <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                 <input
                   type="text"
-                  placeholder="Rechercher un événement, lieu..."
+                  placeholder="Rechercher une expérience, un lieu..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="w-full bg-gray-50 border border-gray-200 rounded-xl pl-10 pr-9 py-2.5 lg:py-3 text-[14px] text-gray-900 placeholder-gray-400 outline-none focus:border-blue-300 focus:bg-white focus:ring-2 focus:ring-blue-100 transition"
