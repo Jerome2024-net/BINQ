@@ -81,7 +81,7 @@ export default function HomePage() {
             Événements, services, accès exclusifs &mdash; créez, vendez et validez vos tickets en un seul endroit.
           </p>
           <Link href="/inscription" className="inline-flex items-center gap-2 px-7 py-3 bg-blue-600 text-white font-semibold rounded-full hover:bg-blue-700 transition-all text-sm shadow-xl shadow-blue-600/20">
-            Commencer gratuitement <ArrowRight className="w-3.5 h-3.5" />
+            Créer ma billetterie <ArrowRight className="w-3.5 h-3.5" />
           </Link>
         </div>
 
