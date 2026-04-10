@@ -39,6 +39,7 @@ import {
   Type,
   FileText,
   Shield,
+  Tag,
 } from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
 import { formatMontant } from "@/lib/currencies";
@@ -143,6 +144,7 @@ export default function MaBoutiquePage() {
   const [evtHeureDebut, setEvtHeureDebut] = useState("");
   const [evtLieu, setEvtLieu] = useState("");
   const [evtVille, setEvtVille] = useState("");
+  const [evtCategorie, setEvtCategorie] = useState("");
   const [evtTicketTypes, setEvtTicketTypes] = useState<Array<{nom: string; prix: string; qty: string}>>([{nom: "Standard", prix: "", qty: "100"}]);
   const [evtLogoFile, setEvtLogoFile] = useState<File | null>(null);
   const [evtLogoPreview, setEvtLogoPreview] = useState<string | null>(null);
@@ -377,6 +379,7 @@ export default function MaBoutiquePage() {
           lieu: evtLieu.trim(),
           ville: evtVille.trim() || undefined,
           devise: boutique.devise || "XOF",
+          categorie_id: evtCategorie || undefined,
           ticket_types: evtTicketTypes.map(t => ({
             nom: t.nom.trim() || "Standard",
             prix: t.prix || "0",
@@ -415,7 +418,7 @@ export default function MaBoutiquePage() {
 
       setEvents((prev) => [...prev, updatedEvent]);
       setShowAddEvent(false);
-      setEvtNom(""); setEvtDesc(""); setEvtDateDebut(""); setEvtHeureDebut(""); setEvtLieu(""); setEvtVille("");
+      setEvtNom(""); setEvtDesc(""); setEvtDateDebut(""); setEvtHeureDebut(""); setEvtLieu(""); setEvtVille(""); setEvtCategorie("");
       setEvtTicketTypes([{nom: "Standard", prix: "", qty: "100"}]);
       setEvtLogoFile(null); setEvtLogoPreview(null); setEvtCoverFile(null); setEvtCoverPreview(null);
       hapticSuccess();
@@ -1431,6 +1434,26 @@ export default function MaBoutiquePage() {
                         </div>
                       </div>
                     </div>
+                  </div>
+
+                  {/* ── Section 2b: Catégorie ── */}
+                  <div className="relative mb-3">
+                    <div className="flex items-center gap-2.5 mb-3">
+                      <div className="w-6 h-6 rounded-lg bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center shadow-sm shadow-emerald-500/30">
+                        <Tag className="w-3 h-3 text-white" />
+                      </div>
+                      <div>
+                        <p className="text-[13px] font-bold text-gray-900">Catégorie</p>
+                        <p className="text-[10px] text-gray-400">Aidez les participants à vous trouver</p>
+                      </div>
+                    </div>
+                    <select value={evtCategorie} onChange={(e) => setEvtCategorie(e.target.value)}
+                      className="w-full bg-white border border-gray-100 rounded-2xl px-4 py-3 text-sm text-gray-900 outline-none focus:border-violet-300 focus:ring-2 focus:ring-violet-100 transition shadow-sm appearance-none">
+                      <option value="">Choisir une catégorie</option>
+                      {categories.map((c) => (
+                        <option key={c.id} value={c.id}>{c.icone} {c.nom}</option>
+                      ))}
+                    </select>
                   </div>
 
                   {/* ── Section 3: Billets ── */}

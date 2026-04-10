@@ -102,6 +102,7 @@ export default function EvenementsPage() {
   const [evtHeureDebut, setEvtHeureDebut] = useState("");
   const [evtLieu, setEvtLieu] = useState("");
   const [evtVille, setEvtVille] = useState("");
+  const [evtCategorie, setEvtCategorie] = useState("");
   const [evtTicketTypes, setEvtTicketTypes] = useState<Array<{nom: string; prix: string; qty: string}>>([{nom: "Standard", prix: "", qty: "100"}]);
   const [evtLogoFile, setEvtLogoFile] = useState<File | null>(null);
   const [evtLogoPreview, setEvtLogoPreview] = useState<string | null>(null);
@@ -291,6 +292,7 @@ export default function EvenementsPage() {
           lieu: evtLieu.trim(),
           ville: evtVille.trim() || undefined,
           devise: boutique.devise || "XOF",
+          categorie_id: evtCategorie || undefined,
           ticket_types: evtTicketTypes.map(t => ({
             nom: t.nom.trim() || "Standard",
             prix: t.prix || "0",
@@ -328,7 +330,7 @@ export default function EvenementsPage() {
 
       setEvents((prev) => [...prev, updatedEvent]);
       setShowAddEvent(false);
-      setEvtNom(""); setEvtDesc(""); setEvtDateDebut(""); setEvtHeureDebut(""); setEvtLieu(""); setEvtVille("");
+      setEvtNom(""); setEvtDesc(""); setEvtDateDebut(""); setEvtHeureDebut(""); setEvtLieu(""); setEvtVille(""); setEvtCategorie("");
       setEvtTicketTypes([{nom: "Standard", prix: "", qty: "100"}]);
       setEvtLogoFile(null); setEvtLogoPreview(null); setEvtCoverFile(null); setEvtCoverPreview(null);
       hapticSuccess();
@@ -1337,6 +1339,18 @@ export default function EvenementsPage() {
                         <input type="time" value={evtHeureDebut} onChange={(e) => setEvtHeureDebut(e.target.value)}
                           className="w-full border border-neutral-200 rounded-lg px-3.5 py-2.5 text-sm text-neutral-900 outline-none focus:border-neutral-400 focus:ring-2 focus:ring-neutral-100 transition" />
                       </div>
+                    </div>
+
+                    {/* Category */}
+                    <div>
+                      <label className="text-sm font-medium text-neutral-700 block mb-1.5">Category</label>
+                      <select value={evtCategorie} onChange={(e) => setEvtCategorie(e.target.value)}
+                        className="w-full border border-neutral-200 rounded-lg px-3.5 py-2.5 text-sm text-neutral-900 outline-none focus:border-neutral-400 focus:ring-2 focus:ring-neutral-100 transition bg-white">
+                        <option value="">Select a category</option>
+                        {categories.map((c) => (
+                          <option key={c.id} value={c.id}>{c.icone} {c.nom}</option>
+                        ))}
+                      </select>
                     </div>
                   </div>
 

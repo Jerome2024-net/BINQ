@@ -103,7 +103,7 @@ const EVENT_CATEGORIES = [
   { slug: "education", label: "Éducation", icon: "📚" },
   { slug: "restauration", label: "Restaurants", icon: "🍽️" },
   { slug: "bien-etre", label: "Bien-être", icon: "💆" },
-  { slug: "coworking", label: "Hôtellerie & Immo", icon: "🏨" },
+  { slug: "hotellerie", label: "Hôtellerie & Immo", icon: "🏨" },
 ];
 
 /* ─── Skeletons ─── */

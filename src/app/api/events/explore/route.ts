@@ -24,7 +24,8 @@ export async function GET(req: NextRequest) {
 
     const today = new Date().toISOString().split("T")[0];
 
-    // If filtering by category, first get boutique_ids in that category
+    // If filtering by category, get category id + boutique_ids for backward compat
+    let categoryId: string | null = null;
     let categoryBoutiqueIds: string[] | null = null;
     if (categorieSlug) {
       const { data: cat } = await supabase
@@ -34,28 +35,22 @@ export async function GET(req: NextRequest) {
         .single();
 
       if (cat) {
+        categoryId = cat.id;
+
+        // Also get boutique_ids for backward compat (events without categorie_id)
         const { data: catBoutiques } = await supabase
           .from("boutiques")
           .select("id")
           .eq("categorie_id", cat.id);
 
         categoryBoutiqueIds = (catBoutiques || []).map((b: any) => b.id);
-        if (categoryBoutiqueIds.length === 0) {
-          // No boutiques in this category → return empty
-          const result: any = { events: [], hasMore: false };
-          if (meta === "1") {
-            const cities = await getDistinctCities(supabase, today);
-            result.cities = cities;
-          }
-          return NextResponse.json(result);
-        }
       }
     }
 
     let query = supabase
       .from("events")
       .select(
-        "id, nom, description, date_debut, heure_debut, date_fin, lieu, ville, cover_url, logo_url, devise, total_vendu, boutique_id, user_id"
+        "id, nom, description, date_debut, heure_debut, date_fin, lieu, ville, cover_url, logo_url, devise, total_vendu, boutique_id, user_id, categorie_id"
       )
       .eq("is_published", true)
       .eq("is_active", true)
@@ -73,8 +68,13 @@ export async function GET(req: NextRequest) {
       query = query.ilike("ville", `%${ville}%`);
     }
 
-    if (categoryBoutiqueIds) {
-      query = query.in("boutique_id", categoryBoutiqueIds);
+    // Filter by category: events with direct categorie_id OR via boutique
+    if (categoryId) {
+      const filters: string[] = [`categorie_id.eq.${categoryId}`];
+      if (categoryBoutiqueIds && categoryBoutiqueIds.length > 0) {
+        filters.push(`boutique_id.in.(${categoryBoutiqueIds.join(",")})`);
+      }
+      query = query.or(filters.join(","));
     }
 
     const { data: events, error } = await query;

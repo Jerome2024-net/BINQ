@@ -100,7 +100,7 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
 
     // Mettre à jour l'événement
     const updates: any = { updated_at: new Date().toISOString() };
-    const fields = ["nom", "description", "date_debut", "heure_debut", "date_fin", "heure_fin", "lieu", "adresse", "ville", "logo_url", "cover_url", "is_active", "is_published"];
+    const fields = ["nom", "description", "date_debut", "heure_debut", "date_fin", "heure_fin", "lieu", "adresse", "ville", "logo_url", "cover_url", "is_active", "is_published", "categorie_id"];
     for (const f of fields) {
       if (body[f] !== undefined) updates[f] = body[f];
     }
