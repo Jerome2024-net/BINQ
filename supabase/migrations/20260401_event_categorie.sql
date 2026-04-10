@@ -13,5 +13,6 @@ CREATE INDEX IF NOT EXISTS idx_events_categorie ON events(categorie_id);
 INSERT INTO categories (nom, slug, icone, ordre) VALUES
   ('Restauration', 'restauration', '🍽️', 11),
   ('Bien-être', 'bien-etre', '🧘', 12),
-  ('Hôtellerie & Immo', 'hotellerie', '🏨', 13)
+  ('Hôtellerie & Immo', 'hotellerie', '🏨', 13),
+  ('Concerts & Festivals', 'concerts', '🎶', 14)
 ON CONFLICT (slug) DO NOTHING;

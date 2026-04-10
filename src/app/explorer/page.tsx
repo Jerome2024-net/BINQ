@@ -104,6 +104,7 @@ const EVENT_CATEGORIES = [
   { slug: "restauration", label: "Restaurants", icon: "🍽️" },
   { slug: "bien-etre", label: "Bien-être", icon: "💆" },
   { slug: "hotellerie", label: "Hôtellerie & Immo", icon: "🏨" },
+  { slug: "concerts", label: "Concerts & Festivals", icon: "🎶" },
 ];
 
 /* ─── Skeletons ─── */
