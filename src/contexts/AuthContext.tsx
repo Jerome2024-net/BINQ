@@ -10,6 +10,7 @@ interface AuthContextType {
   session: Session | null;
   isLoading: boolean;
   login: (email: string, password: string) => Promise<{ success: boolean; error?: string }>;
+  loginWithGoogle: () => Promise<void>;
   register: (data: RegisterData) => Promise<{ success: boolean; error?: string }>;
   logout: () => Promise<void>;
   updateProfile: (data: Partial<User>) => Promise<void>;
@@ -77,6 +78,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         if (event === "SIGNED_IN" && newSession?.user) {
           // Ne recharger le profil que si pas déjà chargé par login() ou initSession()
           if (!profileLoadedRef.current) {
+            // Pour les users OAuth (Google), mettre à jour le profil avec les métadonnées
+            const meta = newSession.user.user_metadata;
+            if (meta?.full_name || meta?.name || meta?.avatar_url) {
+              const prenom = meta.given_name || meta.full_name?.split(" ")[0] || "";
+              const nom = meta.family_name || meta.full_name?.split(" ").slice(1).join(" ") || "";
+              await supabase.from("profiles").upsert({
+                id: newSession.user.id,
+                prenom: prenom,
+                nom: nom,
+                avatar: meta.avatar_url || meta.picture || null,
+              }, { onConflict: "id", ignoreDuplicates: false }).then(() => {});
+            }
             await loadProfile(newSession.user.id);
             profileLoadedRef.current = true;
           }
@@ -142,6 +155,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     []
   );
+
+  const loginWithGoogle = useCallback(async () => {
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL || window.location.origin;
+    await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: {
+        redirectTo: `${appUrl}/auth/callback?next=/dashboard`,
+      },
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const register = useCallback(
     async (data: RegisterData) => {
@@ -271,7 +295,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   return (
     <AuthContext.Provider
-      value={{ user, session, isLoading, login, register, logout, updateProfile, getAllUsers, getUserById }}
+      value={{ user, session, isLoading, login, loginWithGoogle, register, logout, updateProfile, getAllUsers, getUserById }}
     >
       {children}
     </AuthContext.Provider>
