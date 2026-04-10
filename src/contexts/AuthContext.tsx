@@ -166,7 +166,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             nom: data.nom,
             prenom: data.prenom,
           },
-          emailRedirectTo: `${appUrl}/auth/callback?next=/dashboard`,
         },
       });
 
