@@ -179,7 +179,7 @@ export default function HomePage() {
               { label: "Restaurants & Bars", img: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=600&h=400&fit=crop&q=80" },
               { label: "Formations", img: "https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=600&h=400&fit=crop&q=80" },
               { label: "Spas & Bien-être", img: "https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=600&h=400&fit=crop&q=80" },
-              { label: "Coworking", img: "https://images.unsplash.com/photo-1497366216548-37526070297c?w=600&h=400&fit=crop&q=80" },
+              { label: "Hôtellerie & Immo", img: "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=600&h=400&fit=crop&q=80" },
             ].map((item, i) => (
               <div key={i} className="relative rounded-xl overflow-hidden aspect-[4/3] group">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
