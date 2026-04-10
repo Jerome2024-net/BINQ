@@ -126,9 +126,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         if (error.message.includes("Invalid login credentials")) {
           return { success: false, error: "Email ou mot de passe incorrect" };
         }
-        if (error.message.includes("Email not confirmed")) {
-          return { success: false, error: "Veuillez confirmer votre email avant de vous connecter. Vérifiez votre boîte de réception et vos spams." };
-        }
         if (error.message.includes("Invalid API key")) {
           return { success: false, error: "Erreur de configuration serveur" };
         }
