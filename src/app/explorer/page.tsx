@@ -92,19 +92,19 @@ function formatDateCompact(dateStr: string) {
 
 /* ─── Categories ─── */
 const EVENT_CATEGORIES = [
-  { slug: "", label: "Tout", icon: "🔥" },
-  { slug: "alimentation", label: "Food & Drink", icon: "🍔" },
-  { slug: "mode", label: "Mode", icon: "👗" },
-  { slug: "electronique", label: "Tech", icon: "📱" },
-  { slug: "beaute", label: "Beauté", icon: "💄" },
-  { slug: "services", label: "Services", icon: "🔧" },
-  { slug: "artisanat", label: "Art & Culture", icon: "🎨" },
-  { slug: "sport", label: "Sport", icon: "⚽" },
-  { slug: "education", label: "Éducation", icon: "📚" },
-  { slug: "restauration", label: "Restaurants", icon: "🍽️" },
-  { slug: "bien-etre", label: "Bien-être", icon: "💆" },
-  { slug: "hotellerie", label: "Hôtellerie & Immo", icon: "🏨" },
-  { slug: "concerts", label: "Concerts & Festivals", icon: "🎶" },
+  { slug: "", label: "Tout", icon: "🔥", gradient: "from-orange-500 to-red-500", bg: "bg-orange-50", text: "text-orange-600" },
+  { slug: "alimentation", label: "Food & Drink", icon: "🍔", gradient: "from-amber-400 to-orange-500", bg: "bg-amber-50", text: "text-amber-600" },
+  { slug: "mode", label: "Mode", icon: "👗", gradient: "from-pink-400 to-rose-500", bg: "bg-pink-50", text: "text-pink-600" },
+  { slug: "electronique", label: "Tech", icon: "📱", gradient: "from-cyan-400 to-blue-500", bg: "bg-cyan-50", text: "text-cyan-600" },
+  { slug: "beaute", label: "Beauté", icon: "💄", gradient: "from-fuchsia-400 to-purple-500", bg: "bg-fuchsia-50", text: "text-fuchsia-600" },
+  { slug: "services", label: "Services", icon: "🔧", gradient: "from-slate-400 to-gray-600", bg: "bg-slate-50", text: "text-slate-600" },
+  { slug: "artisanat", label: "Art & Culture", icon: "🎨", gradient: "from-violet-400 to-indigo-500", bg: "bg-violet-50", text: "text-violet-600" },
+  { slug: "sport", label: "Sport", icon: "⚽", gradient: "from-emerald-400 to-green-600", bg: "bg-emerald-50", text: "text-emerald-600" },
+  { slug: "education", label: "Éducation", icon: "📚", gradient: "from-blue-400 to-indigo-500", bg: "bg-blue-50", text: "text-blue-600" },
+  { slug: "restauration", label: "Restaurants", icon: "🍽️", gradient: "from-red-400 to-rose-600", bg: "bg-red-50", text: "text-red-600" },
+  { slug: "bien-etre", label: "Bien-être", icon: "💆", gradient: "from-teal-400 to-emerald-500", bg: "bg-teal-50", text: "text-teal-600" },
+  { slug: "hotellerie", label: "Hôtellerie & Immo", icon: "🏨", gradient: "from-sky-400 to-blue-600", bg: "bg-sky-50", text: "text-sky-600" },
+  { slug: "concerts", label: "Concerts & Festivals", icon: "🎶", gradient: "from-purple-400 to-pink-500", bg: "bg-purple-50", text: "text-purple-600" },
 ];
 
 /* ─── Skeletons ─── */
@@ -415,22 +415,28 @@ export default function ExplorerPublicPage() {
       </section>
 
       {/* ═══════ CATEGORY TABS ═══════ */}
-      <section className="sticky top-14 lg:top-16 z-40 bg-white border-b border-gray-100">
+      <section className="sticky top-14 lg:top-16 z-40 bg-white/80 backdrop-blur-xl border-b border-gray-100">
         <div className="max-w-7xl mx-auto px-5 lg:px-10">
-          <div className="flex gap-1.5 lg:gap-2 overflow-x-auto py-3 lg:py-4 scrollbar-none -mx-1 px-1">
+          <div className="flex gap-2 lg:gap-2.5 overflow-x-auto py-3 lg:py-3.5 scrollbar-none -mx-1 px-1">
             {EVENT_CATEGORIES.map((cat) => {
               const active = selectedCategory === cat.slug;
               return (
                 <button
                   key={cat.slug}
                   onClick={() => setSelectedCategory(cat.slug)}
-                  className={`flex items-center gap-1.5 px-3.5 py-2 rounded-full text-[13px] font-medium whitespace-nowrap transition shrink-0 border ${
+                  className={`group flex items-center gap-2 pl-1.5 pr-3.5 py-1.5 rounded-full text-[13px] font-semibold whitespace-nowrap transition-all duration-200 shrink-0 border ${
                     active
-                      ? "bg-blue-600 text-white border-blue-600"
-                      : "bg-white text-gray-600 border-gray-200 hover:border-blue-300 hover:bg-blue-50"
+                      ? `bg-gradient-to-r ${cat.gradient} text-white border-transparent shadow-lg shadow-black/10`
+                      : `bg-white ${cat.text} border-gray-200 hover:border-gray-300 hover:shadow-md hover:shadow-black/5 hover:-translate-y-0.5`
                   }`}
                 >
-                  <span>{cat.icon}</span>
+                  <span className={`w-7 h-7 rounded-full flex items-center justify-center text-sm ${
+                    active
+                      ? "bg-white/25"
+                      : `${cat.bg}`
+                  }`}>
+                    {cat.icon}
+                  </span>
                   {cat.label}
                 </button>
               );
