@@ -104,20 +104,28 @@ ALTER TABLE produits ENABLE ROW LEVEL SECURITY;
 ALTER TABLE commandes ENABLE ROW LEVEL SECURITY;
 
 -- Categories: public read
+DROP POLICY IF EXISTS "categories_public_read" ON categories;
 CREATE POLICY "categories_public_read" ON categories FOR SELECT USING (true);
 
 -- Boutiques: public read actives, owner CRUD
+DROP POLICY IF EXISTS "boutiques_public_read" ON boutiques;
 CREATE POLICY "boutiques_public_read" ON boutiques FOR SELECT USING (is_active = true);
+DROP POLICY IF EXISTS "boutiques_owner_all" ON boutiques;
 CREATE POLICY "boutiques_owner_all" ON boutiques FOR ALL USING (auth.uid() = user_id);
 
 -- Produits: public read actives, owner via boutique
+DROP POLICY IF EXISTS "produits_public_read" ON produits;
 CREATE POLICY "produits_public_read" ON produits FOR SELECT USING (is_active = true);
+DROP POLICY IF EXISTS "produits_owner_all" ON produits;
 CREATE POLICY "produits_owner_all" ON produits FOR ALL
   USING (boutique_id IN (SELECT id FROM boutiques WHERE user_id = auth.uid()));
 
 -- Commandes: acheteur ou vendeur
+DROP POLICY IF EXISTS "commandes_acheteur" ON commandes;
 CREATE POLICY "commandes_acheteur" ON commandes FOR SELECT USING (auth.uid() = acheteur_id);
+DROP POLICY IF EXISTS "commandes_vendeur" ON commandes;
 CREATE POLICY "commandes_vendeur" ON commandes FOR SELECT USING (auth.uid() = vendeur_id);
+DROP POLICY IF EXISTS "commandes_insert" ON commandes;
 CREATE POLICY "commandes_insert" ON commandes FOR INSERT WITH CHECK (true);
 
 -- ══════════════════════════════════════════════
@@ -148,7 +156,9 @@ CREATE INDEX IF NOT EXISTS idx_qr_produit ON qr_codes(produit_id) WHERE produit_
 CREATE INDEX IF NOT EXISTS idx_qr_user ON qr_codes(user_id) WHERE user_id IS NOT NULL;
 
 ALTER TABLE qr_codes ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "qr_public_read" ON qr_codes;
 CREATE POLICY "qr_public_read" ON qr_codes FOR SELECT USING (is_active = true);
+DROP POLICY IF EXISTS "qr_owner_all" ON qr_codes;
 CREATE POLICY "qr_owner_all" ON qr_codes FOR ALL
   USING (
     user_id = auth.uid()

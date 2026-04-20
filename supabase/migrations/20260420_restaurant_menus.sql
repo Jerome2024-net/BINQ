@@ -96,25 +96,35 @@ ALTER TABLE menu_items ENABLE ROW LEVEL SECURITY;
 ALTER TABLE reservations ENABLE ROW LEVEL SECURITY;
 
 -- Menus: lecture publique (actifs), CRUD proprio
+DROP POLICY IF EXISTS "menus_public_read" ON menus;
 CREATE POLICY "menus_public_read" ON menus FOR SELECT USING (is_active = true);
+DROP POLICY IF EXISTS "menus_owner_all" ON menus;
 CREATE POLICY "menus_owner_all" ON menus FOR ALL
   USING (boutique_id IN (SELECT id FROM boutiques WHERE user_id = auth.uid()));
 
 -- Sections: lecture publique (actives), CRUD proprio
+DROP POLICY IF EXISTS "menu_sections_public_read" ON menu_sections;
 CREATE POLICY "menu_sections_public_read" ON menu_sections FOR SELECT USING (is_active = true);
+DROP POLICY IF EXISTS "menu_sections_owner_all" ON menu_sections;
 CREATE POLICY "menu_sections_owner_all" ON menu_sections FOR ALL
   USING (menu_id IN (SELECT id FROM menus WHERE boutique_id IN (SELECT id FROM boutiques WHERE user_id = auth.uid())));
 
 -- Items: lecture publique (disponibles), CRUD proprio
+DROP POLICY IF EXISTS "menu_items_public_read" ON menu_items;
 CREATE POLICY "menu_items_public_read" ON menu_items FOR SELECT USING (is_disponible = true);
+DROP POLICY IF EXISTS "menu_items_owner_all" ON menu_items;
 CREATE POLICY "menu_items_owner_all" ON menu_items FOR ALL
   USING (boutique_id IN (SELECT id FROM boutiques WHERE user_id = auth.uid()));
 
 -- Réservations: insert public, select propriétaire + client
+DROP POLICY IF EXISTS "reservations_insert_public" ON reservations;
 CREATE POLICY "reservations_insert_public" ON reservations FOR INSERT WITH CHECK (true);
+DROP POLICY IF EXISTS "reservations_owner_read" ON reservations;
 CREATE POLICY "reservations_owner_read" ON reservations FOR SELECT
   USING (boutique_id IN (SELECT id FROM boutiques WHERE user_id = auth.uid()));
+DROP POLICY IF EXISTS "reservations_client_read" ON reservations;
 CREATE POLICY "reservations_client_read" ON reservations FOR SELECT
   USING (client_user_id = auth.uid());
+DROP POLICY IF EXISTS "reservations_owner_update" ON reservations;
 CREATE POLICY "reservations_owner_update" ON reservations FOR UPDATE
   USING (boutique_id IN (SELECT id FROM boutiques WHERE user_id = auth.uid()));
