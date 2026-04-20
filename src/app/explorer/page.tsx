@@ -12,7 +12,7 @@ import {
   ChevronDown,
   MapPin,
   Users,
-  Star,
+  QrCode,
 } from "lucide-react";
 
 /* ─── Types ─── */
@@ -258,7 +258,7 @@ export default function ExplorerPublicPage() {
         <div className="max-w-7xl mx-auto px-5 lg:px-10 h-14 lg:h-16 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2">
             <div className="w-7 h-7 lg:w-8 lg:h-8 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center shadow-sm shadow-blue-500/30">
-              <Star className="w-3.5 h-3.5 lg:w-4 lg:h-4 text-white fill-white" />
+              <QrCode className="w-3.5 h-3.5 lg:w-4 lg:h-4 text-white" />
             </div>
             <span className="font-semibold text-[15px] lg:text-base text-gray-900">
               Binq
@@ -522,7 +522,7 @@ export default function ExplorerPublicPage() {
             <div className="mb-6 lg:mb-0">
               <Link href="/" className="flex items-center gap-2 mb-3">
                 <div className="w-7 h-7 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center shadow-sm shadow-blue-500/30">
-                  <Star className="w-3.5 h-3.5 text-white fill-white" />
+                  <QrCode className="w-3.5 h-3.5 text-white" />
                 </div>
                 <span className="font-semibold text-[15px] text-gray-900">Binq</span>
               </Link>

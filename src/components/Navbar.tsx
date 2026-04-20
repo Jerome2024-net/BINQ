@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { Menu, X, LogIn, ArrowRight, Star } from "lucide-react";
+import { Menu, X, LogIn, ArrowRight, QrCode } from "lucide-react";
 
 const navLinks = [
   { href: "/#fonctionnalites", label: "Fonctionnalités" },
@@ -19,7 +19,7 @@ export default function Navbar() {
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2">
             <div className="w-7 h-7 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center shadow-sm shadow-blue-500/30">
-              <Star className="w-3.5 h-3.5 text-white fill-white" />
+              <QrCode className="w-3.5 h-3.5 text-white" />
             </div>
             <span className="font-semibold text-neutral-900 tracking-tight">Binq</span>
           </Link>

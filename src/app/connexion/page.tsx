@@ -6,7 +6,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/contexts/ToastContext";
 import { hapticSuccess } from "@/lib/haptics";
-import { ArrowRight, Eye, EyeOff, Loader2, Star } from "lucide-react";
+import { ArrowRight, Eye, EyeOff, Loader2, QrCode } from "lucide-react";
 
 function ConnexionForm() {
   const router = useRouter();
@@ -48,7 +48,7 @@ function ConnexionForm() {
       {/* Logo */}
       <Link href="/" className="flex items-center gap-2.5 mb-10">
         <div className="w-9 h-9 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center shadow-sm shadow-blue-500/25">
-          <Star className="w-4 h-4 text-white fill-white" />
+          <QrCode className="w-4 h-4 text-white" />
         </div>
         <span className="font-bold text-xl tracking-tight text-neutral-900">Binq</span>
       </Link>

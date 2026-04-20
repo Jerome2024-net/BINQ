@@ -12,7 +12,6 @@ import {
   BarChart3,
   Smartphone,
   Check,
-  Star,
   Zap,
 } from "lucide-react";
 
@@ -24,7 +23,7 @@ export default function BinqAccessPage() {
         <div className="max-w-6xl mx-auto px-4 sm:px-6 flex items-center justify-between h-16">
           <Link href="/" className="flex items-center gap-2.5 group">
             <div className="w-8 h-8 bg-gradient-to-br from-blue-400 to-blue-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/25">
-              <Star className="w-4 h-4 text-white fill-white" />
+              <QrCode className="w-4 h-4 text-white" />
             </div>
             <span className="font-black text-lg tracking-tight">Binq</span>
           </Link>

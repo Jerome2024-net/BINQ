@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Mail, Headphones, Star } from "lucide-react";
+import { Mail, Headphones, QrCode } from "lucide-react";
 
 export default function Footer() {
   return (
@@ -10,7 +10,7 @@ export default function Footer() {
           <div className="col-span-2 md:col-span-1">
             <div className="flex items-center gap-2 mb-4">
               <div className="w-7 h-7 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center shadow-sm shadow-blue-500/30">
-                <Star className="w-3.5 h-3.5 text-white fill-white" />
+                <QrCode className="w-3.5 h-3.5 text-white" />
               </div>
               <span className="font-semibold text-neutral-900 tracking-tight">Binq</span>
             </div>

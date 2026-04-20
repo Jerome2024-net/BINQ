@@ -16,7 +16,7 @@ import {
   Wallet,
   TrendingUp,
   Plus,
-  Star,
+  QrCode,
 } from "lucide-react";
 
 interface Notification {
@@ -133,7 +133,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           {/* Logo */}
           <div className="flex items-center gap-2 px-5 h-14 border-b border-neutral-200">
             <div className="w-7 h-7 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center shadow-sm shadow-blue-500/30">
-              <Star className="w-3.5 h-3.5 text-white fill-white" />
+              <QrCode className="w-3.5 h-3.5 text-white" />
             </div>
             <span className="font-semibold text-[15px] text-neutral-900">Binq</span>
           </div>
@@ -186,7 +186,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             {/* Left: Logo (mobile) */}
             <Link href="/dashboard" className="flex items-center gap-2 lg:hidden">
               <div className="w-7 h-7 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center shadow-sm shadow-blue-500/30">
-                <Star className="w-3.5 h-3.5 text-white fill-white" />
+                <QrCode className="w-3.5 h-3.5 text-white" />
               </div>
               <span className="font-semibold text-[15px]">Binq</span>
             </Link>
