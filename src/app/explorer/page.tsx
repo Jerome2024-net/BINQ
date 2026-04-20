@@ -92,19 +92,19 @@ function formatDateCompact(dateStr: string) {
 
 /* ─── Categories ─── */
 const EVENT_CATEGORIES = [
-  { slug: "", label: "Tout", icon: "🔥", gradient: "from-orange-500 to-red-500", bg: "bg-orange-50", text: "text-orange-600" },
-  { slug: "alimentation", label: "Food & Drink", icon: "🍔", gradient: "from-amber-400 to-orange-500", bg: "bg-amber-50", text: "text-amber-600" },
-  { slug: "mode", label: "Mode", icon: "👗", gradient: "from-pink-400 to-rose-500", bg: "bg-pink-50", text: "text-pink-600" },
-  { slug: "electronique", label: "Tech", icon: "📱", gradient: "from-cyan-400 to-blue-500", bg: "bg-cyan-50", text: "text-cyan-600" },
-  { slug: "beaute", label: "Beauté", icon: "💄", gradient: "from-fuchsia-400 to-purple-500", bg: "bg-fuchsia-50", text: "text-fuchsia-600" },
-  { slug: "services", label: "Services", icon: "🔧", gradient: "from-slate-400 to-gray-600", bg: "bg-slate-50", text: "text-slate-600" },
-  { slug: "artisanat", label: "Art & Culture", icon: "🎨", gradient: "from-violet-400 to-indigo-500", bg: "bg-violet-50", text: "text-violet-600" },
-  { slug: "sport", label: "Sport", icon: "⚽", gradient: "from-emerald-400 to-green-600", bg: "bg-emerald-50", text: "text-emerald-600" },
-  { slug: "education", label: "Éducation", icon: "📚", gradient: "from-blue-400 to-indigo-500", bg: "bg-blue-50", text: "text-blue-600" },
-  { slug: "restauration", label: "Restaurants", icon: "🍽️", gradient: "from-red-400 to-rose-600", bg: "bg-red-50", text: "text-red-600" },
-  { slug: "bien-etre", label: "Bien-être", icon: "💆", gradient: "from-teal-400 to-emerald-500", bg: "bg-teal-50", text: "text-teal-600" },
-  { slug: "hotellerie", label: "Hôtellerie & Immo", icon: "🏨", gradient: "from-sky-400 to-blue-600", bg: "bg-sky-50", text: "text-sky-600" },
-  { slug: "concerts", label: "Concerts & Festivals", icon: "🎶", gradient: "from-purple-400 to-pink-500", bg: "bg-purple-50", text: "text-purple-600" },
+  { slug: "", label: "Tout", icon: "✨", gradient: "from-orange-500 to-red-500", bg: "bg-orange-50", text: "text-orange-600" },
+  { slug: "alimentation", label: "Food & Drink", icon: "🧋", gradient: "from-amber-400 to-orange-500", bg: "bg-amber-50", text: "text-amber-600" },
+  { slug: "mode", label: "Mode", icon: "👠", gradient: "from-pink-400 to-rose-500", bg: "bg-pink-50", text: "text-pink-600" },
+  { slug: "electronique", label: "Tech", icon: "💻", gradient: "from-cyan-400 to-blue-500", bg: "bg-cyan-50", text: "text-cyan-600" },
+  { slug: "beaute", label: "Beauté", icon: "💎", gradient: "from-fuchsia-400 to-purple-500", bg: "bg-fuchsia-50", text: "text-fuchsia-600" },
+  { slug: "services", label: "Services", icon: "⚙️", gradient: "from-slate-400 to-gray-600", bg: "bg-slate-50", text: "text-slate-600" },
+  { slug: "artisanat", label: "Art & Culture", icon: "🎭", gradient: "from-violet-400 to-indigo-500", bg: "bg-violet-50", text: "text-violet-600" },
+  { slug: "sport", label: "Sport", icon: "🏅", gradient: "from-emerald-400 to-green-600", bg: "bg-emerald-50", text: "text-emerald-600" },
+  { slug: "education", label: "Éducation", icon: "🎓", gradient: "from-blue-400 to-indigo-500", bg: "bg-blue-50", text: "text-blue-600" },
+  { slug: "restauration", label: "Restaurants", icon: "🍷", gradient: "from-red-400 to-rose-600", bg: "bg-red-50", text: "text-red-600" },
+  { slug: "bien-etre", label: "Bien-être", icon: "🌿", gradient: "from-teal-400 to-emerald-500", bg: "bg-teal-50", text: "text-teal-600" },
+  { slug: "hotellerie", label: "Hôtellerie & Immo", icon: "🏡", gradient: "from-sky-400 to-blue-600", bg: "bg-sky-50", text: "text-sky-600" },
+  { slug: "concerts", label: "Concerts & Festivals", icon: "🎤", gradient: "from-purple-400 to-pink-500", bg: "bg-purple-50", text: "text-purple-600" },
 ];
 
 /* ─── Skeletons ─── */
