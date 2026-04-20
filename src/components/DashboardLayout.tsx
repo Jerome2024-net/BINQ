@@ -17,6 +17,7 @@ import {
   TrendingUp,
   Plus,
   QrCode,
+  UtensilsCrossed,
 } from "lucide-react";
 
 interface Notification {
@@ -30,6 +31,7 @@ interface Notification {
 const bottomTabs = [
   { href: "/dashboard", label: "Home", icon: Home },
   { href: "/evenements", label: "Events", icon: Calendar },
+  { href: "/menu", label: "Menu", icon: UtensilsCrossed },
   { href: "/portefeuille", label: "Wallet", icon: Wallet },
   { href: "/ventes", label: "Analytics", icon: TrendingUp },
 ];

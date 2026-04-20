@@ -78,6 +78,12 @@ export async function GET(
       case "commande":
         redirectUrl = `/commandes`;
         break;
+      case "menu":
+        if (qr.boutique) {
+          redirectUrl = `/boutique/${qr.boutique.slug}/menu`;
+          meta = { ...meta, boutique: qr.boutique };
+        }
+        break;
     }
 
     return NextResponse.json({ qr, redirectUrl, meta });

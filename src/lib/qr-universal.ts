@@ -13,7 +13,7 @@ export function generateQRCode(): string {
 }
 
 /** Types de QR supportes */
-export type QRType = "boutique" | "produit" | "paiement" | "vendeur" | "commande";
+export type QRType = "boutique" | "produit" | "paiement" | "vendeur" | "commande" | "menu";
 
 /** Map type → destination URL */
 export function getRedirectUrl(qr: {
@@ -39,6 +39,10 @@ export function getRedirectUrl(qr: {
       return `/pay/user/${qr.user_id}`;
     case "commande":
       return `/commandes?id=${qr.commande_id}`;
+    case "menu":
+      return qr.boutique_slug
+        ? `/boutique/${qr.boutique_slug}/menu`
+        : `/boutique/${qr.boutique_id}/menu`;
     default:
       return "/dashboard";
   }
