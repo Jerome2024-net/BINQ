@@ -70,13 +70,21 @@ CREATE INDEX IF NOT EXISTS idx_reservations_boutique ON reservations(boutique_id
 CREATE INDEX IF NOT EXISTS idx_reservations_date ON reservations(date_reservation);
 CREATE INDEX IF NOT EXISTS idx_reservations_statut ON reservations(statut);
 
--- Ajouter 'menu' comme type QR supporté
-ALTER TABLE qr_codes DROP CONSTRAINT IF EXISTS qr_codes_type_check;
-ALTER TABLE qr_codes ADD CONSTRAINT qr_codes_type_check
-  CHECK (type IN ('boutique', 'produit', 'paiement', 'vendeur', 'commande', 'menu'));
--- Ajouter la référence menu
-ALTER TABLE qr_codes ADD COLUMN IF NOT EXISTS menu_id UUID REFERENCES menus(id) ON DELETE CASCADE;
-CREATE INDEX IF NOT EXISTS idx_qr_menu ON qr_codes(menu_id) WHERE menu_id IS NOT NULL;
+-- Ajouter 'menu' comme type QR supporté (seulement si qr_codes existe)
+DO $$
+BEGIN
+  IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'qr_codes') THEN
+    ALTER TABLE qr_codes DROP CONSTRAINT IF EXISTS qr_codes_type_check;
+    ALTER TABLE qr_codes ADD CONSTRAINT qr_codes_type_check
+      CHECK (type IN ('boutique', 'produit', 'paiement', 'vendeur', 'commande', 'menu'));
+    
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'qr_codes' AND column_name = 'menu_id') THEN
+      ALTER TABLE qr_codes ADD COLUMN menu_id UUID REFERENCES menus(id) ON DELETE CASCADE;
+    END IF;
+
+    CREATE INDEX IF NOT EXISTS idx_qr_menu ON qr_codes(menu_id) WHERE menu_id IS NOT NULL;
+  END IF;
+END $$;
 
 -- ══════════════════════════════════════
 -- RLS Policies
