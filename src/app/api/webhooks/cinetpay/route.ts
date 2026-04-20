@@ -1,10 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
-import {
-  verifyCinetPayPayment,
-  generatePaymentRef,
-  generateQR,
-} from "@/lib/cinetpay";
+import { verifyCinetPayPayment } from "@/lib/cinetpay";
+import { fulfillTicketOrder } from "@/lib/ticket-fulfillment";
 
 function getServiceClient() {
   return createClient(
@@ -15,11 +12,11 @@ function getServiceClient() {
 }
 
 // POST /api/webhooks/cinetpay — Notification CinetPay (notify_url)
+// Filet de sécurité : crée les tickets même si le client ferme son navigateur
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
 
-    // CinetPay envoie: cpm_trans_id, cpm_site_id, cpm_trans_date, cpm_amount, etc.
     const transactionId =
       body.cpm_trans_id || body.transaction_id || body.cpm_custom;
 
@@ -40,33 +37,42 @@ export async function POST(req: NextRequest) {
 
     const supabase = getServiceClient();
 
-    // ═══ Idempotence ═══
-    const firstRef = generatePaymentRef(transactionId, 0);
-    const { data: existingTickets } = await supabase
-      .from("tickets")
-      .select("id")
-      .eq("reference", firstRef);
+    // ═══ Récupérer la commande en attente ═══
+    const { data: pendingOrder } = await supabase
+      .from("pending_ticket_orders")
+      .select("*")
+      .eq("transaction_id", transactionId)
+      .single();
 
-    if (existingTickets && existingTickets.length > 0) {
-      return NextResponse.json({
-        received: true,
-        already_processed: true,
-      });
+    if (!pendingOrder) {
+      console.log(
+        `CinetPay webhook: aucune commande pending pour ${transactionId}`
+      );
+      return NextResponse.json({ received: true });
     }
 
-    // ═══ Chercher la commande en attente via metadata ou pending_orders ═══
-    // On cherche les tickets qui correspondent à cette transaction
-    // Le webhook est un filet de sécurité — le frontend /verify crée normalement les billets
-    // Si les billets n'existent pas encore, on les créera via le endpoint /verify
-    // quand le client sera redirigé
+    if (pendingOrder.status === "completed") {
+      console.log(
+        `CinetPay webhook: commande ${transactionId} déjà traitée`
+      );
+      return NextResponse.json({ received: true, already_processed: true });
+    }
+
+    // ═══ Créer les tickets + créditer le wallet organisateur ═══
+    const { tickets, already_created } = await fulfillTicketOrder(
+      pendingOrder.order_data,
+      transactionId
+    );
 
     console.log(
-      `CinetPay webhook: paiement ${transactionId} confirmé (${result.amount} ${result.payment_method})`
+      `CinetPay webhook: ${already_created ? "tickets déjà existants" : `${tickets.length} tickets créés`} pour ${transactionId} (${result.amount} ${result.payment_method})`
     );
 
     return NextResponse.json({
       received: true,
       payment_confirmed: true,
+      tickets_created: tickets.length,
+      already_created,
     });
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : "Webhook error";

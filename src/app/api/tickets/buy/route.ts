@@ -99,6 +99,15 @@ export async function POST(req: NextRequest) {
         const returnUrl = `${appUrl}/payment/ticket-success?d=${encoded}&s=${signature}&transaction_id=${transactionId}`;
         const notifyUrl = `${appUrl}/api/webhooks/cinetpay`;
 
+        // Stocker la commande en attente pour que le webhook puisse la traiter
+        await supabase.from("pending_ticket_orders").insert({
+          transaction_id: transactionId,
+          order_data: orderData,
+          encoded,
+          signature,
+          status: "pending",
+        });
+
         // Frais de service 10% + arrondi au multiple de 5 pour CinetPay
         const fraisService = Math.ceil(montant_total * 0.1);
         const montantClient = montant_total + fraisService;
