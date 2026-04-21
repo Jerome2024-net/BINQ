@@ -304,7 +304,7 @@ export default function PayPage() {
         {/* Header */}
         <div className="text-center mb-6">
           <h2 className="text-2xl font-black text-gray-900 tracking-tight">
-            <span className="text-black">Binq</span> Pay
+            <span className="text-black">Binq</span> Billetterie
           </h2>
           <div className="flex items-center justify-center gap-1.5 mt-1">
             <Shield className="w-3.5 h-3.5 text-gray-400" />
@@ -511,7 +511,7 @@ export default function PayPage() {
 
         {/* Footer */}
         <div className="text-center mt-5">
-          <p className="text-[11px] text-gray-400">Propulse par Binq — Paiements universels</p>
+          <p className="text-[11px] text-gray-400">Propulsé par Binq — Billetterie QR avec paiement intégré</p>
         </div>
       </div>
     </div>

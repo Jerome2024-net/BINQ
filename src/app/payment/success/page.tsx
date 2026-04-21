@@ -131,7 +131,7 @@ function SuccessContent() {
         </div>
 
         <p className="text-[11px] text-gray-400 mt-5">
-          Propulsé par Binq — Paiements universels pour l&apos;Afrique
+          Propulsé par Binq — Billetterie QR avec paiement intégré
         </p>
       </div>
     </div>
