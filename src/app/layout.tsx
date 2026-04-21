@@ -9,7 +9,7 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata: Metadata = {
   title: "Binq - Billetterie & Événements",
   description:
-    "Chaque produit devient un terminal de paiement. Creez votre boutique, partagez vos QR, encaissez par carte et mobile money.",
+    "Plateforme de billetterie QR pour événements, restaurants et services. Créez vos accès, partagez vos QR et encaissez par carte et mobile money.",
   manifest: "/manifest.json",
   themeColor: "#2563eb",
   icons: {

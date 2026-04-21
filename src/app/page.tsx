@@ -72,15 +72,15 @@ export default function HomePage() {
         <div className="relative z-10 text-center px-4 sm:px-6 pt-32 sm:pt-40">
           <div className="inline-flex items-center gap-2 px-3 py-1 bg-blue-50 border border-blue-100 rounded-full mb-6">
             <div className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse" />
-            <span className="text-[11px] font-semibold text-blue-600 uppercase tracking-wider">Paiement universel par QR</span>
+            <span className="text-[11px] font-semibold text-blue-600 uppercase tracking-wider">Billetterie QR & accès</span>
           </div>
 
           <h1 className="text-[2.5rem] sm:text-6xl lg:text-7xl font-extrabold tracking-tight leading-[1.05] mb-5">
-            <span className="text-neutral-900">Un QR. Un paiement.</span><br />
+            <span className="text-neutral-900">Un QR. Une billetterie.</span><br />
             <span className="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">Un accès.</span>
           </h1>
           <p className="text-base sm:text-lg text-neutral-500 max-w-md mx-auto mb-8 leading-relaxed">
-            Événements, services, produits &mdash; un seul ticket QR pour créer, payer et accéder à tout.
+            Événements, services, produits &mdash; une billetterie QR pour vendre, encaisser et donner accès simplement.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
             <Link href="/inscription" className="inline-flex items-center gap-2 px-7 py-3 bg-blue-600 text-white font-semibold rounded-full hover:bg-blue-700 transition-all text-sm shadow-xl shadow-blue-600/20">
@@ -171,8 +171,8 @@ export default function HomePage() {
               {
                 step: "02",
                 icon: ScanLine,
-                title: "Un QR, un paiement",
-                desc: "Le client scanne, choisit son ticket et paye instantanément par carte ou Mobile Money.",
+                title: "Un QR, une billetterie",
+                desc: "Le client scanne, choisit son ticket et paie instantanément par carte ou Mobile Money.",
                 gradient: "from-violet-500 to-purple-500",
               },
               {
@@ -203,7 +203,7 @@ export default function HomePage() {
         <div className="max-w-5xl mx-auto px-4 sm:px-6">
           <div className="text-center mb-12 sm:mb-16">
             <h2 className="text-2xl sm:text-4xl font-bold tracking-tight text-neutral-900 mb-3">Un QR pour tout</h2>
-            <p className="text-sm sm:text-base text-neutral-400 max-w-md mx-auto">Partout où il y a un échange, Binq simplifie le paiement et l&apos;accès.</p>
+            <p className="text-sm sm:text-base text-neutral-400 max-w-md mx-auto">Partout où il y a un accès à vendre, Binq simplifie la billetterie et l&apos;encaissement.</p>
           </div>
 
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 sm:gap-5">
@@ -231,11 +231,11 @@ export default function HomePage() {
       <section className="py-20 sm:py-28 bg-neutral-50">
         <div className="max-w-4xl mx-auto px-4 sm:px-6">
           <h2 className="text-center text-2xl sm:text-4xl font-bold tracking-tight text-neutral-900 mb-4">Pourquoi Binq</h2>
-          <p className="text-center text-sm sm:text-base text-neutral-400 max-w-md mx-auto mb-12 sm:mb-16">La solution la plus simple pour encaisser et donner accès.</p>
+          <p className="text-center text-sm sm:text-base text-neutral-400 max-w-md mx-auto mb-12 sm:mb-16">La solution la plus simple pour vendre des accès et encaisser.</p>
 
           <div className="grid md:grid-cols-3 gap-6 sm:gap-8 text-center">
             {[
-              { icon: Zap, title: "Instantané", desc: "Scan < 1 seconde. Paiement en temps réel. Accès immédiat.", color: "text-amber-500", bg: "bg-amber-50" },
+              { icon: Zap, title: "Instantané", desc: "Scan < 1 seconde. Encaissement en temps réel. Accès immédiat.", color: "text-amber-500", bg: "bg-amber-50" },
               { icon: ShieldCheck, title: "0 % de commission", desc: "Aucun frais pour l'organisateur. Vous gardez 100 % de vos ventes.", color: "text-emerald-500", bg: "bg-emerald-50" },
               { icon: ScanLine, title: "Anti-fraude", desc: "Signature cryptographique unique. Impossible à copier ou falsifier.", color: "text-blue-500", bg: "bg-blue-50" },
             ].map((item, i) => (
@@ -257,7 +257,7 @@ export default function HomePage() {
           <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-blue-600 to-indigo-700 px-6 sm:px-12 py-12 sm:py-16 text-center">
             <div className="absolute inset-0 opacity-10" style={{ backgroundImage: "radial-gradient(circle at 20% 50%, white 1px, transparent 1px), radial-gradient(circle at 80% 50%, white 1px, transparent 1px)", backgroundSize: "40px 40px" }} />
             <div className="relative z-10">
-              <h2 className="text-2xl sm:text-4xl font-bold text-white mb-3 tracking-tight">Prêt à simplifier vos paiements ?</h2>
+              <h2 className="text-2xl sm:text-4xl font-bold text-white mb-3 tracking-tight">Prêt à lancer votre billetterie ?</h2>
               <p className="text-sm sm:text-base text-white/70 max-w-md mx-auto mb-8">Créez votre premier ticket QR en moins de 2 minutes. Gratuit, sans engagement.</p>
               <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
                 <Link href="/inscription" className="inline-flex items-center gap-2 px-7 py-3 bg-white text-blue-700 font-bold rounded-full hover:bg-blue-50 transition-all text-sm shadow-xl">
@@ -283,7 +283,7 @@ export default function HomePage() {
                 </div>
                 <span className="font-semibold text-neutral-900 tracking-tight">Binq</span>
               </div>
-              <p className="text-[11px] text-neutral-400">Paiement universel par QR code</p>
+              <p className="text-[11px] text-neutral-400">Billetterie QR avec paiement intégré</p>
             </div>
             <div className="flex items-center gap-6 text-sm text-neutral-400">
               <Link href="/explorer" className="hover:text-neutral-900 transition">Explorer</Link>
