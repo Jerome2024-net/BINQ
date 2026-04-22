@@ -2,11 +2,11 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import {
   signOrderData,
-  isCinetPayConfigured,
-  createCinetPayPayment,
+  isFedaPayConfigured,
+  createFedaPayPayment,
   generateTransactionId,
   type OrderData,
-} from "@/lib/cinetpay";
+} from "@/lib/fedapay";
 
 function getServiceClient() {
   return createClient(
@@ -79,8 +79,8 @@ export async function POST(req: NextRequest) {
 
     const montant_total = ticketType.prix * qty;
 
-    // ═══ Billet payant + CinetPay configuré → rediriger vers paiement ═══
-    if (montant_total > 0 && isCinetPayConfigured()) {
+    // ═══ Billet payant + FedaPay configuré → rediriger vers paiement ═══
+    if (montant_total > 0 && isFedaPayConfigured()) {
       try {
         const orderData: OrderData = {
           ticket_type_id,
@@ -97,7 +97,7 @@ export async function POST(req: NextRequest) {
         const appUrl = process.env.NEXT_PUBLIC_APP_URL || "";
         const transactionId = generateTransactionId();
         const returnUrl = `${appUrl}/payment/ticket-success?d=${encoded}&s=${signature}&transaction_id=${transactionId}`;
-        const notifyUrl = `${appUrl}/api/webhooks/cinetpay`;
+        const notifyUrl = `${appUrl}/api/webhooks/fedapay`;
 
         // Stocker la commande en attente pour que le webhook puisse la traiter
         await supabase.from("pending_ticket_orders").insert({
@@ -108,14 +108,13 @@ export async function POST(req: NextRequest) {
           status: "pending",
         });
 
-        // Frais de service 10% + arrondi au multiple de 5 pour CinetPay
+        // Frais de service 10% (côté client)
         const fraisService = Math.ceil(montant_total * 0.1);
         const montantClient = montant_total + fraisService;
-        const cinetPayAmount = Math.ceil(montantClient / 5) * 5;
 
-        const { payment_url } = await createCinetPayPayment({
+        const { payment_url } = await createFedaPayPayment({
           transaction_id: transactionId,
-          amount: cinetPayAmount,
+          amount: montantClient,
           currency: ticketType.devise || "XOF",
           description: `Billet ${ticketType.events.nom}${qty > 1 ? ` x${qty}` : ""}`,
           return_url: returnUrl,
@@ -131,8 +130,8 @@ export async function POST(req: NextRequest) {
           transaction_id: transactionId,
         });
       } catch (cinetErr) {
-        console.error("CinetPay error, falling back to direct creation:", cinetErr);
-        // Fallback: créer les billets directement si CinetPay échoue
+        console.error("FedaPay error, falling back to direct creation:", cinetErr);
+        // Fallback: créer les billets directement si FedaPay échoue
       }
     }
 

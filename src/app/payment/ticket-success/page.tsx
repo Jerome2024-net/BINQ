@@ -40,17 +40,17 @@ function TicketSuccessContent() {
       const encoded = searchParams.get("d");
       const signature = searchParams.get("s");
 
-      // CinetPay ajoute ?transaction_id=XX dans return_url ou le frontend stocke dans sessionStorage
+      // FedaPay ajoute ?transaction_id=XX dans return_url ou le frontend stocke dans sessionStorage
       const txId =
         searchParams.get("transaction_id") ||
         searchParams.get("id") ||
         (typeof window !== "undefined"
-          ? sessionStorage.getItem("cinetpay_tx_id")
+          ? sessionStorage.getItem("fedapay_tx_id")
           : null);
 
       const storedEventName =
         typeof window !== "undefined"
-          ? sessionStorage.getItem("cinetpay_event_name")
+          ? sessionStorage.getItem("fedapay_event_name")
           : null;
       if (storedEventName) setEventName(storedEventName);
 
@@ -60,7 +60,7 @@ function TicketSuccessContent() {
         return;
       }
 
-      const res = await fetch("/api/cinetpay/verify", {
+      const res = await fetch("/api/fedapay/verify", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -86,8 +86,8 @@ function TicketSuccessContent() {
 
       // Nettoyage sessionStorage
       if (typeof window !== "undefined") {
-        sessionStorage.removeItem("cinetpay_tx_id");
-        sessionStorage.removeItem("cinetpay_event_name");
+        sessionStorage.removeItem("fedapay_tx_id");
+        sessionStorage.removeItem("fedapay_event_name");
       }
     } catch (err: unknown) {
       const message =
