@@ -129,13 +129,16 @@ export async function POST(req: NextRequest) {
           payment_url,
           transaction_id: transactionId,
         });
-      } catch (cinetErr) {
-        console.error("FedaPay error, falling back to direct creation:", cinetErr);
-        // Fallback: créer les billets directement si FedaPay échoue
+      } catch (fedaErr: any) {
+        console.error("FedaPay createPayment error:", fedaErr);
+        return NextResponse.json(
+          { error: `Erreur de paiement FedaPay : ${fedaErr?.message || "inconnue"}` },
+          { status: 502 }
+        );
       }
     }
 
-    // ═══ Création directe (gratuit, FedaPay non configuré, ou fallback) ═══
+    // ═══ Création directe (billets GRATUITS uniquement) ═══
     const tickets = [];
     for (let i = 0; i < qty; i++) {
       tickets.push({
