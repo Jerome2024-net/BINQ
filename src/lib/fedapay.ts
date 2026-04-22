@@ -42,6 +42,7 @@ function getBearerHeaders() {
 function extractAnyUrl(payload: any): string | null {
   return (
     payload?.v1?.url ||
+    payload?.v1?.token?.url ||
     payload?.url ||
     payload?.token?.url ||
     payload?.data?.url ||
@@ -52,6 +53,7 @@ function extractAnyUrl(payload: any): string | null {
 
 function extractAnyTransactionId(payload: any): string | null {
   const value =
+    payload?.v1?.transaction?.id ||
     payload?.v1?.id ||
     payload?.id ||
     payload?.transaction?.id ||
@@ -89,7 +91,14 @@ export async function createFedaPayPayment(
       firstname,
       lastname,
       email: params.customer_email || undefined,
-      phone_number: params.customer_phone_number || undefined,
+      ...(params.customer_phone_number
+        ? {
+            phone_number: {
+              number: params.customer_phone_number.replace(/^\+?229/, "").replace(/\D/g, ""),
+              country: "BJ",
+            },
+          }
+        : {}),
     },
   };
 
@@ -102,12 +111,17 @@ export async function createFedaPayPayment(
   const initJson = await initRes.json().catch(() => ({}));
   if (!initRes.ok) {
     const message =
-      initJson?.message || initJson?.error || "Erreur initialisation FedaPay";
+      initJson?.message ||
+      initJson?.error ||
+      Object.values(initJson?.errors || {}).flat().join(", ") ||
+      "Erreur initialisation FedaPay";
+    console.error("FedaPay init error body:", JSON.stringify(initJson));
     throw new Error(message);
   }
 
   const providerTransactionId = extractAnyTransactionId(initJson);
   if (!providerTransactionId) {
+    console.error("FedaPay init response (no ID):", JSON.stringify(initJson));
     throw new Error("Transaction FedaPay introuvable");
   }
 
@@ -125,7 +139,11 @@ export async function createFedaPayPayment(
 
   if (!tokenRes.ok || !paymentUrl) {
     const message =
-      tokenJson?.message || tokenJson?.error || "Erreur génération lien FedaPay";
+      tokenJson?.message ||
+      tokenJson?.error ||
+      Object.values(tokenJson?.errors || {}).flat().join(", ") ||
+      "Erreur génération lien FedaPay";
+    console.error("FedaPay token error body:", JSON.stringify(tokenJson));
     throw new Error(message);
   }
 
