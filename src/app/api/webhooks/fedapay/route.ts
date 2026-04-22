@@ -1,6 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
+import { createHmac } from "crypto";
 import { fulfillTicketOrder } from "@/lib/ticket-fulfillment";
+
+function verifyFedaPaySignature(rawBody: string, signature: string | null): boolean {
+  const secret = process.env.FEDAPAY_WEBHOOK_SECRET;
+  if (!secret || !signature) return false;
+  const expected = createHmac("sha256", secret).update(rawBody).digest("hex");
+  return expected === signature;
+}
 
 function getServiceClient() {
   return createClient(
@@ -38,7 +46,17 @@ function isPaidStatus(status: string): boolean {
 // POST /api/webhooks/fedapay — Notification FedaPay
 export async function POST(req: NextRequest) {
   try {
-    const body = await req.json();
+    const rawBody = await req.text();
+    const signature = req.headers.get("x-fedapay-signature");
+
+    if (process.env.FEDAPAY_WEBHOOK_SECRET) {
+      if (!verifyFedaPaySignature(rawBody, signature)) {
+        console.error("FedaPay webhook: signature invalide");
+        return NextResponse.json({ error: "Signature invalide" }, { status: 401 });
+      }
+    }
+
+    const body = JSON.parse(rawBody);
     const transactionId = extractTransactionId(body);
 
     if (!transactionId) {
