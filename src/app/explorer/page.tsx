@@ -344,11 +344,11 @@ export default function ExplorerPublicPage() {
                 Billets, QR codes & accès en un clic
               </div>
               <h1 className="text-[34px] sm:text-[48px] lg:text-[64px] font-black text-slate-950 tracking-[-0.045em] leading-[0.98]">
-                Découvrez les sorties qui font vibrer{" "}
-                <span className="bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600 bg-clip-text text-transparent">votre ville</span>
+                Trouvez votre{" "}
+                <span className="bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600 bg-clip-text text-transparent">prochaine sortie</span>
               </h1>
               <p className="text-slate-500 text-[15px] sm:text-base lg:text-lg mt-5 max-w-xl leading-relaxed">
-                Concerts, ateliers, expériences privées et événements locaux : trouvez votre prochain accès et réservez votre billet sécurisé avec Binq.
+                Trouvez vos événements et réservez votre billet QR sécurisé.
               </p>
               <div className="flex flex-wrap gap-3 mt-7 text-[13px] text-slate-600">
                 <span className="inline-flex items-center gap-2 px-3 py-2 rounded-full bg-white/80 border border-white shadow-sm">
@@ -484,7 +484,7 @@ export default function ExplorerPublicPage() {
             </h3>
             <p className="text-sm text-slate-400 max-w-xs mx-auto">
               {searchQuery || selectedCity || selectedCategory
-                ? "Essayez de modifier vos filtres."
+              ? "Essayez de modifier vos filtres."
                 : "Pas encore d'événements à venir."}
             </p>
             {(searchQuery || selectedCity || selectedCategory) && (
