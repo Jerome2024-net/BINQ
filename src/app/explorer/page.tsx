@@ -13,6 +13,10 @@ import {
   MapPin,
   Users,
   QrCode,
+  ArrowRight,
+  Sparkles,
+  Ticket,
+  BadgeCheck,
 } from "lucide-react";
 
 /* ─── Types ─── */
@@ -110,12 +114,12 @@ const EVENT_CATEGORIES = [
 /* ─── Skeletons ─── */
 function SkeletonCard() {
   return (
-    <div className="animate-pulse">
-      <div className="rounded-xl bg-gray-100 aspect-[16/10] mb-3" />
-      <div className="space-y-2 px-0.5">
-        <div className="h-3 w-28 bg-gray-100 rounded" />
-        <div className="h-4 w-3/4 bg-gray-100 rounded" />
-        <div className="h-3 w-1/2 bg-gray-100 rounded" />
+    <div className="animate-pulse rounded-[1.75rem] bg-white border border-slate-100 shadow-sm overflow-hidden">
+      <div className="bg-slate-100 aspect-[16/10]" />
+      <div className="space-y-3 p-4">
+        <div className="h-3 w-28 bg-slate-100 rounded-full" />
+        <div className="h-5 w-3/4 bg-slate-100 rounded-full" />
+        <div className="h-3 w-1/2 bg-slate-100 rounded-full" />
       </div>
     </div>
   );
@@ -247,20 +251,20 @@ export default function ExplorerPublicPage() {
 
   return (
     <div
-      className="min-h-screen bg-white"
+      className="min-h-screen bg-[#f7f9fe] text-slate-950"
       style={{
         fontFamily:
           "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
       }}
     >
       {/* ═══════ NAV ═══════ */}
-      <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-xl border-b border-gray-100">
+      <header className="sticky top-0 z-50 bg-white/75 backdrop-blur-2xl border-b border-white/70 shadow-sm shadow-slate-200/40">
         <div className="max-w-7xl mx-auto px-5 lg:px-10 h-14 lg:h-16 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2">
-            <div className="w-7 h-7 lg:w-8 lg:h-8 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center shadow-sm shadow-blue-500/30">
+            <div className="w-7 h-7 lg:w-8 lg:h-8 bg-gradient-to-br from-blue-500 via-indigo-500 to-violet-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/25">
               <QrCode className="w-3.5 h-3.5 lg:w-4 lg:h-4 text-white" />
             </div>
-            <span className="font-semibold text-[15px] lg:text-base text-gray-900">
+            <span className="font-bold text-[15px] lg:text-base text-slate-950 tracking-tight">
               Binq
             </span>
           </Link>
@@ -268,21 +272,21 @@ export default function ExplorerPublicPage() {
           <nav className="hidden sm:flex items-center gap-1 lg:gap-2">
             <Link
               href="/explorer"
-              className="px-3 lg:px-4 py-1.5 lg:py-2 text-[13px] lg:text-sm font-medium text-gray-900 bg-gray-100 rounded-lg"
+              className="px-3 lg:px-4 py-1.5 lg:py-2 text-[13px] lg:text-sm font-semibold text-blue-700 bg-blue-50 rounded-full"
             >
               Explorer
             </Link>
             <Link
               href="/connexion"
-              className="px-3 lg:px-4 py-1.5 lg:py-2 text-[13px] lg:text-sm font-medium text-gray-500 hover:text-gray-900 rounded-lg hover:bg-gray-50 transition"
+              className="px-3 lg:px-4 py-1.5 lg:py-2 text-[13px] lg:text-sm font-medium text-slate-500 hover:text-slate-950 rounded-full hover:bg-white transition"
             >
               Connexion
             </Link>
             <Link
               href="/inscription"
-              className="ml-1.5 px-4 lg:px-5 py-1.5 lg:py-2 text-[13px] lg:text-sm font-semibold bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition shadow-sm shadow-blue-600/20"
+              className="ml-1.5 px-4 lg:px-5 py-1.5 lg:py-2 text-[13px] lg:text-sm font-semibold bg-slate-950 text-white rounded-full hover:bg-blue-700 transition shadow-lg shadow-slate-950/15"
             >
-              Créer un événement
+              Créer ma billetterie
             </Link>
           </nav>
 
@@ -300,57 +304,78 @@ export default function ExplorerPublicPage() {
 
         {/* Mobile nav */}
         {mobileOpen && (
-          <div className="sm:hidden border-t border-gray-100 bg-white px-5 py-3 space-y-1">
+          <div className="sm:hidden border-t border-slate-100 bg-white/95 backdrop-blur-xl px-5 py-3 space-y-1">
             <Link
               href="/explorer"
               onClick={() => setMobileOpen(false)}
-              className="block px-3 py-2.5 text-sm font-medium text-gray-900 bg-gray-50 rounded-lg"
+              className="block px-3 py-2.5 text-sm font-semibold text-blue-700 bg-blue-50 rounded-xl"
             >
               Explorer
             </Link>
             <Link
               href="/connexion"
               onClick={() => setMobileOpen(false)}
-              className="block px-3 py-2.5 text-sm text-gray-600 hover:bg-gray-50 rounded-lg"
+              className="block px-3 py-2.5 text-sm text-slate-600 hover:bg-slate-50 rounded-xl"
             >
               Connexion
             </Link>
             <Link
               href="/inscription"
               onClick={() => setMobileOpen(false)}
-              className="block px-3 py-2.5 text-sm font-semibold text-center bg-blue-600 text-white rounded-lg mt-1"
+              className="block px-3 py-2.5 text-sm font-semibold text-center bg-slate-950 text-white rounded-xl mt-1"
             >
-              Créer un événement
+              Créer ma billetterie
             </Link>
           </div>
         )}
       </header>
 
       {/* ═══════ HERO ═══════ */}
-      <section className="pt-10 sm:pt-14 lg:pt-20 pb-8 lg:pb-12 border-b border-gray-100">
-        <div className="max-w-7xl mx-auto px-5 lg:px-10">
-          <div className="lg:flex lg:items-end lg:justify-between lg:gap-10">
-            <div className="lg:max-w-xl">
-              <h1 className="text-[28px] sm:text-[40px] lg:text-[48px] font-bold text-gray-900 tracking-tight leading-[1.1]">
-                Trouve ta prochaine{" "}
-                <span className="text-blue-600">expérience</span>
+      <section className="relative overflow-hidden border-b border-white/80">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_18%,rgba(59,130,246,0.20),transparent_32%),radial-gradient(circle_at_82%_12%,rgba(124,58,237,0.16),transparent_30%),linear-gradient(180deg,#ffffff_0%,#eef5ff_100%)]" />
+        <div className="absolute -top-24 right-[-6rem] w-72 h-72 bg-blue-400/20 rounded-full blur-3xl" />
+        <div className="absolute top-32 left-[-5rem] w-64 h-64 bg-indigo-400/20 rounded-full blur-3xl" />
+
+        <div className="relative max-w-7xl mx-auto px-5 lg:px-10 pt-12 sm:pt-16 lg:pt-22 pb-8 lg:pb-12">
+          <div className="grid lg:grid-cols-[1fr_460px] lg:items-end gap-8 lg:gap-12">
+            <div className="max-w-2xl">
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/80 border border-white shadow-sm text-[12px] font-bold text-blue-700 mb-5">
+                <Sparkles className="w-3.5 h-3.5" />
+                Billets, QR codes & accès en un clic
+              </div>
+              <h1 className="text-[34px] sm:text-[48px] lg:text-[64px] font-black text-slate-950 tracking-[-0.045em] leading-[0.98]">
+                Découvrez les sorties qui font vibrer{" "}
+                <span className="bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600 bg-clip-text text-transparent">votre ville</span>
               </h1>
-              <p className="text-gray-400 text-[15px] sm:text-base lg:text-lg mt-2.5 max-w-md leading-relaxed">
-                Événements, services, accès exclusifs — réserve ta place en un clic.
+              <p className="text-slate-500 text-[15px] sm:text-base lg:text-lg mt-5 max-w-xl leading-relaxed">
+                Concerts, ateliers, expériences privées et événements locaux : trouvez votre prochain accès et réservez votre billet sécurisé avec Binq.
               </p>
+              <div className="flex flex-wrap gap-3 mt-7 text-[13px] text-slate-600">
+                <span className="inline-flex items-center gap-2 px-3 py-2 rounded-full bg-white/80 border border-white shadow-sm">
+                  <Ticket className="w-4 h-4 text-blue-600" /> Billets instantanés
+                </span>
+                <span className="inline-flex items-center gap-2 px-3 py-2 rounded-full bg-white/80 border border-white shadow-sm">
+                  <QrCode className="w-4 h-4 text-indigo-600" /> Accès QR sécurisé
+                </span>
+              </div>
             </div>
 
-            {/* Search + City — side-by-side on desktop */}
-            <div className="flex flex-col sm:flex-row gap-2.5 mt-7 lg:mt-0 lg:shrink-0">
+            {/* Search + City */}
+            <div className="rounded-[2rem] bg-white/85 backdrop-blur-xl border border-white shadow-2xl shadow-blue-900/10 p-3 sm:p-4 lg:p-5">
+              <div className="mb-3 px-1">
+                <p className="text-xs font-bold uppercase tracking-[0.18em] text-slate-400">Recherche rapide</p>
+                <p className="text-sm text-slate-500 mt-1">Filtrez par nom, lieu ou ville.</p>
+              </div>
+              <div className="flex flex-col gap-3">
               {/* Search */}
-              <div className="relative flex-1 sm:max-w-md lg:w-72">
-                <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+              <div className="relative flex-1">
+                <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-blue-500" />
                 <input
                   type="text"
                   placeholder="Rechercher une expérience, un lieu..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full bg-gray-50 border border-gray-200 rounded-xl pl-10 pr-9 py-2.5 lg:py-3 text-[14px] text-gray-900 placeholder-gray-400 outline-none focus:border-blue-300 focus:bg-white focus:ring-2 focus:ring-blue-100 transition"
+                  className="w-full bg-slate-50 border border-slate-100 rounded-2xl pl-11 pr-9 py-3.5 text-[14px] text-slate-950 placeholder-slate-400 outline-none focus:border-blue-300 focus:bg-white focus:ring-4 focus:ring-blue-100 transition"
                 />
                 {searchQuery && (
                   <button
@@ -366,13 +391,13 @@ export default function ExplorerPublicPage() {
               <div className="relative" ref={cityRef}>
                 <button
                   onClick={() => setCityDropdownOpen(!cityDropdownOpen)}
-                  className="flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 lg:py-3 text-[14px] hover:border-gray-300 transition min-w-[180px] lg:min-w-[200px] justify-between"
+                  className="flex items-center gap-2 bg-slate-50 border border-slate-100 rounded-2xl px-4 py-3.5 text-[14px] hover:border-blue-200 hover:bg-white transition w-full justify-between"
                 >
                   <span className="flex items-center gap-2">
-                    <MapPin className="w-4 h-4 text-gray-400" />
+                    <MapPin className="w-4 h-4 text-blue-500" />
                     <span
                       className={
-                        selectedCity ? "text-gray-900" : "text-gray-400"
+                        selectedCity ? "text-slate-950" : "text-slate-400"
                       }
                     >
                       {selectedCity || "Toutes les villes"}
@@ -384,13 +409,13 @@ export default function ExplorerPublicPage() {
                 </button>
 
                 {cityDropdownOpen && (
-                  <div className="absolute top-full left-0 mt-1.5 w-full min-w-[200px] bg-white rounded-xl shadow-lg border border-gray-100 py-1.5 z-50 max-h-60 overflow-y-auto">
+                  <div className="absolute top-full left-0 mt-2 w-full bg-white rounded-2xl shadow-2xl shadow-slate-900/10 border border-slate-100 py-2 z-50 max-h-60 overflow-y-auto">
                     <button
                       onClick={() => {
                         setSelectedCity("");
                         setCityDropdownOpen(false);
                       }}
-                      className={`w-full text-left px-4 py-2 text-[13px] hover:bg-gray-50 transition ${!selectedCity ? "text-gray-900 font-medium" : "text-gray-600"}`}
+                      className={`w-full text-left px-4 py-2 text-[13px] hover:bg-slate-50 transition ${!selectedCity ? "text-slate-950 font-semibold" : "text-slate-600"}`}
                     >
                       Toutes les villes
                     </button>
@@ -401,7 +426,7 @@ export default function ExplorerPublicPage() {
                           setSelectedCity(city);
                           setCityDropdownOpen(false);
                         }}
-                        className={`w-full text-left px-4 py-2 text-[13px] hover:bg-gray-50 transition ${selectedCity === city ? "text-gray-900 font-medium" : "text-gray-600"}`}
+                        className={`w-full text-left px-4 py-2 text-[13px] hover:bg-slate-50 transition ${selectedCity === city ? "text-slate-950 font-semibold" : "text-slate-600"}`}
                       >
                         {city}
                       </button>
@@ -409,13 +434,14 @@ export default function ExplorerPublicPage() {
                   </div>
                 )}
               </div>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
       {/* ═══════ CATEGORY TABS ═══════ */}
-      <section className="sticky top-14 lg:top-16 z-40 bg-white/80 backdrop-blur-xl border-b border-gray-100">
+      <section className="sticky top-14 lg:top-16 z-40 bg-[#f7f9fe]/88 backdrop-blur-2xl border-b border-white/80">
         <div className="max-w-7xl mx-auto px-5 lg:px-10">
           <div className="flex gap-2 lg:gap-2.5 overflow-x-auto py-3 lg:py-3.5 scrollbar-none -mx-1 px-1">
             {EVENT_CATEGORIES.map((cat) => {
@@ -427,7 +453,7 @@ export default function ExplorerPublicPage() {
                   className={`px-4 py-2 rounded-full text-[13px] font-semibold whitespace-nowrap transition-all duration-200 shrink-0 border ${
                     active
                       ? `bg-gradient-to-r ${cat.gradient} text-white border-transparent shadow-lg shadow-black/10`
-                      : `bg-white ${cat.text} border-gray-200 hover:border-gray-300 hover:shadow-md hover:shadow-black/5 hover:-translate-y-0.5`
+                      : `bg-white/85 ${cat.text} border-white hover:border-blue-100 hover:shadow-md hover:shadow-blue-900/5 hover:-translate-y-0.5`
                   }`}
                 >
                   {cat.label}
@@ -442,21 +468,21 @@ export default function ExplorerPublicPage() {
       <main className="max-w-7xl mx-auto px-5 lg:px-10 pb-20 pt-8 lg:pt-10">
         {loading ? (
           /* Skeleton */
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-6 lg:gap-x-7 gap-y-8 lg:gap-y-10">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 lg:gap-6">
             {Array.from({ length: 8 }).map((_, i) => (
               <SkeletonCard key={i} />
             ))}
           </div>
         ) : events.length === 0 ? (
           /* Empty */
-          <div className="text-center py-20">
-            <div className="w-16 h-16 rounded-2xl bg-gray-50 flex items-center justify-center mx-auto mb-4">
-              <CalendarDays className="w-7 h-7 text-gray-300" />
+          <div className="text-center py-20 bg-white rounded-[2rem] border border-white shadow-sm">
+            <div className="w-16 h-16 rounded-2xl bg-blue-50 flex items-center justify-center mx-auto mb-4">
+              <CalendarDays className="w-7 h-7 text-blue-300" />
             </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-1">
+            <h3 className="text-lg font-bold text-slate-950 mb-1">
               Aucun événement trouvé
             </h3>
-            <p className="text-sm text-gray-400 max-w-xs mx-auto">
+            <p className="text-sm text-slate-400 max-w-xs mx-auto">
               {searchQuery || selectedCity || selectedCategory
                 ? "Essayez de modifier vos filtres."
                 : "Pas encore d'événements à venir."}
@@ -468,7 +494,7 @@ export default function ExplorerPublicPage() {
                   setSelectedCity("");
                   setSelectedCategory("");
                 }}
-                className="mt-4 text-sm text-gray-900 font-medium hover:underline"
+                className="mt-5 inline-flex items-center px-4 py-2 rounded-full text-sm text-blue-700 bg-blue-50 font-semibold hover:bg-blue-100 transition"
               >
                 Réinitialiser
               </button>
@@ -480,12 +506,16 @@ export default function ExplorerPublicPage() {
             {groupedEvents.map((group) => (
               <section key={group.date}>
                 {/* Date header */}
-                <h2 className="text-[15px] lg:text-lg font-semibold text-gray-900 capitalize mb-5 lg:mb-6">
-                  {group.label}
-                </h2>
+                <div className="flex items-center gap-3 mb-5 lg:mb-6">
+                  <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white border border-white shadow-sm text-[13px] lg:text-sm font-bold text-slate-950 capitalize">
+                    <CalendarDays className="w-4 h-4 text-blue-600" />
+                    {group.label}
+                  </span>
+                  <div className="h-px flex-1 bg-gradient-to-r from-slate-200 to-transparent" />
+                </div>
 
                 {/* Cards grid */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-6 lg:gap-x-7 gap-y-8 lg:gap-y-10">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 lg:gap-6">
                   {group.events.map((event) => (
                     <EventCard key={event.id} event={event} />
                   ))}
@@ -499,7 +529,7 @@ export default function ExplorerPublicPage() {
                 <button
                   onClick={loadMore}
                   disabled={loadingMore}
-                  className="inline-flex items-center gap-2 px-6 py-2.5 text-[13px] font-semibold text-gray-700 bg-white border border-gray-200 rounded-xl hover:bg-gray-50 hover:border-gray-300 transition disabled:opacity-50"
+                  className="inline-flex items-center gap-2 px-6 py-3 text-[13px] font-bold text-slate-700 bg-white border border-white rounded-full hover:bg-blue-50 hover:text-blue-700 transition disabled:opacity-50 shadow-sm"
                 >
                   {loadingMore ? (
                     <Loader2 className="w-3.5 h-3.5 animate-spin" />
@@ -515,46 +545,46 @@ export default function ExplorerPublicPage() {
       </main>
 
       {/* ═══════ FOOTER ═══════ */}
-      <footer className="border-t border-gray-100 bg-gray-50/50">
+      <footer className="border-t border-white bg-white/70 backdrop-blur-xl">
         <div className="max-w-7xl mx-auto px-5 lg:px-10 py-10 lg:py-14">
           <div className="lg:flex lg:items-start lg:justify-between lg:gap-10">
             <div className="mb-6 lg:mb-0">
               <Link href="/" className="flex items-center gap-2 mb-3">
-                <div className="w-7 h-7 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center shadow-sm shadow-blue-500/30">
+                <div className="w-7 h-7 bg-gradient-to-br from-blue-500 via-indigo-500 to-violet-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/25">
                   <QrCode className="w-3.5 h-3.5 text-white" />
                 </div>
-                <span className="font-semibold text-[15px] text-gray-900">Binq</span>
+                <span className="font-bold text-[15px] text-slate-950">Binq</span>
               </Link>
-              <p className="text-sm text-gray-400 max-w-xs leading-relaxed">
+              <p className="text-sm text-slate-500 max-w-xs leading-relaxed">
                 La plateforme de billetterie qui simplifie l&apos;organisation et la découverte d&apos;événements.
               </p>
             </div>
-            <div className="flex items-center gap-6 text-[13px] lg:text-sm text-gray-400">
-              <Link href="/" className="hover:text-gray-900 transition">
+            <div className="flex flex-wrap items-center gap-4 sm:gap-6 text-[13px] lg:text-sm text-slate-400">
+              <Link href="/" className="hover:text-slate-950 transition">
                 Accueil
               </Link>
               <Link
                 href="/explorer"
-                className="text-gray-900 font-medium"
+                className="text-slate-950 font-semibold"
               >
                 Explorer
               </Link>
               <Link
                 href="/connexion"
-                className="hover:text-gray-900 transition"
+                className="hover:text-slate-950 transition"
               >
                 Connexion
               </Link>
               <Link
                 href="/inscription"
-                className="hover:text-gray-900 transition"
+                className="hover:text-slate-950 transition"
               >
-                Créer un événement
+                Créer ma billetterie
               </Link>
             </div>
           </div>
-          <div className="mt-8 pt-6 border-t border-gray-200/60 flex flex-col sm:flex-row items-center justify-between gap-2">
-            <p className="text-xs text-gray-300">
+          <div className="mt-8 pt-6 border-t border-slate-200/60 flex flex-col sm:flex-row items-center justify-between gap-2">
+            <p className="text-xs text-slate-400">
               &copy; {new Date().getFullYear()} Binq. Tous droits réservés.
             </p>
           </div>
@@ -569,72 +599,80 @@ export default function ExplorerPublicPage() {
 /* ═══════════════════════════════════════════════════ */
 function EventCard({ event }: { event: EventPublic }) {
   const isFree = event.min_price === 0;
+  const soldRatio = event.total_capacity > 0 ? Math.min(100, Math.round((event.total_sold / event.total_capacity) * 100)) : 0;
 
   return (
-    <Link href={`/evenement/${event.id}`} className="group block">
+    <Link href={`/evenement/${event.id}`} className="group block h-full">
+      <article className="h-full rounded-[1.75rem] bg-white border border-white shadow-sm shadow-slate-200/80 overflow-hidden transition-all duration-300 group-hover:-translate-y-1 group-hover:shadow-2xl group-hover:shadow-blue-900/10">
       {/* Image */}
-      <div className="relative rounded-xl lg:rounded-2xl overflow-hidden bg-gray-100 aspect-[16/10] mb-3 shadow-sm group-hover:shadow-md transition-shadow duration-300">
+      <div className="relative overflow-hidden bg-slate-100 aspect-[16/10]">
         {event.cover_url ? (
           <Image
             src={event.cover_url}
             alt={event.nom}
             fill
-            className="object-cover group-hover:scale-[1.02] transition-transform duration-500 ease-out"
+            className="object-cover group-hover:scale-[1.05] transition-transform duration-700 ease-out"
             unoptimized
           />
         ) : event.logo_url ? (
-          <div className="absolute inset-0 bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center">
+          <div className="absolute inset-0 bg-gradient-to-br from-blue-50 via-indigo-50 to-violet-50 flex items-center justify-center">
             <Image
               src={event.logo_url}
               alt=""
-              width={48}
-              height={48}
-              className="rounded-xl object-cover opacity-50"
+              width={62}
+              height={62}
+              className="rounded-2xl object-cover opacity-70 shadow-lg"
               unoptimized
             />
           </div>
         ) : (
-          <div className="absolute inset-0 bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center">
-            <CalendarDays className="w-8 h-8 text-gray-200" />
+          <div className="absolute inset-0 bg-gradient-to-br from-blue-50 via-indigo-50 to-violet-50 flex items-center justify-center">
+            <CalendarDays className="w-9 h-9 text-blue-200" />
           </div>
         )}
+        <div className="absolute inset-0 bg-gradient-to-t from-slate-950/45 via-transparent to-transparent opacity-80" />
+        <div className="absolute top-3 left-3 px-3 py-1.5 rounded-full bg-white/92 backdrop-blur-md shadow-sm text-[11px] font-bold text-slate-950">
+          {formatDateCompact(event.date_debut)}{event.heure_debut && ` · ${formatTime(event.heure_debut)}`}
+        </div>
+        <div className={`absolute bottom-3 left-3 px-3 py-1.5 rounded-full backdrop-blur-md shadow-sm text-[11px] font-black ${isFree ? "bg-emerald-500 text-white" : "bg-white/92 text-slate-950"}`}>
+          {isFree ? "Gratuit" : `${event.min_price.toLocaleString("fr-FR")} ${event.devise}`}
+        </div>
+        <div className="absolute bottom-3 right-3 w-9 h-9 rounded-full bg-white/92 backdrop-blur-md flex items-center justify-center shadow-sm text-blue-600 transition-transform group-hover:translate-x-0.5">
+          <ArrowRight className="w-4 h-4" />
+        </div>
       </div>
 
       {/* Info */}
-      <div className="space-y-1">
-        {/* Date + time + price — single muted line */}
-        <p className="text-[13px] font-medium text-gray-400">
-          {formatDateCompact(event.date_debut)}
-          {event.heure_debut && ` · ${formatTime(event.heure_debut)}`}
-          {isFree ? (
-            <>
-              <span className="text-gray-300"> · </span>
-              <span className="text-emerald-500 font-semibold">Gratuit</span>
-            </>
-          ) : (
-            <>
-              <span className="text-gray-300"> · </span>
-              <span className="text-gray-500">
-                {event.min_price.toLocaleString("fr-FR")} {event.devise}
-              </span>
-            </>
-          )}
-        </p>
-
+      <div className="p-4 space-y-3">
         {/* Title */}
-        <h3 className="text-[15px] font-semibold text-gray-900 leading-snug line-clamp-2 group-hover:text-gray-600 transition-colors">
+        <h3 className="text-[16px] font-extrabold text-slate-950 leading-snug line-clamp-2 group-hover:text-blue-700 transition-colors">
           {event.nom}
         </h3>
 
         {/* Location */}
         {event.lieu && (
-          <p className="text-[13px] text-gray-400 truncate">{event.lieu}</p>
+          <p className="flex items-center gap-1.5 text-[13px] text-slate-500 truncate">
+            <MapPin className="w-3.5 h-3.5 text-slate-300 shrink-0" />
+            {event.lieu}
+          </p>
+        )}
+
+        {event.total_capacity > 0 && (
+          <div className="pt-1">
+            <div className="flex items-center justify-between text-[11px] text-slate-400 mb-1.5">
+              <span>{event.total_sold} inscrit{event.total_sold > 1 ? "s" : ""}</span>
+              <span>{event.total_capacity - event.total_sold} place{event.total_capacity - event.total_sold > 1 ? "s" : ""} restantes</span>
+            </div>
+            <div className="h-1.5 rounded-full bg-slate-100 overflow-hidden">
+              <div className="h-full rounded-full bg-gradient-to-r from-blue-500 to-indigo-500" style={{ width: `${soldRatio}%` }} />
+            </div>
+          </div>
         )}
 
         {/* Organizer */}
         {(event.organisateur || event.boutiques) && (
-          <div className="flex items-center gap-2 pt-1.5">
-            <div className="w-5 h-5 rounded-full bg-gray-100 overflow-hidden flex items-center justify-center shrink-0">
+          <div className="flex items-center gap-2 pt-1.5 border-t border-slate-100">
+            <div className="w-7 h-7 rounded-full bg-slate-100 overflow-hidden flex items-center justify-center shrink-0 ring-2 ring-white">
               {event.organisateur?.avatar_url ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
@@ -650,16 +688,17 @@ function EventCard({ event }: { event: EventPublic }) {
                   className="w-full h-full object-cover"
                 />
               ) : (
-                <span className="text-[8px] font-bold text-gray-400">
+                <span className="text-[10px] font-bold text-slate-400">
                   {(event.organisateur?.nom || event.boutiques?.nom || "?").charAt(0)}
                 </span>
               )}
             </div>
-            <span className="text-[12px] text-gray-400 truncate">
+            <span className="text-[12px] font-medium text-slate-500 truncate">
               {event.organisateur?.nom || event.boutiques?.nom}
             </span>
+            {event.boutiques?.is_verified && <BadgeCheck className="w-3.5 h-3.5 text-blue-500 shrink-0" />}
             {event.total_vendu > 0 && (
-              <span className="flex items-center gap-0.5 text-[11px] text-gray-300 ml-auto">
+              <span className="flex items-center gap-1 text-[11px] text-slate-400 ml-auto bg-slate-50 px-2 py-1 rounded-full">
                 <Users className="w-3 h-3" />
                 {event.total_vendu}
               </span>
@@ -667,6 +706,7 @@ function EventCard({ event }: { event: EventPublic }) {
           </div>
         )}
       </div>
+      </article>
     </Link>
   );
 }
