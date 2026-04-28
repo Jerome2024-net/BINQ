@@ -42,7 +42,7 @@ export default function HomePage() {
               Connexion
             </Link>
             <Link href="/inscription" className="hidden md:inline-flex text-[13px] px-4 py-1.5 bg-blue-600 text-white rounded-full font-medium hover:bg-blue-700 transition-colors">
-              Commencer
+              Créer ma billetterie
             </Link>
             <button
               onClick={() => setMobileOpen(!mobileOpen)}
@@ -58,7 +58,7 @@ export default function HomePage() {
             <div className="flex flex-col gap-1">
               <Link href="/explorer" onClick={() => setMobileOpen(false)} className="px-3 py-2.5 rounded-lg text-neutral-600 hover:bg-neutral-50 text-sm">Explorer</Link>
               <Link href="/connexion" onClick={() => setMobileOpen(false)} className="px-3 py-2.5 rounded-lg text-neutral-600 hover:bg-neutral-50 text-sm">Connexion</Link>
-              <Link href="/inscription" onClick={() => setMobileOpen(false)} className="px-3 py-2.5 rounded-lg bg-blue-600 text-white text-sm text-center font-medium">Commencer</Link>
+              <Link href="/inscription" onClick={() => setMobileOpen(false)} className="px-3 py-2.5 rounded-lg bg-blue-600 text-white text-sm text-center font-medium">Créer ma billetterie</Link>
             </div>
           </div>
         )}
@@ -84,7 +84,7 @@ export default function HomePage() {
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
             <Link href="/inscription" className="inline-flex items-center gap-2 px-7 py-3 bg-blue-600 text-white font-semibold rounded-full hover:bg-blue-700 transition-all text-sm shadow-xl shadow-blue-600/20">
-              Commencer gratuitement <ArrowRight className="w-3.5 h-3.5" />
+              Créer ma billetterie <ArrowRight className="w-3.5 h-3.5" />
             </Link>
             <Link href="/explorer" className="inline-flex items-center gap-2 px-7 py-3 bg-white text-neutral-700 font-semibold rounded-full border border-neutral-200 hover:border-neutral-300 hover:shadow-md transition-all text-sm">
               Explorer
