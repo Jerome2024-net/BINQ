@@ -77,8 +77,8 @@ export default function HomePage() {
           </div>
 
           <h1 className="text-[2.65rem] sm:text-6xl lg:text-7xl font-black tracking-[-0.055em] leading-[0.98] mb-6">
-            <span className="text-slate-950">Créez, vendez et validez vos billets</span><br />
-            <span className="bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600 bg-clip-text text-transparent">avec un simple QR code.</span>
+            <span className="text-slate-950">Votre billetterie</span><br />
+            <span className="bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600 bg-clip-text text-transparent">en QR code.</span>
           </h1>
           <p className="text-base sm:text-lg text-slate-500 max-w-2xl mx-auto mb-8 leading-relaxed">
             Binq transforme chaque événement, service ou accès en une billetterie mobile : paiement intégré, billet QR instantané et contrôle anti-fraude en temps réel.
