@@ -174,7 +174,7 @@ export default function DashboardPage() {
           </div>
           
           <h1 className="text-3xl sm:text-4xl font-black text-gray-900 tracking-tight">Bienvenue, {user?.prenom || "explorez"} 👋</h1>
-          <p className="text-base text-gray-600 mt-3">Créez votre première billetterie en moins d'une minute</p>
+          <p className="text-base text-gray-600 mt-3">Créez votre première billetterie en moins d&apos;une minute</p>
           
           <Link
             href="/evenements"
@@ -210,7 +210,7 @@ export default function DashboardPage() {
               </div>
               <div>
                 <p className="text-sm font-semibold text-gray-900">Scannez les billets</p>
-                <p className="text-xs text-gray-600">Validez l'accès instantanément</p>
+                <p className="text-xs text-gray-600">Validez l&apos;accès instantanément</p>
               </div>
             </div>
           </div>
@@ -334,7 +334,7 @@ export default function DashboardPage() {
 
           <button onClick={() => handleDownloadPoster(selectedEvent)} disabled={generatingPoster}
             className="w-full flex items-center justify-center gap-2 border border-dashed border-gray-300 text-gray-600 py-3 px-4 rounded-xl text-sm font-semibold transition-all duration-300 hover:bg-white/40 disabled:opacity-50 mb-6">
-            {generatingPoster ? <><Loader2 className="w-4 h-4 animate-spin" /> Génération...</> : <><Printer className="w-4 h-4" /> Télécharger l'affiche QR</>}
+            {generatingPoster ? <><Loader2 className="w-4 h-4 animate-spin" /> Génération...</> : <><Printer className="w-4 h-4" /> Télécharger l&apos;affiche QR</>}
           </button>
 
           {/* Ticket Types */}
@@ -564,7 +564,7 @@ export default function DashboardPage() {
                 <div className="mb-8">
                   <h2 className="text-sm font-bold text-gray-900 mb-4 flex items-center gap-2">
                     <div className="w-1.5 h-1.5 rounded-full bg-blue-600" />
-                    Événements d'aujourd'hui
+                    Événements d&apos;aujourd&apos;hui
                   </h2>
                   <div className="space-y-3 lg:grid lg:grid-cols-2 xl:grid-cols-3 lg:gap-3 lg:space-y-0">
                     {todayEvents.map((evt) => {
