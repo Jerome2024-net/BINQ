@@ -16,6 +16,7 @@ import {
   X,
   QrCode,
   Utensils,
+  MapPin,
   Sparkles,
   Leaf,
 } from "lucide-react";
@@ -37,7 +38,7 @@ export default function HomePage() {
 
           <div className="flex items-center gap-5">
             <Link href="/explorer" className="text-[13px] text-slate-500 hover:text-slate-950 transition-colors font-medium">
-              Explorer
+              Commander
             </Link>
             <Link href="/connexion" className="text-[13px] text-slate-500 hover:text-slate-950 transition-colors font-medium hidden sm:inline">
               Connexion
@@ -57,7 +58,7 @@ export default function HomePage() {
         {mobileOpen && (
           <div className="md:hidden bg-white/95 backdrop-blur-xl border border-white pb-4 pt-3 px-4 mx-3 mt-1 rounded-2xl shadow-xl shadow-slate-900/10">
             <div className="flex flex-col gap-1">
-              <Link href="/explorer" onClick={() => setMobileOpen(false)} className="px-3 py-2.5 rounded-xl text-slate-600 hover:bg-slate-50 text-sm">Explorer</Link>
+              <Link href="/explorer" onClick={() => setMobileOpen(false)} className="px-3 py-2.5 rounded-xl text-slate-600 hover:bg-slate-50 text-sm">Commander</Link>
               <Link href="/connexion" onClick={() => setMobileOpen(false)} className="px-3 py-2.5 rounded-xl text-slate-600 hover:bg-slate-50 text-sm">Connexion</Link>
               <Link href="/inscription" onClick={() => setMobileOpen(false)} className="px-3 py-2.5 rounded-xl bg-slate-950 text-white text-sm text-center font-semibold">Devenir partenaire</Link>
             </div>
@@ -66,106 +67,136 @@ export default function HomePage() {
       </header>
 
       {/* ═══════ HERO ═══════ */}
-      <section className="relative min-h-screen flex flex-col items-center justify-between overflow-hidden">
-        <div className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_18%_18%,rgba(59,130,246,0.22),transparent_32%),radial-gradient(circle_at_82%_12%,rgba(124,58,237,0.18),transparent_30%),linear-gradient(180deg,#ffffff_0%,#eef5ff_64%,#ffffff_100%)]" />
-        <div className="absolute -top-24 right-[-6rem] w-80 h-80 bg-blue-400/20 rounded-full blur-3xl" />
-        <div className="absolute top-36 left-[-5rem] w-72 h-72 bg-indigo-400/20 rounded-full blur-3xl" />
+      <section className="relative min-h-screen overflow-hidden bg-[#fff6cf]">
+        <div className="absolute inset-0 -z-0 bg-[radial-gradient(circle_at_18%_20%,rgba(34,197,94,0.22),transparent_30%),radial-gradient(circle_at_88%_12%,rgba(250,204,21,0.45),transparent_28%),linear-gradient(180deg,#fff7d6_0%,#fffbea_62%,#f7f9fe_100%)]" />
+        <div className="absolute -top-24 right-[-7rem] w-96 h-96 bg-yellow-300/40 rounded-full blur-3xl" />
+        <div className="absolute top-48 left-[-6rem] w-80 h-80 bg-emerald-300/30 rounded-full blur-3xl" />
 
-        <div className="relative z-10 text-center px-4 sm:px-6 pt-32 sm:pt-40 max-w-5xl mx-auto">
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-white/80 border border-white rounded-full mb-6 shadow-sm">
-            <Sparkles className="w-3.5 h-3.5 text-blue-600" />
-            <span className="text-[11px] font-bold text-blue-700 uppercase tracking-wider">Commerce local & livraison rapide</span>
-          </div>
-
-          <h1 className="text-[2.65rem] sm:text-6xl lg:text-7xl font-black tracking-[-0.055em] leading-[0.98] mb-6">
-            <span className="text-slate-950">Commandez local.</span><br />
-            <span className="bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600 bg-clip-text text-transparent">Livré rapidement.</span>
-          </h1>
-          <p className="text-base sm:text-lg text-slate-500 max-w-2xl mx-auto mb-8 leading-relaxed">
-            Binq connecte les clients aux restaurants, boutiques et services de proximité : commande en ligne, paiement sécurisé et livraison locale.
-          </p>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
-            <Link href="/inscription" className="inline-flex items-center gap-2 px-7 py-3.5 bg-slate-950 text-white font-bold rounded-full hover:bg-blue-700 transition-all text-sm shadow-2xl shadow-slate-950/20 hover:-translate-y-0.5">
-              Devenir partenaire <ArrowRight className="w-3.5 h-3.5" />
-            </Link>
-            <Link href="/explorer" className="inline-flex items-center gap-2 px-7 py-3.5 bg-white/85 text-slate-700 font-semibold rounded-full border border-white hover:border-blue-100 hover:shadow-lg hover:shadow-blue-900/5 transition-all text-sm">
-              Commander maintenant
-            </Link>
-          </div>
-          <div className="mt-8 flex flex-wrap items-center justify-center gap-3 text-[12px] sm:text-[13px] text-slate-500">
-            <span className="inline-flex items-center gap-2 px-3 py-2 rounded-full bg-white/80 border border-white shadow-sm"><Truck className="w-4 h-4 text-emerald-500" /> Livraison locale</span>
-            <span className="inline-flex items-center gap-2 px-3 py-2 rounded-full bg-white/80 border border-white shadow-sm"><Zap className="w-4 h-4 text-amber-500" /> Paiement instantané</span>
-            <span className="inline-flex items-center gap-2 px-3 py-2 rounded-full bg-white/80 border border-white shadow-sm"><Store className="w-4 h-4 text-blue-500" /> Commerces proches</span>
-          </div>
-        </div>
-
-        {/* Phone mockup — Local order */}
-        <div className="relative z-10 mt-12 sm:mt-16 mb-0 w-[270px] sm:w-[315px]" style={{ filter: "drop-shadow(0 45px 90px rgba(15,23,42,0.22))" }}>
-          <div className="hidden sm:block absolute -left-24 top-24 rounded-3xl bg-white/90 border border-white shadow-2xl shadow-blue-900/10 p-4 rotate-[-8deg]">
-            <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Livraison</p>
-            <p className="text-xl font-black text-slate-950">25 min</p>
-            <p className="text-[11px] text-emerald-500 font-semibold">Restaurant proche</p>
-          </div>
-          <div className="hidden sm:block absolute -right-24 top-44 rounded-3xl bg-white/90 border border-white shadow-2xl shadow-indigo-900/10 p-4 rotate-[7deg]">
-            <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Commande</p>
-            <p className="text-xl font-black text-slate-950">Payée</p>
-            <p className="text-[11px] text-blue-500 font-semibold">Mobile Money</p>
-          </div>
-          <div className="bg-slate-950 rounded-[2.8rem] sm:rounded-[3.2rem] p-[7px] sm:p-[9px] relative ring-1 ring-white/20">
-            <div className="absolute top-0 inset-x-0 flex justify-center z-30 pt-[7px] sm:pt-[9px]">
-              <div className="w-[90px] sm:w-[105px] h-[26px] sm:h-[30px] bg-slate-950 rounded-b-2xl sm:rounded-b-3xl" />
+        <div className="relative z-10 max-w-6xl mx-auto px-5 sm:px-8 pt-28 sm:pt-36 pb-16 grid lg:grid-cols-[1.05fr_0.95fr] gap-10 lg:gap-14 items-center min-h-screen">
+          <div>
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-white/85 border border-white rounded-full mb-6 shadow-sm">
+              <Zap className="w-3.5 h-3.5 text-emerald-600" />
+              <span className="text-[11px] font-black text-emerald-700 uppercase tracking-wider">Livraison locale · restaurants · boutiques</span>
             </div>
 
-            <div className="rounded-[2.3rem] sm:rounded-[2.7rem] overflow-hidden bg-white">
-              {/* Screen — Order */}
-              <div className="relative bg-gradient-to-b from-blue-600 via-indigo-600 to-violet-700 px-5 pt-12 pb-5">
-                <p className="text-[10px] text-white/60 font-medium text-center uppercase tracking-[0.15em] mb-4">Commande locale</p>
-                <div className="relative w-40 h-40 mx-auto mb-4 rounded-[2rem] bg-white/12 border border-white/15 flex items-center justify-center">
-                  <div className="absolute inset-4 rounded-[1.5rem] bg-white/10" />
-                  <ShoppingBag className="relative w-20 h-20 text-white/70" />
-                </div>
-                <div className="text-center">
-                  <p className="text-white font-bold text-sm">Burger + Jus frais</p>
-                  <p className="text-white/50 text-[10px]">Cotonou · Livraison estimée 25 min</p>
-                </div>
-              </div>
+            <h1 className="text-[3rem] sm:text-6xl lg:text-7xl font-black tracking-[-0.06em] leading-[0.95] mb-5 text-slate-950">
+              Tout votre quartier,<br />
+              <span className="text-emerald-600">livré maintenant.</span>
+            </h1>
+            <p className="text-base sm:text-xl text-slate-700 max-w-xl mb-7 leading-relaxed font-medium">
+              Repas, courses, pharmacie, boutiques : choisissez, payez et recevez sans perdre de temps.
+            </p>
 
-              {/* Bottom card */}
-              <div className="px-5 py-4">
-                <div className="flex items-center justify-between mb-3">
-                  <div className="flex items-center gap-2">
-                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center">
-                      <Package className="w-3.5 h-3.5 text-white" />
+            <div className="bg-white rounded-[1.5rem] p-2.5 shadow-2xl shadow-emerald-950/10 border border-white max-w-xl">
+              <div className="flex flex-col sm:flex-row gap-2">
+                <div className="flex-1 flex items-center gap-3 px-4 py-3 bg-slate-50 rounded-2xl border border-slate-100">
+                  <MapPin className="w-5 h-5 text-emerald-600 shrink-0" />
+                  <input
+                    aria-label="Adresse de livraison"
+                    placeholder="Entrez votre adresse de livraison"
+                    className="w-full bg-transparent outline-none text-sm font-semibold text-slate-950 placeholder:text-slate-400"
+                  />
+                </div>
+                <Link href="/explorer" className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-2xl bg-emerald-600 text-white text-sm font-black hover:bg-emerald-700 transition shadow-lg shadow-emerald-600/20 active:scale-[0.98]">
+                  Voir les commerces <ArrowRight className="w-4 h-4" />
+                </Link>
+              </div>
+            </div>
+
+            <div className="mt-6 grid grid-cols-3 gap-2 max-w-xl">
+              {[
+                { icon: Utensils, label: "Restaurants" },
+                { icon: Store, label: "Courses" },
+                { icon: Leaf, label: "Pharmacie" },
+              ].map((item, i) => (
+                <Link key={i} href="/explorer" className="bg-white/85 border border-white rounded-2xl px-3 py-3 flex flex-col items-center gap-2 shadow-sm hover:-translate-y-0.5 hover:shadow-xl hover:shadow-emerald-950/10 transition-all">
+                  <item.icon className="w-5 h-5 text-emerald-600" />
+                  <span className="text-[12px] font-black text-slate-800 text-center">{item.label}</span>
+                </Link>
+              ))}
+            </div>
+
+            <div className="mt-7 flex flex-wrap items-center gap-3 text-[12px] sm:text-[13px] text-slate-600 font-semibold">
+              <span className="inline-flex items-center gap-2 px-3 py-2 rounded-full bg-white/80 border border-white shadow-sm"><Truck className="w-4 h-4 text-emerald-500" /> Livraison rapide</span>
+              <span className="inline-flex items-center gap-2 px-3 py-2 rounded-full bg-white/80 border border-white shadow-sm"><ShieldCheck className="w-4 h-4 text-blue-500" /> Paiement sécurisé</span>
+              <span className="inline-flex items-center gap-2 px-3 py-2 rounded-full bg-white/80 border border-white shadow-sm"><Store className="w-4 h-4 text-amber-500" /> Commerces locaux</span>
+            </div>
+          </div>
+
+          <div className="relative flex justify-center lg:justify-end">
+            <div className="hidden sm:block absolute left-4 top-12 rounded-3xl bg-white/90 border border-white shadow-2xl shadow-emerald-900/10 p-4 rotate-[-7deg] z-20">
+              <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Livraison</p>
+              <p className="text-2xl font-black text-slate-950">22 min</p>
+              <p className="text-[11px] text-emerald-600 font-semibold">Livreur en route</p>
+            </div>
+            <div className="hidden sm:block absolute right-0 bottom-24 rounded-3xl bg-white/90 border border-white shadow-2xl shadow-amber-900/10 p-4 rotate-[6deg] z-20">
+              <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Panier</p>
+              <p className="text-2xl font-black text-slate-950">3 items</p>
+              <p className="text-[11px] text-blue-500 font-semibold">Mobile Money</p>
+            </div>
+
+            <div className="relative w-[290px] sm:w-[340px] rounded-[2.5rem] bg-slate-950 p-2 shadow-[0_50px_120px_rgba(15,23,42,0.28)] ring-1 ring-white/30">
+              <div className="absolute top-0 inset-x-0 flex justify-center z-30 pt-2">
+                <div className="w-[105px] h-[30px] bg-slate-950 rounded-b-3xl" />
+              </div>
+              <div className="rounded-[2rem] overflow-hidden bg-white">
+                <div className="bg-emerald-600 px-5 pt-12 pb-5 text-white">
+                  <p className="text-[10px] text-white/70 font-bold uppercase tracking-[0.18em] mb-4 text-center">Binq delivery</p>
+                  <div className="flex items-center gap-3 mb-5">
+                    <div className="w-12 h-12 rounded-2xl bg-white/15 flex items-center justify-center">
+                      <MapPin className="w-6 h-6" />
                     </div>
                     <div>
-                      <p className="text-[11px] font-bold text-neutral-900">2 articles</p>
-                      <p className="text-[9px] text-neutral-400">En préparation · Mobile Money</p>
+                      <p className="text-sm font-black">Livraison à Cotonou</p>
+                      <p className="text-xs text-white/70">Arrivée estimée · 22 min</p>
                     </div>
                   </div>
-                  <span className="text-[11px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">Payé ✓</span>
+                  <div className="grid grid-cols-3 gap-2">
+                    {["Repas", "Courses", "Santé"].map((label) => (
+                      <div key={label} className="rounded-2xl bg-white/12 py-3 text-center text-[11px] font-bold">
+                        {label}
+                      </div>
+                    ))}
+                  </div>
                 </div>
-                <div className="w-full py-2.5 bg-slate-950 text-white font-bold text-[12px] rounded-full text-center">
-                  Suivre ma livraison
-                </div>
-              </div>
 
-              <div className="flex justify-center pb-2.5 pt-1 bg-white">
-                <div className="w-28 h-1 bg-neutral-200 rounded-full" />
+                <div className="px-5 py-5 space-y-3">
+                  {[
+                    ["Burger + jus", "En préparation", "3 500 XOF"],
+                    ["Courses rapides", "Disponible", "5 200 XOF"],
+                  ].map(([name, status, price]) => (
+                    <div key={name} className="flex items-center gap-3 p-3 rounded-2xl bg-slate-50">
+                      <div className="w-10 h-10 rounded-xl bg-emerald-100 flex items-center justify-center">
+                        <ShoppingBag className="w-5 h-5 text-emerald-600" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-[12px] font-black text-slate-950 truncate">{name}</p>
+                        <p className="text-[10px] text-slate-400">{status}</p>
+                      </div>
+                      <p className="text-[11px] font-black text-slate-900">{price}</p>
+                    </div>
+                  ))}
+                  <div className="w-full py-3 bg-slate-950 text-white font-black text-[12px] rounded-full text-center">
+                    Commander
+                  </div>
+                </div>
+
+                <div className="flex justify-center pb-2.5 pt-1 bg-white">
+                  <div className="w-28 h-1 bg-neutral-200 rounded-full" />
+                </div>
               </div>
             </div>
           </div>
         </div>
-
-        <div className="absolute bottom-0 inset-x-0 h-32 bg-gradient-to-t from-[#f7f9fe] to-transparent z-20 pointer-events-none" />
       </section>
 
       {/* ═══════ COMMENT ÇA MARCHE — 3 steps ═══════ */}
       <section id="fonctionnalites" className="py-20 sm:py-28">
         <div className="max-w-5xl mx-auto px-4 sm:px-6">
           <div className="text-center mb-14 sm:mb-18">
-            <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white border border-white shadow-sm text-[11px] font-bold text-blue-700 uppercase tracking-wider mb-4">Simple et rapide</span>
-            <h2 className="text-3xl sm:text-5xl font-black tracking-[-0.04em] text-slate-950 mb-3">Comment ça marche</h2>
-            <p className="text-sm sm:text-base text-slate-500 max-w-md mx-auto">Trois étapes. Zéro friction. Une commande livrée localement.</p>
+            <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white border border-white shadow-sm text-[11px] font-bold text-emerald-700 uppercase tracking-wider mb-4">Simple et immédiat</span>
+            <h2 className="text-3xl sm:text-5xl font-black tracking-[-0.04em] text-slate-950 mb-3">Commandez en 3 gestes</h2>
+            <p className="text-sm sm:text-base text-slate-500 max-w-md mx-auto">Adresse, panier, livraison. Binq va droit au but.</p>
           </div>
 
           <div className="grid md:grid-cols-3 gap-6 sm:gap-8">
@@ -173,23 +204,23 @@ export default function HomePage() {
               {
                 step: "01",
                 icon: Search,
-                title: "Trouvez",
-                desc: "Découvrez les restaurants, boutiques et services disponibles près de vous.",
-                gradient: "from-blue-500 to-indigo-500",
+                title: "Entrez l'adresse",
+                desc: "Binq affiche les restaurants, boutiques et services ouverts autour de vous.",
+                gradient: "from-emerald-500 to-green-500",
               },
               {
                 step: "02",
                 icon: ShoppingBag,
-                title: "Commandez",
-                desc: "Choisissez vos articles, renseignez l'adresse et payez en ligne en quelques secondes.",
-                gradient: "from-violet-500 to-purple-500",
+                title: "Remplissez le panier",
+                desc: "Ajoutez vos articles, vérifiez le total et confirmez la commande.",
+                gradient: "from-amber-500 to-yellow-500",
               },
               {
                 step: "03",
                 icon: Truck,
-                title: "Recevez",
-                desc: "Le commerce prépare la commande et vous suivez la livraison jusqu'à réception.",
-                gradient: "from-emerald-500 to-green-500",
+                title: "Recevez vite",
+                desc: "Le commerce prépare, le livreur arrive et vous suivez la commande.",
+                gradient: "from-blue-500 to-indigo-500",
               },
             ].map((item, i) => (
               <div key={i} className="relative group">
@@ -212,9 +243,9 @@ export default function HomePage() {
       <section id="pourqui" className="pb-20 sm:pb-28">
         <div className="max-w-5xl mx-auto px-4 sm:px-6">
           <div className="text-center mb-12 sm:mb-16">
-            <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white border border-white shadow-sm text-[11px] font-bold text-indigo-700 uppercase tracking-wider mb-4">Polyvalent</span>
-            <h2 className="text-3xl sm:text-5xl font-black tracking-[-0.04em] text-slate-950 mb-3">Tout le commerce local</h2>
-            <p className="text-sm sm:text-base text-slate-500 max-w-md mx-auto">Restaurants, boutiques et services : Binq rapproche les clients des commerces de proximité.</p>
+            <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white border border-white shadow-sm text-[11px] font-bold text-emerald-700 uppercase tracking-wider mb-4">Tout près de vous</span>
+            <h2 className="text-3xl sm:text-5xl font-black tracking-[-0.04em] text-slate-950 mb-3">De quoi avez-vous besoin ?</h2>
+            <p className="text-sm sm:text-base text-slate-500 max-w-md mx-auto">Repas, courses, santé, beauté : une seule plateforme pour commander local.</p>
           </div>
 
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 sm:gap-5">
@@ -242,13 +273,13 @@ export default function HomePage() {
       <section className="py-20 sm:py-28 bg-white/70 border-y border-white">
         <div className="max-w-4xl mx-auto px-4 sm:px-6">
           <h2 className="text-center text-3xl sm:text-5xl font-black tracking-[-0.04em] text-slate-950 mb-4">Pourquoi Binq</h2>
-          <p className="text-center text-sm sm:text-base text-slate-500 max-w-md mx-auto mb-12 sm:mb-16">La solution la plus simple pour commander local, payer en ligne et se faire livrer.</p>
+          <p className="text-center text-sm sm:text-base text-slate-500 max-w-md mx-auto mb-12 sm:mb-16">Une expérience directe : commande claire, paiement sécurisé, livraison locale.</p>
 
           <div className="grid md:grid-cols-3 gap-6 sm:gap-8 text-center">
             {[
-              { icon: Clock, title: "Rapide", desc: "Commandez en quelques secondes auprès des commerces proches.", color: "text-amber-500", bg: "bg-amber-50" },
-              { icon: ShieldCheck, title: "Sécurisé", desc: "Paiement en ligne sécurisé, suivi clair et confirmation immédiate.", color: "text-emerald-500", bg: "bg-emerald-50" },
-              { icon: Truck, title: "Local", desc: "Livraison de proximité pour soutenir restaurants et boutiques autour de vous.", color: "text-blue-500", bg: "bg-blue-50" },
+              { icon: Clock, title: "Rapide", desc: "Moins d'étapes, moins d'attente, plus d'efficacité.", color: "text-amber-500", bg: "bg-amber-50" },
+              { icon: ShieldCheck, title: "Fiable", desc: "Commande enregistrée, commerce notifié, suivi lisible.", color: "text-emerald-500", bg: "bg-emerald-50" },
+              { icon: Truck, title: "Proche", desc: "Les commerces de votre quartier deviennent accessibles en quelques taps.", color: "text-blue-500", bg: "bg-blue-50" },
             ].map((item, i) => (
               <div key={i} className="bg-white rounded-[1.75rem] border border-slate-100 p-6 sm:p-8 shadow-sm hover:shadow-xl hover:shadow-blue-900/5 transition-shadow">
                 <div className={`w-12 h-12 rounded-2xl ${item.bg} flex items-center justify-center mx-auto mb-4 ring-8 ring-slate-50/80`}>
@@ -271,7 +302,7 @@ export default function HomePage() {
             <div className="absolute -bottom-24 -left-24 w-64 h-64 bg-violet-500/25 rounded-full blur-3xl" />
             <div className="relative z-10">
               <h2 className="text-3xl sm:text-5xl font-black text-white mb-3 tracking-[-0.04em]">Prêt à vendre localement ?</h2>
-              <p className="text-sm sm:text-base text-white/70 max-w-md mx-auto mb-8">Ajoutez votre commerce, recevez des commandes en ligne et livrez vos clients plus facilement.</p>
+              <p className="text-sm sm:text-base text-white/70 max-w-md mx-auto mb-8">Mettez votre commerce sur Binq et recevez des commandes prêtes à préparer.</p>
               <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
                 <Link href="/inscription" className="inline-flex items-center gap-2 px-7 py-3 bg-white text-blue-700 font-bold rounded-full hover:bg-blue-50 transition-all text-sm shadow-xl">
                   Devenir partenaire <ArrowRight className="w-3.5 h-3.5" />
@@ -299,7 +330,7 @@ export default function HomePage() {
               <p className="text-[11px] text-slate-400">Commerce local avec paiement et livraison</p>
             </div>
             <div className="flex items-center gap-6 text-sm text-slate-400">
-              <Link href="/explorer" className="hover:text-slate-950 transition">Explorer</Link>
+              <Link href="/explorer" className="hover:text-slate-950 transition">Commander</Link>
               <a href="#fonctionnalites" className="hover:text-slate-950 transition">Comment ça marche</a>
               <a href="#pourqui" className="hover:text-slate-950 transition">Pour qui ?</a>
             </div>
