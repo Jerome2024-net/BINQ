@@ -80,8 +80,8 @@ export default function HomePage() {
             </div>
 
             <h1 className="text-[3rem] sm:text-6xl lg:text-7xl font-black tracking-[-0.06em] leading-[0.95] mb-5 text-slate-950">
-              Tout votre quartier,<br />
-              <span className="text-emerald-600">livré maintenant.</span>
+              Commandez ce que<br />
+              <span className="text-emerald-600">vous aimez.</span>
             </h1>
             <p className="text-base sm:text-xl text-slate-700 max-w-xl mb-7 leading-relaxed font-medium">
               Repas, courses, pharmacie, boutiques : choisissez, payez et recevez sans perdre de temps.
