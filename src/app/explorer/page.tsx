@@ -15,7 +15,9 @@ import {
   QrCode,
   ArrowRight,
   Sparkles,
-  Ticket,
+  ShoppingBag,
+  Truck,
+  Store,
   BadgeCheck,
 } from "lucide-react";
 
@@ -97,18 +99,18 @@ function formatDateCompact(dateStr: string) {
 /* ─── Categories ─── */
 const EVENT_CATEGORIES = [
   { slug: "", label: "Tout", gradient: "from-orange-500 to-red-500", bg: "bg-orange-50", text: "text-orange-600" },
-  { slug: "alimentation", label: "Food & Drink", gradient: "from-amber-400 to-orange-500", bg: "bg-amber-50", text: "text-amber-600" },
+  { slug: "alimentation", label: "Courses", gradient: "from-amber-400 to-orange-500", bg: "bg-amber-50", text: "text-amber-600" },
   { slug: "mode", label: "Mode", gradient: "from-pink-400 to-rose-500", bg: "bg-pink-50", text: "text-pink-600" },
   { slug: "electronique", label: "Tech", gradient: "from-cyan-400 to-blue-500", bg: "bg-cyan-50", text: "text-cyan-600" },
   { slug: "beaute", label: "Beauté", gradient: "from-fuchsia-400 to-purple-500", bg: "bg-fuchsia-50", text: "text-fuchsia-600" },
   { slug: "services", label: "Services", gradient: "from-slate-400 to-gray-600", bg: "bg-slate-50", text: "text-slate-600" },
-  { slug: "artisanat", label: "Art & Culture", gradient: "from-violet-400 to-indigo-500", bg: "bg-violet-50", text: "text-violet-600" },
+  { slug: "artisanat", label: "Artisans", gradient: "from-violet-400 to-indigo-500", bg: "bg-violet-50", text: "text-violet-600" },
   { slug: "sport", label: "Sport", gradient: "from-emerald-400 to-green-600", bg: "bg-emerald-50", text: "text-emerald-600" },
   { slug: "education", label: "Éducation", gradient: "from-blue-400 to-indigo-500", bg: "bg-blue-50", text: "text-blue-600" },
   { slug: "restauration", label: "Restaurants", gradient: "from-red-400 to-rose-600", bg: "bg-red-50", text: "text-red-600" },
   { slug: "bien-etre", label: "Bien-être", gradient: "from-teal-400 to-emerald-500", bg: "bg-teal-50", text: "text-teal-600" },
-  { slug: "hotellerie", label: "Hôtellerie & Immo", gradient: "from-sky-400 to-blue-600", bg: "bg-sky-50", text: "text-sky-600" },
-  { slug: "concerts", label: "Concerts & Festivals", gradient: "from-purple-400 to-pink-500", bg: "bg-purple-50", text: "text-purple-600" },
+  { slug: "hotellerie", label: "Maison", gradient: "from-sky-400 to-blue-600", bg: "bg-sky-50", text: "text-sky-600" },
+  { slug: "concerts", label: "Loisirs", gradient: "from-purple-400 to-pink-500", bg: "bg-purple-50", text: "text-purple-600" },
 ];
 
 /* ─── Skeletons ─── */
@@ -286,7 +288,7 @@ export default function ExplorerPublicPage() {
               href="/inscription"
               className="ml-1.5 px-4 lg:px-5 py-1.5 lg:py-2 text-[13px] lg:text-sm font-semibold bg-slate-950 text-white rounded-full hover:bg-blue-700 transition shadow-lg shadow-slate-950/15"
             >
-              Créer ma billetterie
+              Devenir partenaire
             </Link>
           </nav>
 
@@ -324,7 +326,7 @@ export default function ExplorerPublicPage() {
               onClick={() => setMobileOpen(false)}
               className="block px-3 py-2.5 text-sm font-semibold text-center bg-slate-950 text-white rounded-xl mt-1"
             >
-              Créer ma billetterie
+              Devenir partenaire
             </Link>
           </div>
         )}
@@ -341,21 +343,21 @@ export default function ExplorerPublicPage() {
             <div className="max-w-2xl">
               <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/80 border border-white shadow-sm text-[12px] font-bold text-blue-700 mb-5">
                 <Sparkles className="w-3.5 h-3.5" />
-                Billets, QR codes & accès en un clic
+                Restaurants, boutiques & livraison locale
               </div>
               <h1 className="text-[34px] sm:text-[48px] lg:text-[64px] font-black text-slate-950 tracking-[-0.045em] leading-[0.98]">
-                Trouvez votre{" "}
-                <span className="bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600 bg-clip-text text-transparent">prochaine sortie</span>
+                Commandez près de{" "}
+                <span className="bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600 bg-clip-text text-transparent">chez vous</span>
               </h1>
               <p className="text-slate-500 text-[15px] sm:text-base lg:text-lg mt-5 max-w-xl leading-relaxed">
-                Trouvez vos événements et réservez votre billet QR sécurisé.
+                Trouvez des commerces locaux, payez en ligne et faites-vous livrer rapidement.
               </p>
               <div className="flex flex-wrap gap-3 mt-7 text-[13px] text-slate-600">
                 <span className="inline-flex items-center gap-2 px-3 py-2 rounded-full bg-white/80 border border-white shadow-sm">
-                  <Ticket className="w-4 h-4 text-blue-600" /> Billets instantanés
+                  <ShoppingBag className="w-4 h-4 text-blue-600" /> Commande instantanée
                 </span>
                 <span className="inline-flex items-center gap-2 px-3 py-2 rounded-full bg-white/80 border border-white shadow-sm">
-                  <QrCode className="w-4 h-4 text-indigo-600" /> Accès QR sécurisé
+                  <Truck className="w-4 h-4 text-indigo-600" /> Livraison locale
                 </span>
               </div>
             </div>
@@ -364,7 +366,7 @@ export default function ExplorerPublicPage() {
             <div className="rounded-[2rem] bg-white/85 backdrop-blur-xl border border-white shadow-2xl shadow-blue-900/10 p-3 sm:p-4 lg:p-5">
               <div className="mb-3 px-1">
                 <p className="text-xs font-bold uppercase tracking-[0.18em] text-slate-400">Recherche rapide</p>
-                <p className="text-sm text-slate-500 mt-1">Filtrez par nom, lieu ou ville.</p>
+                <p className="text-sm text-slate-500 mt-1">Filtrez par commerce, produit ou ville.</p>
               </div>
               <div className="flex flex-col gap-3">
               {/* Search */}
@@ -372,7 +374,7 @@ export default function ExplorerPublicPage() {
                 <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-blue-500" />
                 <input
                   type="text"
-                  placeholder="Rechercher une expérience, un lieu..."
+                  placeholder="Rechercher un restaurant, produit, boutique..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="w-full bg-slate-50 border border-slate-100 rounded-2xl pl-11 pr-9 py-3.5 text-[14px] text-slate-950 placeholder-slate-400 outline-none focus:border-blue-300 focus:bg-white focus:ring-4 focus:ring-blue-100 transition"
@@ -477,15 +479,15 @@ export default function ExplorerPublicPage() {
           /* Empty */
           <div className="text-center py-20 bg-white rounded-[2rem] border border-white shadow-sm">
             <div className="w-16 h-16 rounded-2xl bg-blue-50 flex items-center justify-center mx-auto mb-4">
-              <CalendarDays className="w-7 h-7 text-blue-300" />
+              <Store className="w-7 h-7 text-blue-300" />
             </div>
             <h3 className="text-lg font-bold text-slate-950 mb-1">
-              Aucun événement trouvé
+              Aucun commerce trouvé
             </h3>
             <p className="text-sm text-slate-400 max-w-xs mx-auto">
               {searchQuery || selectedCity || selectedCategory
               ? "Essayez de modifier vos filtres."
-                : "Pas encore d'événements à venir."}
+                : "Pas encore de commerces disponibles."}
             </p>
             {(searchQuery || selectedCity || selectedCategory) && (
               <button
@@ -501,15 +503,15 @@ export default function ExplorerPublicPage() {
             )}
           </div>
         ) : (
-          /* Event groups by date */
+          /* Commerce groups by availability */
           <div className="space-y-10">
             {groupedEvents.map((group) => (
               <section key={group.date}>
-                {/* Date header */}
+                {/* Availability header */}
                 <div className="flex items-center gap-3 mb-5 lg:mb-6">
                   <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white border border-white shadow-sm text-[13px] lg:text-sm font-bold text-slate-950 capitalize">
-                    <CalendarDays className="w-4 h-4 text-blue-600" />
-                    {group.label}
+                    <Truck className="w-4 h-4 text-blue-600" />
+                    Disponible {group.label.toLowerCase()}
                   </span>
                   <div className="h-px flex-1 bg-gradient-to-r from-slate-200 to-transparent" />
                 </div>
@@ -556,7 +558,7 @@ export default function ExplorerPublicPage() {
                 <span className="font-bold text-[15px] text-slate-950">Binq</span>
               </Link>
               <p className="text-sm text-slate-500 max-w-xs leading-relaxed">
-                La plateforme de billetterie qui simplifie l&apos;organisation et la découverte d&apos;événements.
+                La plateforme de commerce local qui simplifie les commandes, le paiement et la livraison.
               </p>
             </div>
             <div className="flex flex-wrap items-center gap-4 sm:gap-6 text-[13px] lg:text-sm text-slate-400">
@@ -579,7 +581,7 @@ export default function ExplorerPublicPage() {
                 href="/inscription"
                 className="hover:text-slate-950 transition"
               >
-                Créer ma billetterie
+                Devenir partenaire
               </Link>
             </div>
           </div>
@@ -595,7 +597,7 @@ export default function ExplorerPublicPage() {
 }
 
 /* ═══════════════════════════════════════════════════ */
-/*                    EVENT CARD                       */
+/*                  COMMERCE CARD                      */
 /* ═══════════════════════════════════════════════════ */
 function EventCard({ event }: { event: EventPublic }) {
   const isFree = event.min_price === 0;
@@ -660,8 +662,8 @@ function EventCard({ event }: { event: EventPublic }) {
         {event.total_capacity > 0 && (
           <div className="pt-1">
             <div className="flex items-center justify-between text-[11px] text-slate-400 mb-1.5">
-              <span>{event.total_sold} inscrit{event.total_sold > 1 ? "s" : ""}</span>
-              <span>{event.total_capacity - event.total_sold} place{event.total_capacity - event.total_sold > 1 ? "s" : ""} restantes</span>
+              <span>{event.total_sold} commande{event.total_sold > 1 ? "s" : ""}</span>
+              <span>{event.total_capacity - event.total_sold} disponibilité{event.total_capacity - event.total_sold > 1 ? "s" : ""}</span>
             </div>
             <div className="h-1.5 rounded-full bg-slate-100 overflow-hidden">
               <div className="h-full rounded-full bg-gradient-to-r from-blue-500 to-indigo-500" style={{ width: `${soldRatio}%` }} />

@@ -4,19 +4,20 @@ import Link from "next/link";
 import { useState } from "react";
 import {
   ArrowRight,
+  Search,
   Zap,
-  ScanLine,
   ShieldCheck,
-  Ticket,
+  ShoppingBag,
+  Truck,
+  Store,
+  Package,
+  Clock,
   Menu,
   X,
   QrCode,
   Utensils,
-  GraduationCap,
   Sparkles,
-  Building2,
   Leaf,
-  Music,
 } from "lucide-react";
 
 export default function HomePage() {
@@ -42,7 +43,7 @@ export default function HomePage() {
               Connexion
             </Link>
             <Link href="/inscription" className="hidden md:inline-flex text-[13px] px-4 py-2 bg-slate-950 text-white rounded-full font-semibold hover:bg-blue-700 transition-colors shadow-lg shadow-slate-950/15">
-              Créer ma billetterie
+              Devenir partenaire
             </Link>
             <button
               onClick={() => setMobileOpen(!mobileOpen)}
@@ -58,7 +59,7 @@ export default function HomePage() {
             <div className="flex flex-col gap-1">
               <Link href="/explorer" onClick={() => setMobileOpen(false)} className="px-3 py-2.5 rounded-xl text-slate-600 hover:bg-slate-50 text-sm">Explorer</Link>
               <Link href="/connexion" onClick={() => setMobileOpen(false)} className="px-3 py-2.5 rounded-xl text-slate-600 hover:bg-slate-50 text-sm">Connexion</Link>
-              <Link href="/inscription" onClick={() => setMobileOpen(false)} className="px-3 py-2.5 rounded-xl bg-slate-950 text-white text-sm text-center font-semibold">Créer ma billetterie</Link>
+              <Link href="/inscription" onClick={() => setMobileOpen(false)} className="px-3 py-2.5 rounded-xl bg-slate-950 text-white text-sm text-center font-semibold">Devenir partenaire</Link>
             </div>
           </div>
         )}
@@ -73,42 +74,42 @@ export default function HomePage() {
         <div className="relative z-10 text-center px-4 sm:px-6 pt-32 sm:pt-40 max-w-5xl mx-auto">
           <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-white/80 border border-white rounded-full mb-6 shadow-sm">
             <Sparkles className="w-3.5 h-3.5 text-blue-600" />
-            <span className="text-[11px] font-bold text-blue-700 uppercase tracking-wider">Billetterie QR & accès sécurisé</span>
+            <span className="text-[11px] font-bold text-blue-700 uppercase tracking-wider">Commerce local & livraison rapide</span>
           </div>
 
           <h1 className="text-[2.65rem] sm:text-6xl lg:text-7xl font-black tracking-[-0.055em] leading-[0.98] mb-6">
-            <span className="text-slate-950">Votre billetterie</span><br />
-            <span className="bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600 bg-clip-text text-transparent">en QR code.</span>
+            <span className="text-slate-950">Commandez local.</span><br />
+            <span className="bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600 bg-clip-text text-transparent">Livré rapidement.</span>
           </h1>
           <p className="text-base sm:text-lg text-slate-500 max-w-2xl mx-auto mb-8 leading-relaxed">
-            Binq transforme chaque événement, service ou accès en une billetterie mobile : paiement intégré, billet QR instantané et contrôle anti-fraude en temps réel.
+            Binq connecte les clients aux restaurants, boutiques et services de proximité : commande en ligne, paiement sécurisé et livraison locale.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
             <Link href="/inscription" className="inline-flex items-center gap-2 px-7 py-3.5 bg-slate-950 text-white font-bold rounded-full hover:bg-blue-700 transition-all text-sm shadow-2xl shadow-slate-950/20 hover:-translate-y-0.5">
-              Créer ma billetterie <ArrowRight className="w-3.5 h-3.5" />
+              Devenir partenaire <ArrowRight className="w-3.5 h-3.5" />
             </Link>
             <Link href="/explorer" className="inline-flex items-center gap-2 px-7 py-3.5 bg-white/85 text-slate-700 font-semibold rounded-full border border-white hover:border-blue-100 hover:shadow-lg hover:shadow-blue-900/5 transition-all text-sm">
-              Explorer
+              Commander maintenant
             </Link>
           </div>
           <div className="mt-8 flex flex-wrap items-center justify-center gap-3 text-[12px] sm:text-[13px] text-slate-500">
-            <span className="inline-flex items-center gap-2 px-3 py-2 rounded-full bg-white/80 border border-white shadow-sm"><ShieldCheck className="w-4 h-4 text-emerald-500" /> Validation anti-fraude</span>
+            <span className="inline-flex items-center gap-2 px-3 py-2 rounded-full bg-white/80 border border-white shadow-sm"><Truck className="w-4 h-4 text-emerald-500" /> Livraison locale</span>
             <span className="inline-flex items-center gap-2 px-3 py-2 rounded-full bg-white/80 border border-white shadow-sm"><Zap className="w-4 h-4 text-amber-500" /> Paiement instantané</span>
-            <span className="inline-flex items-center gap-2 px-3 py-2 rounded-full bg-white/80 border border-white shadow-sm"><Ticket className="w-4 h-4 text-blue-500" /> Billets illimités</span>
+            <span className="inline-flex items-center gap-2 px-3 py-2 rounded-full bg-white/80 border border-white shadow-sm"><Store className="w-4 h-4 text-blue-500" /> Commerces proches</span>
           </div>
         </div>
 
-        {/* Phone mockup — QR scan animation */}
+        {/* Phone mockup — Local order */}
         <div className="relative z-10 mt-12 sm:mt-16 mb-0 w-[270px] sm:w-[315px]" style={{ filter: "drop-shadow(0 45px 90px rgba(15,23,42,0.22))" }}>
           <div className="hidden sm:block absolute -left-24 top-24 rounded-3xl bg-white/90 border border-white shadow-2xl shadow-blue-900/10 p-4 rotate-[-8deg]">
-            <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Ventes</p>
-            <p className="text-xl font-black text-slate-950">+128</p>
-            <p className="text-[11px] text-emerald-500 font-semibold">Aujourd&apos;hui</p>
+            <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Livraison</p>
+            <p className="text-xl font-black text-slate-950">25 min</p>
+            <p className="text-[11px] text-emerald-500 font-semibold">Restaurant proche</p>
           </div>
           <div className="hidden sm:block absolute -right-24 top-44 rounded-3xl bg-white/90 border border-white shadow-2xl shadow-indigo-900/10 p-4 rotate-[7deg]">
-            <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Scan</p>
-            <p className="text-xl font-black text-slate-950">0.8s</p>
-            <p className="text-[11px] text-blue-500 font-semibold">Accès validé</p>
+            <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Commande</p>
+            <p className="text-xl font-black text-slate-950">Payée</p>
+            <p className="text-[11px] text-blue-500 font-semibold">Mobile Money</p>
           </div>
           <div className="bg-slate-950 rounded-[2.8rem] sm:rounded-[3.2rem] p-[7px] sm:p-[9px] relative ring-1 ring-white/20">
             <div className="absolute top-0 inset-x-0 flex justify-center z-30 pt-[7px] sm:pt-[9px]">
@@ -116,25 +117,16 @@ export default function HomePage() {
             </div>
 
             <div className="rounded-[2.3rem] sm:rounded-[2.7rem] overflow-hidden bg-white">
-              {/* Screen — Scan QR */}
+              {/* Screen — Order */}
               <div className="relative bg-gradient-to-b from-blue-600 via-indigo-600 to-violet-700 px-5 pt-12 pb-5">
-                <p className="text-[10px] text-white/60 font-medium text-center uppercase tracking-[0.15em] mb-4">Scanner pour accéder</p>
-                <div className="relative w-40 h-40 mx-auto mb-4">
-                  {/* QR frame corners */}
-                  <div className="absolute top-0 left-0 w-8 h-8 border-t-[3px] border-l-[3px] border-white/80 rounded-tl-xl" />
-                  <div className="absolute top-0 right-0 w-8 h-8 border-t-[3px] border-r-[3px] border-white/80 rounded-tr-xl" />
-                  <div className="absolute bottom-0 left-0 w-8 h-8 border-b-[3px] border-l-[3px] border-white/80 rounded-bl-xl" />
-                  <div className="absolute bottom-0 right-0 w-8 h-8 border-b-[3px] border-r-[3px] border-white/80 rounded-br-xl" />
-                  {/* Scan line */}
-                  <div className="absolute inset-x-4 top-1/2 h-0.5 bg-gradient-to-r from-transparent via-blue-300 to-transparent animate-pulse" />
-                  {/* QR placeholder */}
-                  <div className="absolute inset-6 flex items-center justify-center">
-                    <QrCode className="w-20 h-20 text-white/30" />
-                  </div>
+                <p className="text-[10px] text-white/60 font-medium text-center uppercase tracking-[0.15em] mb-4">Commande locale</p>
+                <div className="relative w-40 h-40 mx-auto mb-4 rounded-[2rem] bg-white/12 border border-white/15 flex items-center justify-center">
+                  <div className="absolute inset-4 rounded-[1.5rem] bg-white/10" />
+                  <ShoppingBag className="relative w-20 h-20 text-white/70" />
                 </div>
                 <div className="text-center">
-                  <p className="text-white font-bold text-sm">AFRO NIGHT</p>
-                  <p className="text-white/50 text-[10px]">Sam. 12 Avril · 21h · Dakar</p>
+                  <p className="text-white font-bold text-sm">Burger + Jus frais</p>
+                  <p className="text-white/50 text-[10px]">Cotonou · Livraison estimée 25 min</p>
                 </div>
               </div>
 
@@ -143,17 +135,17 @@ export default function HomePage() {
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-2">
                     <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center">
-                      <Ticket className="w-3.5 h-3.5 text-white" />
+                      <Package className="w-3.5 h-3.5 text-white" />
                     </div>
                     <div>
-                      <p className="text-[11px] font-bold text-neutral-900">1 × VIP Pass</p>
-                      <p className="text-[9px] text-neutral-400">Validé · Mobile Money</p>
+                      <p className="text-[11px] font-bold text-neutral-900">2 articles</p>
+                      <p className="text-[9px] text-neutral-400">En préparation · Mobile Money</p>
                     </div>
                   </div>
                   <span className="text-[11px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">Payé ✓</span>
                 </div>
                 <div className="w-full py-2.5 bg-slate-950 text-white font-bold text-[12px] rounded-full text-center">
-                  Accès confirmé
+                  Suivre ma livraison
                 </div>
               </div>
 
@@ -173,30 +165,30 @@ export default function HomePage() {
           <div className="text-center mb-14 sm:mb-18">
             <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white border border-white shadow-sm text-[11px] font-bold text-blue-700 uppercase tracking-wider mb-4">Simple et rapide</span>
             <h2 className="text-3xl sm:text-5xl font-black tracking-[-0.04em] text-slate-950 mb-3">Comment ça marche</h2>
-            <p className="text-sm sm:text-base text-slate-500 max-w-md mx-auto">Trois étapes. Zéro friction. Une billetterie prête à vendre.</p>
+            <p className="text-sm sm:text-base text-slate-500 max-w-md mx-auto">Trois étapes. Zéro friction. Une commande livrée localement.</p>
           </div>
 
           <div className="grid md:grid-cols-3 gap-6 sm:gap-8">
             {[
               {
                 step: "01",
-                icon: Sparkles,
-                title: "Créez",
-                desc: "Publiez votre événement, service ou produit en 2 minutes. Configurez vos tickets et tarifs.",
+                icon: Search,
+                title: "Trouvez",
+                desc: "Découvrez les restaurants, boutiques et services disponibles près de vous.",
                 gradient: "from-blue-500 to-indigo-500",
               },
               {
                 step: "02",
-                icon: ScanLine,
-                title: "Un QR, une billetterie",
-                desc: "Le client scanne, choisit son ticket et paie instantanément par carte ou Mobile Money.",
+                icon: ShoppingBag,
+                title: "Commandez",
+                desc: "Choisissez vos articles, renseignez l'adresse et payez en ligne en quelques secondes.",
                 gradient: "from-violet-500 to-purple-500",
               },
               {
                 step: "03",
-                icon: ShieldCheck,
-                title: "Accès vérifié",
-                desc: "Le QR ticket est validé en temps réel. Anti-fraude intégré. Zéro doublon possible.",
+                icon: Truck,
+                title: "Recevez",
+                desc: "Le commerce prépare la commande et vous suivez la livraison jusqu'à réception.",
                 gradient: "from-emerald-500 to-green-500",
               },
             ].map((item, i) => (
@@ -221,18 +213,18 @@ export default function HomePage() {
         <div className="max-w-5xl mx-auto px-4 sm:px-6">
           <div className="text-center mb-12 sm:mb-16">
             <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white border border-white shadow-sm text-[11px] font-bold text-indigo-700 uppercase tracking-wider mb-4">Polyvalent</span>
-            <h2 className="text-3xl sm:text-5xl font-black tracking-[-0.04em] text-slate-950 mb-3">Un QR pour tout</h2>
-            <p className="text-sm sm:text-base text-slate-500 max-w-md mx-auto">Partout où il y a un accès à vendre, Binq simplifie la billetterie et l&apos;encaissement.</p>
+            <h2 className="text-3xl sm:text-5xl font-black tracking-[-0.04em] text-slate-950 mb-3">Tout le commerce local</h2>
+            <p className="text-sm sm:text-base text-slate-500 max-w-md mx-auto">Restaurants, boutiques et services : Binq rapproche les clients des commerces de proximité.</p>
           </div>
 
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 sm:gap-5">
             {[
-              { icon: Music, label: "Événements & Concerts", desc: "Billetterie complète", gradient: "from-purple-500 to-pink-500", bg: "bg-purple-50" },
-              { icon: Utensils, label: "Restaurants & Bars", desc: "Commandes & réservations", gradient: "from-red-500 to-rose-500", bg: "bg-red-50" },
-              { icon: Sparkles, label: "Services Premium", desc: "Accès VIP & abonnements", gradient: "from-amber-500 to-orange-500", bg: "bg-amber-50" },
-              { icon: Building2, label: "Hôtellerie & Immo", desc: "Check-in digital", gradient: "from-sky-500 to-blue-500", bg: "bg-sky-50" },
-              { icon: GraduationCap, label: "Formations", desc: "Workshops & certifications", gradient: "from-indigo-500 to-violet-500", bg: "bg-indigo-50" },
-              { icon: Leaf, label: "Bien-être & Spas", desc: "Rendez-vous & soins", gradient: "from-teal-500 to-emerald-500", bg: "bg-teal-50" },
+              { icon: Utensils, label: "Restaurants", desc: "Repas, snacks & boissons", gradient: "from-red-500 to-rose-500", bg: "bg-red-50" },
+              { icon: ShoppingBag, label: "Boutiques", desc: "Mode, accessoires, cadeaux", gradient: "from-pink-500 to-rose-500", bg: "bg-pink-50" },
+              { icon: Store, label: "Supermarchés", desc: "Courses du quotidien", gradient: "from-amber-500 to-orange-500", bg: "bg-amber-50" },
+              { icon: Leaf, label: "Pharmacies", desc: "Santé & bien-être", gradient: "from-teal-500 to-emerald-500", bg: "bg-teal-50" },
+              { icon: Sparkles, label: "Beauté", desc: "Soins, salons & services", gradient: "from-violet-500 to-purple-500", bg: "bg-violet-50" },
+              { icon: Package, label: "Services locaux", desc: "Commandes sur demande", gradient: "from-sky-500 to-blue-500", bg: "bg-sky-50" },
             ].map((item, i) => (
               <div key={i} className="group bg-white border border-white rounded-[1.5rem] p-5 sm:p-6 shadow-sm shadow-slate-200/70 hover:shadow-2xl hover:shadow-blue-900/10 hover:-translate-y-1 transition-all duration-300">
                 <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${item.gradient} flex items-center justify-center mb-4 shadow-md shadow-black/10`}>
@@ -250,13 +242,13 @@ export default function HomePage() {
       <section className="py-20 sm:py-28 bg-white/70 border-y border-white">
         <div className="max-w-4xl mx-auto px-4 sm:px-6">
           <h2 className="text-center text-3xl sm:text-5xl font-black tracking-[-0.04em] text-slate-950 mb-4">Pourquoi Binq</h2>
-          <p className="text-center text-sm sm:text-base text-slate-500 max-w-md mx-auto mb-12 sm:mb-16">La solution la plus simple pour vendre des accès, encaisser et contrôler vos entrées.</p>
+          <p className="text-center text-sm sm:text-base text-slate-500 max-w-md mx-auto mb-12 sm:mb-16">La solution la plus simple pour commander local, payer en ligne et se faire livrer.</p>
 
           <div className="grid md:grid-cols-3 gap-6 sm:gap-8 text-center">
             {[
-              { icon: Zap, title: "Instantané", desc: "Scan < 1 seconde. Encaissement en temps réel. Accès immédiat.", color: "text-amber-500", bg: "bg-amber-50" },
-              { icon: ShieldCheck, title: "0 % de commission", desc: "Aucun frais pour l'organisateur. Vous gardez 100 % de vos ventes.", color: "text-emerald-500", bg: "bg-emerald-50" },
-              { icon: ScanLine, title: "Anti-fraude", desc: "Signature cryptographique unique. Impossible à copier ou falsifier.", color: "text-blue-500", bg: "bg-blue-50" },
+              { icon: Clock, title: "Rapide", desc: "Commandez en quelques secondes auprès des commerces proches.", color: "text-amber-500", bg: "bg-amber-50" },
+              { icon: ShieldCheck, title: "Sécurisé", desc: "Paiement en ligne sécurisé, suivi clair et confirmation immédiate.", color: "text-emerald-500", bg: "bg-emerald-50" },
+              { icon: Truck, title: "Local", desc: "Livraison de proximité pour soutenir restaurants et boutiques autour de vous.", color: "text-blue-500", bg: "bg-blue-50" },
             ].map((item, i) => (
               <div key={i} className="bg-white rounded-[1.75rem] border border-slate-100 p-6 sm:p-8 shadow-sm hover:shadow-xl hover:shadow-blue-900/5 transition-shadow">
                 <div className={`w-12 h-12 rounded-2xl ${item.bg} flex items-center justify-center mx-auto mb-4 ring-8 ring-slate-50/80`}>
@@ -278,14 +270,14 @@ export default function HomePage() {
             <div className="absolute -top-20 -right-20 w-56 h-56 bg-blue-500/30 rounded-full blur-3xl" />
             <div className="absolute -bottom-24 -left-24 w-64 h-64 bg-violet-500/25 rounded-full blur-3xl" />
             <div className="relative z-10">
-              <h2 className="text-3xl sm:text-5xl font-black text-white mb-3 tracking-[-0.04em]">Prêt à lancer votre billetterie ?</h2>
-              <p className="text-sm sm:text-base text-white/70 max-w-md mx-auto mb-8">Créez votre premier ticket QR en moins de 2 minutes. Paiement, validation et suivi inclus.</p>
+              <h2 className="text-3xl sm:text-5xl font-black text-white mb-3 tracking-[-0.04em]">Prêt à vendre localement ?</h2>
+              <p className="text-sm sm:text-base text-white/70 max-w-md mx-auto mb-8">Ajoutez votre commerce, recevez des commandes en ligne et livrez vos clients plus facilement.</p>
               <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
                 <Link href="/inscription" className="inline-flex items-center gap-2 px-7 py-3 bg-white text-blue-700 font-bold rounded-full hover:bg-blue-50 transition-all text-sm shadow-xl">
-                  Créer ma billetterie <ArrowRight className="w-3.5 h-3.5" />
+                  Devenir partenaire <ArrowRight className="w-3.5 h-3.5" />
                 </Link>
                 <Link href="/explorer" className="inline-flex items-center gap-2 px-7 py-3 bg-white/10 text-white font-semibold rounded-full border border-white/20 hover:bg-white/20 transition-all text-sm backdrop-blur-sm">
-                  Voir les événements
+                  Explorer les commerces
                 </Link>
               </div>
             </div>
@@ -304,7 +296,7 @@ export default function HomePage() {
                 </div>
                 <span className="font-bold text-slate-950 tracking-tight">Binq</span>
               </div>
-              <p className="text-[11px] text-slate-400">Billetterie QR avec paiement intégré</p>
+              <p className="text-[11px] text-slate-400">Commerce local avec paiement et livraison</p>
             </div>
             <div className="flex items-center gap-6 text-sm text-slate-400">
               <Link href="/explorer" className="hover:text-slate-950 transition">Explorer</Link>
