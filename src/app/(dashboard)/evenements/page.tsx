@@ -95,6 +95,7 @@ export default function EvenementsPage() {
   const [events, setEvents] = useState<any[]>([]);
   const [loadingEvents, setLoadingEvents] = useState(false);
   const [showAddEvent, setShowAddEvent] = useState(false);
+  const [createdEvent, setCreatedEvent] = useState<any | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [evtNom, setEvtNom] = useState("");
   const [evtDesc, setEvtDesc] = useState("");
@@ -179,6 +180,7 @@ export default function EvenementsPage() {
     const action = searchParams.get("action");
     const eventId = searchParams.get("event");
     if (action === "create") {
+      setCreatedEvent(null);
       setCreateStep(1);
       setShowAddEvent(true);
       setActiveTab("evenements");
@@ -362,6 +364,7 @@ export default function EvenementsPage() {
       }
 
       setEvents((prev) => [...prev, updatedEvent]);
+      setCreatedEvent(updatedEvent);
       setShowAddEvent(false);
       setCreateStep(1);
       setEvtNom(""); setEvtDesc(""); setEvtDateDebut(""); setEvtHeureDebut(""); setEvtLieu(""); setEvtVille(""); setEvtCategorie("");
@@ -536,8 +539,23 @@ export default function EvenementsPage() {
     loadEventTickets(evt.id);
   };
 
+  const getEventPublicUrl = (evt: any) => `${typeof window !== "undefined" ? window.location.origin : ""}/evenement/${evt.id}`;
+
+  const handleCopyEventLink = async (evt: any) => {
+    try {
+      await navigator.clipboard.writeText(getEventPublicUrl(evt));
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1800);
+      showToast("success", "Lien copié", "Lien de la billetterie copié");
+      hapticSuccess();
+    } catch {
+      showToast("error", "Erreur", "Impossible de copier le lien");
+      hapticError();
+    }
+  };
+
   const handleShareEvent = async (evt: any) => {
-    const url = `${window.location.origin}/evenement/${evt.id}`;
+    const url = getEventPublicUrl(evt);
     if (navigator.share) {
       try {
         await navigator.share({ title: evt.nom, text: `Découvre cette billetterie sur Binq`, url });
@@ -1319,11 +1337,107 @@ export default function EvenementsPage() {
           ) : (
             /* ═══ EVENT LIST — LUMA STYLE ═══ */
             <div>
+              {/* Success Card */}
+              {createdEvent && !showAddEvent && (
+                <div className="mb-6 rounded-3xl border border-blue-100 bg-gradient-to-br from-blue-50 via-white to-indigo-50 p-5 shadow-xl shadow-blue-900/5 animate-fade-in">
+                  <div className="flex items-start gap-4">
+                    <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center shrink-0 shadow-lg shadow-blue-500/20">
+                      <Check className="w-6 h-6 text-white" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-xs font-black text-blue-600 uppercase tracking-wide">
+                        {createdEvent.is_published ? "Billetterie publiée" : "Billetterie en brouillon"}
+                      </p>
+                      <h3 className="text-xl font-black text-neutral-900 mt-1 truncate">{createdEvent.nom}</h3>
+                      <p className="text-sm text-neutral-500 mt-1">
+                        {createdEvent.is_published
+                          ? "Votre billetterie est prête à être partagée."
+                          : "Ajoutez les visuels manquants pour la publier."}
+                      </p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setCreatedEvent(null)}
+                      className="w-8 h-8 rounded-lg flex items-center justify-center text-neutral-300 hover:text-neutral-600 hover:bg-white/70 transition"
+                    >
+                      <X className="w-4 h-4" />
+                    </button>
+                  </div>
+
+                  <div className="mt-5 grid lg:grid-cols-[150px_1fr] gap-4 items-center">
+                    <div className="bg-white rounded-2xl border border-blue-100 p-4 flex items-center justify-center">
+                      <QRCodeSVG value={getEventPublicUrl(createdEvent)} size={112} level="H" />
+                    </div>
+                    <div className="min-w-0">
+                      <div className="bg-white/80 border border-white rounded-2xl px-4 py-3 mb-3">
+                        <p className="text-[10px] font-bold text-neutral-400 uppercase tracking-wide mb-1">Lien public</p>
+                        <p className="text-sm font-mono text-neutral-700 truncate">{getEventPublicUrl(createdEvent)}</p>
+                      </div>
+
+                      <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                        <button
+                          type="button"
+                          onClick={() => handleCopyEventLink(createdEvent)}
+                          disabled={!createdEvent.is_published}
+                          className="flex items-center justify-center gap-2 rounded-xl border border-neutral-200 bg-white py-2.5 text-xs font-bold text-neutral-700 hover:bg-neutral-50 disabled:opacity-40 disabled:cursor-not-allowed transition"
+                        >
+                          {copied ? <Check className="w-4 h-4 text-green-600" /> : <Copy className="w-4 h-4" />}
+                          Copier
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleShareEvent(createdEvent)}
+                          disabled={!createdEvent.is_published}
+                          className="flex items-center justify-center gap-2 rounded-xl bg-neutral-900 py-2.5 text-xs font-bold text-white hover:bg-neutral-800 disabled:opacity-40 disabled:cursor-not-allowed transition"
+                        >
+                          <Share2 className="w-4 h-4" /> Partager
+                        </button>
+                        <button
+                          type="button"
+                          onClick={async () => {
+                            setGeneratingPoster(true);
+                            try { await generateEventPoster(createdEvent, devise); }
+                            finally { setGeneratingPoster(false); }
+                          }}
+                          disabled={!createdEvent.is_published || generatingPoster}
+                          className="flex items-center justify-center gap-2 rounded-xl border border-dashed border-blue-200 bg-blue-50 py-2.5 text-xs font-bold text-blue-700 hover:bg-blue-100 disabled:opacity-40 disabled:cursor-not-allowed transition"
+                        >
+                          {generatingPoster ? <Loader2 className="w-4 h-4 animate-spin" /> : <Printer className="w-4 h-4" />}
+                          Affiche QR
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => { setScanMode(true); setScanResult(null); setScanCode(""); hapticMedium(); setTimeout(() => startCamera(), 300); }}
+                          className="flex items-center justify-center gap-2 rounded-xl border border-neutral-200 bg-white py-2.5 text-xs font-bold text-neutral-700 hover:bg-neutral-50 transition"
+                        >
+                          <ScanLine className="w-4 h-4" /> Scanner
+                        </button>
+                        <a
+                          href={`/evenement/${createdEvent.id}`}
+                          target="_blank"
+                          onClick={(e) => { if (!createdEvent.is_published) e.preventDefault(); }}
+                          className={`flex items-center justify-center gap-2 rounded-xl border border-neutral-200 bg-white py-2.5 text-xs font-bold transition ${createdEvent.is_published ? "text-neutral-700 hover:bg-neutral-50" : "text-neutral-300 cursor-not-allowed"}`}
+                        >
+                          <ExternalLink className="w-4 h-4" /> Voir
+                        </a>
+                        <button
+                          type="button"
+                          onClick={() => openEventDetails(createdEvent)}
+                          className="flex items-center justify-center gap-2 rounded-xl border border-neutral-200 bg-white py-2.5 text-xs font-bold text-neutral-700 hover:bg-neutral-50 transition"
+                        >
+                          <Eye className="w-4 h-4" /> Détails
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
               {/* Create Event CTA */}
               {events.length > 0 && !showAddEvent && (
                 <div className="mb-5">
                   <button
-                    onClick={() => { hapticMedium(); setCreateStep(1); setShowAddEvent(true); }}
+                    onClick={() => { hapticMedium(); setCreatedEvent(null); setCreateStep(1); setShowAddEvent(true); }}
                     className="w-full flex items-center justify-center gap-2 bg-neutral-900 text-white py-2.5 rounded-lg font-medium text-sm transition hover:bg-neutral-800 active:scale-[0.98]"
                   >
                     <Plus className="w-4 h-4" /> Créer une billetterie
@@ -1732,7 +1846,7 @@ export default function EvenementsPage() {
                   <h3 className="text-base font-semibold text-neutral-900 mb-1">Aucune billetterie</h3>
                   <p className="text-sm text-neutral-400 text-center max-w-[260px] mb-6">Créez votre première billetterie et commencez à vendre en quelques secondes</p>
                   <button
-                    onClick={() => { hapticMedium(); setCreateStep(1); setShowAddEvent(true); }}
+                    onClick={() => { hapticMedium(); setCreatedEvent(null); setCreateStep(1); setShowAddEvent(true); }}
                     className="flex items-center justify-center gap-2 bg-neutral-900 text-white px-6 py-2.5 rounded-lg font-medium text-sm transition hover:bg-neutral-800 active:scale-[0.98]"
                   >
                     <Plus className="w-4 h-4" /> Créer une billetterie
