@@ -531,6 +531,39 @@ export default function EvenementsPage() {
     finally { setLoadingTickets(false); }
   };
 
+  const openEventDetails = (evt: any) => {
+    setSelectedEvent(evt);
+    loadEventTickets(evt.id);
+  };
+
+  const handleShareEvent = async (evt: any) => {
+    const url = `${window.location.origin}/evenement/${evt.id}`;
+    if (navigator.share) {
+      try {
+        await navigator.share({ title: evt.nom, text: `Découvre cette billetterie sur Binq`, url });
+        return;
+      } catch {}
+    }
+    try {
+      await navigator.clipboard.writeText(url);
+      showToast("success", "Lien copié", "Lien de la billetterie copié");
+      hapticSuccess();
+    } catch {
+      showToast("error", "Erreur", "Impossible de copier le lien");
+      hapticError();
+    }
+  };
+
+  const getEventStatus = (evt: any) => {
+    const evtDate = new Date(evt.date_debut + "T00:00:00");
+    const now = new Date();
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    if (!evt.is_published) return { label: "Brouillon", tone: "bg-amber-100 text-amber-700", dot: "bg-amber-500" };
+    if (evtDate < today) return { label: "Terminée", tone: "bg-neutral-100 text-neutral-500", dot: "bg-neutral-400" };
+    if (evtDate.toDateString() === now.toDateString()) return { label: "Aujourd'hui", tone: "bg-blue-100 text-blue-700", dot: "bg-blue-500" };
+    return { label: "Publiée", tone: "bg-green-100 text-green-700", dot: "bg-green-500" };
+  };
+
   const handleScanTicket = async () => {
     if (!scanCode.trim()) return;
     setScanning(true);
@@ -717,12 +750,13 @@ export default function EvenementsPage() {
   // ═══════════════════════════════════════════════
   return (
     <div className="pb-20 lg:pb-8">
-      {/* Header — Clean Luma style */}
+      {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-xl font-semibold text-neutral-900">Events</h1>
+          <p className="text-xs font-bold text-blue-600 uppercase tracking-wide mb-1">Organisateur</p>
+          <h1 className="text-2xl font-black text-neutral-900 tracking-tight">Billetteries</h1>
           {events.length > 0 && (
-            <p className="text-sm text-neutral-400 mt-0.5">{events.length} event{events.length > 1 ? "s" : ""}</p>
+            <p className="text-sm text-neutral-400 mt-0.5">{events.length} billetterie{events.length > 1 ? "s" : ""}</p>
           )}
         </div>
         <div className="flex items-center gap-2">
@@ -732,7 +766,7 @@ export default function EvenementsPage() {
               className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium text-neutral-600 hover:bg-neutral-100 transition-colors"
             >
               <ScanLine className="w-4 h-4" />
-              <span className="hidden sm:inline">Scan</span>
+              <span className="hidden sm:inline">Scanner</span>
             </button>
           )}
           <button
@@ -748,18 +782,26 @@ export default function EvenementsPage() {
 
       {/* Stats row — Clean */}
       {activeTab === "evenements" && events.length > 0 && (
-        <div className="grid grid-cols-2 gap-3 mb-6">
-          <div className="border border-neutral-200 rounded-xl px-4 py-3">
-            <p className="text-xs text-neutral-400 font-medium mb-0.5">Revenue</p>
-            <p className="text-lg font-semibold text-neutral-900">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
+          <div className="border border-blue-100 bg-blue-50/60 rounded-2xl px-4 py-3">
+            <p className="text-xs text-blue-600 font-bold mb-0.5 uppercase tracking-wide">Revenus</p>
+            <p className="text-lg font-black text-neutral-900">
               {formatMontant(events.reduce((sum: number, e: any) => sum + (parseFloat(e.revenus) || 0), 0), devise)}
             </p>
           </div>
-          <div className="border border-neutral-200 rounded-xl px-4 py-3">
-            <p className="text-xs text-neutral-400 font-medium mb-0.5">Tickets Sold</p>
-            <p className="text-lg font-semibold text-neutral-900">
+          <div className="border border-indigo-100 bg-indigo-50/60 rounded-2xl px-4 py-3">
+            <p className="text-xs text-indigo-600 font-bold mb-0.5 uppercase tracking-wide">Billets</p>
+            <p className="text-lg font-black text-neutral-900">
               {events.reduce((sum: number, e: any) => sum + (e.total_vendu || 0), 0)}
             </p>
+          </div>
+          <div className="border border-green-100 bg-green-50/60 rounded-2xl px-4 py-3">
+            <p className="text-xs text-green-600 font-bold mb-0.5 uppercase tracking-wide">Publiées</p>
+            <p className="text-lg font-black text-neutral-900">{events.filter((e: any) => e.is_published).length}</p>
+          </div>
+          <div className="border border-amber-100 bg-amber-50/60 rounded-2xl px-4 py-3">
+            <p className="text-xs text-amber-600 font-bold mb-0.5 uppercase tracking-wide">Brouillons</p>
+            <p className="text-lg font-black text-neutral-900">{events.filter((e: any) => !e.is_published).length}</p>
           </div>
         </div>
       )}
@@ -1704,14 +1746,14 @@ export default function EvenementsPage() {
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-300" />
                     <input
                       type="text"
-                      placeholder="Search events..."
+                      placeholder="Rechercher une billetterie..."
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
                       className="w-full border border-neutral-200 rounded-lg pl-9 pr-4 py-2 text-sm text-neutral-900 placeholder:text-neutral-300 outline-none focus:border-neutral-400 focus:ring-2 focus:ring-neutral-100 transition"
                     />
                   </div>
                 )}
-                <div className="space-y-2 lg:grid lg:grid-cols-2 xl:grid-cols-3 lg:gap-3 lg:space-y-0">
+                <div className="space-y-4 lg:grid lg:grid-cols-2 xl:grid-cols-3 lg:gap-4 lg:space-y-0">
                   {events.filter((evt: any) => !searchQuery.trim() || evt.nom.toLowerCase().includes(searchQuery.toLowerCase()) || (evt.lieu && evt.lieu.toLowerCase().includes(searchQuery.toLowerCase())) || (evt.ville && evt.ville.toLowerCase().includes(searchQuery.toLowerCase()))).map((evt: any) => {
                     const evtDate = new Date(evt.date_debut + "T00:00:00");
                     const now = new Date();
@@ -1719,64 +1761,100 @@ export default function EvenementsPage() {
                     const isToday = evtDate.toDateString() === now.toDateString();
                     const totalCap = evt.ticket_types?.reduce((a: number, t: any) => a + t.quantite_total, 0) || 1;
                     const fillPct = Math.round(((evt.total_vendu || 0) / totalCap) * 100);
+                    const status = getEventStatus(evt);
+                    const revenue = parseFloat(evt.revenus) || 0;
+                    const remaining = Math.max(totalCap - (evt.total_vendu || 0), 0);
                     return (
-                      <button
+                      <div
                         key={evt.id}
-                        onClick={() => { setSelectedEvent(evt); loadEventTickets(evt.id); }}
-                        className={`w-full bg-white border border-neutral-200 rounded-xl overflow-hidden text-left hover:border-neutral-300 transition-all active:scale-[0.99] group ${isPast ? "opacity-60 hover:opacity-100" : ""}`}
+                        className={`w-full bg-white border border-neutral-200 rounded-2xl overflow-hidden text-left hover:border-blue-200 hover:shadow-xl hover:shadow-blue-900/5 transition-all group ${isPast ? "opacity-75 hover:opacity-100" : ""}`}
                       >
                         {/* Cover */}
-                        {evt.cover_url && (
-                          <div className="relative h-28 overflow-hidden">
-                            <img src={evt.cover_url} alt="" className={`w-full h-full object-cover ${isPast ? "grayscale-[30%]" : ""}`} />
-                            {isToday && (
-                              <div className="absolute top-2 left-2">
-                                <span className="bg-neutral-900 text-white text-[10px] font-medium px-2 py-0.5 rounded-md">Today</span>
-                              </div>
-                            )}
-                            {isPast && (
-                              <div className="absolute top-2 left-2">
-                                <span className="bg-neutral-900/70 text-white text-[10px] font-medium px-2 py-0.5 rounded-md">Past</span>
-                              </div>
-                            )}
-                          </div>
-                        )}
-                        
-                        <div className="p-3 flex items-center gap-3">
-                          {!evt.cover_url && (
-                            evt.logo_url ? (
-                              <div className="relative shrink-0">
-                                <img src={evt.logo_url} alt="" className={`w-12 h-12 rounded-lg object-cover ${isPast ? "grayscale-[30%]" : ""}`} />
-                                {isToday && <div className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-neutral-900 rounded-full border-2 border-white" />}
-                              </div>
+                        <button type="button" onClick={() => openEventDetails(evt)} className="w-full text-left block">
+                          <div className="relative h-32 overflow-hidden bg-gradient-to-br from-blue-50 via-indigo-50 to-violet-50">
+                            {evt.cover_url ? (
+                              <img src={evt.cover_url} alt="" className={`w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ${isPast ? "grayscale-[30%]" : ""}`} />
                             ) : (
-                              <div className={`w-12 h-12 rounded-lg flex flex-col items-center justify-center shrink-0 ${isPast ? "bg-neutral-100" : "bg-neutral-900"}`}>
-                                <span className={`text-[9px] font-medium uppercase leading-none ${isPast ? "text-neutral-400" : "text-neutral-400"}`}>
-                                  {evtDate.toLocaleDateString("fr-FR", { month: "short" })}
-                                </span>
-                                <span className={`text-base font-semibold leading-none ${isPast ? "text-neutral-500" : "text-white"}`}>
-                                  {evtDate.getDate()}
-                                </span>
+                              <div className="w-full h-full flex items-center justify-center">
+                                <Calendar className="w-8 h-8 text-blue-200" />
                               </div>
-                            )
-                          )}
-
-                          <div className="flex-1 min-w-0">
-                            <p className={`text-sm font-medium truncate ${isPast ? "text-neutral-400" : "text-neutral-900"}`}>{evt.nom}</p>
-                            <p className="text-xs text-neutral-400 truncate mt-0.5">{evt.lieu}{evt.ville ? ` · ${evt.ville}` : ""}</p>
-                            <div className="flex items-center gap-2 mt-1.5">
-                              <span className="text-xs text-neutral-500 font-medium">{evt.total_vendu || 0} sold</span>
-                              <div className="flex-1 h-1 bg-neutral-100 rounded-full overflow-hidden max-w-[50px]">
-                                <div className="h-full bg-neutral-900 rounded-full" style={{ width: `${Math.min(fillPct, 100)}%` }} />
-                              </div>
-                              {parseFloat(evt.revenus) > 0 && (
-                                <span className="text-xs text-neutral-900 font-semibold">{formatMontant(parseFloat(evt.revenus), devise)}</span>
+                            )}
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/45 to-transparent" />
+                            <div className="absolute top-3 left-3 flex items-center gap-2">
+                              <span className={`inline-flex items-center gap-1.5 text-[11px] font-black px-2.5 py-1 rounded-full ${status.tone}`}>
+                                <span className={`w-1.5 h-1.5 rounded-full ${status.dot}`} />
+                                {status.label}
+                              </span>
+                            </div>
+                            <div className="absolute bottom-3 left-3 right-3 flex items-end gap-3">
+                              {evt.logo_url && (
+                                <img src={evt.logo_url} alt="" className={`w-11 h-11 rounded-xl object-cover border border-white/40 shadow-sm shrink-0 ${isPast ? "grayscale-[30%]" : ""}`} />
                               )}
+                              <div className="min-w-0 flex-1">
+                                <h3 className="text-white text-base font-black leading-tight truncate drop-shadow-sm">{evt.nom}</h3>
+                                <p className="text-white/75 text-xs truncate mt-1">{evt.lieu}{evt.ville ? ` · ${evt.ville}` : ""}</p>
+                              </div>
                             </div>
                           </div>
-                          <ChevronRight className="w-4 h-4 text-neutral-300 shrink-0" />
+                        </button>
+
+                        <div className="p-4">
+                          <button type="button" onClick={() => openEventDetails(evt)} className="w-full text-left">
+                            <div className="flex items-center justify-between gap-3 text-xs text-neutral-500 mb-3">
+                              <span className="inline-flex items-center gap-1.5"><Calendar className="w-3.5 h-3.5 text-blue-500" />{evtDate.toLocaleDateString("fr-FR", { day: "numeric", month: "short", year: "numeric" })}{evt.heure_debut ? ` · ${evt.heure_debut.slice(0, 5)}` : ""}</span>
+                              <ChevronRight className="w-4 h-4 text-neutral-300 shrink-0 group-hover:text-blue-500 transition" />
+                            </div>
+
+                            <div className="grid grid-cols-3 gap-2 mb-3">
+                              <div className="rounded-xl bg-neutral-50 px-2.5 py-2">
+                                <p className="text-[10px] text-neutral-400 font-bold uppercase">Vendus</p>
+                                <p className="text-sm font-black text-neutral-900">{evt.total_vendu || 0}</p>
+                              </div>
+                              <div className="rounded-xl bg-neutral-50 px-2.5 py-2">
+                                <p className="text-[10px] text-neutral-400 font-bold uppercase">Restants</p>
+                                <p className="text-sm font-black text-neutral-900">{remaining}</p>
+                              </div>
+                              <div className="rounded-xl bg-neutral-50 px-2.5 py-2">
+                                <p className="text-[10px] text-neutral-400 font-bold uppercase">Revenus</p>
+                                <p className="text-sm font-black text-neutral-900 truncate">{formatMontant(revenue, devise)}</p>
+                              </div>
+                            </div>
+
+                            <div className="flex items-center gap-3 mb-4">
+                              <div className="flex-1 h-2 bg-neutral-100 rounded-full overflow-hidden">
+                                <div className="h-full bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full transition-all duration-700" style={{ width: `${Math.min(fillPct, 100)}%` }} />
+                              </div>
+                              <span className="text-xs font-black text-neutral-700">{fillPct}%</span>
+                            </div>
+                          </button>
+
+                          <div className="grid grid-cols-3 gap-2 border-t border-neutral-100 pt-3">
+                            <button
+                              type="button"
+                              onClick={() => handleShareEvent(evt)}
+                              disabled={!evt.is_published}
+                              className="flex items-center justify-center gap-1.5 rounded-lg border border-neutral-200 py-2 text-xs font-bold text-neutral-600 hover:bg-neutral-50 disabled:opacity-40 disabled:cursor-not-allowed transition"
+                            >
+                              <Share2 className="w-3.5 h-3.5" /> Partager
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => { setScanMode(true); setScanResult(null); setScanCode(""); hapticMedium(); setTimeout(() => startCamera(), 300); }}
+                              className="flex items-center justify-center gap-1.5 rounded-lg bg-neutral-900 py-2 text-xs font-bold text-white hover:bg-neutral-800 transition"
+                            >
+                              <ScanLine className="w-3.5 h-3.5" /> Scanner
+                            </button>
+                            <a
+                              href={`/evenement/${evt.id}`}
+                              target="_blank"
+                              onClick={(e) => { if (!evt.is_published) e.preventDefault(); }}
+                              className={`flex items-center justify-center gap-1.5 rounded-lg border border-neutral-200 py-2 text-xs font-bold transition ${evt.is_published ? "text-neutral-600 hover:bg-neutral-50" : "text-neutral-300 cursor-not-allowed"}`}
+                            >
+                              <ExternalLink className="w-3.5 h-3.5" /> Voir
+                            </a>
+                          </div>
                         </div>
-                      </button>
+                      </div>
                     );
                   })}
                 </div>
