@@ -1286,7 +1286,7 @@ export default function MaBoutiquePage() {
                 onClick={() => { hapticMedium(); setShowAddEvent(true); }}
                 className="w-full flex items-center justify-center gap-2 bg-blue-500 hover:bg-blue-600 text-white py-3.5 rounded-xl font-bold text-sm transition active:scale-[0.97] mb-2.5"
               >
-                <Plus className="w-4 h-4" /> Créer un événement
+                <Plus className="w-4 h-4" /> Nouvelle billetterie
               </button>
 
               {/* CTA Scanner — séparé */}

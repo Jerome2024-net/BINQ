@@ -499,7 +499,7 @@ export default function DashboardPage() {
               <p className="text-sm text-gray-500 mt-2 text-center max-w-xs">Commencez à vendre des billets en seulement quelques clics</p>
               <Link href="/evenements?action=create"
                 className="mt-8 flex items-center justify-center gap-2 bg-gradient-to-r from-blue-600 to-blue-700 text-white px-8 py-3 rounded-xl font-semibold text-sm transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/30 active:scale-[0.98]"
-              ><Plus className="w-5 h-5" /> Créer un événement</Link>
+              ><Plus className="w-5 h-5" /> Nouvelle billetterie</Link>
             </div>
           ) : (
             <div className="py-6">
@@ -507,7 +507,7 @@ export default function DashboardPage() {
               <div className="grid grid-cols-2 gap-3 mb-8">
                 <Link href="/evenements?action=create"
                   className="flex items-center justify-center gap-2 py-3 px-4 bg-white border border-gray-200 text-gray-900 font-semibold text-sm rounded-xl hover:bg-gradient-to-br hover:from-blue-50 hover:to-indigo-50 transition-all duration-300 active:scale-[0.98] backdrop-blur-sm"
-                ><Plus className="w-4 h-4" /> Nouvel événement</Link>
+                ><Plus className="w-4 h-4" /> Nouvelle billetterie</Link>
                 <Link href="/evenements"
                   className="flex items-center justify-center gap-2 py-3 px-4 bg-gradient-to-r from-blue-600 to-blue-700 text-white font-semibold text-sm rounded-xl transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/30 active:scale-[0.98]"
                 ><ScanLine className="w-4 h-4" /> Scanner</Link>
