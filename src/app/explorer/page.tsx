@@ -98,18 +98,18 @@ function formatDateCompact(dateStr: string) {
 
 /* ─── Categories ─── */
 const EVENT_CATEGORIES = [
-  { slug: "", label: "Tout", gradient: "from-orange-500 to-red-500", bg: "bg-orange-50", text: "text-orange-600" },
-  { slug: "alimentation", label: "Courses", gradient: "from-amber-400 to-orange-500", bg: "bg-amber-50", text: "text-amber-600" },
+  { slug: "", label: "Tout", gradient: "from-emerald-500 to-green-600", bg: "bg-emerald-50", text: "text-emerald-700" },
+  { slug: "alimentation", label: "Courses", gradient: "from-yellow-400 to-amber-500", bg: "bg-amber-50", text: "text-amber-700" },
   { slug: "mode", label: "Mode", gradient: "from-pink-400 to-rose-500", bg: "bg-pink-50", text: "text-pink-600" },
-  { slug: "electronique", label: "Tech", gradient: "from-cyan-400 to-blue-500", bg: "bg-cyan-50", text: "text-cyan-600" },
+  { slug: "electronique", label: "Tech", gradient: "from-emerald-400 to-teal-500", bg: "bg-emerald-50", text: "text-emerald-700" },
   { slug: "beaute", label: "Beauté", gradient: "from-fuchsia-400 to-purple-500", bg: "bg-fuchsia-50", text: "text-fuchsia-600" },
   { slug: "services", label: "Services", gradient: "from-slate-400 to-gray-600", bg: "bg-slate-50", text: "text-slate-600" },
-  { slug: "artisanat", label: "Artisans", gradient: "from-violet-400 to-indigo-500", bg: "bg-violet-50", text: "text-violet-600" },
+  { slug: "artisanat", label: "Artisans", gradient: "from-lime-400 to-emerald-500", bg: "bg-lime-50", text: "text-lime-700" },
   { slug: "sport", label: "Sport", gradient: "from-emerald-400 to-green-600", bg: "bg-emerald-50", text: "text-emerald-600" },
-  { slug: "education", label: "Éducation", gradient: "from-blue-400 to-indigo-500", bg: "bg-blue-50", text: "text-blue-600" },
+  { slug: "education", label: "Éducation", gradient: "from-green-400 to-emerald-500", bg: "bg-green-50", text: "text-green-700" },
   { slug: "restauration", label: "Restaurants", gradient: "from-red-400 to-rose-600", bg: "bg-red-50", text: "text-red-600" },
   { slug: "bien-etre", label: "Bien-être", gradient: "from-teal-400 to-emerald-500", bg: "bg-teal-50", text: "text-teal-600" },
-  { slug: "hotellerie", label: "Maison", gradient: "from-sky-400 to-blue-600", bg: "bg-sky-50", text: "text-sky-600" },
+  { slug: "hotellerie", label: "Maison", gradient: "from-yellow-400 to-amber-500", bg: "bg-yellow-50", text: "text-yellow-700" },
   { slug: "concerts", label: "Loisirs", gradient: "from-purple-400 to-pink-500", bg: "bg-purple-50", text: "text-purple-600" },
 ];
 
@@ -263,7 +263,7 @@ export default function ExplorerPublicPage() {
       <header className="sticky top-0 z-50 bg-white/75 backdrop-blur-2xl border-b border-white/70 shadow-sm shadow-slate-200/40">
         <div className="max-w-7xl mx-auto px-5 lg:px-10 h-14 lg:h-16 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2">
-            <div className="w-7 h-7 lg:w-8 lg:h-8 bg-gradient-to-br from-blue-500 via-indigo-500 to-violet-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/25">
+            <div className="w-7 h-7 lg:w-8 lg:h-8 bg-gradient-to-br from-emerald-500 via-green-500 to-yellow-400 rounded-xl flex items-center justify-center shadow-lg shadow-emerald-500/25">
               <QrCode className="w-3.5 h-3.5 lg:w-4 lg:h-4 text-white" />
             </div>
             <span className="font-bold text-[15px] lg:text-base text-slate-950 tracking-tight">
@@ -274,9 +274,9 @@ export default function ExplorerPublicPage() {
           <nav className="hidden sm:flex items-center gap-1 lg:gap-2">
             <Link
               href="/explorer"
-              className="px-3 lg:px-4 py-1.5 lg:py-2 text-[13px] lg:text-sm font-semibold text-blue-700 bg-blue-50 rounded-full"
+              className="px-3 lg:px-4 py-1.5 lg:py-2 text-[13px] lg:text-sm font-semibold text-emerald-700 bg-emerald-50 rounded-full"
             >
-              Explorer
+              Commander
             </Link>
             <Link
               href="/connexion"
@@ -286,7 +286,7 @@ export default function ExplorerPublicPage() {
             </Link>
             <Link
               href="/inscription"
-              className="ml-1.5 px-4 lg:px-5 py-1.5 lg:py-2 text-[13px] lg:text-sm font-semibold bg-slate-950 text-white rounded-full hover:bg-blue-700 transition shadow-lg shadow-slate-950/15"
+              className="ml-1.5 px-4 lg:px-5 py-1.5 lg:py-2 text-[13px] lg:text-sm font-semibold bg-emerald-600 text-white rounded-full hover:bg-emerald-700 transition shadow-lg shadow-emerald-600/20"
             >
               Devenir partenaire
             </Link>
@@ -310,9 +310,9 @@ export default function ExplorerPublicPage() {
             <Link
               href="/explorer"
               onClick={() => setMobileOpen(false)}
-              className="block px-3 py-2.5 text-sm font-semibold text-blue-700 bg-blue-50 rounded-xl"
+              className="block px-3 py-2.5 text-sm font-semibold text-emerald-700 bg-emerald-50 rounded-xl"
             >
-              Explorer
+              Commander
             </Link>
             <Link
               href="/connexion"
@@ -324,7 +324,7 @@ export default function ExplorerPublicPage() {
             <Link
               href="/inscription"
               onClick={() => setMobileOpen(false)}
-              className="block px-3 py-2.5 text-sm font-semibold text-center bg-slate-950 text-white rounded-xl mt-1"
+              className="block px-3 py-2.5 text-sm font-semibold text-center bg-emerald-600 text-white rounded-xl mt-1"
             >
               Devenir partenaire
             </Link>
@@ -333,37 +333,37 @@ export default function ExplorerPublicPage() {
       </header>
 
       {/* ═══════ HERO ═══════ */}
-      <section className="relative overflow-hidden border-b border-white/80">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_18%,rgba(59,130,246,0.20),transparent_32%),radial-gradient(circle_at_82%_12%,rgba(124,58,237,0.16),transparent_30%),linear-gradient(180deg,#ffffff_0%,#eef5ff_100%)]" />
-        <div className="absolute -top-24 right-[-6rem] w-72 h-72 bg-blue-400/20 rounded-full blur-3xl" />
-        <div className="absolute top-32 left-[-5rem] w-64 h-64 bg-indigo-400/20 rounded-full blur-3xl" />
+      <section className="relative overflow-hidden border-b border-white/80 bg-[#fff6cf]">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_18%,rgba(34,197,94,0.22),transparent_32%),radial-gradient(circle_at_82%_12%,rgba(250,204,21,0.45),transparent_30%),linear-gradient(180deg,#fff7d6_0%,#fffbea_62%,#f7f9fe_100%)]" />
+        <div className="absolute -top-24 right-[-6rem] w-72 h-72 bg-yellow-300/40 rounded-full blur-3xl" />
+        <div className="absolute top-32 left-[-5rem] w-64 h-64 bg-emerald-300/30 rounded-full blur-3xl" />
 
         <div className="relative max-w-7xl mx-auto px-5 lg:px-10 pt-12 sm:pt-16 lg:pt-22 pb-8 lg:pb-12">
           <div className="grid lg:grid-cols-[1fr_460px] lg:items-end gap-8 lg:gap-12">
             <div className="max-w-2xl">
-              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/80 border border-white shadow-sm text-[12px] font-bold text-blue-700 mb-5">
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/85 border border-white shadow-sm text-[12px] font-bold text-emerald-700 mb-5">
                 <Sparkles className="w-3.5 h-3.5" />
                 Restaurants, boutiques & livraison locale
               </div>
               <h1 className="text-[34px] sm:text-[48px] lg:text-[64px] font-black text-slate-950 tracking-[-0.045em] leading-[0.98]">
                 Commandez près de{" "}
-                <span className="bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600 bg-clip-text text-transparent">chez vous</span>
+                <span className="text-emerald-600">chez vous</span>
               </h1>
               <p className="text-slate-500 text-[15px] sm:text-base lg:text-lg mt-5 max-w-xl leading-relaxed">
                 Trouvez des commerces locaux, payez en ligne et faites-vous livrer rapidement.
               </p>
               <div className="flex flex-wrap gap-3 mt-7 text-[13px] text-slate-600">
                 <span className="inline-flex items-center gap-2 px-3 py-2 rounded-full bg-white/80 border border-white shadow-sm">
-                  <ShoppingBag className="w-4 h-4 text-blue-600" /> Commande instantanée
+                  <ShoppingBag className="w-4 h-4 text-emerald-600" /> Commande instantanée
                 </span>
                 <span className="inline-flex items-center gap-2 px-3 py-2 rounded-full bg-white/80 border border-white shadow-sm">
-                  <Truck className="w-4 h-4 text-indigo-600" /> Livraison locale
+                  <Truck className="w-4 h-4 text-emerald-600" /> Livraison locale
                 </span>
               </div>
             </div>
 
             {/* Search + City */}
-            <div className="rounded-[2rem] bg-white/85 backdrop-blur-xl border border-white shadow-2xl shadow-blue-900/10 p-3 sm:p-4 lg:p-5">
+            <div className="rounded-[2rem] bg-white/85 backdrop-blur-xl border border-white shadow-2xl shadow-emerald-950/10 p-3 sm:p-4 lg:p-5">
               <div className="mb-3 px-1">
                 <p className="text-xs font-bold uppercase tracking-[0.18em] text-slate-400">Recherche rapide</p>
                 <p className="text-sm text-slate-500 mt-1">Filtrez par commerce, produit ou ville.</p>
@@ -371,13 +371,13 @@ export default function ExplorerPublicPage() {
               <div className="flex flex-col gap-3">
               {/* Search */}
               <div className="relative flex-1">
-                <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-blue-500" />
+                <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-emerald-600" />
                 <input
                   type="text"
                   placeholder="Rechercher un restaurant, produit, boutique..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full bg-slate-50 border border-slate-100 rounded-2xl pl-11 pr-9 py-3.5 text-[14px] text-slate-950 placeholder-slate-400 outline-none focus:border-blue-300 focus:bg-white focus:ring-4 focus:ring-blue-100 transition"
+                  className="w-full bg-slate-50 border border-slate-100 rounded-2xl pl-11 pr-9 py-3.5 text-[14px] text-slate-950 placeholder-slate-400 outline-none focus:border-emerald-300 focus:bg-white focus:ring-4 focus:ring-emerald-100 transition"
                 />
                 {searchQuery && (
                   <button
@@ -393,10 +393,10 @@ export default function ExplorerPublicPage() {
               <div className="relative" ref={cityRef}>
                 <button
                   onClick={() => setCityDropdownOpen(!cityDropdownOpen)}
-                  className="flex items-center gap-2 bg-slate-50 border border-slate-100 rounded-2xl px-4 py-3.5 text-[14px] hover:border-blue-200 hover:bg-white transition w-full justify-between"
+                  className="flex items-center gap-2 bg-slate-50 border border-slate-100 rounded-2xl px-4 py-3.5 text-[14px] hover:border-emerald-200 hover:bg-white transition w-full justify-between"
                 >
                   <span className="flex items-center gap-2">
-                    <MapPin className="w-4 h-4 text-blue-500" />
+                    <MapPin className="w-4 h-4 text-emerald-600" />
                     <span
                       className={
                         selectedCity ? "text-slate-950" : "text-slate-400"
@@ -455,7 +455,7 @@ export default function ExplorerPublicPage() {
                   className={`px-4 py-2 rounded-full text-[13px] font-semibold whitespace-nowrap transition-all duration-200 shrink-0 border ${
                     active
                       ? `bg-gradient-to-r ${cat.gradient} text-white border-transparent shadow-lg shadow-black/10`
-                      : `bg-white/85 ${cat.text} border-white hover:border-blue-100 hover:shadow-md hover:shadow-blue-900/5 hover:-translate-y-0.5`
+                      : `bg-white/85 ${cat.text} border-white hover:border-emerald-100 hover:shadow-md hover:shadow-emerald-900/5 hover:-translate-y-0.5`
                   }`}
                 >
                   {cat.label}
@@ -478,8 +478,8 @@ export default function ExplorerPublicPage() {
         ) : events.length === 0 ? (
           /* Empty */
           <div className="text-center py-20 bg-white rounded-[2rem] border border-white shadow-sm">
-            <div className="w-16 h-16 rounded-2xl bg-blue-50 flex items-center justify-center mx-auto mb-4">
-              <Store className="w-7 h-7 text-blue-300" />
+            <div className="w-16 h-16 rounded-2xl bg-emerald-50 flex items-center justify-center mx-auto mb-4">
+              <Store className="w-7 h-7 text-emerald-300" />
             </div>
             <h3 className="text-lg font-bold text-slate-950 mb-1">
               Aucun commerce trouvé
@@ -496,7 +496,7 @@ export default function ExplorerPublicPage() {
                   setSelectedCity("");
                   setSelectedCategory("");
                 }}
-                className="mt-5 inline-flex items-center px-4 py-2 rounded-full text-sm text-blue-700 bg-blue-50 font-semibold hover:bg-blue-100 transition"
+                className="mt-5 inline-flex items-center px-4 py-2 rounded-full text-sm text-emerald-700 bg-emerald-50 font-semibold hover:bg-emerald-100 transition"
               >
                 Réinitialiser
               </button>
@@ -510,7 +510,7 @@ export default function ExplorerPublicPage() {
                 {/* Availability header */}
                 <div className="flex items-center gap-3 mb-5 lg:mb-6">
                   <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white border border-white shadow-sm text-[13px] lg:text-sm font-bold text-slate-950 capitalize">
-                    <Truck className="w-4 h-4 text-blue-600" />
+                    <Truck className="w-4 h-4 text-emerald-600" />
                     Disponible {group.label.toLowerCase()}
                   </span>
                   <div className="h-px flex-1 bg-gradient-to-r from-slate-200 to-transparent" />
@@ -531,7 +531,7 @@ export default function ExplorerPublicPage() {
                 <button
                   onClick={loadMore}
                   disabled={loadingMore}
-                  className="inline-flex items-center gap-2 px-6 py-3 text-[13px] font-bold text-slate-700 bg-white border border-white rounded-full hover:bg-blue-50 hover:text-blue-700 transition disabled:opacity-50 shadow-sm"
+                  className="inline-flex items-center gap-2 px-6 py-3 text-[13px] font-bold text-slate-700 bg-white border border-white rounded-full hover:bg-emerald-50 hover:text-emerald-700 transition disabled:opacity-50 shadow-sm"
                 >
                   {loadingMore ? (
                     <Loader2 className="w-3.5 h-3.5 animate-spin" />
@@ -552,7 +552,7 @@ export default function ExplorerPublicPage() {
           <div className="lg:flex lg:items-start lg:justify-between lg:gap-10">
             <div className="mb-6 lg:mb-0">
               <Link href="/" className="flex items-center gap-2 mb-3">
-                <div className="w-7 h-7 bg-gradient-to-br from-blue-500 via-indigo-500 to-violet-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/25">
+                <div className="w-7 h-7 bg-gradient-to-br from-emerald-500 via-green-500 to-yellow-400 rounded-xl flex items-center justify-center shadow-lg shadow-emerald-500/25">
                   <QrCode className="w-3.5 h-3.5 text-white" />
                 </div>
                 <span className="font-bold text-[15px] text-slate-950">Binq</span>
@@ -569,7 +569,7 @@ export default function ExplorerPublicPage() {
                 href="/explorer"
                 className="text-slate-950 font-semibold"
               >
-                Explorer
+                Commander
               </Link>
               <Link
                 href="/connexion"
@@ -605,7 +605,7 @@ function EventCard({ event }: { event: EventPublic }) {
 
   return (
     <Link href={`/evenement/${event.id}`} className="group block h-full">
-      <article className="h-full rounded-[1.75rem] bg-white border border-white shadow-sm shadow-slate-200/80 overflow-hidden transition-all duration-300 group-hover:-translate-y-1 group-hover:shadow-2xl group-hover:shadow-blue-900/10">
+      <article className="h-full rounded-[1.75rem] bg-white border border-white shadow-sm shadow-slate-200/80 overflow-hidden transition-all duration-300 group-hover:-translate-y-1 group-hover:shadow-2xl group-hover:shadow-emerald-900/10">
       {/* Image */}
       <div className="relative overflow-hidden bg-slate-100 aspect-[16/10]">
         {event.cover_url ? (
@@ -617,7 +617,7 @@ function EventCard({ event }: { event: EventPublic }) {
             unoptimized
           />
         ) : event.logo_url ? (
-          <div className="absolute inset-0 bg-gradient-to-br from-blue-50 via-indigo-50 to-violet-50 flex items-center justify-center">
+          <div className="absolute inset-0 bg-gradient-to-br from-emerald-50 via-yellow-50 to-white flex items-center justify-center">
             <Image
               src={event.logo_url}
               alt=""
@@ -628,8 +628,8 @@ function EventCard({ event }: { event: EventPublic }) {
             />
           </div>
         ) : (
-          <div className="absolute inset-0 bg-gradient-to-br from-blue-50 via-indigo-50 to-violet-50 flex items-center justify-center">
-            <CalendarDays className="w-9 h-9 text-blue-200" />
+          <div className="absolute inset-0 bg-gradient-to-br from-emerald-50 via-yellow-50 to-white flex items-center justify-center">
+            <CalendarDays className="w-9 h-9 text-emerald-200" />
           </div>
         )}
         <div className="absolute inset-0 bg-gradient-to-t from-slate-950/45 via-transparent to-transparent opacity-80" />
@@ -639,7 +639,7 @@ function EventCard({ event }: { event: EventPublic }) {
         <div className={`absolute bottom-3 left-3 px-3 py-1.5 rounded-full backdrop-blur-md shadow-sm text-[11px] font-black ${isFree ? "bg-emerald-500 text-white" : "bg-white/92 text-slate-950"}`}>
           {isFree ? "Gratuit" : `${event.min_price.toLocaleString("fr-FR")} ${event.devise}`}
         </div>
-        <div className="absolute bottom-3 right-3 w-9 h-9 rounded-full bg-white/92 backdrop-blur-md flex items-center justify-center shadow-sm text-blue-600 transition-transform group-hover:translate-x-0.5">
+        <div className="absolute bottom-3 right-3 w-9 h-9 rounded-full bg-white/92 backdrop-blur-md flex items-center justify-center shadow-sm text-emerald-600 transition-transform group-hover:translate-x-0.5">
           <ArrowRight className="w-4 h-4" />
         </div>
       </div>
@@ -647,7 +647,7 @@ function EventCard({ event }: { event: EventPublic }) {
       {/* Info */}
       <div className="p-4 space-y-3">
         {/* Title */}
-        <h3 className="text-[16px] font-extrabold text-slate-950 leading-snug line-clamp-2 group-hover:text-blue-700 transition-colors">
+        <h3 className="text-[16px] font-extrabold text-slate-950 leading-snug line-clamp-2 group-hover:text-emerald-700 transition-colors">
           {event.nom}
         </h3>
 
@@ -666,7 +666,7 @@ function EventCard({ event }: { event: EventPublic }) {
               <span>{event.total_capacity - event.total_sold} disponibilité{event.total_capacity - event.total_sold > 1 ? "s" : ""}</span>
             </div>
             <div className="h-1.5 rounded-full bg-slate-100 overflow-hidden">
-              <div className="h-full rounded-full bg-gradient-to-r from-blue-500 to-indigo-500" style={{ width: `${soldRatio}%` }} />
+              <div className="h-full rounded-full bg-gradient-to-r from-emerald-500 to-green-600" style={{ width: `${soldRatio}%` }} />
             </div>
           </div>
         )}
@@ -698,7 +698,7 @@ function EventCard({ event }: { event: EventPublic }) {
             <span className="text-[12px] font-medium text-slate-500 truncate">
               {event.organisateur?.nom || event.boutiques?.nom}
             </span>
-            {event.boutiques?.is_verified && <BadgeCheck className="w-3.5 h-3.5 text-blue-500 shrink-0" />}
+            {event.boutiques?.is_verified && <BadgeCheck className="w-3.5 h-3.5 text-emerald-500 shrink-0" />}
             {event.total_vendu > 0 && (
               <span className="flex items-center gap-1 text-[11px] text-slate-400 ml-auto bg-slate-50 px-2 py-1 rounded-full">
                 <Users className="w-3 h-3" />

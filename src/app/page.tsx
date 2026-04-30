@@ -30,7 +30,7 @@ export default function HomePage() {
       <header className="fixed top-0 inset-x-0 z-[60] bg-white/75 backdrop-blur-2xl border-b border-white/70 shadow-sm shadow-slate-200/40">
         <div className="max-w-6xl mx-auto px-5 sm:px-8 h-16 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2">
-            <div className="w-7 h-7 bg-gradient-to-br from-blue-500 via-indigo-500 to-violet-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/25">
+            <div className="w-7 h-7 bg-gradient-to-br from-emerald-500 via-green-500 to-yellow-400 rounded-xl flex items-center justify-center shadow-lg shadow-emerald-500/25">
               <QrCode className="w-3.5 h-3.5 text-white" />
             </div>
             <span className="font-bold text-[15px] tracking-tight text-slate-950">Binq</span>
@@ -43,7 +43,7 @@ export default function HomePage() {
             <Link href="/connexion" className="text-[13px] text-slate-500 hover:text-slate-950 transition-colors font-medium hidden sm:inline">
               Connexion
             </Link>
-            <Link href="/inscription" className="hidden md:inline-flex text-[13px] px-4 py-2 bg-slate-950 text-white rounded-full font-semibold hover:bg-blue-700 transition-colors shadow-lg shadow-slate-950/15">
+            <Link href="/inscription" className="hidden md:inline-flex text-[13px] px-4 py-2 bg-emerald-600 text-white rounded-full font-semibold hover:bg-emerald-700 transition-colors shadow-lg shadow-emerald-600/20">
               Devenir partenaire
             </Link>
             <button
@@ -60,7 +60,7 @@ export default function HomePage() {
             <div className="flex flex-col gap-1">
               <Link href="/explorer" onClick={() => setMobileOpen(false)} className="px-3 py-2.5 rounded-xl text-slate-600 hover:bg-slate-50 text-sm">Commander</Link>
               <Link href="/connexion" onClick={() => setMobileOpen(false)} className="px-3 py-2.5 rounded-xl text-slate-600 hover:bg-slate-50 text-sm">Connexion</Link>
-              <Link href="/inscription" onClick={() => setMobileOpen(false)} className="px-3 py-2.5 rounded-xl bg-slate-950 text-white text-sm text-center font-semibold">Devenir partenaire</Link>
+              <Link href="/inscription" onClick={() => setMobileOpen(false)} className="px-3 py-2.5 rounded-xl bg-emerald-600 text-white text-sm text-center font-semibold">Devenir partenaire</Link>
             </div>
           </div>
         )}
@@ -118,7 +118,7 @@ export default function HomePage() {
 
             <div className="mt-7 flex flex-wrap items-center gap-3 text-[12px] sm:text-[13px] text-slate-600 font-semibold">
               <span className="inline-flex items-center gap-2 px-3 py-2 rounded-full bg-white/80 border border-white shadow-sm"><Truck className="w-4 h-4 text-emerald-500" /> Livraison rapide</span>
-              <span className="inline-flex items-center gap-2 px-3 py-2 rounded-full bg-white/80 border border-white shadow-sm"><ShieldCheck className="w-4 h-4 text-blue-500" /> Paiement sécurisé</span>
+              <span className="inline-flex items-center gap-2 px-3 py-2 rounded-full bg-white/80 border border-white shadow-sm"><ShieldCheck className="w-4 h-4 text-emerald-500" /> Paiement sécurisé</span>
               <span className="inline-flex items-center gap-2 px-3 py-2 rounded-full bg-white/80 border border-white shadow-sm"><Store className="w-4 h-4 text-amber-500" /> Commerces locaux</span>
             </div>
           </div>
@@ -132,7 +132,7 @@ export default function HomePage() {
             <div className="hidden sm:block absolute right-0 bottom-24 rounded-3xl bg-white/90 border border-white shadow-2xl shadow-amber-900/10 p-4 rotate-[6deg] z-20">
               <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Panier</p>
               <p className="text-2xl font-black text-slate-950">3 items</p>
-              <p className="text-[11px] text-blue-500 font-semibold">Mobile Money</p>
+              <p className="text-[11px] text-emerald-600 font-semibold">Mobile Money</p>
             </div>
 
             <div className="relative w-[290px] sm:w-[340px] rounded-[2.5rem] bg-slate-950 p-2 shadow-[0_50px_120px_rgba(15,23,42,0.28)] ring-1 ring-white/30">
@@ -220,12 +220,12 @@ export default function HomePage() {
                 icon: Truck,
                 title: "Recevez vite",
                 desc: "Le commerce prépare, le livreur arrive et vous suivez la commande.",
-                gradient: "from-blue-500 to-indigo-500",
+                gradient: "from-emerald-500 to-green-600",
               },
             ].map((item, i) => (
               <div key={i} className="relative group">
-                <div className="relative overflow-hidden bg-white border border-white rounded-[1.75rem] p-6 sm:p-8 shadow-sm shadow-slate-200/80 hover:shadow-2xl hover:shadow-blue-900/10 hover:-translate-y-1 transition-all duration-300">
-                  <div className="absolute -right-10 -top-10 w-28 h-28 rounded-full bg-blue-50 group-hover:bg-indigo-50 transition-colors" />
+                <div className="relative overflow-hidden bg-white border border-white rounded-[1.75rem] p-6 sm:p-8 shadow-sm shadow-slate-200/80 hover:shadow-2xl hover:shadow-emerald-900/10 hover:-translate-y-1 transition-all duration-300">
+                  <div className="absolute -right-10 -top-10 w-28 h-28 rounded-full bg-emerald-50 group-hover:bg-yellow-50 transition-colors" />
                   <div className={`relative w-12 h-12 rounded-2xl bg-gradient-to-br ${item.gradient} flex items-center justify-center mb-5 shadow-lg shadow-black/10`}>
                     <item.icon className="w-5 h-5 text-white" />
                   </div>
@@ -257,7 +257,7 @@ export default function HomePage() {
               { icon: Sparkles, label: "Beauté", desc: "Soins, salons & services", gradient: "from-violet-500 to-purple-500", bg: "bg-violet-50" },
               { icon: Package, label: "Services locaux", desc: "Commandes sur demande", gradient: "from-sky-500 to-blue-500", bg: "bg-sky-50" },
             ].map((item, i) => (
-              <div key={i} className="group bg-white border border-white rounded-[1.5rem] p-5 sm:p-6 shadow-sm shadow-slate-200/70 hover:shadow-2xl hover:shadow-blue-900/10 hover:-translate-y-1 transition-all duration-300">
+              <div key={i} className="group bg-white border border-white rounded-[1.5rem] p-5 sm:p-6 shadow-sm shadow-slate-200/70 hover:shadow-2xl hover:shadow-emerald-900/10 hover:-translate-y-1 transition-all duration-300">
                 <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${item.gradient} flex items-center justify-center mb-4 shadow-md shadow-black/10`}>
                   <item.icon className="w-4.5 h-4.5 text-white" />
                 </div>
@@ -279,9 +279,9 @@ export default function HomePage() {
             {[
               { icon: Clock, title: "Rapide", desc: "Moins d'étapes, moins d'attente, plus d'efficacité.", color: "text-amber-500", bg: "bg-amber-50" },
               { icon: ShieldCheck, title: "Fiable", desc: "Commande enregistrée, commerce notifié, suivi lisible.", color: "text-emerald-500", bg: "bg-emerald-50" },
-              { icon: Truck, title: "Proche", desc: "Les commerces de votre quartier deviennent accessibles en quelques taps.", color: "text-blue-500", bg: "bg-blue-50" },
+              { icon: Truck, title: "Proche", desc: "Les commerces de votre quartier deviennent accessibles en quelques taps.", color: "text-emerald-500", bg: "bg-emerald-50" },
             ].map((item, i) => (
-              <div key={i} className="bg-white rounded-[1.75rem] border border-slate-100 p-6 sm:p-8 shadow-sm hover:shadow-xl hover:shadow-blue-900/5 transition-shadow">
+              <div key={i} className="bg-white rounded-[1.75rem] border border-slate-100 p-6 sm:p-8 shadow-sm hover:shadow-xl hover:shadow-emerald-900/5 transition-shadow">
                 <div className={`w-12 h-12 rounded-2xl ${item.bg} flex items-center justify-center mx-auto mb-4 ring-8 ring-slate-50/80`}>
                   <item.icon className={`w-5 h-5 ${item.color}`} />
                 </div>
@@ -296,15 +296,15 @@ export default function HomePage() {
       {/* ═══════ CTA FINAL ═══════ */}
       <section className="py-20 sm:py-28">
         <div className="max-w-3xl mx-auto px-4 sm:px-6">
-          <div className="relative overflow-hidden rounded-[2.25rem] bg-gradient-to-br from-slate-950 via-blue-950 to-indigo-900 px-6 sm:px-12 py-12 sm:py-16 text-center shadow-2xl shadow-blue-950/20">
+          <div className="relative overflow-hidden rounded-[2.25rem] bg-gradient-to-br from-slate-950 via-emerald-950 to-green-900 px-6 sm:px-12 py-12 sm:py-16 text-center shadow-2xl shadow-emerald-950/20">
             <div className="absolute inset-0 opacity-20" style={{ backgroundImage: "radial-gradient(circle at 20% 50%, white 1px, transparent 1px), radial-gradient(circle at 80% 50%, white 1px, transparent 1px)", backgroundSize: "40px 40px" }} />
-            <div className="absolute -top-20 -right-20 w-56 h-56 bg-blue-500/30 rounded-full blur-3xl" />
-            <div className="absolute -bottom-24 -left-24 w-64 h-64 bg-violet-500/25 rounded-full blur-3xl" />
+            <div className="absolute -top-20 -right-20 w-56 h-56 bg-emerald-500/30 rounded-full blur-3xl" />
+            <div className="absolute -bottom-24 -left-24 w-64 h-64 bg-yellow-400/25 rounded-full blur-3xl" />
             <div className="relative z-10">
               <h2 className="text-3xl sm:text-5xl font-black text-white mb-3 tracking-[-0.04em]">Prêt à vendre localement ?</h2>
               <p className="text-sm sm:text-base text-white/70 max-w-md mx-auto mb-8">Mettez votre commerce sur Binq et recevez des commandes prêtes à préparer.</p>
               <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
-                <Link href="/inscription" className="inline-flex items-center gap-2 px-7 py-3 bg-white text-blue-700 font-bold rounded-full hover:bg-blue-50 transition-all text-sm shadow-xl">
+                <Link href="/inscription" className="inline-flex items-center gap-2 px-7 py-3 bg-white text-emerald-700 font-bold rounded-full hover:bg-emerald-50 transition-all text-sm shadow-xl">
                   Devenir partenaire <ArrowRight className="w-3.5 h-3.5" />
                 </Link>
                 <Link href="/explorer" className="inline-flex items-center gap-2 px-7 py-3 bg-white/10 text-white font-semibold rounded-full border border-white/20 hover:bg-white/20 transition-all text-sm backdrop-blur-sm">
@@ -322,7 +322,7 @@ export default function HomePage() {
           <div className="flex flex-col sm:flex-row items-center justify-between gap-6">
             <div className="flex flex-col items-center sm:items-start gap-1">
               <div className="flex items-center gap-2">
-                <div className="w-6 h-6 bg-gradient-to-br from-blue-500 via-indigo-500 to-violet-600 rounded-lg flex items-center justify-center shadow-sm shadow-blue-500/30">
+                <div className="w-6 h-6 bg-gradient-to-br from-emerald-500 via-green-500 to-yellow-400 rounded-lg flex items-center justify-center shadow-sm shadow-emerald-500/30">
                   <QrCode className="w-3 h-3 text-white" />
                 </div>
                 <span className="font-bold text-slate-950 tracking-tight">Binq</span>
