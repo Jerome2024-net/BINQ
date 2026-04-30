@@ -112,6 +112,7 @@ export default function EvenementsPage() {
   const evtFormCoverRef = useRef<HTMLInputElement>(null);
   const [savingEvent, setSavingEvent] = useState(false);
   const [showTicketPreview, setShowTicketPreview] = useState(false);
+  const [createStep, setCreateStep] = useState<1 | 2 | 3 | 4>(1);
   const [generatingPoster, setGeneratingPoster] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState<any>(null);
   const [eventTickets, setEventTickets] = useState<any[]>([]);
@@ -178,6 +179,7 @@ export default function EvenementsPage() {
     const action = searchParams.get("action");
     const eventId = searchParams.get("event");
     if (action === "create") {
+      setCreateStep(1);
       setShowAddEvent(true);
       setActiveTab("evenements");
       window.history.replaceState({}, "", "/evenements");
@@ -277,7 +279,28 @@ export default function EvenementsPage() {
   };
 
   const handleCreateEvent = async () => {
-    if (!evtNom.trim() || !evtDateDebut || !evtLieu.trim() || !boutique || !evtLogoFile || !evtCoverFile) return;
+    const invalidTicket = evtTicketTypes.some((t) => {
+      const price = t.prix === "" ? 0 : Number(t.prix);
+      const qty = Number(t.qty);
+      return !t.nom.trim() || Number.isNaN(price) || price < 0 || Number.isNaN(qty) || qty < 1;
+    });
+
+    if (!boutique) return;
+    if (!evtNom.trim() || !evtDateDebut || !evtLieu.trim()) {
+      showToast("error", "Infos manquantes", "Nom, date et lieu sont obligatoires");
+      setCreateStep(1);
+      return;
+    }
+    if (invalidTicket) {
+      showToast("error", "Billets invalides", "Vérifiez le nom, le prix et la quantité");
+      setCreateStep(2);
+      return;
+    }
+    if (!evtLogoFile || !evtCoverFile) {
+      showToast("error", "Visuels requis", "Ajoutez une couverture et un logo");
+      setCreateStep(3);
+      return;
+    }
     setSavingEvent(true);
     try {
       const res = await fetch("/api/events", {
@@ -293,6 +316,7 @@ export default function EvenementsPage() {
           ville: evtVille.trim() || undefined,
           devise: boutique.devise || "XOF",
           categorie_id: evtCategorie || undefined,
+          is_published: false,
           ticket_types: evtTicketTypes.map(t => ({
             nom: t.nom.trim() || "Standard",
             prix: t.prix || "0",
@@ -327,15 +351,24 @@ export default function EvenementsPage() {
       for (const r of results) {
         if (r.url) updatedEvent = { ...updatedEvent, [`${r.type}_url`]: r.url };
       }
+      const uploadFailed = results.some((r: any) => !r.url);
+      if (!uploadFailed) {
+        const publishRes = await fetch(`/api/events/${eventId}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ is_published: true }),
+        });
+        if (publishRes.ok) updatedEvent = { ...updatedEvent, is_published: true };
+      }
 
       setEvents((prev) => [...prev, updatedEvent]);
       setShowAddEvent(false);
+      setCreateStep(1);
       setEvtNom(""); setEvtDesc(""); setEvtDateDebut(""); setEvtHeureDebut(""); setEvtLieu(""); setEvtVille(""); setEvtCategorie("");
       setEvtTicketTypes([{nom: "Standard", prix: "", qty: "100"}]);
       setEvtLogoFile(null); setEvtLogoPreview(null); setEvtCoverFile(null); setEvtCoverPreview(null);
       hapticSuccess();
-      const uploadFailed = results.some((r: any) => !r.url);
-      showToast("success", "Billetterie créée !", uploadFailed ? "Les images seront à re-uploader" : "");
+      showToast(uploadFailed ? "error" : "success", uploadFailed ? "Billetterie en brouillon" : "Billetterie publiée !", uploadFailed ? "Ajoutez les images puis publiez" : "Elle est prête à être partagée");
     } catch (err: any) {
       hapticError();
       showToast("error", "Erreur", err.message || "Impossible de créer");
@@ -615,6 +648,24 @@ export default function EvenementsPage() {
 
   const devise = (boutique?.devise as DeviseCode) || "XOF";
   const boutiqueUrl = boutique ? `${typeof window !== "undefined" ? window.location.origin : ""}/boutique/${boutique.slug}` : "";
+  const eventInfoValid = Boolean(evtNom.trim() && evtDateDebut && evtLieu.trim());
+  const ticketsValid = evtTicketTypes.length > 0 && evtTicketTypes.every((ticket) => {
+    const price = ticket.prix === "" ? 0 : Number(ticket.prix);
+    const qty = Number(ticket.qty);
+    return ticket.nom.trim() && !Number.isNaN(price) && price >= 0 && !Number.isNaN(qty) && qty >= 1;
+  });
+  const visualsValid = Boolean(evtCoverFile && evtLogoFile);
+  const createSteps = [
+    { id: 1 as const, label: "Infos", valid: eventInfoValid },
+    { id: 2 as const, label: "Billets", valid: ticketsValid },
+    { id: 3 as const, label: "Visuels", valid: visualsValid },
+    { id: 4 as const, label: "Publier", valid: eventInfoValid && ticketsValid && visualsValid },
+  ];
+  const canGoNext =
+    createStep === 1 ? eventInfoValid :
+    createStep === 2 ? ticketsValid :
+    createStep === 3 ? visualsValid :
+    eventInfoValid && ticketsValid && visualsValid;
 
   // ═══ PAS DE BOUTIQUE → CRÉATION ═══
   if (!boutique) {
@@ -1230,10 +1281,10 @@ export default function EvenementsPage() {
               {events.length > 0 && !showAddEvent && (
                 <div className="mb-5">
                   <button
-                    onClick={() => { hapticMedium(); setShowAddEvent(true); }}
+                    onClick={() => { hapticMedium(); setCreateStep(1); setShowAddEvent(true); }}
                     className="w-full flex items-center justify-center gap-2 bg-neutral-900 text-white py-2.5 rounded-lg font-medium text-sm transition hover:bg-neutral-800 active:scale-[0.98]"
                   >
-                    <Plus className="w-4 h-4" /> Create Event
+                    <Plus className="w-4 h-4" /> Créer une billetterie
                   </button>
                 </div>
               )}
@@ -1244,17 +1295,37 @@ export default function EvenementsPage() {
                   {/* Header */}
                   <div className="flex items-center justify-between mb-6 lg:max-w-none">
                     <div>
-                      <h3 className="text-lg font-semibold text-neutral-900">New Event</h3>
-                      <p className="text-sm text-neutral-400 mt-0.5">Fill in the details to create your event</p>
+                      <h3 className="text-lg font-semibold text-neutral-900">Nouvelle billetterie</h3>
+                      <p className="text-sm text-neutral-400 mt-0.5">Créez, configurez puis publiez votre accès QR.</p>
                     </div>
                     <div className="flex items-center gap-2">
                       <button onClick={() => setShowTicketPreview(!showTicketPreview)} className="lg:hidden flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-neutral-100 text-neutral-600 hover:bg-neutral-200 transition">
-                        <Eye className="w-3.5 h-3.5" /> {showTicketPreview ? "Form" : "Preview"}
+                        <Eye className="w-3.5 h-3.5" /> {showTicketPreview ? "Formulaire" : "Aperçu"}
                       </button>
-                      <button onClick={() => setShowAddEvent(false)} className="w-8 h-8 rounded-lg flex items-center justify-center hover:bg-neutral-100 transition text-neutral-400">
+                      <button onClick={() => { setShowAddEvent(false); setCreateStep(1); }} className="w-8 h-8 rounded-lg flex items-center justify-center hover:bg-neutral-100 transition text-neutral-400">
                         <X className="w-4 h-4" />
                       </button>
                     </div>
+                  </div>
+
+                  <div className="grid grid-cols-4 gap-2 mb-6">
+                    {createSteps.map((step) => (
+                      <button
+                        key={step.id}
+                        type="button"
+                        onClick={() => setCreateStep(step.id)}
+                        className={`rounded-xl border px-2 py-2 text-center transition ${
+                          createStep === step.id
+                            ? "border-blue-200 bg-blue-50 text-blue-700"
+                            : step.valid
+                              ? "border-green-100 bg-green-50 text-green-700"
+                              : "border-neutral-200 bg-white text-neutral-400"
+                        }`}
+                      >
+                        <span className="block text-[10px] font-black">0{step.id}</span>
+                        <span className="block text-[11px] font-semibold truncate">{step.label}</span>
+                      </button>
+                    ))}
                   </div>
 
                   <div className="flex gap-8 lg:gap-10">
@@ -1262,8 +1333,10 @@ export default function EvenementsPage() {
                     <div className={`flex-1 min-w-0 lg:max-w-lg ${showTicketPreview ? "hidden lg:block" : ""}`}>
 
                   {/* Cover + Logo */}
+                  {createStep === 3 && (
                   <div className="mb-5">
-                    <label className="text-sm font-medium text-neutral-700 block mb-2">Event Image</label>
+                    <label className="text-sm font-medium text-neutral-700 block mb-2">Visuels de la billetterie *</label>
+                    <p className="text-xs text-neutral-400 mb-3">Ajoutez une couverture et un logo. La billetterie ne sera publiée qu&apos;après upload réussi.</p>
                     <div className="flex gap-3">
                       <button type="button" onClick={() => evtFormCoverRef.current?.click()}
                         className={`flex-1 h-36 rounded-xl flex items-center justify-center overflow-hidden relative group transition-all border ${
@@ -1279,7 +1352,7 @@ export default function EvenementsPage() {
                         ) : (
                           <div className="text-center">
                             <ImagePlus className="w-5 h-5 text-neutral-300 mx-auto mb-1" />
-                            <p className="text-xs font-medium text-neutral-400">Cover</p>
+                            <p className="text-xs font-medium text-neutral-400">Couverture</p>
                           </div>
                         )}
                       </button>
@@ -1308,23 +1381,25 @@ export default function EvenementsPage() {
                         onChange={(e) => { const f = e.target.files?.[0]; if (f) { setEvtLogoFile(f); setEvtLogoPreview(URL.createObjectURL(f)); } e.target.value = ""; }} />
                     </div>
                   </div>
+                  )}
 
                   {/* Event Details */}
+                  {createStep === 1 && (
                   <div className="space-y-4 mb-5">
                     <div>
-                      <label className="text-sm font-medium text-neutral-700 block mb-1.5">Event Name *</label>
-                      <input value={evtNom} onChange={(e) => setEvtNom(e.target.value)} placeholder="What's your event called?"
+                      <label className="text-sm font-medium text-neutral-700 block mb-1.5">Nom de l&apos;événement *</label>
+                      <input value={evtNom} onChange={(e) => setEvtNom(e.target.value)} placeholder="Ex: Concert privé, Masterclass, Soirée..."
                         className="w-full border border-neutral-200 rounded-lg px-3.5 py-2.5 text-sm text-neutral-900 placeholder:text-neutral-300 outline-none focus:border-neutral-400 focus:ring-2 focus:ring-neutral-100 transition" autoFocus />
                     </div>
                     <div className="grid grid-cols-2 gap-3">
                       <div>
-                        <label className="text-sm font-medium text-neutral-700 block mb-1.5">Venue *</label>
-                        <input value={evtLieu} onChange={(e) => setEvtLieu(e.target.value)} placeholder="Location name"
+                        <label className="text-sm font-medium text-neutral-700 block mb-1.5">Lieu *</label>
+                        <input value={evtLieu} onChange={(e) => setEvtLieu(e.target.value)} placeholder="Nom du lieu"
                           className="w-full border border-neutral-200 rounded-lg px-3.5 py-2.5 text-sm text-neutral-900 placeholder:text-neutral-300 outline-none focus:border-neutral-400 focus:ring-2 focus:ring-neutral-100 transition" />
                       </div>
                       <div>
-                        <label className="text-sm font-medium text-neutral-700 block mb-1.5">City</label>
-                        <input value={evtVille} onChange={(e) => setEvtVille(e.target.value)} placeholder="City"
+                        <label className="text-sm font-medium text-neutral-700 block mb-1.5">Ville</label>
+                        <input value={evtVille} onChange={(e) => setEvtVille(e.target.value)} placeholder="Ville"
                           className="w-full border border-neutral-200 rounded-lg px-3.5 py-2.5 text-sm text-neutral-900 placeholder:text-neutral-300 outline-none focus:border-neutral-400 focus:ring-2 focus:ring-neutral-100 transition" />
                       </div>
                     </div>
@@ -1335,7 +1410,7 @@ export default function EvenementsPage() {
                           className="w-full border border-neutral-200 rounded-lg px-3.5 py-2.5 text-sm text-neutral-900 outline-none focus:border-neutral-400 focus:ring-2 focus:ring-neutral-100 transition" />
                       </div>
                       <div>
-                        <label className="text-sm font-medium text-neutral-700 block mb-1.5">Time</label>
+                        <label className="text-sm font-medium text-neutral-700 block mb-1.5">Heure</label>
                         <input type="time" value={evtHeureDebut} onChange={(e) => setEvtHeureDebut(e.target.value)}
                           className="w-full border border-neutral-200 rounded-lg px-3.5 py-2.5 text-sm text-neutral-900 outline-none focus:border-neutral-400 focus:ring-2 focus:ring-neutral-100 transition" />
                       </div>
@@ -1343,32 +1418,35 @@ export default function EvenementsPage() {
 
                     {/* Category */}
                     <div>
-                      <label className="text-sm font-medium text-neutral-700 block mb-1.5">Category</label>
+                      <label className="text-sm font-medium text-neutral-700 block mb-1.5">Catégorie</label>
                       <select value={evtCategorie} onChange={(e) => setEvtCategorie(e.target.value)}
                         className="w-full border border-neutral-200 rounded-lg px-3.5 py-2.5 text-sm text-neutral-900 outline-none focus:border-neutral-400 focus:ring-2 focus:ring-neutral-100 transition bg-white">
-                        <option value="">Select a category</option>
+                        <option value="">Sélectionner une catégorie</option>
                         {categories.map((c) => (
                           <option key={c.id} value={c.id}>{c.icone} {c.nom}</option>
                         ))}
                       </select>
                     </div>
                   </div>
+                  )}
 
                   {/* Ticket Types */}
+                  {createStep === 2 && (
                   <div className="mb-5">
                     <div className="flex items-center justify-between mb-3">
-                      <label className="text-sm font-medium text-neutral-700">Tickets</label>
+                      <label className="text-sm font-medium text-neutral-700">Billets *</label>
                       <span className="text-xs text-neutral-400">{evtTicketTypes.length} type{evtTicketTypes.length > 1 ? "s" : ""}</span>
                     </div>
+                    <p className="text-xs text-neutral-400 mb-3">Indiquez au moins un nom, un prix et une quantité. Prix à 0 = billet gratuit.</p>
 
                     <div className="space-y-2">
                       {evtTicketTypes.map((ticket, idx) => (
                         <div key={idx} className="border border-neutral-200 rounded-xl p-4">
                           <div className="flex items-center gap-2 mb-3">
                             <div className="flex-1 min-w-0">
-                              <label className="text-xs text-neutral-400 block mb-1">Ticket name</label>
+                              <label className="text-xs text-neutral-400 block mb-1">Nom du billet</label>
                               <input value={ticket.nom} onChange={(e) => { const arr = [...evtTicketTypes]; arr[idx] = {...arr[idx], nom: e.target.value}; setEvtTicketTypes(arr); }}
-                                placeholder="e.g. VIP, Standard..."
+                                placeholder="Ex: Standard, VIP..."
                                 className="w-full text-sm font-medium text-neutral-900 placeholder:text-neutral-300 outline-none" />
                             </div>
                             {evtTicketTypes.length > 1 && (
@@ -1380,13 +1458,13 @@ export default function EvenementsPage() {
                           </div>
                           <div className="grid grid-cols-2 gap-3">
                             <div>
-                              <label className="text-xs text-neutral-400 block mb-1">Price ({devise})</label>
+                              <label className="text-xs text-neutral-400 block mb-1">Prix ({devise})</label>
                               <input type="number" inputMode="numeric" value={ticket.prix} onChange={(e) => { const arr = [...evtTicketTypes]; arr[idx] = {...arr[idx], prix: e.target.value}; setEvtTicketTypes(arr); }}
-                                placeholder="0 = free"
+                                placeholder="0 = gratuit"
                                 className="w-full border border-neutral-200 rounded-lg px-3 py-2 text-sm font-medium text-neutral-900 placeholder:text-neutral-300 outline-none focus:border-neutral-400 transition" />
                             </div>
                             <div>
-                              <label className="text-xs text-neutral-400 block mb-1">Capacity</label>
+                              <label className="text-xs text-neutral-400 block mb-1">Quantité</label>
                               <input type="number" inputMode="numeric" value={ticket.qty} onChange={(e) => { const arr = [...evtTicketTypes]; arr[idx] = {...arr[idx], qty: e.target.value}; setEvtTicketTypes(arr); }}
                                 placeholder="100"
                                 className="w-full border border-neutral-200 rounded-lg px-3 py-2 text-sm font-medium text-neutral-900 text-center placeholder:text-neutral-300 outline-none focus:border-neutral-400 transition" />
@@ -1398,24 +1476,67 @@ export default function EvenementsPage() {
 
                     <button onClick={() => { setEvtTicketTypes([...evtTicketTypes, {nom: "", prix: "", qty: "100"}]); hapticLight(); }}
                       className="w-full mt-2 flex items-center justify-center gap-1.5 text-xs font-medium text-neutral-400 py-2.5 rounded-lg border border-dashed border-neutral-200 hover:border-neutral-300 hover:text-neutral-600 transition">
-                      <Plus className="w-3.5 h-3.5" /> Add ticket type
+                      <Plus className="w-3.5 h-3.5" /> Ajouter un type de billet
                     </button>
                   </div>
+                  )}
 
                   {/* Description */}
+                  {createStep === 1 && (
                   <div className="mb-6">
-                    <label className="text-sm font-medium text-neutral-700 block mb-1.5">Description <span className="text-neutral-300 font-normal">(optional)</span></label>
-                    <textarea value={evtDesc} onChange={(e) => setEvtDesc(e.target.value)} rows={2} placeholder="Tell people about your event..."
+                    <label className="text-sm font-medium text-neutral-700 block mb-1.5">Description <span className="text-neutral-300 font-normal">(optionnel)</span></label>
+                    <textarea value={evtDesc} onChange={(e) => setEvtDesc(e.target.value)} rows={2} placeholder="Présentez votre événement en quelques mots..."
                       className="w-full border border-neutral-200 rounded-lg px-3.5 py-2.5 text-sm text-neutral-900 placeholder:text-neutral-300 outline-none focus:border-neutral-400 focus:ring-2 focus:ring-neutral-100 transition resize-none" />
                   </div>
+                  )}
 
-                  {/* Create Button */}
-                  <button onClick={handleCreateEvent} disabled={savingEvent || !evtNom.trim() || !evtDateDebut || !evtLieu.trim() || !evtLogoFile || !evtCoverFile}
-                    className="w-full flex items-center justify-center gap-2 py-2.5 rounded-lg font-medium text-sm transition-all disabled:opacity-30 active:scale-[0.98] bg-neutral-900 text-white hover:bg-neutral-800"
-                  >
-                    {savingEvent ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
-                    {savingEvent ? "Creating..." : "Create Event"}
-                  </button>
+                  {createStep === 4 && (
+                    <div className="mb-6 rounded-2xl border border-blue-100 bg-blue-50/70 p-4">
+                      <p className="text-sm font-bold text-neutral-900 mb-3">Prêt à publier</p>
+                      <div className="space-y-2 text-xs text-neutral-600">
+                        <div className="flex items-center justify-between"><span>Informations</span><span className={eventInfoValid ? "text-green-600 font-bold" : "text-red-500 font-bold"}>{eventInfoValid ? "OK" : "À compléter"}</span></div>
+                        <div className="flex items-center justify-between"><span>Billets</span><span className={ticketsValid ? "text-green-600 font-bold" : "text-red-500 font-bold"}>{ticketsValid ? "OK" : "À corriger"}</span></div>
+                        <div className="flex items-center justify-between"><span>Visuels</span><span className={visualsValid ? "text-green-600 font-bold" : "text-red-500 font-bold"}>{visualsValid ? "OK" : "À ajouter"}</span></div>
+                      </div>
+                      <p className="text-[11px] text-blue-700 mt-4">La billetterie sera publiée uniquement après création et upload réussi des images.</p>
+                    </div>
+                  )}
+
+                  {/* Wizard Actions */}
+                  <div className="flex gap-2">
+                    {createStep > 1 && (
+                      <button
+                        type="button"
+                        onClick={() => setCreateStep((Math.max(1, createStep - 1) as 1 | 2 | 3 | 4))}
+                        className="px-4 py-2.5 rounded-lg font-medium text-sm border border-neutral-200 text-neutral-600 hover:bg-neutral-50 transition"
+                      >
+                        Retour
+                      </button>
+                    )}
+                    {createStep < 4 ? (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          if (!canGoNext) {
+                            showToast("error", "Étape incomplète", "Complétez les champs requis pour continuer");
+                            return;
+                          }
+                          setCreateStep((Math.min(4, createStep + 1) as 1 | 2 | 3 | 4));
+                        }}
+                        disabled={!canGoNext}
+                        className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg font-medium text-sm transition-all disabled:opacity-30 active:scale-[0.98] bg-neutral-900 text-white hover:bg-neutral-800"
+                      >
+                        Continuer
+                      </button>
+                    ) : (
+                      <button onClick={handleCreateEvent} disabled={savingEvent || !eventInfoValid || !ticketsValid || !visualsValid}
+                        className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg font-medium text-sm transition-all disabled:opacity-30 active:scale-[0.98] bg-neutral-900 text-white hover:bg-neutral-800"
+                      >
+                        {savingEvent ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
+                        {savingEvent ? "Publication..." : "Publier la billetterie"}
+                      </button>
+                    )}
+                  </div>
 
                     </div>{/* END form fields */}
 
@@ -1423,7 +1544,7 @@ export default function EvenementsPage() {
                     <div className={`lg:w-[340px] shrink-0 lg:sticky lg:top-4 lg:self-start ${showTicketPreview ? "" : "hidden lg:block"}`}>
                       <div className="bg-neutral-50 rounded-2xl p-5 border border-neutral-100">
                         <p className="text-[10px] font-semibold text-neutral-400 uppercase tracking-wider mb-3 flex items-center gap-1.5">
-                          <Eye className="w-3 h-3" /> Live Preview
+                          <Eye className="w-3 h-3" /> Aperçu en direct
                         </p>
 
                         {/* Ticket Card */}
@@ -1453,10 +1574,10 @@ export default function EvenementsPage() {
                               </div>
                               <div className="pb-0.5">
                                 <p className="text-white text-xs font-bold leading-tight drop-shadow-sm line-clamp-1">
-                                  {evtNom || "Event Name"}
+                                  {evtNom || "Nom de l'événement"}
                                 </p>
                                 <p className="text-white/70 text-[9px] drop-shadow-sm">
-                                  {boutique?.nom || "Organizer"}
+                                  {boutique?.nom || "Organisateur"}
                                 </p>
                               </div>
                             </div>
@@ -1566,13 +1687,13 @@ export default function EvenementsPage() {
                   <div className="w-16 h-16 bg-neutral-100 rounded-2xl flex items-center justify-center mb-5">
                     <Ticket className="w-7 h-7 text-neutral-300" />
                   </div>
-                  <h3 className="text-base font-semibold text-neutral-900 mb-1">No events yet</h3>
-                  <p className="text-sm text-neutral-400 text-center max-w-[260px] mb-6">Create your first event and start selling tickets in seconds</p>
+                  <h3 className="text-base font-semibold text-neutral-900 mb-1">Aucune billetterie</h3>
+                  <p className="text-sm text-neutral-400 text-center max-w-[260px] mb-6">Créez votre première billetterie et commencez à vendre en quelques secondes</p>
                   <button
-                    onClick={() => { hapticMedium(); setShowAddEvent(true); }}
+                    onClick={() => { hapticMedium(); setCreateStep(1); setShowAddEvent(true); }}
                     className="flex items-center justify-center gap-2 bg-neutral-900 text-white px-6 py-2.5 rounded-lg font-medium text-sm transition hover:bg-neutral-800 active:scale-[0.98]"
                   >
-                    <Plus className="w-4 h-4" /> Create Event
+                    <Plus className="w-4 h-4" /> Créer une billetterie
                   </button>
                 </div>
               ) : (

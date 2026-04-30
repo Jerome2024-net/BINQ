@@ -46,7 +46,7 @@ export async function POST(req: NextRequest) {
     const supabase = getServiceClient();
     const body = await req.json();
 
-    const { nom, description, date_debut, heure_debut, date_fin, heure_fin, lieu, adresse, ville, boutique_id, devise, ticket_types, categorie_id } = body;
+    const { nom, description, date_debut, heure_debut, date_fin, heure_fin, lieu, adresse, ville, boutique_id, devise, ticket_types, categorie_id, is_published } = body;
 
     if (!nom?.trim() || !date_debut || !lieu?.trim() || !boutique_id) {
       return NextResponse.json({ error: "Nom, date, lieu et boutique requis" }, { status: 400 });
@@ -81,7 +81,7 @@ export async function POST(req: NextRequest) {
         ville: ville?.trim() || null,
         devise: devise || "XOF",
         categorie_id: categorie_id || null,
-        is_published: true,
+        is_published: is_published === false ? false : true,
       })
       .select()
       .single();
