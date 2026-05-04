@@ -247,7 +247,7 @@ export default function AccessDashboardPage() {
           </div>
           <p className="text-[16px] font-bold text-gray-900 mb-1">Commencez par créer un espace</p>
           <p className="text-[13px] text-gray-500 mb-4">
-            Un espace représente un lieu ou une zone à contrôler (bureau, entrepôt, événement...).
+            Un espace représente un lieu ou une zone à contrôler (bureau, entrepôt, point relais...).
           </p>
           <Link
             href="/access/espaces"

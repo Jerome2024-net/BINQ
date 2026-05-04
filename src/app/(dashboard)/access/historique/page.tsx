@@ -156,7 +156,7 @@ export default function HistoriquePage() {
           </div>
           <p className="text-[16px] font-bold text-gray-900 mb-1">Aucun historique</p>
           <p className="text-[13px] text-gray-500">
-            Les événements de scan apparaîtront ici.
+            Les activités de scan apparaîtront ici.
           </p>
         </div>
       ) : (

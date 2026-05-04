@@ -146,7 +146,7 @@ export default function DashboardPage() {
             Bienvenue {user?.prenom || "sur Binq"}, ouvrez votre commerce.
           </h1>
           <p className="mt-4 text-base sm:text-lg text-slate-600 max-w-xl mx-auto leading-relaxed">
-            Binq n&apos;est plus centré sur la billetterie : votre espace sert maintenant à vendre vos produits, recevoir des commandes et organiser les livraisons locales.
+            Votre espace sert à vendre vos produits, recevoir des commandes et organiser les livraisons locales.
           </p>
 
           <div className="mt-8 grid sm:grid-cols-3 gap-3 text-left">

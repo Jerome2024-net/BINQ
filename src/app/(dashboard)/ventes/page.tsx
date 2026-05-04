@@ -1,41 +1,22 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { useAuth } from "@/contexts/AuthContext";
 import { formatMontant } from "@/lib/currencies";
 import type { DeviseCode } from "@/lib/currencies";
-import {
-  TrendingUp,
-  Ticket,
-  Calendar,
-  Plus,
-  ChevronRight,
-  Loader2,
-  Sparkles,
-  Zap,
-  BarChart3,
-} from "lucide-react";
+import { BarChart3, Loader2, Package, ShoppingBag, Store, TrendingUp, Truck } from "lucide-react";
 
-interface EventSale {
-  id: string;
-  nom: string;
-  date_debut: string;
-  lieu: string;
-  ville: string | null;
-  total_vendu: number;
-  revenus: string;
-  logo_url: string | null;
-}
+interface Produit { id: string; nom: string; prix: number; devise?: string; image_url?: string | null; stock?: number | null; ventes?: number | null; }
+interface Commande { id: string; statut: string; montant?: number; montant_total?: number; devise?: string; client_nom?: string | null; }
 
 export default function VentesPage() {
-  const { user } = useAuth();
-  const [events, setEvents] = useState<EventSale[]>([]);
+  const [produits, setProduits] = useState<Produit[]>([]);
+  const [commandes, setCommandes] = useState<Commande[]>([]);
+  const [stats, setStats] = useState({ totalProduits: 0, totalCommandes: 0, totalVentes: 0, vues: 0 });
+  const [hasBoutique, setHasBoutique] = useState(false);
   const [loading, setLoading] = useState(true);
   const [devise] = useState<DeviseCode>(() => {
-    if (typeof window !== "undefined") {
-      return (localStorage.getItem("binq_devise") as DeviseCode) || "XOF";
-    }
+    if (typeof window !== "undefined") return (localStorage.getItem("binq_devise") as DeviseCode) || "XOF";
     return "XOF";
   });
 
@@ -44,10 +25,13 @@ export default function VentesPage() {
       try {
         const meRes = await fetch("/api/boutiques/me");
         const meData = await meRes.json();
+        setHasBoutique(Boolean(meData.boutique));
+        setProduits(Array.isArray(meData.produits) ? meData.produits : []);
+        setStats(meData.stats || { totalProduits: 0, totalCommandes: 0, totalVentes: 0, vues: 0 });
         if (meData.boutique) {
-          const evtRes = await fetch(`/api/events?boutique_id=${meData.boutique.id}`);
-          const evtData = await evtRes.json();
-          setEvents(Array.isArray(evtData) ? evtData : []);
+          const orderRes = await fetch("/api/commandes?role=vendeur&limit=50");
+          const orderData = await orderRes.json();
+          setCommandes(Array.isArray(orderData.commandes) ? orderData.commandes : []);
         }
       } catch { /* ignore */ }
       finally { setLoading(false); }
@@ -55,155 +39,55 @@ export default function VentesPage() {
     load();
   }, []);
 
-  if (loading) {
+  const deliveredOrders = useMemo(() => commandes.filter((c) => c.statut === "livree" || c.statut === "payee"), [commandes]);
+  const revenue = stats.totalVentes || deliveredOrders.reduce((sum, c) => sum + Number(c.montant_total || c.montant || 0), 0);
+  const totalUnits = produits.reduce((sum, p) => sum + Number(p.ventes || 0), 0);
+  const averageOrder = commandes.length > 0 ? revenue / commandes.length : 0;
+  const bestProducts = [...produits].sort((a, b) => Number(b.ventes || 0) - Number(a.ventes || 0)).slice(0, 5);
+
+  if (loading) return <div className="min-h-[60vh] flex items-center justify-center"><Loader2 className="w-6 h-6 text-emerald-600 animate-spin" /></div>;
+
+  if (!hasBoutique) {
     return (
-      <div className="min-h-[60vh] flex items-center justify-center">
-        <div className="w-6 h-6 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
+      <div className="min-h-[60vh] flex items-center justify-center text-center">
+        <div className="max-w-sm">
+          <Store className="w-12 h-12 text-emerald-200 mx-auto mb-4" />
+          <h1 className="text-2xl font-black text-slate-950">Aucun commerce</h1>
+          <p className="text-sm text-slate-500 mt-2">Créez votre boutique pour suivre vos ventes, commandes et produits.</p>
+          <Link href="/ma-boutique" className="mt-5 inline-flex items-center gap-2 rounded-2xl bg-emerald-600 px-5 py-3 text-sm font-black text-white">Créer ma boutique</Link>
+        </div>
       </div>
     );
   }
 
-  const totalRevenus = events.reduce((sum, e) => sum + (parseFloat(e.revenus) || 0), 0);
-  const totalBillets = events.reduce((sum, e) => sum + (e.total_vendu || 0), 0);
-  const eventsWithSales = events
-    .filter((e) => (parseFloat(e.revenus) || 0) > 0 || (e.total_vendu || 0) > 0)
-    .sort((a, b) => (parseFloat(b.revenus) || 0) - (parseFloat(a.revenus) || 0));
-
-  const avgRevenuePerTicket = totalBillets > 0 ? totalRevenus / totalBillets : 0;
-  const bestEvent = eventsWithSales[0] || null;
-
   return (
-    <div className="px-5 pt-8 pb-28 lg:pb-10 min-h-screen bg-gradient-to-br from-[#f7f9fe] via-[#fafbff] to-[#f3f5fd] relative overflow-hidden">
-      <div className="absolute -top-24 -left-32 w-96 h-96 bg-blue-300/10 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute -top-20 -right-36 w-80 h-80 bg-indigo-300/8 rounded-full blur-3xl pointer-events-none" />
-
-      <div className="relative z-10 max-w-6xl mx-auto">
-        <div className="flex items-center gap-2 mb-2">
-          <Sparkles className="w-4 h-4 text-blue-600" />
-          <p className="text-xs font-semibold text-blue-600 uppercase tracking-wide">Performance</p>
-        </div>
-        <h1 className="text-[24px] lg:text-[32px] font-black tracking-tight text-gray-900">Ventes</h1>
-
-        <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3">
-          <div className="bg-gradient-to-br from-blue-600 to-blue-700 rounded-2xl p-5 text-white shadow-lg shadow-blue-500/20">
-            <div className="flex items-center gap-2 mb-2">
-              <TrendingUp className="w-4 h-4 text-blue-200" />
-              <span className="text-xs text-blue-100 font-semibold uppercase tracking-wide">Total généré</span>
-            </div>
-            <p className="text-[28px] font-black leading-none">{formatMontant(totalRevenus, devise)}</p>
-          </div>
-
-          <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-4 border border-white/80">
-            <div className="flex items-center gap-2 mb-2">
-              <Ticket className="w-4 h-4 text-indigo-500" />
-              <span className="text-xs text-indigo-600 font-semibold uppercase tracking-wide">Billets</span>
-            </div>
-            <p className="text-2xl font-black text-gray-900">{totalBillets}</p>
-            <p className="text-xs text-gray-500 mt-1">vendus</p>
-          </div>
-
-          <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-4 border border-white/80">
-            <div className="flex items-center gap-2 mb-2">
-              <BarChart3 className="w-4 h-4 text-violet-500" />
-              <span className="text-xs text-violet-600 font-semibold uppercase tracking-wide">Ticket moyen</span>
-            </div>
-            <p className="text-2xl font-black text-gray-900">{formatMontant(avgRevenuePerTicket, devise)}</p>
-            <p className="text-xs text-gray-500 mt-1">par billet vendu</p>
-          </div>
-
-          <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-4 border border-white/80">
-            <div className="flex items-center gap-2 mb-2">
-              <Zap className="w-4 h-4 text-green-500" />
-              <span className="text-xs text-green-600 font-semibold uppercase tracking-wide">Top event</span>
-            </div>
-            <p className="text-sm font-black text-gray-900 truncate">{bestEvent?.nom || "Aucun"}</p>
-            <p className="text-xs text-gray-500 mt-1">meilleure billetterie</p>
-          </div>
-        </div>
-
-      {/* Liste des transactions par événement */}
-      {eventsWithSales.length > 0 ? (
-        <div className="mt-8">
-          <h2 className="text-sm font-bold text-gray-700 mb-3">Par billetterie</h2>
-          <div className="space-y-2">
-            {eventsWithSales.map((evt) => (
-              <Link
-                key={evt.id}
-                href="/evenements"
-                className="flex items-center gap-3 bg-white/75 backdrop-blur-sm rounded-xl border border-white/80 p-3.5 hover:border-blue-200 hover:bg-blue-50/40 transition-all duration-300 active:scale-[0.99]"
-              >
-                {/* Logo ou date */}
-                {evt.logo_url ? (
-                  <img src={evt.logo_url} alt="" className="w-11 h-11 rounded-xl object-cover shrink-0" />
-                ) : (
-                  <div className="w-11 h-11 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-xl flex items-center justify-center shrink-0">
-                    <Calendar className="w-5 h-5 text-white/80" />
-                  </div>
-                )}
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-bold text-gray-900 truncate">{evt.nom}</p>
-                  <p className="text-[11px] text-gray-500">
-                    {evt.total_vendu} billet{evt.total_vendu > 1 ? "s" : ""}
-                  </p>
-                </div>
-                <p className="text-sm font-black text-gray-900 shrink-0">
-                  {formatMontant(parseFloat(evt.revenus) || 0, devise)}
-                </p>
-              </Link>
-            ))}
-          </div>
-        </div>
-      ) : events.length > 0 ? (
-        /* Événements existent mais aucune vente */
-        <div className="mt-12 text-center py-8 bg-white/60 backdrop-blur-sm border border-white/80 rounded-2xl">
-          <Ticket className="w-12 h-12 text-gray-200 mx-auto mb-3" />
-          <p className="text-sm font-semibold text-gray-500">Aucune vente encore</p>
-          <p className="text-xs text-gray-400 mt-1">Partagez vos billetteries pour vendre des billets</p>
-        </div>
-      ) : (
-        /* Aucun événement */
-        <div className="mt-12 text-center py-8 bg-white/60 backdrop-blur-sm border border-white/80 rounded-2xl">
-          <Calendar className="w-12 h-12 text-gray-200 mx-auto mb-3" />
-          <p className="text-sm font-semibold text-gray-500">Aucune billetterie</p>
-          <p className="text-xs text-gray-400 mt-1">Créez une billetterie pour commencer à vendre</p>
-          <Link
-            href="/evenements?action=create"
-            className="inline-flex items-center gap-2 mt-5 px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-2xl font-bold text-sm transition hover:shadow-lg hover:shadow-blue-500/25 active:scale-[0.97]"
-          >
-            <Plus className="w-4 h-4" />
-            Créer une billetterie
-          </Link>
-        </div>
-      )}
-
-      {/* Tous les événements — incluant ceux sans ventes */}
-      {events.length > 0 && eventsWithSales.length < events.length && eventsWithSales.length > 0 && (
-        <div className="mt-6">
-          <h2 className="text-sm font-bold text-gray-700 mb-3">Sans ventes</h2>
-          <div className="space-y-2">
-            {events
-              .filter((e) => (parseFloat(e.revenus) || 0) === 0 && (e.total_vendu || 0) === 0)
-              .map((evt) => (
-                <div
-                  key={evt.id}
-                  className="flex items-center gap-3 bg-white/45 border border-white/70 rounded-xl p-3.5"
-                >
-                  <div className="w-11 h-11 bg-gray-200 rounded-xl flex items-center justify-center shrink-0">
-                    <Calendar className="w-5 h-5 text-gray-400" />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-semibold text-gray-500 truncate">{evt.nom}</p>
-                    <p className="text-[11px] text-gray-300">0 billet</p>
-                  </div>
-                  <p className="text-sm font-bold text-gray-300 shrink-0">
-                    {formatMontant(0, devise)}
-                  </p>
-                </div>
-              ))}
-          </div>
-        </div>
-      )}
+    <div className="pb-24 lg:pb-8 space-y-6">
+      <div>
+        <p className="text-xs font-black uppercase tracking-[0.18em] text-emerald-700">Performance commerce</p>
+        <h1 className="text-3xl font-black tracking-[-0.05em] text-slate-950 mt-1">Stats des ventes</h1>
+        <p className="text-sm text-slate-500 mt-2">Suivez vos produits, commandes et revenus marchands.</p>
       </div>
+
+      <section className="grid sm:grid-cols-2 xl:grid-cols-4 gap-3">
+        {[
+          { icon: TrendingUp, label: "Chiffre d'affaires", value: formatMontant(revenue, devise), hint: "encaissé" },
+          { icon: ShoppingBag, label: "Commandes", value: String(stats.totalCommandes || commandes.length), hint: "total" },
+          { icon: Package, label: "Articles vendus", value: String(totalUnits), hint: "unités" },
+          { icon: BarChart3, label: "Panier moyen", value: formatMontant(averageOrder, devise), hint: "par commande" },
+        ].map((card) => <div key={card.label} className="rounded-[1.5rem] border border-slate-100 bg-white p-5 shadow-sm"><div className="flex items-center justify-between mb-4"><div className="w-11 h-11 rounded-2xl bg-emerald-50 flex items-center justify-center"><card.icon className="w-5 h-5 text-emerald-600" /></div><span className="text-[11px] font-bold uppercase text-slate-400">{card.hint}</span></div><p className="text-xs font-black uppercase tracking-wide text-slate-500">{card.label}</p><p className="text-2xl font-black text-slate-950 mt-1">{card.value}</p></div>)}
+      </section>
+
+      <section className="grid lg:grid-cols-[1fr_0.9fr] gap-5">
+        <div className="rounded-[1.75rem] border border-slate-100 bg-white p-5 shadow-sm">
+          <div className="flex items-center justify-between mb-5"><div><h2 className="text-lg font-black text-slate-950">Produits les plus vendus</h2><p className="text-sm text-slate-500">Classement par volume de ventes.</p></div><Link href="/ma-boutique" className="text-sm font-black text-emerald-700">Catalogue</Link></div>
+          {bestProducts.length === 0 ? <div className="py-12 text-center rounded-2xl bg-slate-50"><Package className="w-10 h-10 text-slate-300 mx-auto mb-3" /><p className="font-bold text-slate-700">Aucune vente produit</p><p className="text-sm text-slate-400">Ajoutez et partagez vos produits.</p></div> : <div className="space-y-2">{bestProducts.map((produit) => <Link key={produit.id} href={`/produit/${produit.id}`} className="flex items-center gap-3 rounded-2xl border border-slate-100 p-3 hover:bg-emerald-50/40 transition"><div className="w-12 h-12 rounded-2xl bg-slate-100 overflow-hidden flex items-center justify-center">{produit.image_url ? <img src={produit.image_url} alt="" className="w-full h-full object-cover" /> : <Package className="w-5 h-5 text-slate-300" />}</div><div className="flex-1 min-w-0"><p className="text-sm font-black text-slate-950 truncate">{produit.nom}</p><p className="text-xs text-slate-500">{Number(produit.ventes || 0)} vente{Number(produit.ventes || 0) > 1 ? "s" : ""}</p></div><p className="text-sm font-black text-slate-950">{formatMontant(Number(produit.prix || 0), (produit.devise as DeviseCode) || devise)}</p></Link>)}</div>}
+        </div>
+
+        <div className="rounded-[1.75rem] border border-slate-100 bg-white p-5 shadow-sm">
+          <div className="flex items-center justify-between mb-5"><div><h2 className="text-lg font-black text-slate-950">Flux commandes</h2><p className="text-sm text-slate-500">Activité récente côté livraison.</p></div><Truck className="w-5 h-5 text-emerald-600" /></div>
+          {commandes.length === 0 ? <p className="text-sm text-slate-400">Aucune commande récente.</p> : <div className="space-y-2">{commandes.slice(0, 6).map((commande) => <Link key={commande.id} href="/commandes" className="flex items-center justify-between rounded-2xl bg-slate-50 p-3 hover:bg-emerald-50 transition"><div className="min-w-0"><p className="text-sm font-black text-slate-950 truncate">{commande.client_nom || "Client"}</p><p className="text-xs text-slate-500">{commande.statut}</p></div><p className="text-sm font-black text-slate-950">{formatMontant(Number(commande.montant_total || commande.montant || 0), (commande.devise as DeviseCode) || devise)}</p></Link>)}</div>}
+        </div>
+      </section>
     </div>
   );
 }
