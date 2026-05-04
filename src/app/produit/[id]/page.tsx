@@ -103,6 +103,14 @@ export default function ProduitPage() {
         showToast("error", "Erreur", data.error || "Erreur");
         return;
       }
+      if (data.payment_url) {
+        window.location.href = data.payment_url;
+        return;
+      }
+      if (data.code) {
+        router.push(`/pay/${data.code}`);
+        return;
+      }
       setBought(true);
       setBoughtRef(data.reference);
       hapticSuccess();

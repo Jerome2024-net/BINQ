@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import { getAuthenticatedUser } from "@/lib/api-auth";
+import { createFedaPayPayment, isFedaPayConfigured } from "@/lib/fedapay";
 
 function getServiceClient() {
   return createClient(
@@ -55,6 +56,31 @@ export async function POST(req: NextRequest) {
 
     // Generate reference
     const ref = `MKT-${Date.now().toString(36).toUpperCase()}`;
+
+    if (isFedaPayConfigured()) {
+      const appUrl = process.env.NEXT_PUBLIC_APP_URL || new URL(req.url).origin;
+      const transactionId = ref;
+      const { payment_url } = await createFedaPayPayment({
+        transaction_id: transactionId,
+        amount: montant,
+        currency: devise,
+        description: `Achat ${produit.nom} — ${boutique.nom}`,
+        return_url: `${appUrl}/payment/success?method=fedapay&product=${produit.id}&ref=${ref}`,
+        notify_url: `${appUrl}/api/webhooks/fedapay`,
+        customer_name: `${user.user_metadata?.prenom || user.email || "Client"} ${user.user_metadata?.nom || "Binq"}`,
+        customer_email: user.email || undefined,
+      });
+
+      return NextResponse.json({
+        requires_payment: true,
+        payment_url,
+        reference: ref,
+        montant,
+        devise,
+        produit: { nom: produit.nom, image_url: produit.image_url },
+        boutique: { nom: boutique.nom },
+      });
+    }
 
     // Create a payment link — buyer will pay via Stripe / mobile money
     const code = `mkt-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 6)}`;
