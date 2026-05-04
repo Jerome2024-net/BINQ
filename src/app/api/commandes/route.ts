@@ -187,6 +187,21 @@ export async function POST(request: NextRequest) {
     const reference = `CMD-${Date.now().toString(36).toUpperCase()}`;
     const firstLine = lignes[0];
 
+    if (montantTotal < 1) {
+      return NextResponse.json({ error: "Montant de commande invalide" }, { status: 400 });
+    }
+
+    if (!isFedaPayConfigured()) {
+      console.error("FedaPay checkout disabled: FEDAPAY_SECRET_KEY missing on server");
+      return NextResponse.json(
+        {
+          error: "Paiement FedaPay non configuré sur le serveur. Ajoutez FEDAPAY_SECRET_KEY en production puis redéployez.",
+          code: "FEDAPAY_NOT_CONFIGURED",
+        },
+        { status: 503 }
+      );
+    }
+
     const legacyNote = JSON.stringify({
       type: "local_delivery",
       client_nom: clientNom,
@@ -240,7 +255,7 @@ export async function POST(request: NextRequest) {
           vendeur_id: boutique.user_id,
           montant: montantTotal,
           devise,
-          statut: "payee",
+          statut: "nouvelle",
           methode_paiement: "mobile_money",
           reference,
           note: legacyNote,
@@ -266,9 +281,9 @@ export async function POST(request: NextRequest) {
         }))
       );
 
-      if (isFedaPayConfigured()) {
+      try {
         const appUrl = process.env.NEXT_PUBLIC_APP_URL || new URL(request.url).origin;
-        const { payment_url } = await createFedaPayPayment({
+        const { payment_url, provider_transaction_id } = await createFedaPayPayment({
           transaction_id: reference,
           amount: montantTotal,
           currency: devise,
@@ -276,13 +291,14 @@ export async function POST(request: NextRequest) {
           return_url: `${appUrl}/payment/success?method=fedapay&order=${commande.id}&ref=${reference}`,
           notify_url: `${appUrl}/api/webhooks/fedapay`,
           customer_name: clientNom,
-          customer_email: user?.email || undefined,
+          customer_phone_number: clientTelephone,
         });
 
         return NextResponse.json({
           success: true,
           requires_payment: true,
           payment_url,
+          provider_transaction_id,
           commande: {
             ...commande,
             reference,
@@ -300,26 +316,14 @@ export async function POST(request: NextRequest) {
             boutique: { id: boutique.id, nom: boutique.nom, slug: boutique.slug, logo_url: boutique.logo_url },
           },
         }, { status: 201 });
+      } catch (paymentErr: any) {
+        await supabase.from("commandes").update({ statut: "annulee" }).eq("id", commande.id);
+        console.error("FedaPay checkout error:", paymentErr);
+        return NextResponse.json(
+          { error: paymentErr.message || "Impossible de générer le lien de paiement FedaPay" },
+          { status: 502 }
+        );
       }
-
-      await Promise.allSettled(
-        lignes.map((ligne) => {
-          const updates: Record<string, number> = {
-            ventes: Number(ligne.produit.ventes || 0) + ligne.quantite,
-          };
-          if (ligne.produit.stock !== null) {
-            updates.stock = Math.max(0, Number(ligne.produit.stock) - ligne.quantite);
-          }
-          return supabase.from("produits").update(updates).eq("id", ligne.produit.id);
-        })
-      );
-
-      await supabase.from("notifications").insert({
-        user_id: boutique.user_id,
-        titre: "Nouvelle commande",
-        message: `${clientNom} a commandé ${lignes.reduce((sum, ligne) => sum + ligne.quantite, 0)} article(s) pour ${montantTotal} ${devise}`,
-        lu: false,
-      });
     }
 
     return NextResponse.json({

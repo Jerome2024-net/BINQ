@@ -141,7 +141,7 @@ export async function POST(req: NextRequest) {
       });
 
       console.log(`FedaPay webhook: commande commerce ${transactionId} marquée payée`);
-      return NextResponse.json({ received: true });
+      return NextResponse.json({ received: true, payment_confirmed: true, order_confirmed: true });
     }
 
     if (pendingOrder.status === "completed") {
