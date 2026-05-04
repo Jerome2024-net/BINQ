@@ -12,11 +12,11 @@ import {
   User,
   X,
   Home,
-  Calendar,
   Wallet,
   TrendingUp,
-  Plus,
   QrCode,
+  Store,
+  ShoppingBag,
 } from "lucide-react";
 
 interface Notification {
@@ -28,10 +28,11 @@ interface Notification {
 }
 
 const bottomTabs = [
-  { href: "/dashboard", label: "Home", icon: Home },
-  { href: "/evenements", label: "Events", icon: Calendar },
-  { href: "/portefeuille", label: "Wallet", icon: Wallet },
-  { href: "/ventes", label: "Analytics", icon: TrendingUp },
+  { href: "/dashboard", label: "Accueil", icon: Home },
+  { href: "/ma-boutique", label: "Boutique", icon: Store },
+  { href: "/commandes", label: "Commandes", icon: ShoppingBag },
+  { href: "/ventes", label: "Stats", icon: TrendingUp },
+  { href: "/portefeuille", label: "Solde", icon: Wallet },
 ];
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
@@ -132,7 +133,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         <aside className="hidden lg:flex lg:flex-col lg:w-[220px] lg:fixed lg:inset-y-0 lg:left-0 lg:z-50 lg:border-r lg:border-neutral-200 bg-white">
           {/* Logo */}
           <div className="flex items-center gap-2 px-5 h-14 border-b border-neutral-200">
-            <div className="w-7 h-7 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center shadow-sm shadow-blue-500/30">
+            <div className="w-7 h-7 bg-gradient-to-br from-emerald-500 via-green-500 to-yellow-400 rounded-lg flex items-center justify-center shadow-sm shadow-emerald-500/30">
               <QrCode className="w-3.5 h-3.5 text-white" />
             </div>
             <span className="font-semibold text-[15px] text-neutral-900">Binq</span>
@@ -148,11 +149,11 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                   href={tab.href}
                   className={`flex items-center gap-2.5 px-3 py-2 rounded-lg text-[13px] font-medium transition-colors duration-150 ${
                     isActive
-                      ? "bg-neutral-100 text-neutral-900"
+                      ? "bg-emerald-50 text-emerald-700"
                       : "text-neutral-500 hover:bg-neutral-50 hover:text-neutral-900"
                   }`}
                 >
-                  <tab.icon className={`w-4 h-4 ${isActive ? "text-neutral-900" : "text-neutral-400"}`} />
+                  <tab.icon className={`w-4 h-4 ${isActive ? "text-emerald-600" : "text-neutral-400"}`} />
                   {tab.label}
                 </Link>
               );
@@ -185,7 +186,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           <div className="flex items-center justify-between px-4 sm:px-6 lg:px-8 h-14 max-w-5xl mx-auto">
             {/* Left: Logo (mobile) */}
             <Link href="/dashboard" className="flex items-center gap-2 lg:hidden">
-              <div className="w-7 h-7 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center shadow-sm shadow-blue-500/30">
+              <div className="w-7 h-7 bg-gradient-to-br from-emerald-500 via-green-500 to-yellow-400 rounded-lg flex items-center justify-center shadow-sm shadow-emerald-500/30">
                 <QrCode className="w-3.5 h-3.5 text-white" />
               </div>
               <span className="font-semibold text-[15px]">Binq</span>
@@ -215,7 +216,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                       <h3 className="text-sm font-semibold">Notifications</h3>
                       {unreadCount > 0 && (
                         <button onClick={markAllRead} className="text-xs font-medium text-neutral-500 hover:text-neutral-900 transition-colors">
-                          Mark all read
+                          Tout lire
                         </button>
                       )}
                     </div>
@@ -223,7 +224,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                       {notifications.length === 0 ? (
                         <div className="py-10 text-center">
                           <Bell className="w-5 h-5 text-neutral-300 mx-auto mb-2" />
-                          <p className="text-sm text-neutral-400">No notifications</p>
+                          <p className="text-sm text-neutral-400">Aucune notification</p>
                         </div>
                       ) : (
                         <div className="divide-y divide-neutral-100">
@@ -231,7 +232,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                             <div key={notif.id} className={`px-4 py-3 ${notif.lu ? "opacity-50" : ""}`}>
                               <div className="flex justify-between items-start gap-3">
                                 <span className="text-sm font-medium text-neutral-900">{notif.titre}</span>
-                                {!notif.lu && <span className="w-1.5 h-1.5 rounded-full bg-blue-500 shrink-0 mt-1.5" />}
+                                {!notif.lu && <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0 mt-1.5" />}
                               </div>
                               <p className="text-xs text-neutral-500 mt-0.5 leading-relaxed">{notif.message}</p>
                               <span className="text-[11px] text-neutral-400 mt-0.5 block">{formatTimeAgo(notif.created_at)}</span>
@@ -295,7 +296,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                   key={tab.href}
                   href={tab.href}
                   className={`flex flex-col items-center justify-center gap-0.5 w-16 py-1 transition-colors duration-150 ${
-                    isActive ? "text-neutral-900" : "text-neutral-400"
+                    isActive ? "text-emerald-700" : "text-neutral-400"
                   }`}
                 >
                   <tab.icon className="w-5 h-5" />
