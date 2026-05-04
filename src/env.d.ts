@@ -6,6 +6,10 @@ declare namespace NodeJS {
     NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: string;
     STRIPE_SECRET_KEY: string;
     STRIPE_WEBHOOK_SECRET: string;
+    FEDAPAY_PUBLIC_KEY?: string;
+    FEDAPAY_SECRET_KEY?: string;
+    FEDAPAY_WEBHOOK_SECRET?: string;
+    CRON_SECRET?: string;
     RESEND_API_KEY: string;
     NEXT_PUBLIC_APP_URL?: string;
     PORT?: string;
