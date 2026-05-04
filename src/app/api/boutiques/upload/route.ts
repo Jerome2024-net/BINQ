@@ -1,15 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createClient } from "@supabase/supabase-js";
 import { getAuthenticatedUser } from "@/lib/api-auth";
-
-const supabaseAdmin = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
+import { supabaseAdmin } from "@/lib/supabase/admin";
 
 async function ensureBucket() {
   const { data: buckets } = await supabaseAdmin.storage.listBuckets();
-  const exists = buckets?.some((b) => b.name === "boutiques");
+  const exists = buckets?.some((b: any) => b.name === "boutiques");
   if (!exists) {
     await supabaseAdmin.storage.createBucket("boutiques", {
       public: true,
