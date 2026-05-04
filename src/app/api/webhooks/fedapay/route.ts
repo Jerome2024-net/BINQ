@@ -38,6 +38,7 @@ function extractStatus(body: any): string {
   return String(
     body?.entity?.status ||
       body?.data?.entity?.status ||
+      body?.["v1/transaction"]?.status ||
       body?.status ||
       body?.payment_status ||
       "unknown"
@@ -86,7 +87,60 @@ export async function POST(req: NextRequest) {
       .single();
 
     if (!pendingOrder) {
-      console.log(`FedaPay webhook: aucune commande pending pour ${transactionId}`);
+      const { data: commande } = await supabase
+        .from("commandes")
+        .select("*")
+        .eq("reference", transactionId)
+        .single();
+
+      if (!commande) {
+        console.log(`FedaPay webhook: aucune commande pending pour ${transactionId}`);
+        return NextResponse.json({ received: true });
+      }
+
+      if (commande.statut === "payee") {
+        console.log(`FedaPay webhook: commande commerce ${transactionId} déjà payée`);
+        return NextResponse.json({ received: true, already_processed: true });
+      }
+
+      await supabase
+        .from("commandes")
+        .update({ statut: "payee" })
+        .eq("id", commande.id);
+
+      const { data: items } = await supabase
+        .from("commande_items")
+        .select("produit_id, quantite")
+        .eq("commande_id", commande.id);
+
+      await Promise.allSettled(
+        (items || []).map(async (item: any) => {
+          const { data: produit } = await supabase
+            .from("produits")
+            .select("stock, ventes")
+            .eq("id", item.produit_id)
+            .single();
+
+          if (!produit) return;
+
+          const updates: Record<string, number> = {
+            ventes: Number(produit.ventes || 0) + Number(item.quantite || 1),
+          };
+          if (produit.stock !== null) {
+            updates.stock = Math.max(0, Number(produit.stock || 0) - Number(item.quantite || 1));
+          }
+          await supabase.from("produits").update(updates).eq("id", item.produit_id);
+        })
+      );
+
+      await supabase.from("notifications").insert({
+        user_id: commande.vendeur_id,
+        titre: "Commande payée",
+        message: `${commande.client_nom || "Un client"} a payé la commande ${transactionId}`,
+        lu: false,
+      });
+
+      console.log(`FedaPay webhook: commande commerce ${transactionId} marquée payée`);
       return NextResponse.json({ received: true });
     }
 

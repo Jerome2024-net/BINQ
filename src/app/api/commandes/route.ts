@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import { getAuthenticatedUser } from "@/lib/api-auth";
+import { createFedaPayPayment, isFedaPayConfigured } from "@/lib/fedapay";
 
 function getServiceClient() {
   return createClient(
@@ -264,6 +265,42 @@ export async function POST(request: NextRequest) {
           devise,
         }))
       );
+
+      if (isFedaPayConfigured()) {
+        const appUrl = process.env.NEXT_PUBLIC_APP_URL || new URL(request.url).origin;
+        const { payment_url } = await createFedaPayPayment({
+          transaction_id: reference,
+          amount: montantTotal,
+          currency: devise,
+          description: `Commande ${reference} — ${boutique.nom}`,
+          return_url: `${appUrl}/payment/success?method=fedapay&order=${commande.id}&ref=${reference}`,
+          notify_url: `${appUrl}/api/webhooks/fedapay`,
+          customer_name: clientNom,
+          customer_email: user?.email || undefined,
+        });
+
+        return NextResponse.json({
+          success: true,
+          requires_payment: true,
+          payment_url,
+          commande: {
+            ...commande,
+            reference,
+            sous_total: sousTotal,
+            frais_livraison: fraisLivraison,
+            montant_total: montantTotal,
+            items: lignes.map((ligne) => ({
+              produit_id: ligne.produit.id,
+              nom: ligne.produit.nom,
+              image_url: ligne.produit.image_url,
+              quantite: ligne.quantite,
+              prix_unitaire: ligne.prix_unitaire,
+              total: ligne.total,
+            })),
+            boutique: { id: boutique.id, nom: boutique.nom, slug: boutique.slug, logo_url: boutique.logo_url },
+          },
+        }, { status: 201 });
+      }
 
       await Promise.allSettled(
         lignes.map((ligne) => {

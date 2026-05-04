@@ -210,6 +210,10 @@ export default function BoutiquePage() {
         setCheckoutError(data.error || "Impossible de créer la commande.");
         return;
       }
+      if (data.payment_url) {
+        window.location.href = data.payment_url;
+        return;
+      }
       setOrderSuccess({ reference: data.commande?.reference || "CMD", total: totalCart });
       setCart([]);
     } catch {
