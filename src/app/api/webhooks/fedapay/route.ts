@@ -21,8 +21,13 @@ function getServiceClient() {
 function extractTransactionId(body: any): string | null {
   const tx =
     body?.entity?.metadata?.transaction_id ||
+    body?.entity?.custom_metadata?.transaction_id ||
     body?.data?.entity?.metadata?.transaction_id ||
+    body?.data?.entity?.custom_metadata?.transaction_id ||
     body?.metadata?.transaction_id ||
+    body?.custom_metadata?.transaction_id ||
+    body?.["v1/transaction"]?.metadata?.transaction_id ||
+    body?.["v1/transaction"]?.custom_metadata?.transaction_id ||
     body?.transaction_id ||
     body?.reference ||
     null;

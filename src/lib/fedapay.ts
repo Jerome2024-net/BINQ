@@ -41,11 +41,15 @@ function getBearerHeaders() {
 
 function extractAnyUrl(payload: any): string | null {
   return (
+    payload?.["v1/transaction"]?.payment_url ||
+    payload?.["v1/transaction"]?.url ||
     payload?.v1?.url ||
     payload?.v1?.token?.url ||
+    payload?.v1?.transaction?.payment_url ||
     payload?.url ||
     payload?.token?.url ||
     payload?.data?.url ||
+    payload?.data?.payment_url ||
     payload?.payment_url ||
     null
   );
@@ -53,6 +57,7 @@ function extractAnyUrl(payload: any): string | null {
 
 function extractAnyTransactionId(payload: any): string | null {
   const value =
+    payload?.["v1/transaction"]?.id ||
     payload?.v1?.transaction?.id ||
     payload?.v1?.id ||
     payload?.id ||
@@ -83,6 +88,11 @@ export async function createFedaPayPayment(
     callback_url: params.return_url,
     currency: { iso: (params.currency || "XOF").toUpperCase() },
     metadata: {
+      transaction_id: params.transaction_id,
+      notify_url: params.notify_url,
+      source: "binq_ticketing",
+    },
+    custom_metadata: {
       transaction_id: params.transaction_id,
       notify_url: params.notify_url,
       source: "binq_ticketing",
