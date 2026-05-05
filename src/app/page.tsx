@@ -124,65 +124,94 @@ export default function HomePage() {
           </div>
 
           <div className="relative flex justify-center lg:justify-end">
-            <div className="hidden sm:block absolute left-4 top-12 rounded-3xl bg-white/90 border border-white shadow-2xl shadow-emerald-900/10 p-4 rotate-[-7deg] z-20">
-              <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Livraison</p>
-              <p className="text-2xl font-black text-slate-950">22 min</p>
-              <p className="text-[11px] text-emerald-600 font-semibold">Livreur en route</p>
-            </div>
-            <div className="hidden sm:block absolute right-0 bottom-24 rounded-3xl bg-white/90 border border-white shadow-2xl shadow-amber-900/10 p-4 rotate-[6deg] z-20">
-              <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Panier</p>
-              <p className="text-2xl font-black text-slate-950">3 items</p>
-              <p className="text-[11px] text-emerald-600 font-semibold">Mobile Money</p>
-            </div>
-
-            <div className="relative w-[290px] sm:w-[340px] rounded-[2.5rem] bg-slate-950 p-2 shadow-[0_50px_120px_rgba(15,23,42,0.28)] ring-1 ring-white/30">
-              <div className="absolute top-0 inset-x-0 flex justify-center z-30 pt-2">
-                <div className="w-[105px] h-[30px] bg-slate-950 rounded-b-3xl" />
+            <div className="absolute -inset-6 rounded-[3rem] bg-gradient-to-br from-emerald-300/25 via-yellow-200/35 to-white/20 blur-3xl" />
+            <div className="relative w-full max-w-[500px]">
+              <div className="absolute -top-4 right-8 hidden sm:flex items-center gap-3 rounded-3xl bg-white/90 border border-white p-4 shadow-2xl shadow-emerald-900/10 rotate-[5deg] z-20">
+                <div className="w-11 h-11 rounded-2xl bg-emerald-50 flex items-center justify-center">
+                  <Truck className="w-5 h-5 text-emerald-600" />
+                </div>
+                <div>
+                  <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Livraison</p>
+                  <p className="text-xl font-black text-slate-950">22 min</p>
+                </div>
               </div>
-              <div className="rounded-[2rem] overflow-hidden bg-white">
-                <div className="bg-emerald-600 px-5 pt-12 pb-5 text-white">
-                  <p className="text-[10px] text-white/70 font-bold uppercase tracking-[0.18em] mb-4 text-center">Binq delivery</p>
-                  <div className="flex items-center gap-3 mb-5">
-                    <div className="w-12 h-12 rounded-2xl bg-white/15 flex items-center justify-center">
-                      <MapPin className="w-6 h-6" />
-                    </div>
+
+              <div className="absolute -left-2 bottom-16 hidden sm:flex items-center gap-3 rounded-3xl bg-slate-950 p-4 text-white shadow-2xl shadow-slate-950/20 rotate-[-6deg] z-20">
+                <div className="w-11 h-11 rounded-2xl bg-white/10 flex items-center justify-center">
+                  <ShieldCheck className="w-5 h-5 text-yellow-300" />
+                </div>
+                <div>
+                  <p className="text-[10px] font-black text-white/45 uppercase tracking-widest">Paiement</p>
+                  <p className="text-sm font-black">Mobile Money</p>
+                </div>
+              </div>
+
+              <div className="relative overflow-hidden rounded-[2.5rem] border border-white/80 bg-white/75 p-4 sm:p-5 shadow-[0_35px_100px_rgba(15,23,42,0.16)] backdrop-blur-2xl">
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_15%,rgba(16,185,129,0.18),transparent_24%),radial-gradient(circle_at_82%_10%,rgba(250,204,21,0.26),transparent_22%)]" />
+
+                <div className="relative rounded-[2rem] bg-gradient-to-br from-slate-950 via-emerald-950 to-slate-900 p-5 sm:p-6 text-white overflow-hidden">
+                  <div className="absolute -top-24 -right-20 w-56 h-56 rounded-full bg-emerald-400/25 blur-3xl" />
+                  <div className="absolute -bottom-24 -left-24 w-60 h-60 rounded-full bg-yellow-300/20 blur-3xl" />
+
+                  <div className="relative flex items-center justify-between mb-6">
                     <div>
-                      <p className="text-sm font-black">Livraison à Cotonou</p>
-                      <p className="text-xs text-white/70">Arrivée estimée · 22 min</p>
+                      <p className="text-[10px] font-black uppercase tracking-[0.22em] text-emerald-200/70">Binq local</p>
+                      <h3 className="text-2xl sm:text-3xl font-black tracking-[-0.04em] mt-1">Votre quartier<br />dans la poche.</h3>
+                    </div>
+                    <div className="w-14 h-14 rounded-3xl bg-white/10 border border-white/10 flex items-center justify-center">
+                      <QrCode className="w-7 h-7 text-yellow-300" />
                     </div>
                   </div>
-                  <div className="grid grid-cols-3 gap-2">
-                    {["Repas", "Courses", "Santé"].map((label) => (
-                      <div key={label} className="rounded-2xl bg-white/12 py-3 text-center text-[11px] font-bold">
-                        {label}
+
+                  <div className="relative h-64 sm:h-72 rounded-[1.75rem] bg-[#ecfdf5] overflow-hidden border border-white/10 shadow-inner">
+                    <div className="absolute inset-0 opacity-80" style={{ backgroundImage: "linear-gradient(rgba(16,185,129,0.09) 1px, transparent 1px), linear-gradient(90deg, rgba(16,185,129,0.09) 1px, transparent 1px)", backgroundSize: "34px 34px" }} />
+                    <div className="absolute left-8 top-10 w-28 h-20 rounded-[1.4rem] bg-white shadow-xl shadow-emerald-900/10 border border-emerald-100 p-3">
+                      <div className="w-9 h-9 rounded-2xl bg-orange-50 flex items-center justify-center mb-2">
+                        <Utensils className="w-4 h-4 text-orange-500" />
                       </div>
-                    ))}
+                      <p className="text-[11px] font-black text-slate-900">Restaurant</p>
+                      <p className="text-[9px] font-bold text-emerald-600">Ouvert</p>
+                    </div>
+                    <div className="absolute right-8 top-16 w-28 h-20 rounded-[1.4rem] bg-white shadow-xl shadow-emerald-900/10 border border-emerald-100 p-3">
+                      <div className="w-9 h-9 rounded-2xl bg-emerald-50 flex items-center justify-center mb-2">
+                        <Store className="w-4 h-4 text-emerald-600" />
+                      </div>
+                      <p className="text-[11px] font-black text-slate-900">Boutique</p>
+                      <p className="text-[9px] font-bold text-slate-400">À 1,2 km</p>
+                    </div>
+                    <div className="absolute left-14 bottom-8 w-28 h-20 rounded-[1.4rem] bg-white shadow-xl shadow-emerald-900/10 border border-emerald-100 p-3">
+                      <div className="w-9 h-9 rounded-2xl bg-teal-50 flex items-center justify-center mb-2">
+                        <Leaf className="w-4 h-4 text-teal-600" />
+                      </div>
+                      <p className="text-[11px] font-black text-slate-900">Pharmacie</p>
+                      <p className="text-[9px] font-bold text-slate-400">Disponible</p>
+                    </div>
+
+                    <svg className="absolute inset-0 w-full h-full" viewBox="0 0 420 300" fill="none" aria-hidden="true">
+                      <path d="M85 88 C160 64 216 152 300 112 C354 88 362 164 318 204 C258 258 164 210 96 248" stroke="#10b981" strokeWidth="7" strokeLinecap="round" strokeDasharray="12 14" opacity="0.55" />
+                    </svg>
+
+                    <div className="absolute right-16 bottom-12 w-24 h-24 rounded-full bg-emerald-600 shadow-2xl shadow-emerald-700/30 flex items-center justify-center border-[6px] border-white">
+                      <Truck className="w-10 h-10 text-white" />
+                    </div>
+                    <div className="absolute right-12 bottom-8 px-3 py-1.5 rounded-full bg-white text-[10px] font-black text-emerald-700 shadow-lg">
+                      En route
+                    </div>
                   </div>
                 </div>
 
-                <div className="px-5 py-5 space-y-3">
+                <div className="relative mt-4 grid grid-cols-3 gap-3">
                   {[
-                    ["Burger + jus", "En préparation", "3 500 XOF"],
-                    ["Courses rapides", "Disponible", "5 200 XOF"],
-                  ].map(([name, status, price]) => (
-                    <div key={name} className="flex items-center gap-3 p-3 rounded-2xl bg-slate-50">
-                      <div className="w-10 h-10 rounded-xl bg-emerald-100 flex items-center justify-center">
-                        <ShoppingBag className="w-5 h-5 text-emerald-600" />
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <p className="text-[12px] font-black text-slate-950 truncate">{name}</p>
-                        <p className="text-[10px] text-slate-400">{status}</p>
-                      </div>
-                      <p className="text-[11px] font-black text-slate-900">{price}</p>
+                    { label: "Commerces", value: "120+", icon: Store },
+                    { label: "Livraison", value: "Rapide", icon: Truck },
+                    { label: "Paiement", value: "Sécurisé", icon: ShieldCheck },
+                  ].map((item) => (
+                    <div key={item.label} className="rounded-2xl bg-white border border-slate-100 p-3 text-center shadow-sm">
+                      <item.icon className="w-4 h-4 text-emerald-600 mx-auto mb-1.5" />
+                      <p className="text-[11px] font-black text-slate-950">{item.value}</p>
+                      <p className="text-[9px] font-bold text-slate-400">{item.label}</p>
                     </div>
                   ))}
-                  <div className="w-full py-3 bg-slate-950 text-white font-black text-[12px] rounded-full text-center">
-                    Commander
-                  </div>
-                </div>
-
-                <div className="flex justify-center pb-2.5 pt-1 bg-white">
-                  <div className="w-28 h-1 bg-neutral-200 rounded-full" />
                 </div>
               </div>
             </div>

@@ -7,9 +7,9 @@ import NavigationProgress from "@/components/NavigationProgress";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Binq - Billetterie & Événements",
+  title: "Binq - Commerce local & livraison",
   description:
-    "Plateforme de billetterie QR pour événements, restaurants et services. Créez vos accès, partagez vos QR et encaissez par carte et mobile money.",
+    "Plateforme de commerce local pour commander auprès des restaurants, boutiques et services proches de vous avec paiement sécurisé et livraison.",
   manifest: "/manifest.json",
   themeColor: "#2563eb",
   icons: {
