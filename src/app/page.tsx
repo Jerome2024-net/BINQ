@@ -67,10 +67,10 @@ export default function HomePage() {
       </header>
 
       {/* ═══════ HERO ═══════ */}
-      <section className="relative min-h-screen overflow-hidden bg-[#fff6cf]">
-        <div className="absolute inset-0 -z-0 bg-[radial-gradient(circle_at_18%_20%,rgba(34,197,94,0.22),transparent_30%),radial-gradient(circle_at_88%_12%,rgba(250,204,21,0.45),transparent_28%),linear-gradient(180deg,#fff7d6_0%,#fffbea_62%,#f7f9fe_100%)]" />
-        <div className="absolute -top-24 right-[-7rem] w-96 h-96 bg-yellow-300/40 rounded-full blur-3xl" />
-        <div className="absolute top-48 left-[-6rem] w-80 h-80 bg-emerald-300/30 rounded-full blur-3xl" />
+      <section className="relative min-h-screen overflow-hidden bg-[#ffe963]">
+        <div className="absolute inset-0 -z-0 bg-[radial-gradient(circle_at_14%_18%,rgba(255,255,255,0.55),transparent_24%),radial-gradient(circle_at_82%_12%,rgba(16,185,129,0.34),transparent_26%),linear-gradient(180deg,#ffef74_0%,#fff2ad_55%,#f7f9fe_100%)]" />
+        <div className="absolute -top-24 right-[-7rem] w-[34rem] h-[34rem] bg-white/35 rounded-full blur-3xl" />
+        <div className="absolute top-56 left-[-8rem] w-96 h-96 bg-emerald-300/35 rounded-full blur-3xl" />
 
         <div className="relative z-10 max-w-6xl mx-auto px-5 sm:px-8 pt-28 sm:pt-36 pb-16 grid lg:grid-cols-[1.05fr_0.95fr] gap-10 lg:gap-14 items-center min-h-screen">
           <div>
@@ -79,12 +79,12 @@ export default function HomePage() {
               <span className="text-[11px] font-black text-emerald-700 uppercase tracking-wider">Livraison locale · restaurants · boutiques</span>
             </div>
 
-            <h1 className="text-[3rem] sm:text-6xl lg:text-7xl font-black tracking-[-0.06em] leading-[0.95] mb-5 text-slate-950">
-              Commandez ce que<br />
-              <span className="text-emerald-600">vous aimez.</span>
+            <h1 className="text-[3rem] sm:text-6xl lg:text-7xl font-black tracking-[-0.065em] leading-[0.92] mb-5 text-slate-950">
+              Tout votre quartier<br />
+              <span className="text-emerald-700">livré chez vous.</span>
             </h1>
             <p className="text-base sm:text-xl text-slate-700 max-w-xl mb-7 leading-relaxed font-medium">
-              Repas, courses, pharmacie, boutiques : choisissez, payez et recevez sans perdre de temps.
+              Restaurants, courses, pharmacies et boutiques locales : trouvez ce qu&apos;il vous faut, payez en sécurité et recevez rapidement.
             </p>
 
             <div className="bg-white rounded-[1.5rem] p-2.5 shadow-2xl shadow-emerald-950/10 border border-white max-w-xl">
@@ -124,95 +124,92 @@ export default function HomePage() {
           </div>
 
           <div className="relative flex justify-center lg:justify-end">
-            <div className="absolute -inset-6 rounded-[3rem] bg-gradient-to-br from-emerald-300/25 via-yellow-200/35 to-white/20 blur-3xl" />
-            <div className="relative w-full max-w-[500px]">
-              <div className="absolute -top-4 right-8 hidden sm:flex items-center gap-3 rounded-3xl bg-white/90 border border-white p-4 shadow-2xl shadow-emerald-900/10 rotate-[5deg] z-20">
-                <div className="w-11 h-11 rounded-2xl bg-emerald-50 flex items-center justify-center">
-                  <Truck className="w-5 h-5 text-emerald-600" />
-                </div>
-                <div>
-                  <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Livraison</p>
-                  <p className="text-xl font-black text-slate-950">22 min</p>
+            <div className="absolute -inset-8 rounded-[4rem] bg-white/25 blur-3xl" />
+            <div className="relative w-full max-w-[520px] h-[520px] sm:h-[590px]">
+              <div className="absolute left-4 sm:left-10 top-4 w-52 sm:w-60 rounded-[2rem] bg-white p-3 shadow-[0_28px_70px_rgba(15,23,42,0.20)] rotate-[-8deg] z-20">
+                <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=520&q=80" alt="Repas livré" className="h-36 w-full rounded-[1.4rem] object-cover" />
+                <div className="flex items-center justify-between px-1 pt-3">
+                  <div>
+                    <p className="text-sm font-black text-slate-950">Repas chaud</p>
+                    <p className="text-[11px] font-bold text-emerald-600">Livraison 22 min</p>
+                  </div>
+                  <span className="rounded-full bg-emerald-50 px-3 py-1 text-[11px] font-black text-emerald-700">3 500 F</span>
                 </div>
               </div>
 
-              <div className="absolute -left-2 bottom-16 hidden sm:flex items-center gap-3 rounded-3xl bg-slate-950 p-4 text-white shadow-2xl shadow-slate-950/20 rotate-[-6deg] z-20">
-                <div className="w-11 h-11 rounded-2xl bg-white/10 flex items-center justify-center">
-                  <ShieldCheck className="w-5 h-5 text-yellow-300" />
-                </div>
-                <div>
-                  <p className="text-[10px] font-black text-white/45 uppercase tracking-widest">Paiement</p>
-                  <p className="text-sm font-black">Mobile Money</p>
+              <div className="absolute right-2 sm:right-0 top-20 w-44 sm:w-52 rounded-[2rem] bg-white p-3 shadow-[0_28px_70px_rgba(15,23,42,0.18)] rotate-[7deg] z-10">
+                <img src="https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=520&q=80" alt="Courses locales" className="h-32 w-full rounded-[1.4rem] object-cover" />
+                <p className="px-1 pt-3 text-sm font-black text-slate-950">Courses fraîches</p>
+                <p className="px-1 text-[11px] font-bold text-slate-400">Supermarchés & marchés</p>
+              </div>
+
+              <div className="absolute left-0 bottom-20 w-44 sm:w-52 rounded-[2rem] bg-white p-3 shadow-[0_28px_70px_rgba(15,23,42,0.18)] rotate-[6deg] z-10">
+                <img src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=520&q=80" alt="Pizza locale" className="h-32 w-full rounded-[1.4rem] object-cover" />
+                <p className="px-1 pt-3 text-sm font-black text-slate-950">Restaurants</p>
+                <p className="px-1 text-[11px] font-bold text-slate-400">Ouverts près de vous</p>
+              </div>
+
+              <div className="absolute right-4 sm:right-12 bottom-6 w-52 sm:w-60 rounded-[2rem] bg-white p-3 shadow-[0_28px_70px_rgba(15,23,42,0.20)] rotate-[-5deg] z-20">
+                <img src="https://images.unsplash.com/photo-1526367790999-0150786686a2?auto=format&fit=crop&w=520&q=80" alt="Shopping local" className="h-36 w-full rounded-[1.4rem] object-cover" />
+                <div className="flex items-center justify-between px-1 pt-3">
+                  <div>
+                    <p className="text-sm font-black text-slate-950">Boutiques</p>
+                    <p className="text-[11px] font-bold text-slate-400">Mode · cadeaux · services</p>
+                  </div>
+                  <ShoppingBag className="w-5 h-5 text-emerald-600" />
                 </div>
               </div>
 
-              <div className="relative overflow-hidden rounded-[2.5rem] border border-white/80 bg-white/75 p-4 sm:p-5 shadow-[0_35px_100px_rgba(15,23,42,0.16)] backdrop-blur-2xl">
-                <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_15%,rgba(16,185,129,0.18),transparent_24%),radial-gradient(circle_at_82%_10%,rgba(250,204,21,0.26),transparent_22%)]" />
-
-                <div className="relative rounded-[2rem] bg-gradient-to-br from-slate-950 via-emerald-950 to-slate-900 p-5 sm:p-6 text-white overflow-hidden">
-                  <div className="absolute -top-24 -right-20 w-56 h-56 rounded-full bg-emerald-400/25 blur-3xl" />
-                  <div className="absolute -bottom-24 -left-24 w-60 h-60 rounded-full bg-yellow-300/20 blur-3xl" />
-
-                  <div className="relative flex items-center justify-between mb-6">
-                    <div>
-                      <p className="text-[10px] font-black uppercase tracking-[0.22em] text-emerald-200/70">Binq local</p>
-                      <h3 className="text-2xl sm:text-3xl font-black tracking-[-0.04em] mt-1">Votre quartier<br />dans la poche.</h3>
+              <div className="absolute left-1/2 top-1/2 z-30 w-64 sm:w-72 -translate-x-1/2 -translate-y-1/2 rounded-[2.3rem] bg-slate-950 p-3 shadow-[0_35px_100px_rgba(15,23,42,0.35)]">
+                <div className="rounded-[1.8rem] bg-white overflow-hidden">
+                  <div className="bg-emerald-600 px-5 pt-6 pb-5 text-white">
+                    <div className="flex items-center justify-between mb-5">
+                      <div>
+                        <p className="text-[10px] font-black uppercase tracking-[0.18em] text-white/60">Commande</p>
+                        <p className="text-xl font-black">En route</p>
+                      </div>
+                      <div className="w-12 h-12 rounded-2xl bg-white/15 flex items-center justify-center">
+                        <Truck className="w-6 h-6" />
+                      </div>
                     </div>
-                    <div className="w-14 h-14 rounded-3xl bg-white/10 border border-white/10 flex items-center justify-center">
-                      <QrCode className="w-7 h-7 text-yellow-300" />
+                    <div className="h-2 rounded-full bg-white/20 overflow-hidden">
+                      <div className="h-full w-[72%] rounded-full bg-yellow-300" />
+                    </div>
+                    <div className="mt-3 flex items-center justify-between text-[11px] font-bold text-white/75">
+                      <span>Préparée</span>
+                      <span>22 min</span>
                     </div>
                   </div>
-
-                  <div className="relative h-64 sm:h-72 rounded-[1.75rem] bg-[#ecfdf5] overflow-hidden border border-white/10 shadow-inner">
-                    <div className="absolute inset-0 opacity-80" style={{ backgroundImage: "linear-gradient(rgba(16,185,129,0.09) 1px, transparent 1px), linear-gradient(90deg, rgba(16,185,129,0.09) 1px, transparent 1px)", backgroundSize: "34px 34px" }} />
-                    <div className="absolute left-8 top-10 w-28 h-20 rounded-[1.4rem] bg-white shadow-xl shadow-emerald-900/10 border border-emerald-100 p-3">
-                      <div className="w-9 h-9 rounded-2xl bg-orange-50 flex items-center justify-center mb-2">
-                        <Utensils className="w-4 h-4 text-orange-500" />
+                  <div className="p-4 space-y-3">
+                    {[
+                      ["Restaurant Mama", "Poulet braisé + jus", "3 500 XOF"],
+                      ["Market Express", "Courses du jour", "5 200 XOF"],
+                    ].map(([shop, item, price]) => (
+                      <div key={shop} className="flex items-center gap-3 rounded-2xl bg-slate-50 p-3">
+                        <div className="w-10 h-10 rounded-xl bg-emerald-100 flex items-center justify-center">
+                          <Package className="w-5 h-5 text-emerald-600" />
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <p className="truncate text-[12px] font-black text-slate-950">{shop}</p>
+                          <p className="truncate text-[10px] font-bold text-slate-400">{item}</p>
+                        </div>
+                        <p className="text-[10px] font-black text-slate-900">{price}</p>
                       </div>
-                      <p className="text-[11px] font-black text-slate-900">Restaurant</p>
-                      <p className="text-[9px] font-bold text-emerald-600">Ouvert</p>
-                    </div>
-                    <div className="absolute right-8 top-16 w-28 h-20 rounded-[1.4rem] bg-white shadow-xl shadow-emerald-900/10 border border-emerald-100 p-3">
-                      <div className="w-9 h-9 rounded-2xl bg-emerald-50 flex items-center justify-center mb-2">
-                        <Store className="w-4 h-4 text-emerald-600" />
-                      </div>
-                      <p className="text-[11px] font-black text-slate-900">Boutique</p>
-                      <p className="text-[9px] font-bold text-slate-400">À 1,2 km</p>
-                    </div>
-                    <div className="absolute left-14 bottom-8 w-28 h-20 rounded-[1.4rem] bg-white shadow-xl shadow-emerald-900/10 border border-emerald-100 p-3">
-                      <div className="w-9 h-9 rounded-2xl bg-teal-50 flex items-center justify-center mb-2">
-                        <Leaf className="w-4 h-4 text-teal-600" />
-                      </div>
-                      <p className="text-[11px] font-black text-slate-900">Pharmacie</p>
-                      <p className="text-[9px] font-bold text-slate-400">Disponible</p>
-                    </div>
-
-                    <svg className="absolute inset-0 w-full h-full" viewBox="0 0 420 300" fill="none" aria-hidden="true">
-                      <path d="M85 88 C160 64 216 152 300 112 C354 88 362 164 318 204 C258 258 164 210 96 248" stroke="#10b981" strokeWidth="7" strokeLinecap="round" strokeDasharray="12 14" opacity="0.55" />
-                    </svg>
-
-                    <div className="absolute right-16 bottom-12 w-24 h-24 rounded-full bg-emerald-600 shadow-2xl shadow-emerald-700/30 flex items-center justify-center border-[6px] border-white">
-                      <Truck className="w-10 h-10 text-white" />
-                    </div>
-                    <div className="absolute right-12 bottom-8 px-3 py-1.5 rounded-full bg-white text-[10px] font-black text-emerald-700 shadow-lg">
-                      En route
-                    </div>
+                    ))}
+                    <Link href="/explorer" className="block rounded-full bg-slate-950 py-3 text-center text-[12px] font-black text-white">
+                      Commander maintenant
+                    </Link>
                   </div>
                 </div>
+              </div>
 
-                <div className="relative mt-4 grid grid-cols-3 gap-3">
-                  {[
-                    { label: "Commerces", value: "120+", icon: Store },
-                    { label: "Livraison", value: "Rapide", icon: Truck },
-                    { label: "Paiement", value: "Sécurisé", icon: ShieldCheck },
-                  ].map((item) => (
-                    <div key={item.label} className="rounded-2xl bg-white border border-slate-100 p-3 text-center shadow-sm">
-                      <item.icon className="w-4 h-4 text-emerald-600 mx-auto mb-1.5" />
-                      <p className="text-[11px] font-black text-slate-950">{item.value}</p>
-                      <p className="text-[9px] font-bold text-slate-400">{item.label}</p>
-                    </div>
-                  ))}
-                </div>
+              <div className="absolute right-4 top-2 z-40 hidden sm:flex items-center gap-2 rounded-full bg-white px-4 py-3 shadow-2xl shadow-slate-900/15">
+                <Clock className="w-4 h-4 text-emerald-600" />
+                <span className="text-xs font-black text-slate-950">Livré rapidement</span>
+              </div>
+              <div className="absolute left-8 bottom-4 z-40 hidden sm:flex items-center gap-2 rounded-full bg-slate-950 px-4 py-3 text-white shadow-2xl shadow-slate-900/20">
+                <ShieldCheck className="w-4 h-4 text-yellow-300" />
+                <span className="text-xs font-black">Paiement sécurisé</span>
               </div>
             </div>
           </div>
