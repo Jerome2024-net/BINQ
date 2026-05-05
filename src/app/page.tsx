@@ -72,29 +72,29 @@ export default function HomePage() {
         <div className="absolute -top-24 right-[-7rem] w-[34rem] h-[34rem] bg-white/35 rounded-full blur-3xl" />
         <div className="absolute top-56 left-[-8rem] w-96 h-96 bg-emerald-300/35 rounded-full blur-3xl" />
 
-        <div className="relative z-10 max-w-6xl mx-auto px-5 sm:px-8 pt-28 sm:pt-36 pb-16 grid lg:grid-cols-[1.05fr_0.95fr] gap-10 lg:gap-14 items-center min-h-screen">
-          <div>
+        <div className="relative z-10 max-w-6xl mx-auto px-5 sm:px-8 pt-28 sm:pt-36 pb-16 min-h-screen flex flex-col items-center justify-center text-center">
+          <div className="max-w-4xl mx-auto">
             <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-white/85 border border-white rounded-full mb-6 shadow-sm">
               <Zap className="w-3.5 h-3.5 text-emerald-600" />
               <span className="text-[11px] font-black text-emerald-700 uppercase tracking-wider">Livraison locale · restaurants · boutiques</span>
             </div>
 
-            <h1 className="text-[3rem] sm:text-6xl lg:text-7xl font-black tracking-[-0.065em] leading-[0.92] mb-5 text-slate-950">
+            <h1 className="text-[3.2rem] sm:text-7xl lg:text-8xl font-black tracking-[-0.075em] leading-[0.88] mb-6 text-slate-950">
               Tout votre quartier<br />
               <span className="text-emerald-700">livré chez vous.</span>
             </h1>
-            <p className="text-base sm:text-xl text-slate-700 max-w-xl mb-7 leading-relaxed font-medium">
+            <p className="text-base sm:text-xl text-slate-700 max-w-2xl mx-auto mb-8 leading-relaxed font-medium">
               Restaurants, courses, pharmacies et boutiques locales : trouvez ce qu&apos;il vous faut, payez en sécurité et recevez rapidement.
             </p>
 
-            <div className="bg-white rounded-[1.5rem] p-2.5 shadow-2xl shadow-emerald-950/10 border border-white max-w-xl">
+            <div className="bg-white rounded-[1.75rem] p-2.5 shadow-2xl shadow-emerald-950/10 border border-white max-w-2xl mx-auto">
               <div className="flex flex-col sm:flex-row gap-2">
-                <div className="flex-1 flex items-center gap-3 px-4 py-3 bg-slate-50 rounded-2xl border border-slate-100">
+                <div className="flex-1 flex items-center gap-3 px-5 py-4 bg-slate-50 rounded-2xl border border-slate-100 text-left">
                   <MapPin className="w-5 h-5 text-emerald-600 shrink-0" />
                   <input
                     aria-label="Adresse de livraison"
                     placeholder="Entrez votre adresse de livraison"
-                    className="w-full bg-transparent outline-none text-sm font-semibold text-slate-950 placeholder:text-slate-400"
+                    className="w-full bg-transparent outline-none text-sm sm:text-base font-semibold text-slate-950 placeholder:text-slate-400"
                   />
                 </div>
                 <Link href="/explorer" className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-2xl bg-emerald-600 text-white text-sm font-black hover:bg-emerald-700 transition shadow-lg shadow-emerald-600/20 active:scale-[0.98]">
@@ -103,67 +103,30 @@ export default function HomePage() {
               </div>
             </div>
 
-            <div className="mt-6 grid grid-cols-3 gap-2 max-w-xl">
+            <div className="mt-8 grid grid-cols-2 sm:grid-cols-4 gap-3 max-w-4xl mx-auto">
               {[
-                { icon: Utensils, label: "Restaurants" },
-                { icon: Store, label: "Courses" },
-                { icon: Leaf, label: "Pharmacie" },
+                { icon: Utensils, label: "Restaurants", image: "https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=360&q=80" },
+                { icon: Store, label: "Courses", image: "https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=360&q=80" },
+                { icon: Leaf, label: "Pharmacie", image: "https://images.unsplash.com/photo-1587854692152-cbe660dbde88?auto=format&fit=crop&w=360&q=80" },
+                { icon: ShoppingBag, label: "Boutiques", image: "https://images.unsplash.com/photo-1526367790999-0150786686a2?auto=format&fit=crop&w=360&q=80" },
               ].map((item, i) => (
-                <Link key={i} href="/explorer" className="bg-white/85 border border-white rounded-2xl px-3 py-3 flex flex-col items-center gap-2 shadow-sm hover:-translate-y-0.5 hover:shadow-xl hover:shadow-emerald-950/10 transition-all">
-                  <item.icon className="w-5 h-5 text-emerald-600" />
-                  <span className="text-[12px] font-black text-slate-800 text-center">{item.label}</span>
+                <Link key={i} href="/explorer" className="group overflow-hidden bg-white/90 border border-white rounded-[1.6rem] p-2 shadow-sm hover:-translate-y-1 hover:shadow-2xl hover:shadow-emerald-950/10 transition-all">
+                  <div className="relative h-24 sm:h-28 rounded-[1.25rem] overflow-hidden bg-slate-100">
+                    <img src={item.image} alt={item.label} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-slate-950/35 to-transparent" />
+                    <div className="absolute right-2 top-2 w-8 h-8 rounded-full bg-white/90 flex items-center justify-center">
+                      <item.icon className="w-4 h-4 text-emerald-600" />
+                    </div>
+                  </div>
+                  <span className="block py-3 text-sm font-black text-slate-900 text-center">{item.label}</span>
                 </Link>
               ))}
             </div>
 
-            <div className="mt-7 flex flex-wrap items-center gap-3 text-[12px] sm:text-[13px] text-slate-600 font-semibold">
+            <div className="mt-7 flex flex-wrap items-center justify-center gap-3 text-[12px] sm:text-[13px] text-slate-600 font-semibold">
               <span className="inline-flex items-center gap-2 px-3 py-2 rounded-full bg-white/80 border border-white shadow-sm"><Truck className="w-4 h-4 text-emerald-500" /> Livraison rapide</span>
               <span className="inline-flex items-center gap-2 px-3 py-2 rounded-full bg-white/80 border border-white shadow-sm"><ShieldCheck className="w-4 h-4 text-emerald-500" /> Paiement sécurisé</span>
               <span className="inline-flex items-center gap-2 px-3 py-2 rounded-full bg-white/80 border border-white shadow-sm"><Store className="w-4 h-4 text-amber-500" /> Commerces locaux</span>
-            </div>
-          </div>
-
-          <div className="relative flex justify-center lg:justify-end">
-            <div className="absolute -inset-8 rounded-[4rem] bg-white/30 blur-3xl" />
-            <div className="relative w-full max-w-[540px]">
-              <div className="relative overflow-hidden rounded-[3rem] border-[10px] border-white bg-white shadow-[0_35px_110px_rgba(15,23,42,0.18)]">
-                <img src="https://images.unsplash.com/photo-1580674285054-bed31e145f59?auto=format&fit=crop&w=1200&q=85" alt="Livreur local avec commande" className="h-[360px] sm:h-[520px] w-full object-cover" />
-                <div className="absolute inset-0 bg-gradient-to-t from-slate-950/65 via-transparent to-transparent" />
-                <div className="absolute bottom-5 left-5 right-5 rounded-[2rem] bg-white/92 p-4 shadow-2xl backdrop-blur-xl">
-                  <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 rounded-2xl bg-emerald-600 flex items-center justify-center text-white">
-                      <Truck className="w-6 h-6" />
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <p className="text-sm font-black text-slate-950">Livreur en route</p>
-                      <p className="text-xs font-bold text-slate-500">Votre commande arrive dans 22 min</p>
-                    </div>
-                    <span className="rounded-full bg-yellow-100 px-3 py-1.5 text-[11px] font-black text-slate-950">Suivi live</span>
-                  </div>
-                </div>
-              </div>
-
-              <div className="absolute -left-3 sm:-left-10 top-10 w-40 sm:w-48 rounded-[2rem] bg-white p-3 shadow-[0_24px_70px_rgba(15,23,42,0.18)] rotate-[-7deg]">
-                <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=520&q=80" alt="Repas local" className="h-28 w-full rounded-[1.4rem] object-cover" />
-                <p className="px-1 pt-3 text-sm font-black text-slate-950">Repas</p>
-                <p className="px-1 text-[11px] font-bold text-emerald-600">Prêt à livrer</p>
-              </div>
-
-              <div className="absolute -right-2 sm:-right-8 top-28 w-40 sm:w-48 rounded-[2rem] bg-white p-3 shadow-[0_24px_70px_rgba(15,23,42,0.18)] rotate-[7deg]">
-                <img src="https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=520&q=80" alt="Courses fraîches" className="h-28 w-full rounded-[1.4rem] object-cover" />
-                <p className="px-1 pt-3 text-sm font-black text-slate-950">Courses</p>
-                <p className="px-1 text-[11px] font-bold text-slate-400">Marchés & boutiques</p>
-              </div>
-
-              <div className="absolute -left-1 sm:-left-6 bottom-20 hidden sm:flex items-center gap-3 rounded-full bg-slate-950 px-5 py-4 text-white shadow-2xl shadow-slate-950/25">
-                <ShieldCheck className="w-5 h-5 text-yellow-300" />
-                <span className="text-sm font-black">Paiement sécurisé</span>
-              </div>
-
-              <div className="absolute -right-1 sm:-right-6 bottom-28 hidden sm:flex items-center gap-3 rounded-full bg-white px-5 py-4 shadow-2xl shadow-slate-900/15">
-                <Clock className="w-5 h-5 text-emerald-600" />
-                <span className="text-sm font-black text-slate-950">Livraison rapide</span>
-              </div>
             </div>
           </div>
         </div>
