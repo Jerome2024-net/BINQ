@@ -59,11 +59,14 @@ export async function GET(request: NextRequest) {
 
     const { data: ventesData } = await supabase
       .from("commandes")
-      .select("montant")
+      .select("montant, montant_marchand, sous_total, frais_livraison")
       .eq("vendeur_id", user.id);
 
     const totalAchats = achatsData?.reduce((s, c) => s + Number(c.montant), 0) || 0;
-    const totalVentes = ventesData?.reduce((s, c) => s + Number(c.montant), 0) || 0;
+    const totalVentes = ventesData?.reduce((s, c: any) => {
+      const merchantAmount = c.montant_marchand ?? (Number(c.sous_total || 0) + Number(c.frais_livraison || 0));
+      return s + Number(merchantAmount || c.montant || 0);
+    }, 0) || 0;
     const nbAchats = achatsData?.length || 0;
     const nbVentes = ventesData?.length || 0;
 
@@ -81,6 +84,8 @@ type CheckoutItem = {
   produit_id: string;
   quantite: number;
 };
+
+const TAUX_FRAIS_SERVICE = 0.1;
 
 function normalizePhone(value: unknown) {
   return String(value || "").replace(/\s+/g, " ").trim();
@@ -183,7 +188,10 @@ export async function POST(request: NextRequest) {
       : sousTotal >= 10000
         ? 0
         : 1000;
-    const montantTotal = sousTotal + fraisLivraison;
+    const fraisService = Math.ceil(sousTotal * TAUX_FRAIS_SERVICE);
+    const montantMarchand = sousTotal;
+    const montantLivreur = fraisLivraison;
+    const montantTotal = sousTotal + fraisLivraison + fraisService;
     const reference = `CMD-${Date.now().toString(36).toUpperCase()}`;
     const firstLine = lignes[0];
 
@@ -210,6 +218,9 @@ export async function POST(request: NextRequest) {
       note_livraison: noteLivraison || null,
       sous_total: sousTotal,
       frais_livraison: fraisLivraison,
+      frais_service: fraisService,
+      montant_marchand: montantMarchand,
+      montant_livreur: montantLivreur,
       items: lignes.map((ligne) => ({
         produit_id: ligne.produit.id,
         nom: ligne.produit.nom,
@@ -227,6 +238,9 @@ export async function POST(request: NextRequest) {
       montant_total: montantTotal,
       sous_total: sousTotal,
       frais_livraison: fraisLivraison,
+      frais_service: fraisService,
+      montant_marchand: montantMarchand,
+      montant_livreur: montantLivreur,
       devise,
       statut: "nouvelle",
       methode_paiement: "mobile_money",
@@ -304,6 +318,9 @@ export async function POST(request: NextRequest) {
             reference,
             sous_total: sousTotal,
             frais_livraison: fraisLivraison,
+            frais_service: fraisService,
+            montant_marchand: montantMarchand,
+            montant_livreur: montantLivreur,
             montant_total: montantTotal,
             items: lignes.map((ligne) => ({
               produit_id: ligne.produit.id,
@@ -333,6 +350,9 @@ export async function POST(request: NextRequest) {
         reference,
         sous_total: sousTotal,
         frais_livraison: fraisLivraison,
+        frais_service: fraisService,
+        montant_marchand: montantMarchand,
+        montant_livreur: montantLivreur,
         montant_total: montantTotal,
         items: lignes.map((ligne) => ({
           produit_id: ligne.produit.id,

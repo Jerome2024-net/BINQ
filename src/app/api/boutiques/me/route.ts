@@ -65,11 +65,14 @@ export async function GET() {
     // Get stats
     const { data: commandes, count } = await supabase
       .from("commandes")
-      .select("montant", { count: "exact" })
+      .select("montant, montant_marchand, sous_total, frais_livraison", { count: "exact" })
       .eq("vendeur_id", user.id)
       .eq("statut", "payee");
 
-    const totalVentes = commandes?.reduce((s, c) => s + Number(c.montant), 0) || 0;
+    const totalVentes = commandes?.reduce((s, c: any) => {
+      const merchantAmount = c.montant_marchand ?? (Number(c.sous_total || 0) + Number(c.frais_livraison || 0));
+      return s + Number(merchantAmount || c.montant || 0);
+    }, 0) || 0;
 
     return NextResponse.json({
       boutique,

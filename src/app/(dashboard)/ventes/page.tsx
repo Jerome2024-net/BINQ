@@ -7,7 +7,11 @@ import type { DeviseCode } from "@/lib/currencies";
 import { BarChart3, Loader2, Package, ShoppingBag, Store, TrendingUp, Truck } from "lucide-react";
 
 interface Produit { id: string; nom: string; prix: number; devise?: string; image_url?: string | null; stock?: number | null; ventes?: number | null; }
-interface Commande { id: string; statut: string; montant?: number; montant_total?: number; devise?: string; client_nom?: string | null; }
+interface Commande { id: string; statut: string; montant?: number; montant_total?: number; montant_marchand?: number; sous_total?: number; frais_livraison?: number; devise?: string; client_nom?: string | null; }
+
+function merchantAmount(commande: Commande) {
+  return Number(commande.montant_marchand ?? ((Number(commande.sous_total || 0) + Number(commande.frais_livraison || 0)) || commande.montant_total || commande.montant || 0));
+}
 
 export default function VentesPage() {
   const [produits, setProduits] = useState<Produit[]>([]);
@@ -40,7 +44,7 @@ export default function VentesPage() {
   }, []);
 
   const deliveredOrders = useMemo(() => commandes.filter((c) => c.statut === "livree" || c.statut === "payee"), [commandes]);
-  const revenue = stats.totalVentes || deliveredOrders.reduce((sum, c) => sum + Number(c.montant_total || c.montant || 0), 0);
+  const revenue = stats.totalVentes || deliveredOrders.reduce((sum, c) => sum + merchantAmount(c), 0);
   const totalUnits = produits.reduce((sum, p) => sum + Number(p.ventes || 0), 0);
   const averageOrder = commandes.length > 0 ? revenue / commandes.length : 0;
   const bestProducts = [...produits].sort((a, b) => Number(b.ventes || 0) - Number(a.ventes || 0)).slice(0, 5);

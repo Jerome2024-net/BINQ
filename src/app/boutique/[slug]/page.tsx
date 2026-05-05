@@ -233,7 +233,8 @@ export default function BoutiquePage() {
   const cartCount = cart.reduce((sum, item) => sum + item.quantite, 0);
   const cartSubtotal = cart.reduce((sum, item) => sum + Number(item.prix) * item.quantite, 0);
   const deliveryFee = cartSubtotal > 0 && cartSubtotal < 10000 ? 1000 : 0;
-  const totalCart = cartSubtotal + deliveryFee;
+  const serviceFee = cartSubtotal > 0 ? Math.ceil(cartSubtotal * 0.1) : 0;
+  const totalCart = cartSubtotal + deliveryFee + serviceFee;
 
   if (loading) {
     return (
@@ -699,6 +700,10 @@ export default function BoutiquePage() {
                       <div className="flex justify-between text-sm">
                         <span className="text-gray-500">Livraison</span>
                         <span className="font-semibold text-gray-900">{deliveryFee === 0 ? "Offerte" : formatMontant(deliveryFee, devise)}</span>
+                      </div>
+                      <div className="flex justify-between text-sm">
+                        <span className="text-gray-500">Frais de service Binq (10%)</span>
+                        <span className="font-semibold text-gray-900">{formatMontant(serviceFee, devise)}</span>
                       </div>
                       <div className="pt-2 border-t border-gray-200 flex justify-between">
                         <span className="font-black text-gray-900">Total</span>
