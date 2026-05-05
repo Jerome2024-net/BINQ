@@ -124,92 +124,45 @@ export default function HomePage() {
           </div>
 
           <div className="relative flex justify-center lg:justify-end">
-            <div className="absolute -inset-8 rounded-[4rem] bg-white/25 blur-3xl" />
-            <div className="relative w-full max-w-[520px] h-[520px] sm:h-[590px]">
-              <div className="absolute left-4 sm:left-10 top-4 w-52 sm:w-60 rounded-[2rem] bg-white p-3 shadow-[0_28px_70px_rgba(15,23,42,0.20)] rotate-[-8deg] z-20">
-                <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=520&q=80" alt="Repas livré" className="h-36 w-full rounded-[1.4rem] object-cover" />
-                <div className="flex items-center justify-between px-1 pt-3">
-                  <div>
-                    <p className="text-sm font-black text-slate-950">Repas chaud</p>
-                    <p className="text-[11px] font-bold text-emerald-600">Livraison 22 min</p>
-                  </div>
-                  <span className="rounded-full bg-emerald-50 px-3 py-1 text-[11px] font-black text-emerald-700">3 500 F</span>
-                </div>
-              </div>
-
-              <div className="absolute right-2 sm:right-0 top-20 w-44 sm:w-52 rounded-[2rem] bg-white p-3 shadow-[0_28px_70px_rgba(15,23,42,0.18)] rotate-[7deg] z-10">
-                <img src="https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=520&q=80" alt="Courses locales" className="h-32 w-full rounded-[1.4rem] object-cover" />
-                <p className="px-1 pt-3 text-sm font-black text-slate-950">Courses fraîches</p>
-                <p className="px-1 text-[11px] font-bold text-slate-400">Supermarchés & marchés</p>
-              </div>
-
-              <div className="absolute left-0 bottom-20 w-44 sm:w-52 rounded-[2rem] bg-white p-3 shadow-[0_28px_70px_rgba(15,23,42,0.18)] rotate-[6deg] z-10">
-                <img src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=520&q=80" alt="Pizza locale" className="h-32 w-full rounded-[1.4rem] object-cover" />
-                <p className="px-1 pt-3 text-sm font-black text-slate-950">Restaurants</p>
-                <p className="px-1 text-[11px] font-bold text-slate-400">Ouverts près de vous</p>
-              </div>
-
-              <div className="absolute right-4 sm:right-12 bottom-6 w-52 sm:w-60 rounded-[2rem] bg-white p-3 shadow-[0_28px_70px_rgba(15,23,42,0.20)] rotate-[-5deg] z-20">
-                <img src="https://images.unsplash.com/photo-1526367790999-0150786686a2?auto=format&fit=crop&w=520&q=80" alt="Shopping local" className="h-36 w-full rounded-[1.4rem] object-cover" />
-                <div className="flex items-center justify-between px-1 pt-3">
-                  <div>
-                    <p className="text-sm font-black text-slate-950">Boutiques</p>
-                    <p className="text-[11px] font-bold text-slate-400">Mode · cadeaux · services</p>
-                  </div>
-                  <ShoppingBag className="w-5 h-5 text-emerald-600" />
-                </div>
-              </div>
-
-              <div className="absolute left-1/2 top-1/2 z-30 w-64 sm:w-72 -translate-x-1/2 -translate-y-1/2 rounded-[2.3rem] bg-slate-950 p-3 shadow-[0_35px_100px_rgba(15,23,42,0.35)]">
-                <div className="rounded-[1.8rem] bg-white overflow-hidden">
-                  <div className="bg-emerald-600 px-5 pt-6 pb-5 text-white">
-                    <div className="flex items-center justify-between mb-5">
-                      <div>
-                        <p className="text-[10px] font-black uppercase tracking-[0.18em] text-white/60">Commande</p>
-                        <p className="text-xl font-black">En route</p>
-                      </div>
-                      <div className="w-12 h-12 rounded-2xl bg-white/15 flex items-center justify-center">
-                        <Truck className="w-6 h-6" />
-                      </div>
+            <div className="absolute -inset-8 rounded-[4rem] bg-white/30 blur-3xl" />
+            <div className="relative w-full max-w-[540px]">
+              <div className="relative overflow-hidden rounded-[3rem] border-[10px] border-white bg-white shadow-[0_35px_110px_rgba(15,23,42,0.18)]">
+                <img src="https://images.unsplash.com/photo-1580674285054-bed31e145f59?auto=format&fit=crop&w=1200&q=85" alt="Livreur local avec commande" className="h-[360px] sm:h-[520px] w-full object-cover" />
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-950/65 via-transparent to-transparent" />
+                <div className="absolute bottom-5 left-5 right-5 rounded-[2rem] bg-white/92 p-4 shadow-2xl backdrop-blur-xl">
+                  <div className="flex items-center gap-3">
+                    <div className="w-12 h-12 rounded-2xl bg-emerald-600 flex items-center justify-center text-white">
+                      <Truck className="w-6 h-6" />
                     </div>
-                    <div className="h-2 rounded-full bg-white/20 overflow-hidden">
-                      <div className="h-full w-[72%] rounded-full bg-yellow-300" />
+                    <div className="min-w-0 flex-1">
+                      <p className="text-sm font-black text-slate-950">Livreur en route</p>
+                      <p className="text-xs font-bold text-slate-500">Votre commande arrive dans 22 min</p>
                     </div>
-                    <div className="mt-3 flex items-center justify-between text-[11px] font-bold text-white/75">
-                      <span>Préparée</span>
-                      <span>22 min</span>
-                    </div>
-                  </div>
-                  <div className="p-4 space-y-3">
-                    {[
-                      ["Restaurant Mama", "Poulet braisé + jus", "3 500 XOF"],
-                      ["Market Express", "Courses du jour", "5 200 XOF"],
-                    ].map(([shop, item, price]) => (
-                      <div key={shop} className="flex items-center gap-3 rounded-2xl bg-slate-50 p-3">
-                        <div className="w-10 h-10 rounded-xl bg-emerald-100 flex items-center justify-center">
-                          <Package className="w-5 h-5 text-emerald-600" />
-                        </div>
-                        <div className="min-w-0 flex-1">
-                          <p className="truncate text-[12px] font-black text-slate-950">{shop}</p>
-                          <p className="truncate text-[10px] font-bold text-slate-400">{item}</p>
-                        </div>
-                        <p className="text-[10px] font-black text-slate-900">{price}</p>
-                      </div>
-                    ))}
-                    <Link href="/explorer" className="block rounded-full bg-slate-950 py-3 text-center text-[12px] font-black text-white">
-                      Commander maintenant
-                    </Link>
+                    <span className="rounded-full bg-yellow-100 px-3 py-1.5 text-[11px] font-black text-slate-950">Suivi live</span>
                   </div>
                 </div>
               </div>
 
-              <div className="absolute right-4 top-2 z-40 hidden sm:flex items-center gap-2 rounded-full bg-white px-4 py-3 shadow-2xl shadow-slate-900/15">
-                <Clock className="w-4 h-4 text-emerald-600" />
-                <span className="text-xs font-black text-slate-950">Livré rapidement</span>
+              <div className="absolute -left-3 sm:-left-10 top-10 w-40 sm:w-48 rounded-[2rem] bg-white p-3 shadow-[0_24px_70px_rgba(15,23,42,0.18)] rotate-[-7deg]">
+                <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=520&q=80" alt="Repas local" className="h-28 w-full rounded-[1.4rem] object-cover" />
+                <p className="px-1 pt-3 text-sm font-black text-slate-950">Repas</p>
+                <p className="px-1 text-[11px] font-bold text-emerald-600">Prêt à livrer</p>
               </div>
-              <div className="absolute left-8 bottom-4 z-40 hidden sm:flex items-center gap-2 rounded-full bg-slate-950 px-4 py-3 text-white shadow-2xl shadow-slate-900/20">
-                <ShieldCheck className="w-4 h-4 text-yellow-300" />
-                <span className="text-xs font-black">Paiement sécurisé</span>
+
+              <div className="absolute -right-2 sm:-right-8 top-28 w-40 sm:w-48 rounded-[2rem] bg-white p-3 shadow-[0_24px_70px_rgba(15,23,42,0.18)] rotate-[7deg]">
+                <img src="https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=520&q=80" alt="Courses fraîches" className="h-28 w-full rounded-[1.4rem] object-cover" />
+                <p className="px-1 pt-3 text-sm font-black text-slate-950">Courses</p>
+                <p className="px-1 text-[11px] font-bold text-slate-400">Marchés & boutiques</p>
+              </div>
+
+              <div className="absolute -left-1 sm:-left-6 bottom-20 hidden sm:flex items-center gap-3 rounded-full bg-slate-950 px-5 py-4 text-white shadow-2xl shadow-slate-950/25">
+                <ShieldCheck className="w-5 h-5 text-yellow-300" />
+                <span className="text-sm font-black">Paiement sécurisé</span>
+              </div>
+
+              <div className="absolute -right-1 sm:-right-6 bottom-28 hidden sm:flex items-center gap-3 rounded-full bg-white px-5 py-4 shadow-2xl shadow-slate-900/15">
+                <Clock className="w-5 h-5 text-emerald-600" />
+                <span className="text-sm font-black text-slate-950">Livraison rapide</span>
               </div>
             </div>
           </div>
