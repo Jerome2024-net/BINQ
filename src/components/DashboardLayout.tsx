@@ -17,6 +17,7 @@ import {
   QrCode,
   Store,
   ShoppingBag,
+  Truck,
 } from "lucide-react";
 
 interface Notification {
@@ -31,6 +32,7 @@ const bottomTabs = [
   { href: "/dashboard", label: "Accueil", icon: Home },
   { href: "/ma-boutique", label: "Boutique", icon: Store },
   { href: "/commandes", label: "Commandes", icon: ShoppingBag },
+  { href: "/livraisons", label: "Livraisons", icon: Truck },
   { href: "/ventes", label: "Stats", icon: TrendingUp },
   { href: "/portefeuille", label: "Solde", icon: Wallet },
 ];

@@ -19,7 +19,7 @@ export async function GET(request: NextRequest) {
 
     const supabase = getServiceClient();
     const { searchParams } = new URL(request.url);
-    const role = searchParams.get("role") || "acheteur"; // "acheteur" or "vendeur"
+    const role = searchParams.get("role") || "acheteur"; // "acheteur", "vendeur" ou "livreur"
     const statut = searchParams.get("statut");
     const limit = parseInt(searchParams.get("limit") || "50");
     const offset = parseInt(searchParams.get("offset") || "0");
@@ -36,6 +36,8 @@ export async function GET(request: NextRequest) {
 
     if (role === "vendeur") {
       query = query.eq("vendeur_id", user.id);
+    } else if (role === "livreur") {
+      query = query.eq("livreur_id", user.id);
     } else {
       query = query.eq("acheteur_id", user.id);
     }
@@ -69,10 +71,14 @@ export async function GET(request: NextRequest) {
     }, 0) || 0;
     const nbAchats = achatsData?.length || 0;
     const nbVentes = ventesData?.length || 0;
+    const totalLivraisons = role === "livreur"
+      ? (commandes || []).reduce((sum, c: any) => sum + Number(c.montant_livreur || c.frais_livraison || 0), 0)
+      : 0;
+    const nbLivraisons = role === "livreur" ? (commandes || []).length : 0;
 
     return NextResponse.json({
       commandes: commandes || [],
-      stats: { totalAchats, totalVentes, nbAchats, nbVentes },
+      stats: { totalAchats, totalVentes, nbAchats, nbVentes, totalLivraisons, nbLivraisons },
     });
   } catch (err) {
     console.error("Commandes error:", err);
@@ -424,6 +430,21 @@ export async function PATCH(request: NextRequest) {
       .eq("vendeur_id", user.id)
       .select()
       .single();
+
+    if (error && ["en_livraison", "livree"].includes(statut)) {
+      const { data: driverCommande, error: driverErr } = await supabase
+        .from("commandes")
+        .update(updates)
+        .eq("id", commande_id)
+        .eq("livreur_id", user.id)
+        .select()
+        .single();
+
+      if (!driverErr) {
+        commande = driverCommande;
+        error = null;
+      }
+    }
 
     if (error) {
       const { data: fallback, error: fallbackErr } = await supabase

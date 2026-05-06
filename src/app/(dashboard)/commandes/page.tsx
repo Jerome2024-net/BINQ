@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useAuth } from "@/contexts/AuthContext";
 import { formatMontant } from "@/lib/currencies";
 import type { DeviseCode } from "@/lib/currencies";
+import { getMapboxDirectionsUrl } from "@/lib/mapbox";
 import {
   Package,
   Store,
@@ -74,16 +75,6 @@ function parseDeliveryNote(c: Commande) {
   } catch {
     return null;
   }
-}
-
-function getMapDirectionsUrl(latitude?: number | null, longitude?: number | null, address?: string | null) {
-  if (latitude && longitude) {
-    return `https://www.google.com/maps/dir/?api=1&destination=${latitude},${longitude}`;
-  }
-  if (address) {
-    return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`;
-  }
-  return null;
 }
 
 const nextStatus: Record<string, { statut: string; label: string }> = {
@@ -186,7 +177,7 @@ export default function CommandesPage() {
             const adresse = c.delivery_geocoded_address || c.adresse_livraison || delivery?.delivery_geocoded_address || delivery?.adresse_livraison;
             const deliveryLatitude = c.delivery_latitude || delivery?.delivery_latitude || null;
             const deliveryLongitude = c.delivery_longitude || delivery?.delivery_longitude || null;
-            const directionsUrl = getMapDirectionsUrl(deliveryLatitude, deliveryLongitude, adresse);
+            const directionsUrl = getMapboxDirectionsUrl({ latitude: deliveryLatitude, longitude: deliveryLongitude, address: adresse });
             const note = c.note_livraison || delivery?.note_livraison;
             const action = nextStatus[c.statut];
 

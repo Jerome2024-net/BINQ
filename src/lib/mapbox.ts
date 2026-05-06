@@ -74,3 +74,28 @@ export function getBrowserPosition(options?: PositionOptions): Promise<MapboxCoo
     );
   });
 }
+
+export function getMapboxDirectionsUrl({
+  latitude,
+  longitude,
+  address,
+  origin,
+}: {
+  latitude?: number | null;
+  longitude?: number | null;
+  address?: string | null;
+  origin?: MapboxCoordinates | null;
+}) {
+  if (Number.isFinite(latitude) && Number.isFinite(longitude)) {
+    const destination = `${longitude},${latitude}`;
+    const params = new URLSearchParams({ destination });
+    if (origin) params.set("origin", `${origin.longitude},${origin.latitude}`);
+    return `https://www.mapbox.com/directions?${params.toString()}`;
+  }
+
+  if (address) {
+    return `https://www.mapbox.com/search?query=${encodeURIComponent(address)}`;
+  }
+
+  return null;
+}
