@@ -2,9 +2,9 @@
 
 Binq est séparé en trois applications mobiles iOS Flutter/Dart :
 
-- `binq-client` : commande, localisation client, suivi commande.
-- `binq-livreur` : livraisons assignées, position livreur, itinéraire Mapbox.
-- `binq-commercant` : gestion boutique, commandes, assignation livreur, wallet.
+- `Binq clients` : commande, localisation client, suivi commande.
+- `Binq livreur` : livraisons assignées, position livreur, itinéraire Mapbox.
+- `Binq commercant` : gestion boutique, commandes, assignation livreur, wallet.
 
 ## Pré-requis iOS
 
@@ -22,6 +22,16 @@ Depuis la racine du projet :
 - Commerçant : `npm run ios:commercant:start`
 
 Les scripts racine lancent `flutter run -d ios` dans le dossier concerné.
+
+## Copier vers Mac
+
+Copiez ces trois dossiers sur le Mac :
+
+- `Binq clients`
+- `Binq livreur`
+- `Binq commercant`
+
+Chaque dossier contient son propre `pubspec.yaml`, `analysis_options.yaml`, `lib/main.dart`, `README.md` et `setup_on_mac.sh`.
 
 ## Build iOS natif
 

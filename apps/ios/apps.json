@@ -1,0 +1,25 @@
+{
+  "apps": [
+    {
+      "name": "Binq Client",
+      "directory": "Binq clients",
+      "packageName": "binq_client_ios",
+      "bundleId": "io.binq.client",
+      "role": "client"
+    },
+    {
+      "name": "Binq Livreur",
+      "directory": "Binq livreur",
+      "packageName": "binq_livreur_ios",
+      "bundleId": "io.binq.livreur",
+      "role": "livreur"
+    },
+    {
+      "name": "Binq Commerçant",
+      "directory": "Binq commercant",
+      "packageName": "binq_commercant_ios",
+      "bundleId": "io.binq.commercant",
+      "role": "commercant"
+    }
+  ]
+}
