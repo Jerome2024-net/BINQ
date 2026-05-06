@@ -27,6 +27,9 @@ interface Commande {
   client_nom?: string | null;
   client_telephone?: string | null;
   adresse_livraison?: string | null;
+  delivery_latitude?: number | null;
+  delivery_longitude?: number | null;
+  delivery_geocoded_address?: string | null;
   note_livraison?: string | null;
   sous_total?: number | null;
   frais_livraison?: number | null;
@@ -71,6 +74,16 @@ function parseDeliveryNote(c: Commande) {
   } catch {
     return null;
   }
+}
+
+function getMapDirectionsUrl(latitude?: number | null, longitude?: number | null, address?: string | null) {
+  if (latitude && longitude) {
+    return `https://www.google.com/maps/dir/?api=1&destination=${latitude},${longitude}`;
+  }
+  if (address) {
+    return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`;
+  }
+  return null;
 }
 
 const nextStatus: Record<string, { statut: string; label: string }> = {
@@ -170,7 +183,10 @@ export default function CommandesPage() {
             const delivery = parseDeliveryNote(c);
             const clientNom = c.client_nom || delivery?.client_nom || "Client";
             const clientTelephone = c.client_telephone || delivery?.client_telephone;
-            const adresse = c.adresse_livraison || delivery?.adresse_livraison;
+            const adresse = c.delivery_geocoded_address || c.adresse_livraison || delivery?.delivery_geocoded_address || delivery?.adresse_livraison;
+            const deliveryLatitude = c.delivery_latitude || delivery?.delivery_latitude || null;
+            const deliveryLongitude = c.delivery_longitude || delivery?.delivery_longitude || null;
+            const directionsUrl = getMapDirectionsUrl(deliveryLatitude, deliveryLongitude, adresse);
             const note = c.note_livraison || delivery?.note_livraison;
             const action = nextStatus[c.statut];
 
@@ -219,6 +235,11 @@ export default function CommandesPage() {
                   <div className="mt-3 space-y-1.5 text-[12px] text-gray-500">
                     {clientTelephone && <p className="flex items-center gap-1.5"><Phone className="w-3.5 h-3.5 text-gray-300" />{clientTelephone}</p>}
                     {adresse && <p className="flex items-start gap-1.5"><MapPin className="w-3.5 h-3.5 text-gray-300 mt-0.5" />{adresse}</p>}
+                    {directionsUrl && (
+                      <a href={directionsUrl} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1.5 font-bold text-blue-600 hover:text-blue-500">
+                        <MapPin className="w-3.5 h-3.5" /> Ouvrir l&apos;itinéraire
+                      </a>
+                    )}
                     {note && <p className="text-gray-400">Note : {note}</p>}
                   </div>
                 )}

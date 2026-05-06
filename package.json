@@ -15,6 +15,7 @@
     "@supabase/supabase-js": "^2.95.3",
     "html5-qrcode": "^2.3.8",
     "lucide-react": "^0.400.0",
+    "mapbox-gl": "^3.23.1",
     "next": "^14.2.0",
     "qrcode.react": "^4.2.0",
     "react": "^18.3.0",
@@ -25,6 +26,7 @@
     "zod": "^4.3.6"
   },
   "devDependencies": {
+    "@types/mapbox-gl": "^3.4.1",
     "@types/node": "^20.0.0",
     "@types/react": "^18.3.0",
     "@types/react-dom": "^18.3.0",

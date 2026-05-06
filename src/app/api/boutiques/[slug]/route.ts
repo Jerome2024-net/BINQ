@@ -10,6 +10,11 @@ function getServiceClient() {
   );
 }
 
+function normalizeCoordinate(value: unknown) {
+  const coordinate = Number(value);
+  return Number.isFinite(coordinate) ? coordinate : null;
+}
+
 // GET /api/boutiques/[slug] — Détail public d'une boutique
 export async function GET(
   req: NextRequest,
@@ -90,10 +95,12 @@ export async function PUT(
     }
 
     const updates: Record<string, any> = { updated_at: new Date().toISOString() };
-    const allowed = ["nom", "description", "categorie_id", "telephone", "whatsapp", "adresse", "ville", "logo_url", "banner_url"];
+    const allowed = ["nom", "description", "categorie_id", "telephone", "whatsapp", "adresse", "ville", "logo_url", "banner_url", "mapbox_place_id", "geocoded_address"];
     for (const key of allowed) {
       if (body[key] !== undefined) updates[key] = body[key];
     }
+    if (body.latitude !== undefined) updates.latitude = normalizeCoordinate(body.latitude);
+    if (body.longitude !== undefined) updates.longitude = normalizeCoordinate(body.longitude);
 
     const { data, error } = await supabase
       .from("boutiques")

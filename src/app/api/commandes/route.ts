@@ -95,6 +95,11 @@ function normalizeText(value: unknown) {
   return String(value || "").trim();
 }
 
+function normalizeCoordinate(value: unknown) {
+  const coordinate = Number(value);
+  return Number.isFinite(coordinate) ? coordinate : null;
+}
+
 // POST /api/commandes — Créer une commande multi-produits avec livraison locale
 export async function POST(request: NextRequest) {
   try {
@@ -107,6 +112,10 @@ export async function POST(request: NextRequest) {
     const clientTelephone = normalizePhone(body.client_telephone);
     const adresseLivraison = normalizeText(body.adresse_livraison);
     const noteLivraison = normalizeText(body.note_livraison);
+    const deliveryLatitude = normalizeCoordinate(body.delivery_latitude);
+    const deliveryLongitude = normalizeCoordinate(body.delivery_longitude);
+    const deliveryPlaceId = normalizeText(body.delivery_place_id) || null;
+    const deliveryGeocodedAddress = normalizeText(body.delivery_geocoded_address) || null;
 
     if (items.length === 0) {
       return NextResponse.json({ error: "Panier vide" }, { status: 400 });
@@ -215,6 +224,10 @@ export async function POST(request: NextRequest) {
       client_nom: clientNom,
       client_telephone: clientTelephone,
       adresse_livraison: adresseLivraison,
+      delivery_latitude: deliveryLatitude,
+      delivery_longitude: deliveryLongitude,
+      delivery_place_id: deliveryPlaceId,
+      delivery_geocoded_address: deliveryGeocodedAddress,
       note_livraison: noteLivraison || null,
       sous_total: sousTotal,
       frais_livraison: fraisLivraison,
@@ -248,6 +261,10 @@ export async function POST(request: NextRequest) {
       client_nom: clientNom,
       client_telephone: clientTelephone,
       adresse_livraison: adresseLivraison,
+      delivery_latitude: deliveryLatitude,
+      delivery_longitude: deliveryLongitude,
+      delivery_place_id: deliveryPlaceId,
+      delivery_geocoded_address: deliveryGeocodedAddress,
       note_livraison: noteLivraison || null,
       note: legacyNote,
     };
@@ -322,6 +339,10 @@ export async function POST(request: NextRequest) {
             montant_marchand: montantMarchand,
             montant_livreur: montantLivreur,
             montant_total: montantTotal,
+            delivery_latitude: deliveryLatitude,
+            delivery_longitude: deliveryLongitude,
+            delivery_place_id: deliveryPlaceId,
+            delivery_geocoded_address: deliveryGeocodedAddress,
             items: lignes.map((ligne) => ({
               produit_id: ligne.produit.id,
               nom: ligne.produit.nom,
@@ -354,6 +375,10 @@ export async function POST(request: NextRequest) {
         montant_marchand: montantMarchand,
         montant_livreur: montantLivreur,
         montant_total: montantTotal,
+        delivery_latitude: deliveryLatitude,
+        delivery_longitude: deliveryLongitude,
+        delivery_place_id: deliveryPlaceId,
+        delivery_geocoded_address: deliveryGeocodedAddress,
         items: lignes.map((ligne) => ({
           produit_id: ligne.produit.id,
           nom: ligne.produit.nom,

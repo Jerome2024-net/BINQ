@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import dynamic from "next/dynamic";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { useAuth } from "@/contexts/AuthContext";
@@ -31,6 +32,12 @@ import {
 import { QRCodeSVG } from "qrcode.react";
 import { formatMontant } from "@/lib/currencies";
 import type { DeviseCode } from "@/lib/currencies";
+import type { MapboxPlace } from "@/lib/mapbox";
+
+const MapboxAddressPicker = dynamic(() => import("@/components/location/MapboxAddressPicker"), {
+  ssr: false,
+  loading: () => <div className="mt-1 h-24 rounded-xl bg-white border border-blue-100 animate-pulse" />,
+});
 
 interface Boutique {
   id: string;
@@ -92,6 +99,7 @@ export default function BoutiquePage() {
   const [clientNom, setClientNom] = useState("");
   const [clientTelephone, setClientTelephone] = useState("");
   const [adresseLivraison, setAdresseLivraison] = useState("");
+  const [lieuLivraison, setLieuLivraison] = useState<MapboxPlace | null>(null);
   const [noteLivraison, setNoteLivraison] = useState("");
 
   useEffect(() => {
@@ -179,6 +187,7 @@ export default function BoutiquePage() {
     setClientNom("");
     setClientTelephone("");
     setAdresseLivraison("");
+    setLieuLivraison(null);
     setNoteLivraison("");
   };
 
@@ -201,6 +210,10 @@ export default function BoutiquePage() {
           client_nom: clientNom,
           client_telephone: clientTelephone,
           adresse_livraison: adresseLivraison,
+          delivery_latitude: lieuLivraison?.latitude ?? null,
+          delivery_longitude: lieuLivraison?.longitude ?? null,
+          delivery_place_id: lieuLivraison?.id ?? null,
+          delivery_geocoded_address: lieuLivraison?.address ?? null,
           note_livraison: noteLivraison,
           frais_livraison: deliveryFee,
         }),
@@ -680,10 +693,12 @@ export default function BoutiquePage() {
                         </div>
                         <div>
                           <label className="text-[11px] font-bold text-gray-500 uppercase tracking-wide">Adresse de livraison</label>
-                          <div className="relative mt-1">
-                            <MapPin className="absolute left-3 top-3.5 w-4 h-4 text-gray-300" />
-                            <textarea value={adresseLivraison} onChange={e => setAdresseLivraison(e.target.value)} placeholder="Quartier, rue, repère..." rows={2} className="w-full pl-9 pr-3 py-3 rounded-xl bg-white border border-blue-100 text-sm outline-none focus:ring-2 focus:ring-blue-200 resize-none" />
-                          </div>
+                          <MapboxAddressPicker
+                            value={adresseLivraison}
+                            onChange={setAdresseLivraison}
+                            onPlaceSelect={setLieuLivraison}
+                            className="mt-1"
+                          />
                         </div>
                         <div>
                           <label className="text-[11px] font-bold text-gray-500 uppercase tracking-wide">Note optionnelle</label>

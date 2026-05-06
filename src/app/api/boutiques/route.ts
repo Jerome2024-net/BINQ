@@ -11,6 +11,11 @@ function getServiceClient() {
   );
 }
 
+function normalizeCoordinate(value: unknown) {
+  const coordinate = Number(value);
+  return Number.isFinite(coordinate) ? coordinate : null;
+}
+
 // GET /api/boutiques — Liste publique (avec filtres)
 export async function GET(req: NextRequest) {
   try {
@@ -69,6 +74,8 @@ export async function POST(req: NextRequest) {
     const supabase = getServiceClient();
     const body = await req.json();
     const { nom, description, categorie_id, telephone, whatsapp, adresse, ville, devise } = body;
+    const latitude = normalizeCoordinate(body.latitude);
+    const longitude = normalizeCoordinate(body.longitude);
 
     if (!nom || nom.trim().length < 2) {
       return NextResponse.json({ error: "Nom de boutique requis (min 2 caractères)" }, { status: 400 });
@@ -125,6 +132,10 @@ export async function POST(req: NextRequest) {
         whatsapp: whatsapp?.trim() || null,
         adresse: adresse?.trim() || null,
         ville: ville?.trim() || null,
+        latitude,
+        longitude,
+        mapbox_place_id: body.mapbox_place_id?.trim() || null,
+        geocoded_address: body.geocoded_address?.trim() || null,
         devise: devise || "XOF",
         is_verified: profile?.is_merchant || false,
       })
