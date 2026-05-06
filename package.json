@@ -7,12 +7,12 @@
     "build": "next build",
     "start": "node server.js",
     "lint": "next lint",
-    "ios:client:start": "cd \"apps/ios/Binq clients\" && flutter run -d ios",
-    "ios:livreur:start": "cd \"apps/ios/Binq livreur\" && flutter run -d ios",
-    "ios:commercant:start": "cd \"apps/ios/Binq commercant\" && flutter run -d ios",
-    "ios:client:build": "cd \"apps/ios/Binq clients\" && flutter build ios",
-    "ios:livreur:build": "cd \"apps/ios/Binq livreur\" && flutter build ios",
-    "ios:commercant:build": "cd \"apps/ios/Binq commercant\" && flutter build ios"
+    "ios:client:start": "cd \"Binq clients\" && flutter run -d ios",
+    "ios:livreur:start": "cd \"Binq livreur\" && flutter run -d ios",
+    "ios:commercant:start": "cd \"Binq commercant\" && flutter run -d ios",
+    "ios:client:build": "cd \"Binq clients\" && flutter build ios",
+    "ios:livreur:build": "cd \"Binq livreur\" && flutter build ios",
+    "ios:commercant:build": "cd \"Binq commercant\" && flutter build ios"
   },
   "dependencies": {
     "@stripe/react-stripe-js": "^5.6.0",

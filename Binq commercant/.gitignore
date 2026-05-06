@@ -1,0 +1,10 @@
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+build/
+ios/Pods/
+ios/.symlinks/
+ios/Flutter/ephemeral/
+*.iml
+.DS_Store
+.env
