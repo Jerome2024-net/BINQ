@@ -10,7 +10,7 @@ function getServiceClient() {
   );
 }
 
-const VALID_TYPES = ["momo_mtn", "orange_money", "moov_money", "wave", "bank_transfer"] as const;
+const VALID_TYPES = ["momo_mtn", "moov_money", "bank_transfer"] as const;
 
 /**
  * GET /api/wallet/methods
@@ -27,6 +27,7 @@ export async function GET() {
     .select("*")
     .eq("user_id", user.id)
     .eq("is_active", true)
+    .in("type", VALID_TYPES as unknown as string[])
     .order("is_default", { ascending: false })
     .order("created_at", { ascending: false });
 
@@ -70,9 +71,7 @@ export async function POST(req: NextRequest) {
   // Générer le label automatiquement si pas fourni
   const typeLabels: Record<string, string> = {
     momo_mtn: "MTN MoMo",
-    orange_money: "Orange Money",
     moov_money: "Moov Money",
-    wave: "Wave",
     bank_transfer: "Virement bancaire",
   };
   const autoLabel = label || `${typeLabels[type]} ${numero.slice(-4)}`;

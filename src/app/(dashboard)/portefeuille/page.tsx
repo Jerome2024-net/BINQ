@@ -64,9 +64,7 @@ interface Withdrawal {
 /* ── Helpers ── */
 const METHOD_TYPES = [
   { value: "momo_mtn", label: "MTN MoMo", icon: Smartphone, color: "text-yellow-600" },
-  { value: "orange_money", label: "Orange Money", icon: Smartphone, color: "text-orange-500" },
   { value: "moov_money", label: "Moov Money", icon: Smartphone, color: "text-blue-500" },
-  { value: "wave", label: "Wave", icon: Smartphone, color: "text-sky-500" },
   { value: "bank_transfer", label: "Virement bancaire", icon: Building2, color: "text-gray-600" },
 ];
 
@@ -345,7 +343,7 @@ export default function PortefeuillePage() {
               <CreditCard className="w-7 h-7 text-gray-300" />
             </div>
             <p className="text-[14px] font-semibold text-gray-900 mb-1">Aucun moyen de retrait</p>
-            <p className="text-[13px] text-gray-500 mb-6">Ajoutez MoMo, Wave ou un autre moyen</p>
+            <p className="text-[13px] text-gray-500 mb-6">Ajoutez MTN MoMo, Moov Money ou un virement bancaire</p>
             <button
               onClick={() => { setView("add-method"); hapticMedium(); }}
               className="px-6 py-3 bg-blue-500 text-white font-bold text-[14px] rounded-2xl hover:bg-blue-400 transition-all active:scale-[0.97]"
@@ -752,7 +750,7 @@ export default function PortefeuillePage() {
             className="w-full p-5 rounded-2xl border-2 border-dashed border-gray-200 text-center hover:border-blue-300 hover:bg-blue-50/30 transition-all"
           >
             <Plus className="w-6 h-6 text-gray-300 mx-auto mb-2" />
-            <p className="text-[13px] font-semibold text-gray-500">Ajouter MoMo, Wave...</p>
+            <p className="text-[13px] font-semibold text-gray-500">Ajouter MTN MoMo ou Moov Money...</p>
           </button>
         ) : (
           <div className="space-y-2">
