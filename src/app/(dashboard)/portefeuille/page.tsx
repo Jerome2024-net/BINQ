@@ -57,6 +57,7 @@ interface Withdrawal {
   devise: string;
   statut: string;
   reference: string;
+  processed_at: string | null;
   created_at: string;
   withdrawal_methods?: { type: string; label: string; numero: string };
 }
@@ -88,7 +89,7 @@ function statutBadge(statut: string) {
   switch (statut) {
     case "pending": return { label: "En attente", icon: Clock, cls: "text-amber-600 bg-amber-50" };
     case "processing": return { label: "En cours", icon: Loader2, cls: "text-blue-600 bg-blue-50" };
-    case "completed": return { label: "Effectué", icon: CheckCircle2, cls: "text-blue-600 bg-blue-50" };
+    case "completed": return { label: "Effectué", icon: CheckCircle2, cls: "text-emerald-600 bg-emerald-50" };
     case "failed": return { label: "Échoué", icon: XCircle, cls: "text-red-600 bg-red-50" };
     case "cancelled": return { label: "Annulé", icon: XCircle, cls: "text-gray-600 bg-gray-50" };
     default: return { label: statut, icon: Clock, cls: "text-gray-600 bg-gray-50" };
@@ -152,6 +153,16 @@ export default function PortefeuillePage() {
   }, [devise]);
 
   useEffect(() => { loadData(); }, [loadData]);
+
+  useEffect(() => {
+    const interval = window.setInterval(() => {
+      if (document.visibilityState === "visible") {
+        loadData();
+      }
+    }, 30000);
+
+    return () => window.clearInterval(interval);
+  }, [loadData]);
 
   /* ── Actions ── */
   const handleWithdraw = async () => {
@@ -554,9 +565,9 @@ export default function PortefeuillePage() {
           <CheckCircle2 className="w-10 h-10 text-blue-500" />
         </div>
 
-        <h1 className="text-[22px] font-black text-gray-900 mb-2">Retrait envoyé !</h1>
+        <h1 className="text-[22px] font-black text-gray-900 mb-2">Demande envoyée !</h1>
         <p className="text-[14px] text-gray-500 mb-8">
-          {formatMontant(lastWithdrawal.net, devise)} vers {lastWithdrawal.method}
+          {formatMontant(lastWithdrawal.net, devise)} vers {lastWithdrawal.method}. Le statut s&apos;affichera ici dès que le traitement sera effectué.
         </p>
 
         <div className="bg-gray-50 rounded-2xl p-4 mb-8 inline-block">
@@ -600,8 +611,10 @@ export default function PortefeuillePage() {
         id: w.id,
         type: "retrait",
         montant: -w.montant,
-        description: `Retrait vers ${w.withdrawal_methods?.label || "..."}`,
-        date: w.created_at,
+        description: w.statut === "completed"
+          ? `Retrait effectué vers ${w.withdrawal_methods?.label || "..."}`
+          : `Retrait vers ${w.withdrawal_methods?.label || "..."}`,
+        date: w.processed_at || w.created_at,
         statut: w.statut,
         isWithdrawal: true,
       })),
@@ -661,6 +674,7 @@ export default function PortefeuillePage() {
      ═══════════════════════════════════════════ */
   const solde = wallet?.solde || 0;
   const pendingWithdrawals = withdrawals.filter((w) => w.statut === "pending" || w.statut === "processing");
+  const completedWithdrawals = withdrawals.filter((w) => w.statut === "completed").slice(0, 3);
 
   return (
     <div className="px-5 pt-8 pb-28 lg:pb-10">
@@ -721,6 +735,42 @@ export default function PortefeuillePage() {
                       {formatMontant(w.net, devise as DeviseCode)}
                     </p>
                     <p className="text-[11px] text-gray-500">{w.withdrawal_methods?.label || "..."}</p>
+                  </div>
+                  <span className={`text-[11px] font-semibold px-2 py-1 rounded-lg ${badge.cls}`}>
+                    {badge.label}
+                  </span>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+      {/* Completed withdrawals */}
+      {completedWithdrawals.length > 0 && (
+        <div className="mt-10">
+          <div className="flex items-center justify-between mb-3">
+            <p className="text-[13px] font-semibold text-gray-500">Retraits effectués</p>
+            <button
+              onClick={() => { setView("history"); hapticMedium(); }}
+              className="text-[12px] font-semibold text-blue-600"
+            >
+              Voir tout
+            </button>
+          </div>
+          <div className="space-y-2">
+            {completedWithdrawals.map((w) => {
+              const badge = statutBadge(w.statut);
+              return (
+                <div key={w.id} className="flex items-center gap-3 p-3.5 bg-emerald-50/60 rounded-2xl border border-emerald-100/70">
+                  <badge.icon className="w-4 h-4 text-emerald-600" />
+                  <div className="flex-1">
+                    <p className="text-[13px] font-semibold text-gray-900">
+                      {formatMontant(w.net, devise as DeviseCode)} envoyé
+                    </p>
+                    <p className="text-[11px] text-gray-500">
+                      {w.withdrawal_methods?.label || "..."} · {formatDate(w.processed_at || w.created_at)}
+                    </p>
                   </div>
                   <span className={`text-[11px] font-semibold px-2 py-1 rounded-lg ${badge.cls}`}>
                     {badge.label}
