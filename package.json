@@ -7,12 +7,12 @@
     "build": "next build",
     "start": "node server.js",
     "lint": "next lint",
-    "ios:client:start": "npm --prefix apps/ios/binq-client run start",
-    "ios:livreur:start": "npm --prefix apps/ios/binq-livreur run start",
-    "ios:commercant:start": "npm --prefix apps/ios/binq-commercant run start",
-    "ios:client:prebuild": "npm --prefix apps/ios/binq-client run prebuild:ios",
-    "ios:livreur:prebuild": "npm --prefix apps/ios/binq-livreur run prebuild:ios",
-    "ios:commercant:prebuild": "npm --prefix apps/ios/binq-commercant run prebuild:ios"
+    "ios:client:start": "cd apps/ios/binq-client && flutter run -d ios",
+    "ios:livreur:start": "cd apps/ios/binq-livreur && flutter run -d ios",
+    "ios:commercant:start": "cd apps/ios/binq-commercant && flutter run -d ios",
+    "ios:client:build": "cd apps/ios/binq-client && flutter build ios",
+    "ios:livreur:build": "cd apps/ios/binq-livreur && flutter build ios",
+    "ios:commercant:build": "cd apps/ios/binq-commercant && flutter build ios"
   },
   "dependencies": {
     "@stripe/react-stripe-js": "^5.6.0",

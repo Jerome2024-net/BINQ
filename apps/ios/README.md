@@ -1,6 +1,6 @@
 # Binq iOS
 
-Binq est séparé en trois applications mobiles iOS Expo :
+Binq est séparé en trois applications mobiles iOS Flutter/Dart :
 
 - `binq-client` : commande, localisation client, suivi commande.
 - `binq-livreur` : livraisons assignées, position livreur, itinéraire Mapbox.
@@ -9,9 +9,9 @@ Binq est séparé en trois applications mobiles iOS Expo :
 ## Pré-requis iOS
 
 - Un Mac avec Xcode pour lancer un simulateur iOS ou compiler localement.
-- Node.js et npm.
-- Un compte Expo/EAS pour générer des builds TestFlight/App Store.
-- Variables dans `.env` copiées depuis `.env.example`.
+- Flutter SDK installé.
+- CocoaPods pour compiler iOS.
+- Variables transmises avec `--dart-define`.
 
 ## Lancer une app
 
@@ -21,25 +21,36 @@ Depuis la racine du projet :
 - Livreur : `npm run ios:livreur:start`
 - Commerçant : `npm run ios:commercant:start`
 
-Puis, dans le terminal Expo, choisir `i` pour iOS.
+Les scripts racine lancent `flutter run -d ios` dans le dossier concerné.
 
 ## Build iOS natif
 
 Dans le dossier d’une app :
 
-1. `npm install`
-2. `npm run prebuild:ios`
-3. `npm run ios`
+1. `flutter pub get`
+2. `flutter create --platforms=ios .` si le dossier `ios/` n’existe pas encore
+3. `flutter run -d ios`
+4. `flutter build ios`
 
-Pour Mapbox iOS, `MAPBOX_DOWNLOADS_TOKEN` est requis au moment du prebuild natif.
+Pour Mapbox iOS, configurez `MAPBOX_ACCESS_TOKEN` via `--dart-define` et les réglages iOS Mapbox si nécessaire.
 
 ## Connexion backend
 
 Les apps pointent vers l’API web Binq avec :
 
-- `EXPO_PUBLIC_BINQ_API_URL`
-- `EXPO_PUBLIC_SUPABASE_URL`
-- `EXPO_PUBLIC_SUPABASE_ANON_KEY`
-- `EXPO_PUBLIC_MAPBOX_ACCESS_TOKEN`
+- `BINQ_API_URL`
+- `SUPABASE_URL`
+- `SUPABASE_ANON_KEY`
+- `MAPBOX_ACCESS_TOKEN`
+
+Exemple :
+
+```bash
+flutter run -d ios \
+	--dart-define=BINQ_API_URL=https://binq.io \
+	--dart-define=SUPABASE_URL=https://xxxxx.supabase.co \
+	--dart-define=SUPABASE_ANON_KEY=eyJhbGci... \
+	--dart-define=MAPBOX_ACCESS_TOKEN=pk.xxxxxxxxxxxxxxxxx
+```
 
 Le backend Next.js reste la source commune pour les commandes, paiements, livreurs, wallets et Mapbox.

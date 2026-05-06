@@ -37,8 +37,12 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# Expo / React Native iOS apps
+# Flutter iOS apps
 apps/ios/**/node_modules/
-apps/ios/**/.expo/
-apps/ios/**/ios/
-apps/ios/**/android/
+apps/ios/**/.dart_tool/
+apps/ios/**/.flutter-plugins
+apps/ios/**/.flutter-plugins-dependencies
+apps/ios/**/build/
+apps/ios/**/ios/Pods/
+apps/ios/**/ios/.symlinks/
+apps/ios/**/ios/Flutter/ephemeral/
