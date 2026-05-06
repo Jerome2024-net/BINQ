@@ -89,6 +89,8 @@ export default function LivraisonsPage() {
   const [stats, setStats] = useState<Stats | null>(null);
   const [loading, setLoading] = useState(true);
   const [updatingId, setUpdatingId] = useState<string | null>(null);
+  const [activating, setActivating] = useState(false);
+  const [activationMessage, setActivationMessage] = useState("");
 
   useEffect(() => {
     if (!user) return;
@@ -132,6 +134,20 @@ export default function LivraisonsPage() {
     finally { setUpdatingId(null); }
   };
 
+  const activateLivreur = async () => {
+    setActivating(true);
+    setActivationMessage("");
+    try {
+      const res = await fetch("/api/livreurs", { method: "POST" });
+      const data = await res.json();
+      setActivationMessage(res.ok ? "Profil livreur activé. Les marchands peuvent maintenant vous assigner des commandes." : data.error || "Activation impossible.");
+    } catch {
+      setActivationMessage("Erreur réseau. Réessayez.");
+    } finally {
+      setActivating(false);
+    }
+  };
+
   if (loading) {
     return (
       <div className="min-h-[60vh] flex items-center justify-center">
@@ -166,6 +182,15 @@ export default function LivraisonsPage() {
           <Truck className="w-12 h-12 text-gray-200 mx-auto mb-4" />
           <p className="text-sm font-black text-gray-900">Aucune livraison assignée</p>
           <p className="text-sm text-gray-500 mt-1">Les commandes assignées au livreur apparaîtront ici.</p>
+          <button
+            onClick={activateLivreur}
+            disabled={activating}
+            className="mt-5 inline-flex items-center justify-center gap-2 rounded-2xl bg-emerald-600 px-5 py-3 text-sm font-black text-white disabled:opacity-60"
+          >
+            {activating ? <Loader2 className="w-4 h-4 animate-spin" /> : <Truck className="w-4 h-4" />}
+            Activer mon profil livreur
+          </button>
+          {activationMessage && <p className="mt-3 text-xs font-semibold text-emerald-700">{activationMessage}</p>}
         </div>
       ) : (
         <div className="mt-6 grid lg:grid-cols-[360px_1fr] gap-5">

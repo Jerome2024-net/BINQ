@@ -53,6 +53,31 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: "Erreur serveur" }, { status: 500 });
     }
 
+    const livreurIds = Array.from(new Set((commandes || []).map((commande: any) => commande.livreur_id).filter(Boolean)));
+    let livreursById: Record<string, { id: string; prenom: string; nom: string; telephone: string; avatar_url: string | null }> = {};
+    if (livreurIds.length > 0) {
+      const { data: livreurs } = await supabase
+        .from("profiles")
+        .select("id, prenom, nom, telephone, avatar")
+        .in("id", livreurIds);
+
+      livreursById = (livreurs || []).reduce((acc, profile) => {
+        acc[profile.id] = {
+          id: profile.id,
+          prenom: profile.prenom || "",
+          nom: profile.nom || "",
+          telephone: profile.telephone || "",
+          avatar_url: profile.avatar || null,
+        };
+        return acc;
+      }, {} as Record<string, { id: string; prenom: string; nom: string; telephone: string; avatar_url: string | null }>);
+    }
+
+    const commandesWithLivreur = (commandes || []).map((commande: any) => ({
+      ...commande,
+      livreur: commande.livreur_id ? livreursById[commande.livreur_id] || null : null,
+    }));
+
     // Get stats
     const { data: achatsData } = await supabase
       .from("commandes")
@@ -77,7 +102,7 @@ export async function GET(request: NextRequest) {
     const nbLivraisons = role === "livreur" ? (commandes || []).length : 0;
 
     return NextResponse.json({
-      commandes: commandes || [],
+      commandes: commandesWithLivreur,
       stats: { totalAchats, totalVentes, nbAchats, nbVentes, totalLivraisons, nbLivraisons },
     });
   } catch (err) {
@@ -137,6 +162,10 @@ export async function POST(request: NextRequest) {
 
     if (!adresseLivraison || adresseLivraison.length < 5) {
       return NextResponse.json({ error: "Adresse de livraison requise" }, { status: 400 });
+    }
+
+    if (deliveryLatitude === null || deliveryLongitude === null) {
+      return NextResponse.json({ error: "Position GPS client requise. Sélectionnez une adresse Mapbox ou utilisez votre position actuelle." }, { status: 400 });
     }
 
     const uniqueItems = new Map<string, number>();
@@ -402,7 +431,7 @@ export async function POST(request: NextRequest) {
   }
 }
 
-// PATCH /api/commandes — Mettre à jour le statut d'une commande vendeur
+// PATCH /api/commandes — Mettre à jour le statut ou assigner un livreur
 export async function PATCH(request: NextRequest) {
   try {
     const user = await getAuthenticatedUser();
@@ -410,7 +439,68 @@ export async function PATCH(request: NextRequest) {
       return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
     }
 
-    const { commande_id, statut } = await request.json();
+    const body = await request.json();
+    const { commande_id, statut } = body;
+    const supabase = getServiceClient();
+
+    if (commande_id && Object.prototype.hasOwnProperty.call(body, "livreur_id")) {
+      const livreurId = body.livreur_id ? String(body.livreur_id) : null;
+
+      let livreur: { id: string; prenom: string; nom: string; telephone: string; avatar: string | null } | null = null;
+      if (livreurId) {
+        const { data: livreurProfile, error: livreurErr } = await supabase
+          .from("profiles")
+          .select("id, prenom, nom, telephone, avatar, is_livreur")
+          .eq("id", livreurId)
+          .eq("is_livreur", true)
+          .single();
+
+        if (livreurErr || !livreurProfile) {
+          return NextResponse.json({ error: "Livreur introuvable ou non activé" }, { status: 400 });
+        }
+        livreur = livreurProfile;
+      }
+
+      const updates: Record<string, string | null> = {
+        livreur_id: livreurId,
+        livreur_assigned_at: livreurId ? new Date().toISOString() : null,
+        updated_at: new Date().toISOString(),
+      };
+
+      const { data: commande, error } = await supabase
+        .from("commandes")
+        .update(updates)
+        .eq("id", commande_id)
+        .eq("vendeur_id", user.id)
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      if (livreurId) {
+        await supabase.from("notifications").insert({
+          user_id: livreurId,
+          titre: "Nouvelle livraison assignée",
+          message: `Une commande ${commande.reference || "Binq"} vous a été assignée. Ouvrez Livraisons pour suivre le client.`,
+        });
+      }
+
+      return NextResponse.json({
+        commande: {
+          ...commande,
+          livreur: livreur
+            ? {
+                id: livreur.id,
+                prenom: livreur.prenom || "",
+                nom: livreur.nom || "",
+                telephone: livreur.telephone || "",
+                avatar_url: livreur.avatar || null,
+              }
+            : null,
+        },
+      });
+    }
+
     const allowed = ["nouvelle", "payee", "acceptee", "preparation", "en_livraison", "confirmee", "livree", "annulee"];
     if (!commande_id || !allowed.includes(statut)) {
       return NextResponse.json({ error: "Statut invalide" }, { status: 400 });
@@ -422,7 +512,6 @@ export async function PATCH(request: NextRequest) {
     if (statut === "preparation") updates.prepared_at = now;
     if (statut === "livree") updates.delivered_at = now;
 
-    const supabase = getServiceClient();
     let { data: commande, error } = await supabase
       .from("commandes")
       .update(updates)

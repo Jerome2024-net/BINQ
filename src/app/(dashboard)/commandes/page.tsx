@@ -16,7 +16,16 @@ import {
   Clock,
   Phone,
   MapPin,
+  UserCheck,
 } from "lucide-react";
+
+interface Livreur {
+  id: string;
+  prenom: string;
+  nom: string;
+  telephone?: string | null;
+  avatar_url?: string | null;
+}
 
 interface Commande {
   id: string;
@@ -31,6 +40,9 @@ interface Commande {
   delivery_latitude?: number | null;
   delivery_longitude?: number | null;
   delivery_geocoded_address?: string | null;
+  livreur_id?: string | null;
+  livreur_assigned_at?: string | null;
+  livreur?: Livreur | null;
   note_livraison?: string | null;
   sous_total?: number | null;
   frais_livraison?: number | null;
@@ -89,18 +101,27 @@ export default function CommandesPage() {
   const { user } = useAuth();
   const [commandes, setCommandes] = useState<Commande[]>([]);
   const [stats, setStats] = useState<Stats | null>(null);
+  const [livreurs, setLivreurs] = useState<Livreur[]>([]);
   const [loading, setLoading] = useState(true);
   const [updatingId, setUpdatingId] = useState<string | null>(null);
+  const [assigningId, setAssigningId] = useState<string | null>(null);
 
   useEffect(() => {
     if (!user) return;
     const fetchCommandes = async () => {
       setLoading(true);
       try {
-        const res = await fetch(`/api/commandes?role=vendeur`);
-        const data = await res.json();
+        const [ordersRes, livreursRes] = await Promise.all([
+          fetch(`/api/commandes?role=vendeur`),
+          fetch(`/api/livreurs`),
+        ]);
+        const data = await ordersRes.json();
         setCommandes(data.commandes || []);
         setStats(data.stats ? { totalVentes: data.stats.totalVentes || 0, nbVentes: data.stats.nbVentes || 0 } : null);
+        if (livreursRes.ok) {
+          const livreursData = await livreursRes.json();
+          setLivreurs(livreursData.livreurs || []);
+        }
       } catch { /* ignore */ }
       finally { setLoading(false); }
     };
@@ -121,6 +142,22 @@ export default function CommandesPage() {
       }
     } catch { /* ignore */ }
     finally { setUpdatingId(null); }
+  };
+
+  const assignLivreur = async (commandeId: string, livreurId: string) => {
+    setAssigningId(commandeId);
+    try {
+      const res = await fetch("/api/commandes", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ commande_id: commandeId, livreur_id: livreurId || null }),
+      });
+      const data = await res.json();
+      if (res.ok && data.commande) {
+        setCommandes((prev) => prev.map((c) => c.id === commandeId ? { ...c, ...data.commande } : c));
+      }
+    } catch { /* ignore */ }
+    finally { setAssigningId(null); }
   };
 
   if (loading) {
@@ -180,6 +217,7 @@ export default function CommandesPage() {
             const directionsUrl = getMapboxDirectionsUrl({ latitude: deliveryLatitude, longitude: deliveryLongitude, address: adresse });
             const note = c.note_livraison || delivery?.note_livraison;
             const action = nextStatus[c.statut];
+            const assignedLivreurName = c.livreur ? `${c.livreur.prenom} ${c.livreur.nom}`.trim() : "";
 
             return (
               <div
@@ -234,6 +272,33 @@ export default function CommandesPage() {
                     {note && <p className="text-gray-400">Note : {note}</p>}
                   </div>
                 )}
+
+                <div className="mt-3 rounded-2xl bg-white border border-gray-100 p-3">
+                  <div className="flex items-center gap-2 mb-2">
+                    <UserCheck className="w-4 h-4 text-emerald-600" />
+                    <p className="text-[12px] font-black text-gray-900">Livreur assigné</p>
+                  </div>
+                  {livreurs.length > 0 ? (
+                    <select
+                      value={c.livreur_id || ""}
+                      onChange={(event) => assignLivreur(c.id, event.target.value)}
+                      disabled={assigningId === c.id || c.statut === "livree" || c.statut === "annulee"}
+                      className="w-full rounded-xl border border-gray-100 bg-gray-50 px-3 py-2.5 text-[12px] font-bold text-gray-700 outline-none focus:ring-2 focus:ring-emerald-100 disabled:opacity-60"
+                    >
+                      <option value="">Choisir un livreur</option>
+                      {livreurs.map((livreur) => {
+                        const name = `${livreur.prenom} ${livreur.nom}`.trim() || livreur.telephone || "Livreur";
+                        return <option key={livreur.id} value={livreur.id}>{name}</option>;
+                      })}
+                    </select>
+                  ) : (
+                    <p className="text-[11px] font-semibold text-amber-700 bg-amber-50 rounded-xl px-3 py-2">
+                      Aucun livreur actif. Un utilisateur doit ouvrir /livraisons et activer son profil livreur.
+                    </p>
+                  )}
+                  {assigningId === c.id && <p className="mt-2 text-[11px] font-semibold text-emerald-600">Assignation en cours...</p>}
+                  {assignedLivreurName && <p className="mt-2 text-[11px] font-semibold text-emerald-700">Assigné à {assignedLivreurName}</p>}
+                </div>
 
                 <div className="mt-3 flex items-center gap-2">
                   {action && (
