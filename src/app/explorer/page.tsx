@@ -1,325 +1,236 @@
 "use client";
 
-import { useState, useEffect, useMemo, useCallback, useRef } from "react";
-import Link from "next/link";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import BinqLogo from "@/components/BinqLogo";
 import {
-  Search,
-  CalendarDays,
-  Loader2,
-  X,
-  Menu,
-  ChevronDown,
-  MapPin,
-  Users,
-  ArrowRight,
-  Sparkles,
-  ShoppingBag,
-  Truck,
-  Store,
   BadgeCheck,
+  ChevronDown,
+  Clock,
+  Loader2,
+  MapPin,
+  Menu,
+  Search,
+  ShoppingBag,
+  Sparkles,
+  Store,
+  Truck,
+  X,
+  Zap,
 } from "lucide-react";
 
-/* ─── Types ─── */
-interface EventPublic {
+interface Categorie {
+  id: string;
+  nom: string;
+  slug: string;
+  icone: string | null;
+}
+
+interface Boutique {
+  id: string;
+  nom: string;
+  slug: string;
+  description: string | null;
+  logo_url: string | null;
+  ville: string | null;
+  adresse?: string | null;
+  devise?: string | null;
+  is_verified: boolean;
+  vues?: number;
+  categorie: { nom: string; slug: string; icone: string | null } | null;
+  produits?: { count: number }[];
+}
+
+interface Produit {
   id: string;
   nom: string;
   description: string | null;
-  date_debut: string;
-  heure_debut: string | null;
-  date_fin: string | null;
-  lieu: string;
-  ville: string | null;
-  cover_url: string | null;
-  logo_url: string | null;
+  prix: number;
+  prix_barre: number | null;
   devise: string;
-  total_vendu: number;
-  boutique_id: string;
-  min_price: number;
-  total_capacity: number;
-  total_sold: number;
-  boutiques: {
+  image_url: string | null;
+  categorie: string | null;
+  stock?: number | null;
+  ventes: number;
+  boutique: {
+    id: string;
     nom: string;
     slug: string;
     logo_url: string | null;
     is_verified: boolean;
-  } | null;
-  organisateur: {
-    nom: string;
-    avatar_url: string | null;
-  } | null;
+    ville: string | null;
+  };
 }
 
-/* ─── Helpers ─── */
-function formatTime(heureStr: string | null) {
-  if (!heureStr) return "";
-  const [h, m] = heureStr.split(":");
-  return `${h}h${m}`;
-}
+type ViewMode = "produits" | "boutiques";
 
-function formatDateLabel(dateStr: string) {
-  const d = new Date(dateStr + "T00:00:00");
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  const tomorrow = new Date(today);
-  tomorrow.setDate(tomorrow.getDate() + 1);
-  const ev = new Date(dateStr + "T00:00:00");
-
-  if (ev.getTime() === today.getTime()) return "Aujourd'hui";
-  if (ev.getTime() === tomorrow.getTime()) return "Demain";
-
-  return d.toLocaleDateString("fr-FR", {
-    weekday: "long",
-    day: "numeric",
-    month: "long",
-  });
-}
-
-function formatDateCompact(dateStr: string) {
-  const d = new Date(dateStr + "T00:00:00");
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  const tomorrow = new Date(today);
-  tomorrow.setDate(tomorrow.getDate() + 1);
-  const ev = new Date(dateStr + "T00:00:00");
-
-  if (ev.getTime() === today.getTime()) return "Aujourd'hui";
-  if (ev.getTime() === tomorrow.getTime()) return "Demain";
-
-  return d
-    .toLocaleDateString("fr-FR", {
-      weekday: "short",
-      day: "numeric",
-      month: "short",
-    })
-    .replace(".", "");
-}
-
-/* ─── Categories ─── */
-const EVENT_CATEGORIES = [
-  { slug: "", label: "Tout", gradient: "from-emerald-500 to-green-600", bg: "bg-emerald-50", text: "text-emerald-700" },
-  { slug: "alimentation", label: "Courses", gradient: "from-yellow-400 to-amber-500", bg: "bg-amber-50", text: "text-amber-700" },
-  { slug: "mode", label: "Mode", gradient: "from-pink-400 to-rose-500", bg: "bg-pink-50", text: "text-pink-600" },
-  { slug: "electronique", label: "Tech", gradient: "from-emerald-400 to-teal-500", bg: "bg-emerald-50", text: "text-emerald-700" },
-  { slug: "beaute", label: "Beauté", gradient: "from-fuchsia-400 to-purple-500", bg: "bg-fuchsia-50", text: "text-fuchsia-600" },
-  { slug: "services", label: "Services", gradient: "from-slate-400 to-gray-600", bg: "bg-slate-50", text: "text-slate-600" },
-  { slug: "artisanat", label: "Artisans", gradient: "from-lime-400 to-emerald-500", bg: "bg-lime-50", text: "text-lime-700" },
-  { slug: "sport", label: "Sport", gradient: "from-emerald-400 to-green-600", bg: "bg-emerald-50", text: "text-emerald-600" },
-  { slug: "education", label: "Éducation", gradient: "from-green-400 to-emerald-500", bg: "bg-green-50", text: "text-green-700" },
-  { slug: "restauration", label: "Restaurants", gradient: "from-red-400 to-rose-600", bg: "bg-red-50", text: "text-red-600" },
-  { slug: "bien-etre", label: "Bien-être", gradient: "from-teal-400 to-emerald-500", bg: "bg-teal-50", text: "text-teal-600" },
-  { slug: "hotellerie", label: "Maison", gradient: "from-yellow-400 to-amber-500", bg: "bg-yellow-50", text: "text-yellow-700" },
-  { slug: "concerts", label: "Loisirs", gradient: "from-purple-400 to-pink-500", bg: "bg-purple-50", text: "text-purple-600" },
+const QUICK_CATEGORIES = [
+  { slug: "", nom: "Tout", icone: "✨" },
+  { slug: "restauration", nom: "Restaurants", icone: "🍽️" },
+  { slug: "alimentation", nom: "Courses", icone: "🛒" },
+  { slug: "mode", nom: "Mode", icone: "👟" },
+  { slug: "beaute", nom: "Beauté", icone: "💄" },
+  { slug: "services", nom: "Services", icone: "⚡" },
 ];
 
-/* ─── Skeletons ─── */
-function SkeletonCard() {
-  return (
-    <div className="animate-pulse rounded-[1.75rem] bg-white border border-slate-100 shadow-sm overflow-hidden">
-      <div className="bg-slate-100 aspect-[16/10]" />
-      <div className="space-y-3 p-4">
-        <div className="h-3 w-28 bg-slate-100 rounded-full" />
-        <div className="h-5 w-3/4 bg-slate-100 rounded-full" />
-        <div className="h-3 w-1/2 bg-slate-100 rounded-full" />
-      </div>
-    </div>
-  );
+function formatPrice(value: number, devise = "XOF") {
+  return `${Number(value || 0).toLocaleString("fr-FR")} ${devise}`;
 }
 
-const PAGE_SIZE = 20;
-
-/* ─────────────────────────────────────────────────── */
-/*                   MAIN PAGE                         */
-/* ─────────────────────────────────────────────────── */
 export default function ExplorerPublicPage() {
-  const [events, setEvents] = useState<EventPublic[]>([]);
+  const [categories, setCategories] = useState<Categorie[]>([]);
+  const [produits, setProduits] = useState<Produit[]>([]);
+  const [boutiques, setBoutiques] = useState<Boutique[]>([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("");
+  const [viewMode, setViewMode] = useState<ViewMode>("produits");
+  const [sort, setSort] = useState("recent");
   const [loading, setLoading] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
-  const [hasMore, setHasMore] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [selectedCity, setSelectedCity] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("");
-  const [cities, setCities] = useState<string[]>([]);
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [cityDropdownOpen, setCityDropdownOpen] = useState(false);
-  const cityRef = useRef<HTMLDivElement>(null);
+  const [offset, setOffset] = useState(0);
+  const [hasMore, setHasMore] = useState(false);
 
-  /* close city dropdown on outside click */
-  useEffect(() => {
-    function handle(e: MouseEvent) {
-      if (cityRef.current && !cityRef.current.contains(e.target as Node)) {
-        setCityDropdownOpen(false);
-      }
-    }
-    document.addEventListener("mousedown", handle);
-    return () => document.removeEventListener("mousedown", handle);
-  }, []);
+  const displayedCategories = useMemo(() => {
+    if (categories.length === 0) return QUICK_CATEGORIES;
+    const mapped = categories.map((cat) => ({
+      slug: cat.slug,
+      nom: cat.nom,
+      icone: cat.icone || "🏪",
+    }));
+    return [{ slug: "", nom: "Tout", icone: "✨" }, ...mapped];
+  }, [categories]);
 
-  const fetchEvents = useCallback(
-    async (opts?: {
-      search?: string;
-      ville?: string;
-      categorie?: string;
-      offset?: number;
-      append?: boolean;
-    }) => {
-      const {
-        search,
-        ville,
-        categorie,
-        offset = 0,
-        append = false,
-      } = opts || {};
+  const fetchExplorer = useCallback(
+    async ({ append = false, nextOffset = 0 } = {}) => {
+      if (append) setLoadingMore(true);
+      else setLoading(true);
+
       try {
         const params = new URLSearchParams();
-        if (search) params.set("search", search);
-        if (ville) params.set("ville", ville);
-        if (categorie) params.set("categorie", categorie);
-        params.set("limit", String(PAGE_SIZE));
-        params.set("offset", String(offset));
-        if (offset === 0) params.set("meta", "1");
+        if (searchQuery.trim()) params.set("search", searchQuery.trim());
+        if (selectedCategory) params.set("categorie", selectedCategory);
+        params.set("limit", "20");
+        params.set("offset", String(nextOffset));
 
-        const res = await fetch(`/api/events/explore?${params}`);
-        const data = await res.json();
-        const newEvents: EventPublic[] = data.events || [];
-        setHasMore(!!data.hasMore);
+        const productParams = new URLSearchParams(params);
+        productParams.set("sort", sort);
 
-        if (data.cities && data.cities.length > 0) {
-          setCities(data.cities);
+        const [catRes, prodRes, shopRes] = await Promise.all([
+          categories.length === 0 ? fetch("/api/categories") : null,
+          fetch(`/api/produits?${productParams}`),
+          fetch(`/api/boutiques?${params}`),
+        ]);
+
+        if (catRes) {
+          const catData = await catRes.json();
+          setCategories(catData.categories || []);
         }
 
-        if (append) {
-          setEvents((prev) => [...prev, ...newEvents]);
-        } else {
-          setEvents(newEvents);
-        }
+        const [prodData, shopData] = await Promise.all([
+          prodRes.json(),
+          shopRes.json(),
+        ]);
+
+        const nextProduits: Produit[] = prodData.produits || [];
+        const nextBoutiques: Boutique[] = shopData.boutiques || [];
+
+        setProduits((prev) =>
+          append ? [...prev, ...nextProduits] : nextProduits
+        );
+        setBoutiques((prev) =>
+          append ? [...prev, ...nextBoutiques] : nextBoutiques
+        );
+        setHasMore(
+          viewMode === "produits"
+            ? nextProduits.length === 20
+            : nextBoutiques.length === 20
+        );
+        setOffset(nextOffset + 20);
       } catch {
-        /* ignore */
+        if (!append) {
+          setProduits([]);
+          setBoutiques([]);
+        }
+        setHasMore(false);
       } finally {
         setLoading(false);
         setLoadingMore(false);
       }
     },
-    []
+    [categories.length, searchQuery, selectedCategory, sort, viewMode]
   );
 
   useEffect(() => {
-    fetchEvents();
-  }, [fetchEvents]);
-
-  useEffect(() => {
     const timer = setTimeout(() => {
-      setLoading(true);
-      fetchEvents({
-        search: searchQuery || undefined,
-        ville: selectedCity || undefined,
-        categorie: selectedCategory || undefined,
-      });
-    }, 350);
+      setOffset(0);
+      fetchExplorer({ nextOffset: 0 });
+    }, 250);
     return () => clearTimeout(timer);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchQuery, selectedCity, selectedCategory]);
+  }, [fetchExplorer]);
 
-  const loadMore = () => {
-    setLoadingMore(true);
-    fetchEvents({
-      search: searchQuery || undefined,
-      ville: selectedCity || undefined,
-      categorie: selectedCategory || undefined,
-      offset: events.length,
-      append: true,
-    });
-  };
-
-  /* Group events by date */
-  const groupedEvents = useMemo(() => {
-    const groups: { date: string; label: string; events: EventPublic[] }[] = [];
-    const map = new Map<string, EventPublic[]>();
-
-    for (const ev of events) {
-      const key = ev.date_debut;
-      if (!map.has(key)) map.set(key, []);
-      map.get(key)!.push(ev);
-    }
-
-    map.forEach((evts, date) => {
-      groups.push({ date, label: formatDateLabel(date), events: evts });
-    });
-
-    groups.sort((a, b) => a.date.localeCompare(b.date));
-    return groups;
-  }, [events]);
+  const activeItemsCount =
+    viewMode === "produits" ? produits.length : boutiques.length;
 
   return (
-    <div
-      className="min-h-screen bg-[#f7f9fe] text-slate-950"
-      style={{
-        fontFamily:
-          "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
-      }}
-    >
-      {/* ═══════ NAV ═══════ */}
-      <header className="sticky top-0 z-50 bg-white/75 backdrop-blur-2xl border-b border-white/70 shadow-sm shadow-slate-200/40">
-        <div className="max-w-7xl mx-auto px-5 lg:px-10 h-14 lg:h-16 flex items-center justify-between">
+    <div className="min-h-screen bg-[#f7fbf8] text-slate-950">
+      <header className="sticky top-0 z-50 border-b border-white/70 bg-white/80 shadow-sm shadow-emerald-950/5 backdrop-blur-2xl">
+        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-5 lg:px-10">
           <Link href="/" className="flex items-center gap-2">
             <BinqLogo size="sm" />
           </Link>
 
-          <nav className="hidden sm:flex items-center gap-1 lg:gap-2">
+          <nav className="hidden items-center gap-2 sm:flex">
             <Link
               href="/explorer"
-              className="px-3 lg:px-4 py-1.5 lg:py-2 text-[13px] lg:text-sm font-semibold text-emerald-700 bg-emerald-50 rounded-full"
+              className="rounded-full bg-emerald-50 px-4 py-2 text-sm font-black text-emerald-700"
             >
-              Commander
+              Binq Clients
             </Link>
             <Link
               href="/connexion"
-              className="px-3 lg:px-4 py-1.5 lg:py-2 text-[13px] lg:text-sm font-medium text-slate-500 hover:text-slate-950 rounded-full hover:bg-white transition"
+              className="rounded-full px-4 py-2 text-sm font-bold text-slate-500 transition hover:bg-slate-50 hover:text-slate-950"
             >
               Connexion
             </Link>
             <Link
               href="/inscription"
-              className="ml-1.5 px-4 lg:px-5 py-1.5 lg:py-2 text-[13px] lg:text-sm font-semibold bg-emerald-600 text-white rounded-full hover:bg-emerald-700 transition shadow-lg shadow-emerald-600/20"
+              className="rounded-full bg-[#14852F] px-5 py-2 text-sm font-black text-white shadow-lg shadow-emerald-700/20 transition hover:bg-[#0f7027]"
             >
               Devenir partenaire
             </Link>
           </nav>
 
           <button
-            onClick={() => setMobileOpen(!mobileOpen)}
-            className="sm:hidden p-2 -mr-2 text-gray-600"
+            onClick={() => setMobileOpen((value) => !value)}
+            className="rounded-2xl p-2 text-slate-600 hover:bg-slate-50 sm:hidden"
+            aria-label="Menu"
           >
-            {mobileOpen ? (
-              <X className="w-5 h-5" />
-            ) : (
-              <Menu className="w-5 h-5" />
-            )}
+            {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </button>
         </div>
 
-        {/* Mobile nav */}
         {mobileOpen && (
-          <div className="sm:hidden border-t border-slate-100 bg-white/95 backdrop-blur-xl px-5 py-3 space-y-1">
+          <div className="space-y-1 border-t border-slate-100 bg-white px-5 py-3 sm:hidden">
             <Link
               href="/explorer"
               onClick={() => setMobileOpen(false)}
-              className="block px-3 py-2.5 text-sm font-semibold text-emerald-700 bg-emerald-50 rounded-xl"
+              className="block rounded-xl bg-emerald-50 px-3 py-2.5 text-sm font-black text-emerald-700"
             >
-              Commander
+              Binq Clients
             </Link>
             <Link
               href="/connexion"
               onClick={() => setMobileOpen(false)}
-              className="block px-3 py-2.5 text-sm text-slate-600 hover:bg-slate-50 rounded-xl"
+              className="block rounded-xl px-3 py-2.5 text-sm font-bold text-slate-600"
             >
               Connexion
             </Link>
             <Link
               href="/inscription"
               onClick={() => setMobileOpen(false)}
-              className="block px-3 py-2.5 text-sm font-semibold text-center bg-emerald-600 text-white rounded-xl mt-1"
+              className="mt-1 block rounded-xl bg-[#14852F] px-3 py-2.5 text-center text-sm font-black text-white"
             >
               Devenir partenaire
             </Link>
@@ -327,133 +238,93 @@ export default function ExplorerPublicPage() {
         )}
       </header>
 
-      {/* ═══════ HERO ═══════ */}
-      <section className="relative overflow-hidden border-b border-white/80 bg-[#fff6cf]">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_18%,rgba(34,197,94,0.22),transparent_32%),radial-gradient(circle_at_82%_12%,rgba(250,204,21,0.45),transparent_30%),linear-gradient(180deg,#fff7d6_0%,#fffbea_62%,#f7f9fe_100%)]" />
-        <div className="absolute -top-24 right-[-6rem] w-72 h-72 bg-yellow-300/40 rounded-full blur-3xl" />
-        <div className="absolute top-32 left-[-5rem] w-64 h-64 bg-emerald-300/30 rounded-full blur-3xl" />
-
-        <div className="relative max-w-7xl mx-auto px-5 lg:px-10 pt-12 sm:pt-16 lg:pt-22 pb-8 lg:pb-12">
-          <div className="grid lg:grid-cols-[1fr_460px] lg:items-end gap-8 lg:gap-12">
-            <div className="max-w-2xl">
-              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/85 border border-white shadow-sm text-[12px] font-bold text-emerald-700 mb-5">
-                <Sparkles className="w-3.5 h-3.5" />
-                Restaurants, boutiques & livraison locale
-              </div>
-              <h1 className="text-[34px] sm:text-[48px] lg:text-[64px] font-black text-slate-950 tracking-[-0.045em] leading-[0.98]">
-                Commandez près de{" "}
-                <span className="text-emerald-600">chez vous</span>
-              </h1>
-              <p className="text-slate-500 text-[15px] sm:text-base lg:text-lg mt-5 max-w-xl leading-relaxed">
-                Trouvez des commerces locaux, payez en ligne et faites-vous livrer rapidement.
-              </p>
-              <div className="flex flex-wrap gap-3 mt-7 text-[13px] text-slate-600">
-                <span className="inline-flex items-center gap-2 px-3 py-2 rounded-full bg-white/80 border border-white shadow-sm">
-                  <ShoppingBag className="w-4 h-4 text-emerald-600" /> Commande instantanée
-                </span>
-                <span className="inline-flex items-center gap-2 px-3 py-2 rounded-full bg-white/80 border border-white shadow-sm">
-                  <Truck className="w-4 h-4 text-emerald-600" /> Livraison locale
-                </span>
-              </div>
+      <section className="relative overflow-hidden border-b border-white bg-gradient-to-br from-emerald-950 via-[#0b5f32] to-[#14852F]">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_16%,rgba(187,247,208,0.24),transparent_34%),radial-gradient(circle_at_88%_8%,rgba(250,204,21,0.25),transparent_30%)]" />
+        <div className="absolute -right-20 top-20 h-72 w-72 rounded-full bg-lime-300/20 blur-3xl" />
+        <div className="relative mx-auto grid max-w-7xl gap-8 px-5 py-12 sm:py-16 lg:grid-cols-[1fr_430px] lg:items-end lg:px-10 lg:py-20">
+          <div className="max-w-2xl">
+            <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/12 px-3 py-1.5 text-xs font-black uppercase tracking-[0.16em] text-lime-100 backdrop-blur-xl">
+              <Sparkles className="h-3.5 w-3.5" /> Binq Clients
             </div>
+            <h1 className="text-[38px] font-black leading-[0.95] tracking-[-0.045em] text-white sm:text-5xl lg:text-7xl">
+              Explorez. Commandez. Recevez.
+            </h1>
+            <p className="mt-5 max-w-xl text-base leading-relaxed text-emerald-50/85 sm:text-lg">
+              La page client pour trouver des restaurants, boutiques, produits
+              et services autour de vous, avec paiement sécurisé et livraison
+              Binq.
+            </p>
+            <div className="mt-7 flex flex-wrap gap-3 text-sm font-bold text-white">
+              <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/12 px-4 py-2 backdrop-blur-xl">
+                <ShoppingBag className="h-4 w-4 text-lime-200" /> Produits locaux
+              </span>
+              <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/12 px-4 py-2 backdrop-blur-xl">
+                <Truck className="h-4 w-4 text-lime-200" /> Livraison rapide
+              </span>
+              <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/12 px-4 py-2 backdrop-blur-xl">
+                <Zap className="h-4 w-4 text-lime-200" /> Commande en 1 tap
+              </span>
+            </div>
+          </div>
 
-            {/* Search + City */}
-            <div className="rounded-[2rem] bg-white/85 backdrop-blur-xl border border-white shadow-2xl shadow-emerald-950/10 p-3 sm:p-4 lg:p-5">
-              <div className="mb-3 px-1">
-                <p className="text-xs font-bold uppercase tracking-[0.18em] text-slate-400">Recherche rapide</p>
-                <p className="text-sm text-slate-500 mt-1">Filtrez par commerce, produit ou ville.</p>
-              </div>
-              <div className="flex flex-col gap-3">
-              {/* Search */}
-              <div className="relative flex-1">
-                <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-emerald-600" />
-                <input
-                  type="text"
-                  placeholder="Rechercher un restaurant, produit, boutique..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full bg-slate-50 border border-slate-100 rounded-2xl pl-11 pr-9 py-3.5 text-[14px] text-slate-950 placeholder-slate-400 outline-none focus:border-emerald-300 focus:bg-white focus:ring-4 focus:ring-emerald-100 transition"
-                />
-                {searchQuery && (
-                  <button
-                    onClick={() => setSearchQuery("")}
-                    className="absolute right-3 top-1/2 -translate-y-1/2"
-                  >
-                    <X className="w-3.5 h-3.5 text-gray-400 hover:text-gray-600" />
-                  </button>
-                )}
-              </div>
-
-              {/* City */}
-              <div className="relative" ref={cityRef}>
+          <div className="rounded-[2rem] border border-white/20 bg-white/95 p-4 shadow-2xl shadow-emerald-950/30 backdrop-blur-xl">
+            <p className="px-1 text-xs font-black uppercase tracking-[0.18em] text-emerald-700">
+              Recherche rapide
+            </p>
+            <div className="relative mt-3">
+              <Search className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-emerald-600" />
+              <input
+                type="text"
+                placeholder="Restaurant, produit, boutique..."
+                value={searchQuery}
+                onChange={(event) => setSearchQuery(event.target.value)}
+                className="w-full rounded-2xl border border-emerald-100 bg-emerald-50/55 py-4 pl-11 pr-10 text-sm font-bold text-slate-950 outline-none transition placeholder:text-slate-400 focus:border-emerald-300 focus:bg-white focus:ring-4 focus:ring-emerald-100"
+              />
+              {searchQuery && (
                 <button
-                  onClick={() => setCityDropdownOpen(!cityDropdownOpen)}
-                  className="flex items-center gap-2 bg-slate-50 border border-slate-100 rounded-2xl px-4 py-3.5 text-[14px] hover:border-emerald-200 hover:bg-white transition w-full justify-between"
+                  onClick={() => setSearchQuery("")}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 rounded-full p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-700"
+                  aria-label="Effacer la recherche"
                 >
-                  <span className="flex items-center gap-2">
-                    <MapPin className="w-4 h-4 text-emerald-600" />
-                    <span
-                      className={
-                        selectedCity ? "text-slate-950" : "text-slate-400"
-                      }
-                    >
-                      {selectedCity || "Toutes les villes"}
-                    </span>
-                  </span>
-                  <ChevronDown
-                    className={`w-3.5 h-3.5 text-gray-400 transition-transform ${cityDropdownOpen ? "rotate-180" : ""}`}
-                  />
+                  <X className="h-4 w-4" />
                 </button>
-
-                {cityDropdownOpen && (
-                  <div className="absolute top-full left-0 mt-2 w-full bg-white rounded-2xl shadow-2xl shadow-slate-900/10 border border-slate-100 py-2 z-50 max-h-60 overflow-y-auto">
-                    <button
-                      onClick={() => {
-                        setSelectedCity("");
-                        setCityDropdownOpen(false);
-                      }}
-                      className={`w-full text-left px-4 py-2 text-[13px] hover:bg-slate-50 transition ${!selectedCity ? "text-slate-950 font-semibold" : "text-slate-600"}`}
-                    >
-                      Toutes les villes
-                    </button>
-                    {cities.map((city) => (
-                      <button
-                        key={city}
-                        onClick={() => {
-                          setSelectedCity(city);
-                          setCityDropdownOpen(false);
-                        }}
-                        className={`w-full text-left px-4 py-2 text-[13px] hover:bg-slate-50 transition ${selectedCity === city ? "text-slate-950 font-semibold" : "text-slate-600"}`}
-                      >
-                        {city}
-                      </button>
-                    ))}
-                  </div>
-                )}
+              )}
+            </div>
+            <div className="mt-3 grid grid-cols-3 gap-2 text-center text-xs font-black text-slate-600">
+              <div className="rounded-2xl bg-slate-50 px-3 py-3">
+                <span className="block text-lg text-emerald-700">{produits.length}</span>
+                produits
               </div>
+              <div className="rounded-2xl bg-slate-50 px-3 py-3">
+                <span className="block text-lg text-emerald-700">{boutiques.length}</span>
+                boutiques
+              </div>
+              <div className="rounded-2xl bg-slate-50 px-3 py-3">
+                <span className="block text-lg text-emerald-700">24/7</span>
+                client
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* ═══════ CATEGORY TABS ═══════ */}
-      <section className="sticky top-14 lg:top-16 z-40 bg-[#f7f9fe]/88 backdrop-blur-2xl border-b border-white/80">
-        <div className="max-w-7xl mx-auto px-5 lg:px-10">
-          <div className="flex gap-2 lg:gap-2.5 overflow-x-auto py-3 lg:py-3.5 scrollbar-none -mx-1 px-1">
-            {EVENT_CATEGORIES.map((cat) => {
-              const active = selectedCategory === cat.slug;
+      <section className="sticky top-16 z-40 border-b border-white/80 bg-[#f7fbf8]/90 backdrop-blur-2xl">
+        <div className="mx-auto max-w-7xl px-5 lg:px-10">
+          <div className="flex gap-2 overflow-x-auto py-3 scrollbar-none">
+            {displayedCategories.map((category) => {
+              const active = selectedCategory === category.slug;
               return (
                 <button
-                  key={cat.slug}
-                  onClick={() => setSelectedCategory(cat.slug)}
-                  className={`px-4 py-2 rounded-full text-[13px] font-semibold whitespace-nowrap transition-all duration-200 shrink-0 border ${
+                  key={category.slug || "all"}
+                  onClick={() => setSelectedCategory(category.slug)}
+                  className={`shrink-0 rounded-full border px-4 py-2 text-sm font-black transition ${
                     active
-                      ? `bg-gradient-to-r ${cat.gradient} text-white border-transparent shadow-lg shadow-black/10`
-                      : `bg-white/85 ${cat.text} border-white hover:border-emerald-100 hover:shadow-md hover:shadow-emerald-900/5 hover:-translate-y-0.5`
+                      ? "border-transparent bg-[#14852F] text-white shadow-lg shadow-emerald-700/15"
+                      : "border-white bg-white text-slate-700 hover:border-emerald-100 hover:text-emerald-700"
                   }`}
                 >
-                  {cat.label}
+                  <span className="mr-1.5">{category.icone}</span>
+                  {category.nom}
                 </button>
               );
             })}
@@ -461,246 +332,262 @@ export default function ExplorerPublicPage() {
         </div>
       </section>
 
-      {/* ═══════ CONTENT ═══════ */}
-      <main className="max-w-7xl mx-auto px-5 lg:px-10 pb-20 pt-8 lg:pt-10">
+      <main className="mx-auto max-w-7xl px-5 pb-20 pt-8 lg:px-10">
+        <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <h2 className="text-2xl font-black tracking-tight text-slate-950">
+              Explorer Binq Clients
+            </h2>
+            <p className="mt-1 text-sm font-medium text-slate-500">
+              Produits et boutiques disponibles pour les clients.
+            </p>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="rounded-2xl bg-white p-1 shadow-sm ring-1 ring-slate-100">
+              <button
+                onClick={() => setViewMode("produits")}
+                className={`rounded-xl px-4 py-2 text-sm font-black transition ${
+                  viewMode === "produits"
+                    ? "bg-[#14852F] text-white"
+                    : "text-slate-500 hover:text-slate-950"
+                }`}
+              >
+                Produits
+              </button>
+              <button
+                onClick={() => setViewMode("boutiques")}
+                className={`rounded-xl px-4 py-2 text-sm font-black transition ${
+                  viewMode === "boutiques"
+                    ? "bg-[#14852F] text-white"
+                    : "text-slate-500 hover:text-slate-950"
+                }`}
+              >
+                Boutiques
+              </button>
+            </div>
+            {viewMode === "produits" && (
+              <select
+                value={sort}
+                onChange={(event) => setSort(event.target.value)}
+                className="rounded-2xl border border-slate-100 bg-white px-3 py-2.5 text-sm font-bold text-slate-600 outline-none"
+              >
+                <option value="recent">Récents</option>
+                <option value="populaire">Populaires</option>
+                <option value="prix-asc">Prix ↑</option>
+                <option value="prix-desc">Prix ↓</option>
+              </select>
+            )}
+          </div>
+        </div>
+
         {loading ? (
-          /* Skeleton */
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 lg:gap-6">
-            {Array.from({ length: 8 }).map((_, i) => (
-              <SkeletonCard key={i} />
+          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            {Array.from({ length: 8 }).map((_, index) => (
+              <SkeletonCard key={index} />
             ))}
           </div>
-        ) : events.length === 0 ? (
-          /* Empty */
-          <div className="text-center py-20 bg-white rounded-[2rem] border border-white shadow-sm">
-            <div className="w-16 h-16 rounded-2xl bg-emerald-50 flex items-center justify-center mx-auto mb-4">
-              <Store className="w-7 h-7 text-emerald-300" />
-            </div>
-            <h3 className="text-lg font-bold text-slate-950 mb-1">
-              Aucun commerce trouvé
-            </h3>
-            <p className="text-sm text-slate-400 max-w-xs mx-auto">
-              {searchQuery || selectedCity || selectedCategory
-              ? "Essayez de modifier vos filtres."
-                : "Pas encore de commerces disponibles."}
-            </p>
-            {(searchQuery || selectedCity || selectedCategory) && (
-              <button
-                onClick={() => {
-                  setSearchQuery("");
-                  setSelectedCity("");
-                  setSelectedCategory("");
-                }}
-                className="mt-5 inline-flex items-center px-4 py-2 rounded-full text-sm text-emerald-700 bg-emerald-50 font-semibold hover:bg-emerald-100 transition"
-              >
-                Réinitialiser
-              </button>
-            )}
+        ) : activeItemsCount === 0 ? (
+          <EmptyState
+            onReset={() => {
+              setSearchQuery("");
+              setSelectedCategory("");
+            }}
+          />
+        ) : viewMode === "produits" ? (
+          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            {produits.map((produit) => (
+              <ProductCard key={produit.id} produit={produit} />
+            ))}
           </div>
         ) : (
-          /* Commerce groups by availability */
-          <div className="space-y-10">
-            {groupedEvents.map((group) => (
-              <section key={group.date}>
-                {/* Availability header */}
-                <div className="flex items-center gap-3 mb-5 lg:mb-6">
-                  <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white border border-white shadow-sm text-[13px] lg:text-sm font-bold text-slate-950 capitalize">
-                    <Truck className="w-4 h-4 text-emerald-600" />
-                    Disponible {group.label.toLowerCase()}
-                  </span>
-                  <div className="h-px flex-1 bg-gradient-to-r from-slate-200 to-transparent" />
-                </div>
-
-                {/* Cards grid */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 lg:gap-6">
-                  {group.events.map((event) => (
-                    <EventCard key={event.id} event={event} />
-                  ))}
-                </div>
-              </section>
+          <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
+            {boutiques.map((boutique) => (
+              <ShopCard key={boutique.id} boutique={boutique} />
             ))}
+          </div>
+        )}
 
-            {/* Load more */}
-            {hasMore && (
-              <div className="flex justify-center pt-2">
-                <button
-                  onClick={loadMore}
-                  disabled={loadingMore}
-                  className="inline-flex items-center gap-2 px-6 py-3 text-[13px] font-bold text-slate-700 bg-white border border-white rounded-full hover:bg-emerald-50 hover:text-emerald-700 transition disabled:opacity-50 shadow-sm"
-                >
-                  {loadingMore ? (
-                    <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                  ) : (
-                    <ChevronDown className="w-3.5 h-3.5" />
-                  )}
-                  {loadingMore ? "Chargement..." : "Voir plus"}
-                </button>
-              </div>
-            )}
+        {hasMore && !loading && (
+          <div className="mt-8 flex justify-center">
+            <button
+              onClick={() => fetchExplorer({ append: true, nextOffset: offset })}
+              disabled={loadingMore}
+              className="inline-flex items-center gap-2 rounded-full bg-white px-6 py-3 text-sm font-black text-slate-700 shadow-sm ring-1 ring-slate-100 transition hover:bg-emerald-50 hover:text-emerald-700 disabled:opacity-60"
+            >
+              {loadingMore ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                <ChevronDown className="h-4 w-4" />
+              )}
+              {loadingMore ? "Chargement..." : "Voir plus"}
+            </button>
           </div>
         )}
       </main>
-
-      {/* ═══════ FOOTER ═══════ */}
-      <footer className="border-t border-white bg-white/70 backdrop-blur-xl">
-        <div className="max-w-7xl mx-auto px-5 lg:px-10 py-10 lg:py-14">
-          <div className="lg:flex lg:items-start lg:justify-between lg:gap-10">
-            <div className="mb-6 lg:mb-0">
-              <Link href="/" className="flex items-center gap-2 mb-3">
-                <BinqLogo size="sm" />
-              </Link>
-              <p className="text-sm text-slate-500 max-w-xs leading-relaxed">
-                La plateforme de commerce local qui simplifie les commandes, le paiement et la livraison.
-              </p>
-            </div>
-            <div className="flex flex-wrap items-center gap-4 sm:gap-6 text-[13px] lg:text-sm text-slate-400">
-              <Link href="/" className="hover:text-slate-950 transition">
-                Accueil
-              </Link>
-              <Link
-                href="/explorer"
-                className="text-slate-950 font-semibold"
-              >
-                Commander
-              </Link>
-              <Link
-                href="/connexion"
-                className="hover:text-slate-950 transition"
-              >
-                Connexion
-              </Link>
-              <Link
-                href="/inscription"
-                className="hover:text-slate-950 transition"
-              >
-                Devenir partenaire
-              </Link>
-            </div>
-          </div>
-          <div className="mt-8 pt-6 border-t border-slate-200/60 flex flex-col sm:flex-row items-center justify-between gap-2">
-            <p className="text-xs text-slate-400">
-              &copy; {new Date().getFullYear()} Binq. Tous droits réservés.
-            </p>
-          </div>
-        </div>
-      </footer>
     </div>
   );
 }
 
-/* ═══════════════════════════════════════════════════ */
-/*                  COMMERCE CARD                      */
-/* ═══════════════════════════════════════════════════ */
-function EventCard({ event }: { event: EventPublic }) {
-  const isFree = event.min_price === 0;
-  const soldRatio = event.total_capacity > 0 ? Math.min(100, Math.round((event.total_sold / event.total_capacity) * 100)) : 0;
+function SkeletonCard() {
+  return (
+    <div className="animate-pulse overflow-hidden rounded-[1.75rem] border border-white bg-white shadow-sm">
+      <div className="aspect-[4/3] bg-emerald-50" />
+      <div className="space-y-3 p-4">
+        <div className="h-4 w-2/3 rounded-full bg-slate-100" />
+        <div className="h-3 w-full rounded-full bg-slate-100" />
+        <div className="h-3 w-1/2 rounded-full bg-slate-100" />
+      </div>
+    </div>
+  );
+}
+
+function ProductCard({ produit }: { produit: Produit }) {
+  const discount = produit.prix_barre && produit.prix_barre > produit.prix;
 
   return (
-    <Link href={`/evenement/${event.id}`} className="group block h-full">
-      <article className="h-full rounded-[1.75rem] bg-white border border-white shadow-sm shadow-slate-200/80 overflow-hidden transition-all duration-300 group-hover:-translate-y-1 group-hover:shadow-2xl group-hover:shadow-emerald-900/10">
-      {/* Image */}
-      <div className="relative overflow-hidden bg-slate-100 aspect-[16/10]">
-        {event.cover_url ? (
-          <Image
-            src={event.cover_url}
-            alt={event.nom}
-            fill
-            className="object-cover group-hover:scale-[1.05] transition-transform duration-700 ease-out"
-            unoptimized
-          />
-        ) : event.logo_url ? (
-          <div className="absolute inset-0 bg-gradient-to-br from-emerald-50 via-yellow-50 to-white flex items-center justify-center">
+    <Link href={`/produit/${produit.id}`} className="group block h-full">
+      <article className="h-full overflow-hidden rounded-[1.75rem] border border-white bg-white shadow-sm shadow-emerald-950/5 transition duration-300 hover:-translate-y-1 hover:shadow-2xl hover:shadow-emerald-950/10">
+        <div className="relative aspect-[4/3] overflow-hidden bg-gradient-to-br from-emerald-50 via-lime-50 to-white">
+          {produit.image_url ? (
             <Image
-              src={event.logo_url}
-              alt=""
-              width={62}
-              height={62}
-              className="rounded-2xl object-cover opacity-70 shadow-lg"
+              src={produit.image_url}
+              alt={produit.nom}
+              fill
+              className="object-cover transition duration-700 group-hover:scale-105"
               unoptimized
             />
-          </div>
-        ) : (
-          <div className="absolute inset-0 bg-gradient-to-br from-emerald-50 via-yellow-50 to-white flex items-center justify-center">
-            <CalendarDays className="w-9 h-9 text-emerald-200" />
-          </div>
-        )}
-        <div className="absolute inset-0 bg-gradient-to-t from-slate-950/45 via-transparent to-transparent opacity-80" />
-        <div className="absolute top-3 left-3 px-3 py-1.5 rounded-full bg-white/92 backdrop-blur-md shadow-sm text-[11px] font-bold text-slate-950">
-          {formatDateCompact(event.date_debut)}{event.heure_debut && ` · ${formatTime(event.heure_debut)}`}
-        </div>
-        <div className={`absolute bottom-3 left-3 px-3 py-1.5 rounded-full backdrop-blur-md shadow-sm text-[11px] font-black ${isFree ? "bg-emerald-500 text-white" : "bg-white/92 text-slate-950"}`}>
-          {isFree ? "Gratuit" : `${event.min_price.toLocaleString("fr-FR")} ${event.devise}`}
-        </div>
-        <div className="absolute bottom-3 right-3 w-9 h-9 rounded-full bg-white/92 backdrop-blur-md flex items-center justify-center shadow-sm text-emerald-600 transition-transform group-hover:translate-x-0.5">
-          <ArrowRight className="w-4 h-4" />
-        </div>
-      </div>
-
-      {/* Info */}
-      <div className="p-4 space-y-3">
-        {/* Title */}
-        <h3 className="text-[16px] font-extrabold text-slate-950 leading-snug line-clamp-2 group-hover:text-emerald-700 transition-colors">
-          {event.nom}
-        </h3>
-
-        {/* Location */}
-        {event.lieu && (
-          <p className="flex items-center gap-1.5 text-[13px] text-slate-500 truncate">
-            <MapPin className="w-3.5 h-3.5 text-slate-300 shrink-0" />
-            {event.lieu}
-          </p>
-        )}
-
-        {event.total_capacity > 0 && (
-          <div className="pt-1">
-            <div className="flex items-center justify-between text-[11px] text-slate-400 mb-1.5">
-              <span>{event.total_sold} commande{event.total_sold > 1 ? "s" : ""}</span>
-              <span>{event.total_capacity - event.total_sold} disponibilité{event.total_capacity - event.total_sold > 1 ? "s" : ""}</span>
+          ) : (
+            <div className="flex h-full items-center justify-center">
+              <ShoppingBag className="h-12 w-12 text-emerald-200" />
             </div>
-            <div className="h-1.5 rounded-full bg-slate-100 overflow-hidden">
-              <div className="h-full rounded-full bg-gradient-to-r from-emerald-500 to-green-600" style={{ width: `${soldRatio}%` }} />
+          )}
+          {discount && (
+            <div className="absolute left-3 top-3 rounded-full bg-amber-400 px-3 py-1 text-xs font-black text-slate-950">
+              Promo
             </div>
+          )}
+          <div className="absolute bottom-3 right-3 rounded-full bg-white/95 px-3 py-1.5 text-sm font-black text-emerald-700 shadow-sm">
+            {formatPrice(produit.prix, produit.devise)}
           </div>
-        )}
-
-        {/* Organizer */}
-        {(event.organisateur || event.boutiques) && (
-          <div className="flex items-center gap-2 pt-1.5 border-t border-slate-100">
-            <div className="w-7 h-7 rounded-full bg-slate-100 overflow-hidden flex items-center justify-center shrink-0 ring-2 ring-white">
-              {event.organisateur?.avatar_url ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
-                  src={event.organisateur.avatar_url}
-                  alt=""
-                  className="w-full h-full object-cover"
-                />
-              ) : event.boutiques?.logo_url ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
-                  src={event.boutiques.logo_url}
-                  alt=""
-                  className="w-full h-full object-cover"
-                />
-              ) : (
-                <span className="text-[10px] font-bold text-slate-400">
-                  {(event.organisateur?.nom || event.boutiques?.nom || "?").charAt(0)}
-                </span>
-              )}
-            </div>
-            <span className="text-[12px] font-medium text-slate-500 truncate">
-              {event.organisateur?.nom || event.boutiques?.nom}
-            </span>
-            {event.boutiques?.is_verified && <BadgeCheck className="w-3.5 h-3.5 text-emerald-500 shrink-0" />}
-            {event.total_vendu > 0 && (
-              <span className="flex items-center gap-1 text-[11px] text-slate-400 ml-auto bg-slate-50 px-2 py-1 rounded-full">
-                <Users className="w-3 h-3" />
-                {event.total_vendu}
-              </span>
+        </div>
+        <div className="space-y-3 p-4">
+          <div>
+            <h3 className="line-clamp-2 text-base font-black leading-snug text-slate-950 transition group-hover:text-emerald-700">
+              {produit.nom}
+            </h3>
+            {produit.description && (
+              <p className="mt-1 line-clamp-2 text-sm leading-relaxed text-slate-500">
+                {produit.description}
+              </p>
             )}
           </div>
-        )}
-      </div>
+          <div className="flex items-center gap-2 border-t border-slate-100 pt-3">
+            <ShopAvatar src={produit.boutique.logo_url} name={produit.boutique.nom} />
+            <div className="min-w-0 flex-1">
+              <p className="truncate text-xs font-black text-slate-700">
+                {produit.boutique.nom}
+              </p>
+              <p className="flex items-center gap-1 text-xs text-slate-400">
+                <MapPin className="h-3 w-3" /> {produit.boutique.ville || "Autour de vous"}
+              </p>
+            </div>
+            {produit.boutique.is_verified && (
+              <BadgeCheck className="h-4 w-4 shrink-0 text-emerald-500" />
+            )}
+          </div>
+        </div>
       </article>
     </Link>
+  );
+}
+
+function ShopCard({ boutique }: { boutique: Boutique }) {
+  const productCount = boutique.produits?.[0]?.count || 0;
+
+  return (
+    <Link href={`/boutique/${boutique.slug}`} className="group block h-full">
+      <article className="h-full rounded-[1.75rem] border border-white bg-white p-5 shadow-sm shadow-emerald-950/5 transition duration-300 hover:-translate-y-1 hover:shadow-2xl hover:shadow-emerald-950/10">
+        <div className="flex gap-4">
+          <ShopAvatar src={boutique.logo_url} name={boutique.nom} large />
+          <div className="min-w-0 flex-1">
+            <div className="flex items-start gap-2">
+              <h3 className="line-clamp-2 text-lg font-black leading-tight text-slate-950 transition group-hover:text-emerald-700">
+                {boutique.nom}
+              </h3>
+              {boutique.is_verified && (
+                <BadgeCheck className="mt-0.5 h-5 w-5 shrink-0 text-emerald-500" />
+              )}
+            </div>
+            <p className="mt-1 text-sm font-bold text-emerald-700">
+              {boutique.categorie?.nom || "Commerce local"}
+            </p>
+            {boutique.description && (
+              <p className="mt-2 line-clamp-2 text-sm leading-relaxed text-slate-500">
+                {boutique.description}
+              </p>
+            )}
+          </div>
+        </div>
+        <div className="mt-5 grid grid-cols-3 gap-2 text-center text-xs font-black text-slate-600">
+          <div className="rounded-2xl bg-emerald-50 px-3 py-2 text-emerald-800">
+            <Store className="mx-auto mb-1 h-4 w-4" />
+            {productCount} produit{productCount > 1 ? "s" : ""}
+          </div>
+          <div className="rounded-2xl bg-slate-50 px-3 py-2">
+            <MapPin className="mx-auto mb-1 h-4 w-4 text-emerald-600" />
+            {boutique.ville || "Local"}
+          </div>
+          <div className="rounded-2xl bg-slate-50 px-3 py-2">
+            <Clock className="mx-auto mb-1 h-4 w-4 text-emerald-600" />
+            Ouvert
+          </div>
+        </div>
+      </article>
+    </Link>
+  );
+}
+
+function ShopAvatar({
+  src,
+  name,
+  large = false,
+}: {
+  src: string | null;
+  name: string;
+  large?: boolean;
+}) {
+  const size = large ? "h-16 w-16 rounded-3xl" : "h-9 w-9 rounded-2xl";
+
+  return (
+    <div className={`${size} relative shrink-0 overflow-hidden bg-emerald-50 ring-1 ring-emerald-100`}>
+      {src ? (
+        <Image src={src} alt="" fill className="object-cover" unoptimized />
+      ) : (
+        <div className="flex h-full w-full items-center justify-center text-sm font-black text-emerald-700">
+          {name.charAt(0).toUpperCase()}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function EmptyState({ onReset }: { onReset: () => void }) {
+  return (
+    <div className="rounded-[2rem] border border-white bg-white px-6 py-16 text-center shadow-sm">
+      <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-3xl bg-emerald-50">
+        <Store className="h-8 w-8 text-emerald-300" />
+      </div>
+      <h3 className="text-xl font-black text-slate-950">Aucun résultat trouvé</h3>
+      <p className="mx-auto mt-2 max-w-sm text-sm leading-relaxed text-slate-500">
+        Essayez une autre recherche ou choisissez une autre catégorie pour
+        explorer Binq Clients.
+      </p>
+      <button
+        onClick={onReset}
+        className="mt-5 rounded-full bg-emerald-50 px-5 py-3 text-sm font-black text-emerald-700 transition hover:bg-emerald-100"
+      >
+        Réinitialiser les filtres
+      </button>
+    </div>
   );
 }

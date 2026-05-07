@@ -1,21 +1,21 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Explorer les événements à Cotonou | Binq",
+  title: "Binq Clients — Explorer produits et boutiques | Binq",
   description:
-    "Découvrez les événements les plus populaires à Cotonou. Concerts, soirées, conférences et plus encore. Ne manquez rien avec Binq.",
+    "Explorez les produits, restaurants, boutiques et services disponibles sur Binq Clients avec paiement sécurisé et livraison locale.",
   openGraph: {
-    title: "Explorer les événements à Cotonou | Binq",
+    title: "Binq Clients — Explorer produits et boutiques | Binq",
     description:
-      "Découvrez les événements les plus populaires à Cotonou. Concerts, soirées, conférences et plus encore.",
+      "Explorez les produits, restaurants, boutiques et services disponibles sur Binq Clients.",
     type: "website",
     url: "/explorer",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Explorer les événements à Cotonou | Binq",
+    title: "Binq Clients — Explorer produits et boutiques | Binq",
     description:
-      "Découvrez les événements les plus populaires à Cotonou.",
+      "Explorez les produits, restaurants, boutiques et services disponibles sur Binq Clients.",
   },
 };
 
