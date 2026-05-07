@@ -132,9 +132,9 @@ export default function HomePage() {
         )}
       </header>
 
-      <section className="relative overflow-hidden border-b border-black/10">
-        <div className="absolute inset-0 bg-[linear-gradient(90deg,#fbfaf5_0%,#fbfaf5_47%,#e9f4df_47%,#e9f4df_100%)]" />
-        <div className="relative mx-auto grid min-h-[760px] max-w-7xl items-center gap-12 px-4 py-12 sm:px-6 lg:grid-cols-[0.92fr_1.08fr] lg:px-8 lg:py-16">
+      <section className="relative overflow-hidden border-b border-black/10 bg-[#fbfaf5]">
+        <div className="absolute inset-x-0 top-0 h-64 bg-[#e9f4df] lg:inset-y-0 lg:left-auto lg:h-auto lg:w-[42%]" />
+        <div className="relative mx-auto grid max-w-7xl items-center gap-10 px-4 py-12 sm:px-6 sm:py-16 lg:min-h-[760px] lg:grid-cols-[0.9fr_1.1fr] lg:px-8">
           <div className="max-w-2xl">
             <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-green-900/15 bg-white px-4 py-2 text-xs font-black uppercase tracking-[0.18em] text-[#178a2f] shadow-sm">
               <MapPin className="h-4 w-4" /> Livraison locale le jour même
@@ -176,52 +176,55 @@ export default function HomePage() {
             </div>
           </div>
 
-          <div className="relative">
-            <div className="grid grid-cols-12 gap-4">
-              <div className="col-span-7 overflow-hidden rounded-[2.5rem] shadow-2xl shadow-green-950/20">
+          <div className="rounded-[2.25rem] border border-black/10 bg-white p-3 shadow-2xl shadow-green-950/15 sm:p-4 lg:rounded-[2.75rem]">
+            <div className="overflow-hidden rounded-[1.75rem] lg:rounded-[2.25rem]">
+              <div className="relative aspect-[4/3] min-h-[320px] lg:aspect-[16/11]">
                 <img
-                  src="https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=1200&q=90"
-                  alt="Client qui choisit des courses fraîches"
-                  className="h-[520px] w-full object-cover"
+                  src="https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=1400&q=90"
+                  alt="Rayon de produits frais dans un commerce local"
+                  className="h-full w-full object-cover"
                 />
-              </div>
-              <div className="col-span-5 space-y-4 pt-16">
-                <div className="overflow-hidden rounded-[2rem] shadow-xl shadow-green-950/10">
-                  <img
-                    src="https://images.unsplash.com/photo-1550989460-0adf9ea622e2?auto=format&fit=crop&w=700&q=90"
-                    alt="Livreur avec sacs de livraison"
-                    className="h-56 w-full object-cover"
-                  />
-                </div>
-                <div className="rounded-[2rem] border border-black/10 bg-white p-5 shadow-xl shadow-green-950/10">
-                  <div className="flex items-center justify-between">
+                <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-black/10 to-transparent" />
+                <div className="absolute inset-x-4 bottom-4 rounded-[1.5rem] bg-white/95 p-4 shadow-xl backdrop-blur sm:inset-x-6 sm:bottom-6 sm:p-5">
+                  <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                     <div>
-                      <p className="text-xs font-black uppercase tracking-widest text-neutral-400">Commande active</p>
-                      <p className="mt-1 text-lg font-black">Arrivée estimée 18 min</p>
+                      <p className="text-xs font-black uppercase tracking-widest text-[#178a2f]">Commande en cours</p>
+                      <p className="mt-1 text-lg font-black text-[#111811] sm:text-xl">Supermarché Central prépare votre panier</p>
                     </div>
-                    <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-green-50 text-[#178a2f]">
-                      <Truck className="h-6 w-6" />
+                    <div className="flex items-center gap-3 rounded-2xl bg-[#e9f4df] px-4 py-3 text-[#178a2f]">
+                      <Truck className="h-5 w-5" />
+                      <span className="text-sm font-black">18 min</span>
                     </div>
                   </div>
-                  <div className="mt-5 h-2 overflow-hidden rounded-full bg-neutral-100">
-                    <div className="h-full w-[68%] rounded-full bg-[#178a2f]" />
+                  <div className="mt-4 grid grid-cols-3 gap-2 text-center text-xs font-black text-neutral-600">
+                    <div className="rounded-xl bg-neutral-50 px-2 py-2">9 articles</div>
+                    <div className="rounded-xl bg-neutral-50 px-2 py-2">Payé</div>
+                    <div className="rounded-xl bg-neutral-50 px-2 py-2">Suivi GPS</div>
                   </div>
                 </div>
               </div>
             </div>
 
-            <div className="absolute -bottom-7 left-10 hidden max-w-sm rounded-[2rem] border border-black/10 bg-white p-5 shadow-2xl shadow-green-950/15 sm:block">
-              <div className="flex items-center gap-4">
-                <img
-                  src="https://images.unsplash.com/photo-1606787366850-de6330128bfc?auto=format&fit=crop&w=300&q=90"
-                  alt="Panier de produits frais"
-                  className="h-16 w-16 rounded-2xl object-cover"
-                />
-                <div>
-                  <p className="font-black">Panier validé</p>
-                  <p className="text-sm font-semibold text-neutral-500">9 articles · livraison suivie</p>
+            <div className="mt-3 grid grid-cols-3 gap-3 sm:mt-4">
+              {[
+                {
+                  label: "Commerce",
+                  image: "https://images.unsplash.com/photo-1578916171728-46686eac8d58?auto=format&fit=crop&w=500&q=85",
+                },
+                {
+                  label: "Préparation",
+                  image: "https://images.unsplash.com/photo-1606787366850-de6330128bfc?auto=format&fit=crop&w=500&q=85",
+                },
+                {
+                  label: "Livraison",
+                  image: "https://images.unsplash.com/photo-1550989460-0adf9ea622e2?auto=format&fit=crop&w=500&q=85",
+                },
+              ].map((item) => (
+                <div key={item.label} className="overflow-hidden rounded-2xl bg-neutral-100 ring-1 ring-black/5">
+                  <img src={item.image} alt={item.label} className="aspect-[4/3] w-full object-cover" />
+                  <p className="bg-white px-3 py-2 text-center text-[11px] font-black uppercase tracking-wide text-neutral-600 sm:text-xs">{item.label}</p>
                 </div>
-              </div>
+              ))}
             </div>
           </div>
         </div>
@@ -241,8 +244,8 @@ export default function HomePage() {
 
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {departments.map((department) => (
-              <Link key={department.title} href={department.href} className="group overflow-hidden rounded-[2rem] bg-neutral-100 shadow-sm ring-1 ring-black/5 transition hover:-translate-y-1 hover:shadow-2xl hover:shadow-green-950/10">
-                <div className="h-64 overflow-hidden">
+              <Link key={department.title} href={department.href} className="group overflow-hidden rounded-[1.75rem] bg-neutral-100 shadow-sm ring-1 ring-black/5 transition hover:-translate-y-1 hover:shadow-2xl hover:shadow-green-950/10">
+                <div className="aspect-[4/3] overflow-hidden">
                   <img src={department.image} alt={department.title} className="h-full w-full object-cover transition duration-700 group-hover:scale-105" />
                 </div>
                 <div className="flex items-center justify-between bg-white p-5">
@@ -268,7 +271,7 @@ export default function HomePage() {
           <div className="grid gap-5 lg:grid-cols-3">
             {nearbyStores.map((store) => (
               <Link key={store.name} href="/explorer" className="group overflow-hidden rounded-[2.2rem] border border-black/10 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-2xl hover:shadow-green-950/10">
-                <div className="relative h-60 overflow-hidden">
+                <div className="relative aspect-[4/3] overflow-hidden">
                   <img src={store.image} alt={store.name} className="h-full w-full object-cover transition duration-700 group-hover:scale-105" />
                   <div className="absolute left-4 top-4 rounded-full bg-white px-3 py-1.5 text-xs font-black text-[#178a2f] shadow">Ouvert</div>
                 </div>
@@ -295,11 +298,11 @@ export default function HomePage() {
 
       <section id="experience" className="bg-white py-16 sm:py-24">
         <div className="mx-auto grid max-w-7xl items-center gap-12 px-4 sm:px-6 lg:grid-cols-[1fr_0.95fr] lg:px-8">
-          <div className="overflow-hidden rounded-[2.5rem] shadow-2xl shadow-green-950/10">
+          <div className="overflow-hidden rounded-[2.25rem] shadow-2xl shadow-green-950/10 lg:rounded-[2.5rem]">
             <img
               src="https://images.unsplash.com/photo-1526367790999-0150786686a2?auto=format&fit=crop&w=1300&q=90"
               alt="Livraison de sacs de courses"
-              className="h-[620px] w-full object-cover"
+              className="aspect-[4/3] w-full object-cover lg:aspect-[5/6]"
             />
           </div>
           <div>
