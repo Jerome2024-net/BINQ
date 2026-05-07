@@ -12,10 +12,10 @@ export const metadata: Metadata = {
   description:
     "Plateforme de commerce local pour commander auprès des restaurants, boutiques et services proches de vous avec paiement sécurisé et livraison.",
   manifest: "/manifest.json",
-  themeColor: "#2563eb",
+  themeColor: "#14852F",
   icons: {
-    icon: "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><defs><linearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'><stop offset='0%25' stop-color='%233b82f6'/><stop offset='100%25' stop-color='%232563eb'/></linearGradient></defs><rect width='100' height='100' rx='22' fill='url(%23g)'/><rect x='20' y='20' width='22' height='22' rx='4' stroke='white' stroke-width='4' fill='none'/><rect x='27' y='27' width='8' height='8' rx='1' fill='white'/><rect x='58' y='20' width='22' height='22' rx='4' stroke='white' stroke-width='4' fill='none'/><rect x='65' y='27' width='8' height='8' rx='1' fill='white'/><rect x='20' y='58' width='22' height='22' rx='4' stroke='white' stroke-width='4' fill='none'/><rect x='27' y='65' width='8' height='8' rx='1' fill='white'/><rect x='58' y='58' width='6' height='6' rx='1' fill='white'/><rect x='72' y='58' width='8' height='8' rx='1' fill='white'/><rect x='58' y='72' width='8' height='8' rx='1' fill='white'/><rect x='72' y='72' width='8' height='8' rx='1' fill='white'/></svg>",
-    apple: "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><defs><linearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'><stop offset='0%25' stop-color='%233b82f6'/><stop offset='100%25' stop-color='%232563eb'/></linearGradient></defs><rect width='100' height='100' rx='22' fill='url(%23g)'/><rect x='20' y='20' width='22' height='22' rx='4' stroke='white' stroke-width='4' fill='none'/><rect x='27' y='27' width='8' height='8' rx='1' fill='white'/><rect x='58' y='20' width='22' height='22' rx='4' stroke='white' stroke-width='4' fill='none'/><rect x='65' y='27' width='8' height='8' rx='1' fill='white'/><rect x='20' y='58' width='22' height='22' rx='4' stroke='white' stroke-width='4' fill='none'/><rect x='27' y='65' width='8' height='8' rx='1' fill='white'/><rect x='58' y='58' width='6' height='6' rx='1' fill='white'/><rect x='72' y='58' width='8' height='8' rx='1' fill='white'/><rect x='58' y='72' width='8' height='8' rx='1' fill='white'/><rect x='72' y='72' width='8' height='8' rx='1' fill='white'/></svg>",
+    icon: "/favicon.svg",
+    apple: "/favicon.svg",
   },
 };
 

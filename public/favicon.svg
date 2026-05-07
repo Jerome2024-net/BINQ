@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Binq">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#16A34A"/>
+      <stop offset="100%" stop-color="#14852F"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="112" fill="url(#bg)"/>
+  <path d="M146 190h264l-34 128c-8 30-35 50-66 50H218c-31 0-58-20-66-50l-34-128h28Z" fill="none" stroke="#fff" stroke-width="34" stroke-linejoin="round"/>
+  <path d="M196 210c0-56 27-94 68-94s68 38 68 94" fill="none" stroke="#fff" stroke-width="34" stroke-linecap="round"/>
+  <circle cx="220" cy="396" r="22" fill="#fff"/>
+  <circle cx="332" cy="396" r="22" fill="#fff"/>
+  <path d="M174 244h204" stroke="#fff" stroke-width="28" stroke-linecap="round" opacity="0.9"/>
+</svg>
