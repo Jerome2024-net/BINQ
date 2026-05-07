@@ -62,35 +62,40 @@ class LivreurOnboardingPage extends StatefulWidget {
 
 class _LivreurOnboardingPageState extends State<LivreurOnboardingPage> {
   final PageController _pageController = PageController();
+  final TextEditingController _phoneController = TextEditingController();
+  final TextEditingController _otpController = TextEditingController();
   final TextEditingController _firstNameController = TextEditingController();
   final TextEditingController _lastNameController = TextEditingController();
-  final TextEditingController _phoneController = TextEditingController();
-  final TextEditingController _emailController = TextEditingController();
   final TextEditingController _cityController = TextEditingController();
-  final TextEditingController _experienceController = TextEditingController();
-  final TextEditingController _bankController = TextEditingController();
+  final TextEditingController _vehicleBrandController = TextEditingController();
+  final TextEditingController _plateController = TextEditingController();
+  final TextEditingController _withdrawPhoneController =
+      TextEditingController();
 
   int step = 0;
   String vehicle = 'Moto';
-  String availability = 'Temps partiel';
-  bool hasId = false;
-  bool hasLicense = false;
-  bool hasInsurance = false;
-  bool hasSmartphone = true;
-  bool acceptsIndependentTerms = false;
+  String mobileMoney = 'MTN MoMo';
+  bool otpSent = false;
+  bool otpVerified = false;
+  bool profilePhotoAdded = false;
+  bool idPhotoAdded = false;
+  bool vehiclePhotoAdded = false;
+  bool walletCreated = false;
+  bool locationAuthorized = false;
 
-  static const int totalSteps = 5;
+  static const int totalSteps = 10;
 
   @override
   void dispose() {
     _pageController.dispose();
+    _phoneController.dispose();
+    _otpController.dispose();
     _firstNameController.dispose();
     _lastNameController.dispose();
-    _phoneController.dispose();
-    _emailController.dispose();
     _cityController.dispose();
-    _experienceController.dispose();
-    _bankController.dispose();
+    _vehicleBrandController.dispose();
+    _plateController.dispose();
+    _withdrawPhoneController.dispose();
     super.dispose();
   }
 
@@ -131,17 +136,25 @@ class _LivreurOnboardingPageState extends State<LivreurOnboardingPage> {
       case 0:
         return true;
       case 1:
+        return _phoneController.text.trim().length >= 8 && otpVerified;
+      case 2:
         return _firstNameController.text.trim().isNotEmpty &&
             _lastNameController.text.trim().isNotEmpty &&
-            _phoneController.text.trim().isNotEmpty &&
-            _emailController.text.trim().contains('@') &&
             _cityController.text.trim().isNotEmpty;
-      case 2:
-        return hasSmartphone && (vehicle != 'Voiture' || hasLicense);
       case 3:
-        return hasId && hasInsurance;
+        return _vehicleBrandController.text.trim().isNotEmpty;
       case 4:
-        return acceptsIndependentTerms;
+        return idPhotoAdded;
+      case 5:
+        return _withdrawPhoneController.text.trim().length >= 8;
+      case 6:
+        return walletCreated;
+      case 7:
+        return locationAuthorized;
+      case 8:
+        return true;
+      case 9:
+        return true;
       default:
         return false;
     }
@@ -149,10 +162,63 @@ class _LivreurOnboardingPageState extends State<LivreurOnboardingPage> {
 
   Future<void> _submitApplication() async {
     await _showMessage(
-      'Candidature envoyée',
-      'Votre dossier livreur indépendant est prêt pour vérification. Binq pourra ensuite valider vos documents, votre zone et vos créneaux.',
+      'Compte prêt 🎉',
+      'Votre profil Binq Rider est activé. Passez en ligne pour recevoir vos premières commandes et viser le bonus de 2 000 FCFA.',
     );
     widget.onCompleted();
+  }
+
+  void _sendOtp() {
+    if (_phoneController.text.trim().length < 8) {
+      _showMessage(
+          'Numéro invalide', 'Entrez un numéro WhatsApp ou mobile valide.');
+      return;
+    }
+    setState(() {
+      otpSent = true;
+      _otpController.text = '1234';
+    });
+    _showMessage(
+        'Code envoyé', 'Code démo : 1234. À connecter ensuite au SMS OTP.');
+  }
+
+  void _verifyOtp() {
+    if (_otpController.text.trim().length < 4) {
+      _showMessage('Code incomplet', 'Entrez le code reçu par SMS.');
+      return;
+    }
+    setState(() => otpVerified = true);
+  }
+
+  Future<void> _createWallet() async {
+    setState(() => walletCreated = true);
+    await _showMessage('Wallet créé',
+        'Wallet Binq créé automatiquement avec un solde de 0 FCFA.');
+  }
+
+  Future<void> _requestLocation() async {
+    try {
+      final serviceEnabled = await Geolocator.isLocationServiceEnabled();
+      if (!serviceEnabled) {
+        throw Exception('Activez la localisation du téléphone.');
+      }
+
+      var permission = await Geolocator.checkPermission();
+      if (permission == LocationPermission.denied) {
+        permission = await Geolocator.requestPermission();
+      }
+      if (permission == LocationPermission.denied ||
+          permission == LocationPermission.deniedForever) {
+        throw Exception('Autorisation GPS refusée.');
+      }
+
+      setState(() => locationAuthorized = true);
+    } catch (error) {
+      await _showMessage(
+        'Localisation requise',
+        error.toString().replaceFirst('Exception: ', ''),
+      );
+    }
   }
 
   Future<void> _showMessage(String title, String message) {
@@ -244,36 +310,87 @@ class _LivreurOnboardingPageState extends State<LivreurOnboardingPage> {
                 physics: const NeverScrollableScrollPhysics(),
                 children: [
                   const _OnboardingStep(
-                    eyebrow: 'Recrutement indépendant',
-                    title: 'Devenez livreur indépendant Binq',
+                    eyebrow: 'Binq Rider',
+                    title: 'Gagnez de l’argent avec Binq Livraison',
                     text:
-                        'Inscrivez-vous, indiquez votre zone, vos créneaux et les documents nécessaires. Binq vérifie ensuite votre profil avant activation.',
+                        'Inscription ultra rapide. Téléphone, profil, moyen de paiement, localisation : objectif prêt à livrer en moins de 10 minutes.',
                     children: [
-                      _RequirementTile(
-                        icon: CupertinoIcons.location_solid,
-                        title: 'Choisir votre zone',
-                        text:
-                            'Définissez les villes et quartiers où vous pouvez livrer.',
-                      ),
-                      _RequirementTile(
-                        icon: CupertinoIcons.doc_text_fill,
-                        title: 'Préparer vos documents',
-                        text:
-                            'Pièce d’identité, permis si nécessaire et assurance.',
-                      ),
+                      _BonusBanner(),
                       _RequirementTile(
                         icon: CupertinoIcons.money_dollar_circle_fill,
-                        title: 'Être payé après livraison',
+                        title: 'Commencez à gagner rapidement',
                         text:
-                            'Votre wallet livreur est crédité après les commandes validées.',
+                            'Recevez des commandes, livrez et suivez vos gains dans le wallet.',
+                      ),
+                      _RequirementTile(
+                        icon: CupertinoIcons.timer_fill,
+                        title: 'Moins de 10 minutes',
+                        text:
+                            'Pas de formulaire long. On demande seulement l’essentiel.',
+                      ),
+                      _RequirementTile(
+                        icon: CupertinoIcons.location_solid,
+                        title: 'Passez en ligne',
+                        text:
+                            'La localisation permet le dispatch, la heatmap et le tracking client.',
                       ),
                     ],
                   ),
                   _OnboardingStep(
-                    eyebrow: 'Profil candidat',
-                    title: 'Vos informations',
+                    eyebrow: '1 min',
+                    title: 'Votre numéro',
                     text:
-                        'Ces informations permettent à Binq de vérifier et contacter le livreur indépendant.',
+                        'Le téléphone est votre identifiant principal. Pas d’email obligatoire.',
+                    children: [
+                      _InputField(
+                        label: 'Numéro de téléphone',
+                        controller: _phoneController,
+                        keyboardType: TextInputType.phone,
+                      ),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: CupertinoButton(
+                              borderRadius: BorderRadius.circular(18),
+                              color: const Color(0xFFD1FAE5),
+                              onPressed: _sendOtp,
+                              child: const Text(
+                                'Recevoir le code',
+                                style: TextStyle(
+                                  color: Color(0xFF14852F),
+                                  fontWeight: FontWeight.w900,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      if (otpSent)
+                        _InputField(
+                          label: 'Code OTP SMS',
+                          controller: _otpController,
+                          keyboardType: TextInputType.number,
+                        ),
+                      if (otpSent)
+                        CupertinoButton(
+                          borderRadius: BorderRadius.circular(18),
+                          color: otpVerified
+                              ? const Color(0xFF14852F)
+                              : const Color(0xFF064E3B),
+                          onPressed: _verifyOtp,
+                          child: Text(
+                            otpVerified
+                                ? 'Numéro vérifié ✓'
+                                : 'Vérifier mon numéro',
+                            style: const TextStyle(fontWeight: FontWeight.w900),
+                          ),
+                        ),
+                    ],
+                  ),
+                  _OnboardingStep(
+                    eyebrow: '3 min',
+                    title: 'Profil rapide',
+                    text: 'Seulement les informations utiles pour commencer.',
                     children: [
                       _InputField(
                         label: 'Prénom',
@@ -284,123 +401,186 @@ class _LivreurOnboardingPageState extends State<LivreurOnboardingPage> {
                         controller: _lastNameController,
                       ),
                       _InputField(
-                        label: 'Téléphone WhatsApp',
-                        controller: _phoneController,
-                        keyboardType: TextInputType.phone,
-                      ),
-                      _InputField(
-                        label: 'Email',
-                        controller: _emailController,
-                        keyboardType: TextInputType.emailAddress,
-                      ),
-                      _InputField(
                         label: 'Ville principale',
                         controller: _cityController,
                       ),
+                      _PhotoUploadCard(
+                        title: 'Photo profil',
+                        text: profilePhotoAdded
+                            ? 'Photo ajoutée'
+                            : 'Optionnel mais recommandé',
+                        icon: CupertinoIcons.person_crop_circle_fill,
+                        done: profilePhotoAdded,
+                        onTap: () => setState(() => profilePhotoAdded = true),
+                      ),
                     ],
                   ),
                   _OnboardingStep(
-                    eyebrow: 'Mode de livraison',
-                    title: 'Véhicule et disponibilité',
+                    eyebrow: '5 min',
+                    title: 'Votre véhicule',
                     text:
-                        'Binq doit savoir comment vous livrez et quand vous êtes disponible.',
+                        'Choisissez votre moyen de livraison. La plaque peut être ajoutée plus tard.',
                     children: [
                       const _SectionLabel('Véhicule'),
                       _ChoiceWrap(
-                        values: const ['Vélo', 'Moto', 'Voiture', 'À pied'],
+                        values: const ['Moto', 'Vélo', 'Voiture'],
                         selected: vehicle,
                         onSelected: (value) => setState(() => vehicle = value),
                       ),
-                      const SizedBox(height: 12),
-                      const _SectionLabel('Disponibilité'),
-                      _ChoiceWrap(
-                        values: const [
-                          'Temps partiel',
-                          'Temps plein',
-                          'Soirs',
-                          'Week-end',
-                        ],
-                        selected: availability,
-                        onSelected: (value) =>
-                            setState(() => availability = value),
+                      _InputField(
+                        label: 'Marque / modèle',
+                        controller: _vehicleBrandController,
                       ),
-                      const SizedBox(height: 12),
-                      _SwitchTile(
-                        title: 'Smartphone avec internet',
-                        text:
-                            'Obligatoire pour GPS, appels et statuts de livraison.',
-                        value: hasSmartphone,
-                        onChanged: (value) =>
-                            setState(() => hasSmartphone = value),
-                      ),
-                      _SwitchTile(
-                        title: 'Permis disponible',
-                        text: 'Obligatoire pour voiture, recommandé pour moto.',
-                        value: hasLicense,
-                        onChanged: (value) =>
-                            setState(() => hasLicense = value),
+                      _InputField(
+                        label: 'Plaque — optionnel au début',
+                        controller: _plateController,
                       ),
                     ],
                   ),
                   _OnboardingStep(
-                    eyebrow: 'Vérification',
-                    title: 'Documents à contrôler',
+                    eyebrow: 'Documents MVP',
+                    title: 'Un minimum de documents',
                     text:
-                        'À connecter ensuite à l’upload Supabase pour recevoir les documents réels.',
+                        'Pour éviter l’abandon, Binq demande seulement l’essentiel au départ.',
                     children: [
-                      _SwitchTile(
-                        title: 'Pièce d’identité valide',
-                        text:
-                            'Carte nationale, passeport ou document officiel.',
-                        value: hasId,
-                        onChanged: (value) => setState(() => hasId = value),
+                      _PhotoUploadCard(
+                        title: 'Pièce d’identité',
+                        text: idPhotoAdded ? 'Document ajouté' : 'Obligatoire',
+                        icon: CupertinoIcons.doc_text_fill,
+                        done: idPhotoAdded,
+                        onTap: () => setState(() => idPhotoAdded = true),
                       ),
-                      _SwitchTile(
+                      _PhotoUploadCard(
+                        title: 'Photo du véhicule',
+                        text: vehiclePhotoAdded
+                            ? 'Photo ajoutée'
+                            : 'Optionnel pour le MVP',
+                        icon: CupertinoIcons.camera_fill,
+                        done: vehiclePhotoAdded,
+                        onTap: () => setState(() => vehiclePhotoAdded = true),
+                      ),
+                      const _RequirementTile(
+                        icon: CupertinoIcons.checkmark_shield_fill,
                         title: 'Assurance / responsabilité',
                         text:
-                            'Confirmation nécessaire pour protéger les courses.',
-                        value: hasInsurance,
-                        onChanged: (value) =>
-                            setState(() => hasInsurance = value),
-                      ),
-                      _InputField(
-                        label: 'Expérience de livraison ou quartier connu',
-                        controller: _experienceController,
-                        maxLines: 3,
-                      ),
-                      _InputField(
-                        label: 'Compte de paiement / Mobile Money',
-                        controller: _bankController,
+                            'Sera vérifiée progressivement selon les règles locales.',
                       ),
                     ],
                   ),
                   _OnboardingStep(
-                    eyebrow: 'Validation finale',
-                    title: 'Résumé du dossier',
+                    eyebrow: '7 min',
+                    title: 'Mobile Money',
                     text:
-                        'Vérifiez votre candidature avant envoi à l’équipe Binq.',
+                        'Configurez le numéro où vous voulez retirer vos gains.',
                     children: [
-                      _SummaryTile(
-                        label: 'Nom',
-                        value:
-                            '${_firstNameController.text} ${_lastNameController.text}'
-                                .trim(),
+                      const _SectionLabel('Réseau de retrait'),
+                      _ChoiceWrap(
+                        values: const ['MTN MoMo', 'Moov Money'],
+                        selected: mobileMoney,
+                        onSelected: (value) =>
+                            setState(() => mobileMoney = value),
                       ),
-                      _SummaryTile(
-                        label: 'Contact',
-                        value: _phoneController.text,
+                      _InputField(
+                        label: 'Numéro de retrait',
+                        controller: _withdrawPhoneController,
+                        keyboardType: TextInputType.phone,
                       ),
+                      const _RequirementTile(
+                        icon: CupertinoIcons.bolt_fill,
+                        title: 'Retrait rapide',
+                        text:
+                            'Cash-out instantané à connecter au backend paiement.',
+                      ),
+                    ],
+                  ),
+                  _OnboardingStep(
+                    eyebrow: 'Wallet',
+                    title: 'Wallet Binq',
+                    text: 'Votre compte de gains est créé automatiquement.',
+                    children: [
+                      _WalletCreatedCard(created: walletCreated),
+                      CupertinoButton(
+                        borderRadius: BorderRadius.circular(18),
+                        color: const Color(0xFF14852F),
+                        onPressed: _createWallet,
+                        child: Text(
+                          walletCreated ? 'Wallet prêt ✓' : 'Créer mon wallet',
+                          style: const TextStyle(fontWeight: FontWeight.w900),
+                        ),
+                      ),
+                    ],
+                  ),
+                  _OnboardingStep(
+                    eyebrow: 'Dispatch GPS',
+                    title: 'Autoriser la localisation',
+                    text:
+                        'Obligatoire pour recevoir des commandes autour de vous.',
+                    children: [
+                      _RequirementTile(
+                        icon: locationAuthorized
+                            ? CupertinoIcons.checkmark_circle_fill
+                            : CupertinoIcons.location_solid,
+                        title: locationAuthorized
+                            ? 'Localisation autorisée'
+                            : 'Localisation requise',
+                        text:
+                            'Utilisée pour le dispatch, la heatmap et le tracking client.',
+                      ),
+                      CupertinoButton(
+                        borderRadius: BorderRadius.circular(18),
+                        color: const Color(0xFF14852F),
+                        onPressed: _requestLocation,
+                        child: Text(
+                          locationAuthorized
+                              ? 'GPS activé ✓'
+                              : 'Autoriser la localisation',
+                          style: const TextStyle(fontWeight: FontWeight.w900),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const _OnboardingStep(
+                    eyebrow: 'Mini tutoriel',
+                    title: 'Comment gagner avec Binq',
+                    text: '3 choses à savoir avant de passer en ligne.',
+                    children: [
+                      _TutorialSlide(
+                        number: '1',
+                        title: 'Recevez des commandes',
+                        text: 'Acceptez les courses proches de votre position.',
+                      ),
+                      _TutorialSlide(
+                        number: '2',
+                        title: 'Livrez rapidement',
+                        text:
+                            'Suivez l’itinéraire, récupérez et confirmez la livraison.',
+                      ),
+                      _TutorialSlide(
+                        number: '3',
+                        title: 'Retirez vos gains',
+                        text:
+                            'Votre wallet se crédite, puis vous retirez en Mobile Money.',
+                      ),
+                    ],
+                  ),
+                  _OnboardingStep(
+                    eyebrow: 'Activation',
+                    title: 'Votre compte est prêt 🎉',
+                    text:
+                        'Vous pouvez passer en ligne et commencer à recevoir des commandes.',
+                    children: [
+                      const _BonusBanner(),
+                      _SummaryTile(
+                          label: 'Téléphone', value: _phoneController.text),
                       _SummaryTile(label: 'Ville', value: _cityController.text),
                       _SummaryTile(label: 'Véhicule', value: vehicle),
-                      _SummaryTile(label: 'Disponibilité', value: availability),
-                      _SwitchTile(
-                        title: 'Statut indépendant accepté',
-                        text:
-                            'Je comprends que je candidate comme livreur indépendant, sous réserve de validation Binq.',
-                        value: acceptsIndependentTerms,
-                        onChanged: (value) =>
-                            setState(() => acceptsIndependentTerms = value),
-                      ),
+                      _SummaryTile(
+                          label: 'Wallet',
+                          value: walletCreated ? '0 FCFA' : 'À créer'),
+                      _SummaryTile(
+                          label: 'Retrait',
+                          value:
+                              '$mobileMoney · ${_withdrawPhoneController.text}'),
                     ],
                   ),
                 ],
@@ -433,9 +613,11 @@ class _LivreurOnboardingPageState extends State<LivreurOnboardingPage> {
                       color: const Color(0xFF14852F),
                       onPressed: _next,
                       child: Text(
-                        step == totalSteps - 1
-                            ? 'Envoyer ma candidature'
-                            : 'Continuer',
+                        step == 0
+                            ? 'Commencer'
+                            : step == totalSteps - 1
+                                ? 'Passer en ligne'
+                                : 'Continuer',
                         style: const TextStyle(fontWeight: FontWeight.w900),
                       ),
                     ),
@@ -581,18 +763,265 @@ class _RequirementTile extends StatelessWidget {
   }
 }
 
+class _BonusBanner extends StatelessWidget {
+  const _BonusBanner();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(18),
+      decoration: BoxDecoration(
+        color: const Color(0xFFFEF3C7),
+        borderRadius: BorderRadius.circular(24),
+        border: Border.all(color: const Color(0xFFFBBF24)),
+      ),
+      child: const Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(CupertinoIcons.gift_fill, color: Color(0xFFD97706), size: 28),
+          SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Bonus onboarding',
+                  style: TextStyle(
+                    color: Color(0xFF92400E),
+                    fontSize: 16,
+                    fontWeight: FontWeight.w900,
+                  ),
+                ),
+                SizedBox(height: 4),
+                Text(
+                  'Faites 5 livraisons et gagnez +2 000 FCFA bonus.',
+                  style: TextStyle(
+                    color: Color(0xFF92400E),
+                    fontSize: 13,
+                    height: 1.35,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _PhotoUploadCard extends StatelessWidget {
+  const _PhotoUploadCard({
+    required this.title,
+    required this.text,
+    required this.icon,
+    required this.done,
+    required this.onTap,
+  });
+
+  final String title;
+  final String text;
+  final IconData icon;
+  final bool done;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.all(18),
+        decoration: BoxDecoration(
+          color: done ? const Color(0xFFD1FAE5) : Colors.white,
+          borderRadius: BorderRadius.circular(24),
+          border: Border.all(
+            color: done ? const Color(0xFF14852F) : const Color(0xFFBBF7D0),
+          ),
+        ),
+        child: Row(
+          children: [
+            Container(
+              width: 48,
+              height: 48,
+              decoration: BoxDecoration(
+                color: done ? const Color(0xFF14852F) : const Color(0xFFD1FAE5),
+                borderRadius: BorderRadius.circular(18),
+              ),
+              child: Icon(
+                done ? CupertinoIcons.checkmark_alt : icon,
+                color: done ? Colors.white : const Color(0xFF14852F),
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: const TextStyle(
+                      color: Color(0xFF064E3B),
+                      fontSize: 16,
+                      fontWeight: FontWeight.w900,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    text,
+                    style: const TextStyle(
+                      color: Color(0xFF047857),
+                      fontSize: 13,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const Icon(CupertinoIcons.camera, color: Color(0xFF14852F)),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _WalletCreatedCard extends StatelessWidget {
+  const _WalletCreatedCard({required this.created});
+
+  final bool created;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(22),
+      decoration: BoxDecoration(
+        color: const Color(0xFF064E3B),
+        borderRadius: BorderRadius.circular(28),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(
+                created
+                    ? CupertinoIcons.checkmark_circle_fill
+                    : CupertinoIcons.money_dollar_circle_fill,
+                color: const Color(0xFF86EFAC),
+              ),
+              const SizedBox(width: 8),
+              Text(
+                created ? 'Wallet créé automatiquement' : 'Wallet prêt à créer',
+                style: const TextStyle(
+                  color: Color(0xFF86EFAC),
+                  fontWeight: FontWeight.w900,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 14),
+          const Text(
+            '0 FCFA',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 42,
+              fontWeight: FontWeight.w900,
+              letterSpacing: -1.4,
+            ),
+          ),
+          const SizedBox(height: 6),
+          const Text(
+            'Solde initial. Chaque livraison validée crédite votre wallet Binq.',
+            style: TextStyle(color: Color(0xFFD1FAE5), height: 1.4),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _TutorialSlide extends StatelessWidget {
+  const _TutorialSlide({
+    required this.number,
+    required this.title,
+    required this.text,
+  });
+
+  final String number;
+  final String title;
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(18),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(24),
+        border: Border.all(color: const Color(0xFFBBF7D0)),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            width: 38,
+            height: 38,
+            decoration: BoxDecoration(
+              color: const Color(0xFF14852F),
+              borderRadius: BorderRadius.circular(14),
+            ),
+            child: Center(
+              child: Text(
+                number,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w900,
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: const TextStyle(
+                    color: Color(0xFF064E3B),
+                    fontSize: 16,
+                    fontWeight: FontWeight.w900,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  text,
+                  style: const TextStyle(
+                    color: Color(0xFF047857),
+                    fontSize: 13,
+                    height: 1.35,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 class _InputField extends StatelessWidget {
   const _InputField({
     required this.label,
     required this.controller,
     this.keyboardType,
-    this.maxLines = 1,
   });
 
   final String label;
   final TextEditingController controller;
   final TextInputType? keyboardType;
-  final int maxLines;
 
   @override
   Widget build(BuildContext context) {
@@ -604,7 +1033,6 @@ class _InputField extends StatelessWidget {
         CupertinoTextField(
           controller: controller,
           keyboardType: keyboardType,
-          maxLines: maxLines,
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
           decoration: BoxDecoration(
             color: Colors.white,
@@ -666,9 +1094,8 @@ class _ChoiceWrap extends StatelessWidget {
               color: active ? const Color(0xFF14852F) : Colors.white,
               borderRadius: BorderRadius.circular(999),
               border: Border.all(
-                color: active
-                    ? const Color(0xFF14852F)
-                    : const Color(0xFFBBF7D0),
+                color:
+                    active ? const Color(0xFF14852F) : const Color(0xFFBBF7D0),
               ),
             ),
             child: Text(
@@ -681,66 +1108,6 @@ class _ChoiceWrap extends StatelessWidget {
           ),
         );
       }).toList(),
-    );
-  }
-}
-
-class _SwitchTile extends StatelessWidget {
-  const _SwitchTile({
-    required this.title,
-    required this.text,
-    required this.value,
-    required this.onChanged,
-  });
-
-  final String title;
-  final String text;
-  final bool value;
-  final ValueChanged<bool> onChanged;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(22),
-        border: Border.all(color: const Color(0xFFBBF7D0)),
-      ),
-      child: Row(
-        children: [
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: const TextStyle(
-                    color: Color(0xFF064E3B),
-                    fontSize: 15,
-                    fontWeight: FontWeight.w900,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  text,
-                  style: const TextStyle(
-                    color: Color(0xFF047857),
-                    fontSize: 12.5,
-                    height: 1.35,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(width: 12),
-          CupertinoSwitch(
-            value: value,
-            activeTrackColor: const Color(0xFF14852F),
-            onChanged: onChanged,
-          ),
-        ],
-      ),
     );
   }
 }
