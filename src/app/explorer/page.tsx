@@ -174,8 +174,8 @@ export default function ExplorerPublicPage() {
     viewMode === "produits" ? produits.length : boutiques.length;
 
   return (
-    <div className="min-h-screen bg-[#f7fbf8] text-slate-950">
-      <header className="sticky top-0 z-50 border-b border-white/70 bg-white/80 shadow-sm shadow-emerald-950/5 backdrop-blur-2xl">
+    <div className="min-h-screen bg-[linear-gradient(180deg,#fffdf4_0%,#f7fbf8_36%,#f8fafc_100%)] text-slate-950">
+      <header className="sticky top-0 z-50 border-b border-emerald-950/5 bg-white/88 shadow-sm shadow-emerald-950/5 backdrop-blur-2xl">
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-5 lg:px-10">
           <Link href="/" className="flex items-center gap-2">
             <BinqLogo size="sm" />
@@ -184,21 +184,9 @@ export default function ExplorerPublicPage() {
           <nav className="hidden items-center gap-2 sm:flex">
             <Link
               href="/explorer"
-              className="rounded-full bg-emerald-50 px-4 py-2 text-sm font-black text-emerald-700"
+              className="rounded-full bg-emerald-50 px-4 py-2 text-sm font-black text-emerald-700 ring-1 ring-emerald-100"
             >
-              Binq Clients
-            </Link>
-            <Link
-              href="/connexion"
-              className="rounded-full px-4 py-2 text-sm font-bold text-slate-500 transition hover:bg-slate-50 hover:text-slate-950"
-            >
-              Connexion
-            </Link>
-            <Link
-              href="/inscription"
-              className="rounded-full bg-[#14852F] px-5 py-2 text-sm font-black text-white shadow-lg shadow-emerald-700/20 transition hover:bg-[#0f7027]"
-            >
-              Devenir partenaire
+              Commander
             </Link>
           </nav>
 
@@ -218,109 +206,99 @@ export default function ExplorerPublicPage() {
               onClick={() => setMobileOpen(false)}
               className="block rounded-xl bg-emerald-50 px-3 py-2.5 text-sm font-black text-emerald-700"
             >
-              Binq Clients
-            </Link>
-            <Link
-              href="/connexion"
-              onClick={() => setMobileOpen(false)}
-              className="block rounded-xl px-3 py-2.5 text-sm font-bold text-slate-600"
-            >
-              Connexion
-            </Link>
-            <Link
-              href="/inscription"
-              onClick={() => setMobileOpen(false)}
-              className="mt-1 block rounded-xl bg-[#14852F] px-3 py-2.5 text-center text-sm font-black text-white"
-            >
-              Devenir partenaire
+              Commander
             </Link>
           </div>
         )}
       </header>
 
-      <section className="relative overflow-hidden border-b border-white bg-gradient-to-br from-emerald-950 via-[#0b5f32] to-[#14852F]">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_16%,rgba(187,247,208,0.24),transparent_34%),radial-gradient(circle_at_88%_8%,rgba(250,204,21,0.25),transparent_30%)]" />
-        <div className="absolute -right-20 top-20 h-72 w-72 rounded-full bg-lime-300/20 blur-3xl" />
-        <div className="relative mx-auto grid max-w-7xl gap-8 px-5 py-12 sm:py-16 lg:grid-cols-[1fr_430px] lg:items-end lg:px-10 lg:py-20">
-          <div className="max-w-2xl">
-            <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/12 px-3 py-1.5 text-xs font-black uppercase tracking-[0.16em] text-lime-100 backdrop-blur-xl">
-              <Sparkles className="h-3.5 w-3.5" /> Binq Clients
+      <section className="relative overflow-hidden border-b border-emerald-950/5">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_12%_20%,rgba(20,133,47,0.16),transparent_34%),radial-gradient(circle_at_88%_0%,rgba(250,204,21,0.35),transparent_28%)]" />
+        <div className="relative mx-auto grid max-w-7xl gap-8 px-5 pb-10 pt-8 sm:pt-12 lg:grid-cols-[1fr_460px] lg:items-center lg:px-10 lg:pb-16 lg:pt-16">
+          <div className="max-w-3xl">
+            <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-emerald-100 bg-white/80 px-3 py-1.5 text-xs font-black uppercase tracking-[0.16em] text-emerald-700 shadow-sm shadow-emerald-950/5 backdrop-blur-xl">
+              <Sparkles className="h-3.5 w-3.5" /> Nouveau Binq Clients
             </div>
-            <h1 className="text-[38px] font-black leading-[0.95] tracking-[-0.045em] text-white sm:text-5xl lg:text-7xl">
-              Explorez. Commandez. Recevez.
+            <h1 className="max-w-3xl text-[42px] font-black leading-[0.92] tracking-[-0.055em] text-slate-950 sm:text-6xl lg:text-7xl">
+              Le local, livré avec style.
             </h1>
-            <p className="mt-5 max-w-xl text-base leading-relaxed text-emerald-50/85 sm:text-lg">
-              La page client pour trouver des restaurants, boutiques, produits
-              et services autour de vous, avec paiement sécurisé et livraison
-              Binq.
+            <p className="mt-5 max-w-xl text-base font-medium leading-relaxed text-slate-600 sm:text-lg">
+              Restaurants, courses, mode, beauté et services proches de vous. Recherchez, commandez, recevez.
             </p>
-            <div className="mt-7 flex flex-wrap gap-3 text-sm font-bold text-white">
-              <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/12 px-4 py-2 backdrop-blur-xl">
-                <ShoppingBag className="h-4 w-4 text-lime-200" /> Produits locaux
-              </span>
-              <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/12 px-4 py-2 backdrop-blur-xl">
-                <Truck className="h-4 w-4 text-lime-200" /> Livraison rapide
-              </span>
-              <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/12 px-4 py-2 backdrop-blur-xl">
-                <Zap className="h-4 w-4 text-lime-200" /> Commande en 1 tap
-              </span>
+            <div className="mt-7 max-w-2xl rounded-[1.7rem] border border-white bg-white/90 p-2 shadow-2xl shadow-emerald-950/10 backdrop-blur-xl">
+              <div className="relative">
+                <Search className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-emerald-600" />
+                <input
+                  type="text"
+                  placeholder="Rechercher un produit, restaurant, boutique..."
+                  value={searchQuery}
+                  onChange={(event) => setSearchQuery(event.target.value)}
+                  className="w-full rounded-[1.25rem] border-0 bg-emerald-50/60 py-4 pl-12 pr-11 text-[15px] font-bold text-slate-950 outline-none transition placeholder:text-slate-400 focus:bg-white focus:ring-4 focus:ring-emerald-100"
+                />
+                {searchQuery && (
+                  <button
+                    onClick={() => setSearchQuery("")}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 rounded-full p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-700"
+                    aria-label="Effacer la recherche"
+                  >
+                    <X className="h-4 w-4" />
+                  </button>
+                )}
+              </div>
+            </div>
+            <div className="mt-5 flex flex-wrap gap-2 text-xs font-black text-slate-600">
+              <span className="inline-flex items-center gap-2 rounded-full bg-white/85 px-3 py-2 shadow-sm ring-1 ring-white"><Truck className="h-4 w-4 text-emerald-600" /> Livraison locale</span>
+              <span className="inline-flex items-center gap-2 rounded-full bg-white/85 px-3 py-2 shadow-sm ring-1 ring-white"><Zap className="h-4 w-4 text-emerald-600" /> Commande rapide</span>
+              <span className="inline-flex items-center gap-2 rounded-full bg-white/85 px-3 py-2 shadow-sm ring-1 ring-white"><Store className="h-4 w-4 text-emerald-600" /> Commerces vérifiés</span>
             </div>
           </div>
 
-          <div className="rounded-[2rem] border border-white/20 bg-white/95 p-4 shadow-2xl shadow-emerald-950/30 backdrop-blur-xl">
-            <p className="px-1 text-xs font-black uppercase tracking-[0.18em] text-emerald-700">
-              Recherche rapide
-            </p>
-            <div className="relative mt-3">
-              <Search className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-emerald-600" />
-              <input
-                type="text"
-                placeholder="Restaurant, produit, boutique..."
-                value={searchQuery}
-                onChange={(event) => setSearchQuery(event.target.value)}
-                className="w-full rounded-2xl border border-emerald-100 bg-emerald-50/55 py-4 pl-11 pr-10 text-sm font-bold text-slate-950 outline-none transition placeholder:text-slate-400 focus:border-emerald-300 focus:bg-white focus:ring-4 focus:ring-emerald-100"
-              />
-              {searchQuery && (
-                <button
-                  onClick={() => setSearchQuery("")}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 rounded-full p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-700"
-                  aria-label="Effacer la recherche"
-                >
-                  <X className="h-4 w-4" />
-                </button>
-              )}
-            </div>
-            <div className="mt-3 grid grid-cols-3 gap-2 text-center text-xs font-black text-slate-600">
-              <div className="rounded-2xl bg-slate-50 px-3 py-3">
-                <span className="block text-lg text-emerald-700">{produits.length}</span>
-                produits
+          <div className="relative hidden lg:block">
+            <div className="absolute -left-8 top-12 h-28 w-28 rounded-full bg-yellow-300/40 blur-2xl" />
+            <div className="relative rounded-[2.25rem] border border-white bg-white/90 p-5 shadow-2xl shadow-emerald-950/15 backdrop-blur-xl">
+              <div className="mb-4 flex items-center justify-between">
+                <div>
+                  <p className="text-xs font-black uppercase tracking-[0.18em] text-emerald-700">Aujourd&apos;hui</p>
+                  <p className="mt-1 text-xl font-black text-slate-950">Populaire près de vous</p>
+                </div>
+                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#14852F] text-white shadow-lg shadow-emerald-700/25">
+                  <ShoppingBag className="h-5 w-5" />
+                </div>
               </div>
-              <div className="rounded-2xl bg-slate-50 px-3 py-3">
-                <span className="block text-lg text-emerald-700">{boutiques.length}</span>
-                boutiques
-              </div>
-              <div className="rounded-2xl bg-slate-50 px-3 py-3">
-                <span className="block text-lg text-emerald-700">24/7</span>
-                client
+              <div className="space-y-3">
+                {[
+                  ["Poulet braisé", "Chez Awa", "3 500 FCFA", "🔥"],
+                  ["Panier fruits", "Marché Frais", "5 000 FCFA", "🥭"],
+                  ["Sneakers mode", "Binq Fashion", "12 000 FCFA", "👟"],
+                ].map(([name, shop, price, emoji]) => (
+                  <div key={name} className="flex items-center gap-3 rounded-3xl bg-slate-50 p-3 ring-1 ring-slate-100">
+                    <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-white text-2xl shadow-sm">{emoji}</div>
+                    <div className="min-w-0 flex-1">
+                      <p className="truncate text-sm font-black text-slate-950">{name}</p>
+                      <p className="truncate text-xs font-bold text-slate-400">{shop}</p>
+                    </div>
+                    <p className="text-sm font-black text-emerald-700">{price}</p>
+                  </div>
+                ))}
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      <section className="sticky top-16 z-40 border-b border-white/80 bg-[#f7fbf8]/90 backdrop-blur-2xl">
+      <section className="sticky top-16 z-40 border-b border-emerald-950/5 bg-white/78 backdrop-blur-2xl">
         <div className="mx-auto max-w-7xl px-5 lg:px-10">
-          <div className="flex gap-2 overflow-x-auto py-3 scrollbar-none">
+          <div className="flex gap-2.5 overflow-x-auto py-3.5 scrollbar-none">
             {displayedCategories.map((category) => {
               const active = selectedCategory === category.slug;
               return (
                 <button
                   key={category.slug || "all"}
                   onClick={() => setSelectedCategory(category.slug)}
-                  className={`shrink-0 rounded-full border px-4 py-2 text-sm font-black transition ${
+                  className={`shrink-0 rounded-2xl border px-4 py-2.5 text-sm font-black transition ${
                     active
-                      ? "border-transparent bg-[#14852F] text-white shadow-lg shadow-emerald-700/15"
-                      : "border-white bg-white text-slate-700 hover:border-emerald-100 hover:text-emerald-700"
+                      ? "border-transparent bg-[#14852F] text-white shadow-lg shadow-emerald-700/20"
+                      : "border-slate-100 bg-white text-slate-700 shadow-sm hover:border-emerald-100 hover:text-emerald-700 hover:shadow-md"
                   }`}
                 >
                   <span className="mr-1.5">{category.icone}</span>
@@ -333,13 +311,14 @@ export default function ExplorerPublicPage() {
       </section>
 
       <main className="mx-auto max-w-7xl px-5 pb-20 pt-8 lg:px-10">
-        <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h2 className="text-2xl font-black tracking-tight text-slate-950">
-              Explorer Binq Clients
+            <p className="text-xs font-black uppercase tracking-[0.18em] text-emerald-700">Sélection Binq</p>
+            <h2 className="mt-1 text-3xl font-black tracking-[-0.035em] text-slate-950">
+              À commander maintenant
             </h2>
             <p className="mt-1 text-sm font-medium text-slate-500">
-              Produits et boutiques disponibles pour les clients.
+              Une expérience simple, claire et rapide pour vos achats locaux.
             </p>
           </div>
           <div className="flex items-center gap-2">
@@ -369,7 +348,7 @@ export default function ExplorerPublicPage() {
               <select
                 value={sort}
                 onChange={(event) => setSort(event.target.value)}
-                className="rounded-2xl border border-slate-100 bg-white px-3 py-2.5 text-sm font-bold text-slate-600 outline-none"
+                className="rounded-2xl border border-slate-100 bg-white px-3 py-2.5 text-sm font-bold text-slate-600 shadow-sm outline-none"
               >
                 <option value="recent">Récents</option>
                 <option value="populaire">Populaires</option>
@@ -446,8 +425,8 @@ function ProductCard({ produit }: { produit: Produit }) {
 
   return (
     <Link href={`/produit/${produit.id}`} className="group block h-full">
-      <article className="h-full overflow-hidden rounded-[1.75rem] border border-white bg-white shadow-sm shadow-emerald-950/5 transition duration-300 hover:-translate-y-1 hover:shadow-2xl hover:shadow-emerald-950/10">
-        <div className="relative aspect-[4/3] overflow-hidden bg-gradient-to-br from-emerald-50 via-lime-50 to-white">
+      <article className="h-full overflow-hidden rounded-[2rem] border border-white bg-white shadow-sm shadow-emerald-950/5 ring-1 ring-slate-100/70 transition duration-300 hover:-translate-y-1 hover:shadow-2xl hover:shadow-emerald-950/10">
+        <div className="relative aspect-[4/3] overflow-hidden bg-gradient-to-br from-emerald-50 via-lime-50 to-amber-50">
           {produit.image_url ? (
             <Image
               src={produit.image_url}
@@ -462,17 +441,14 @@ function ProductCard({ produit }: { produit: Produit }) {
             </div>
           )}
           {discount && (
-            <div className="absolute left-3 top-3 rounded-full bg-amber-400 px-3 py-1 text-xs font-black text-slate-950">
+            <div className="absolute left-3 top-3 rounded-full bg-amber-300 px-3 py-1 text-xs font-black text-slate-950 shadow-sm">
               Promo
             </div>
           )}
-          <div className="absolute bottom-3 right-3 rounded-full bg-white/95 px-3 py-1.5 text-sm font-black text-emerald-700 shadow-sm">
-            {formatPrice(produit.prix, produit.devise)}
-          </div>
         </div>
-        <div className="space-y-3 p-4">
+        <div className="space-y-4 p-4">
           <div>
-            <h3 className="line-clamp-2 text-base font-black leading-snug text-slate-950 transition group-hover:text-emerald-700">
+            <h3 className="line-clamp-2 text-[16px] font-black leading-snug text-slate-950 transition group-hover:text-emerald-700">
               {produit.nom}
             </h3>
             {produit.description && (
@@ -480,6 +456,13 @@ function ProductCard({ produit }: { produit: Produit }) {
                 {produit.description}
               </p>
             )}
+          </div>
+          <div className="flex items-end justify-between gap-3">
+            <div>
+              <p className="text-[11px] font-black uppercase tracking-[0.14em] text-slate-400">Prix</p>
+              <p className="text-lg font-black text-[#14852F]">{formatPrice(produit.prix, produit.devise)}</p>
+            </div>
+            <span className="rounded-full bg-[#14852F] px-3 py-2 text-xs font-black text-white shadow-lg shadow-emerald-700/20">Commander</span>
           </div>
           <div className="flex items-center gap-2 border-t border-slate-100 pt-3">
             <ShopAvatar src={produit.boutique.logo_url} name={produit.boutique.nom} />
@@ -506,7 +489,9 @@ function ShopCard({ boutique }: { boutique: Boutique }) {
 
   return (
     <Link href={`/boutique/${boutique.slug}`} className="group block h-full">
-      <article className="h-full rounded-[1.75rem] border border-white bg-white p-5 shadow-sm shadow-emerald-950/5 transition duration-300 hover:-translate-y-1 hover:shadow-2xl hover:shadow-emerald-950/10">
+      <article className="h-full overflow-hidden rounded-[2rem] border border-white bg-white shadow-sm shadow-emerald-950/5 ring-1 ring-slate-100/70 transition duration-300 hover:-translate-y-1 hover:shadow-2xl hover:shadow-emerald-950/10">
+        <div className="h-20 bg-gradient-to-br from-[#14852F] via-emerald-600 to-lime-400" />
+        <div className="-mt-8 p-5 pt-0">
         <div className="flex gap-4">
           <ShopAvatar src={boutique.logo_url} name={boutique.nom} large />
           <div className="min-w-0 flex-1">
@@ -529,18 +514,19 @@ function ShopCard({ boutique }: { boutique: Boutique }) {
           </div>
         </div>
         <div className="mt-5 grid grid-cols-3 gap-2 text-center text-xs font-black text-slate-600">
-          <div className="rounded-2xl bg-emerald-50 px-3 py-2 text-emerald-800">
+          <div className="rounded-2xl bg-emerald-50 px-3 py-2 text-emerald-800 ring-1 ring-emerald-100">
             <Store className="mx-auto mb-1 h-4 w-4" />
             {productCount} produit{productCount > 1 ? "s" : ""}
           </div>
-          <div className="rounded-2xl bg-slate-50 px-3 py-2">
+          <div className="rounded-2xl bg-slate-50 px-3 py-2 ring-1 ring-slate-100">
             <MapPin className="mx-auto mb-1 h-4 w-4 text-emerald-600" />
             {boutique.ville || "Local"}
           </div>
-          <div className="rounded-2xl bg-slate-50 px-3 py-2">
+          <div className="rounded-2xl bg-slate-50 px-3 py-2 ring-1 ring-slate-100">
             <Clock className="mx-auto mb-1 h-4 w-4 text-emerald-600" />
             Ouvert
           </div>
+        </div>
         </div>
       </article>
     </Link>
