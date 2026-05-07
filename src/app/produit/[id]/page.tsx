@@ -21,7 +21,6 @@ import {
   Shield,
   Eye,
   Tag,
-  LogIn,
   CreditCard,
   QrCode,
   Copy,
@@ -344,14 +343,7 @@ export default function ProduitPage() {
 
         {/* Buy section */}
         <div className="mt-6">
-          {!user ? (
-            <div className="text-center">
-              <p className="text-sm text-gray-500 mb-3">Connectez-vous pour acheter</p>
-              <Link href={`/connexion?redirect=/produit/${produit.id}`} className="w-full inline-flex items-center justify-center gap-2 bg-blue-500 text-white py-3.5 rounded-xl font-bold hover:bg-blue-600 transition">
-                <LogIn className="w-5 h-5" />Se connecter
-              </Link>
-            </div>
-          ) : isOwnProduct ? (
+          {isOwnProduct ? (
             <div className="bg-gray-50 rounded-xl p-3 text-center border border-gray-200">
               <p className="text-sm text-gray-500">C&apos;est votre produit</p>
             </div>
@@ -360,20 +352,15 @@ export default function ProduitPage() {
               Rupture de stock
             </button>
           ) : (
-            <button
-              onClick={handleBuy}
-              disabled={buying}
-              className="w-full flex items-center justify-center gap-2.5 bg-blue-500 hover:bg-blue-600 text-white py-4 rounded-2xl font-bold text-base transition-all disabled:opacity-50 active:scale-[0.98] shadow-lg shadow-blue-500/20"
+            <Link
+              href={`/boutique/${produit.boutique.slug}?add=${produit.id}`}
+              className="w-full flex items-center justify-center gap-2.5 bg-blue-500 hover:bg-blue-600 text-white py-4 rounded-2xl font-bold text-base transition-all active:scale-[0.98] shadow-lg shadow-blue-500/20"
             >
-              {buying ? (
-                <><Loader2 className="w-5 h-5 animate-spin" />Paiement en cours...</>
-              ) : (
-                <><Zap className="w-5 h-5" />Acheter — {formatMontant(produit.prix, devise)}</>
-              )}
-            </button>
+              <Zap className="w-5 h-5" />Commander — {formatMontant(produit.prix, devise)}
+            </Link>
           )}
 
-          {user && !isOwnProduct && !outOfStock && (
+          {!isOwnProduct && !outOfStock && (
             <div className="flex items-center justify-center gap-4 mt-3">
               <span className="flex items-center gap-1 text-gray-400 text-[10px]"><Zap className="w-3 h-3" />Instantane</span>
               <span className="flex items-center gap-1 text-gray-400 text-[10px]"><Shield className="w-3 h-3" />Securise</span>

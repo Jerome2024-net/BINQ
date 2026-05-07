@@ -81,6 +81,7 @@ export default function BoutiquePage() {
   const slug = params.slug as string;
   const { user } = useAuth();
   const produitsRef = useRef<HTMLDivElement>(null);
+  const autoAddedProductIdRef = useRef<string | null>(null);
 
   const [boutique, setBoutique] = useState<Boutique | null>(null);
   const [produits, setProduits] = useState<Produit[]>([]);
@@ -163,6 +164,18 @@ export default function BoutiquePage() {
     });
     setShowCart(true);
   };
+
+  useEffect(() => {
+    if (typeof window === "undefined" || produits.length === 0) return;
+    const productId = new URLSearchParams(window.location.search).get("add");
+    if (!productId || autoAddedProductIdRef.current === productId) return;
+
+    const produit = produits.find((item) => item.id === productId);
+    if (!produit) return;
+
+    autoAddedProductIdRef.current = productId;
+    addToCart(produit);
+  }, [produits]);
 
   const updateCartQuantity = (produitId: string, nextQuantity: number) => {
     setCart((prev) => prev
@@ -704,9 +717,6 @@ export default function BoutiquePage() {
                             onPlaceSelect={setLieuLivraison}
                             className="mt-1"
                           />
-                          <p className="mt-2 text-[11px] font-semibold text-blue-700">
-                            Position GPS obligatoire pour que le livreur trouve exactement le client.
-                          </p>
                         </div>
                         <div>
                           <label className="text-[11px] font-bold text-gray-500 uppercase tracking-wide">Note optionnelle</label>
@@ -725,7 +735,7 @@ export default function BoutiquePage() {
                         <span className="font-semibold text-gray-900">{deliveryFee === 0 ? "Offerte" : formatMontant(deliveryFee, devise)}</span>
                       </div>
                       <div className="flex justify-between text-sm">
-                        <span className="text-gray-500">Frais de service Binq (10%)</span>
+                        <span className="text-gray-500">Frais de service Binq</span>
                         <span className="font-semibold text-gray-900">{formatMontant(serviceFee, devise)}</span>
                       </div>
                       <div className="pt-2 border-t border-gray-200 flex justify-between">
