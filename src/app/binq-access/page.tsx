@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import BinqLogo from "@/components/BinqLogo";
 import {
   ArrowLeft,
   ArrowRight,
@@ -22,10 +23,7 @@ export default function BinqAccessPage() {
       <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-xl border-b border-gray-100">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 flex items-center justify-between h-16">
           <Link href="/" className="flex items-center gap-2.5 group">
-            <div className="w-8 h-8 bg-gradient-to-br from-blue-400 to-blue-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/25">
-              <QrCode className="w-4 h-4 text-white" />
-            </div>
-            <span className="font-black text-lg tracking-tight">Binq</span>
+            <BinqLogo size="sm" />
           </Link>
           <div className="flex items-center gap-3">
             <Link href="/" className="flex items-center gap-2 text-sm text-gray-500 hover:text-gray-900 transition-colors">

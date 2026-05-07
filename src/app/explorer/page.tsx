@@ -3,6 +3,7 @@
 import { useState, useEffect, useMemo, useCallback, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import BinqLogo from "@/components/BinqLogo";
 import {
   Search,
   CalendarDays,
@@ -12,7 +13,6 @@ import {
   ChevronDown,
   MapPin,
   Users,
-  QrCode,
   ArrowRight,
   Sparkles,
   ShoppingBag,
@@ -263,12 +263,7 @@ export default function ExplorerPublicPage() {
       <header className="sticky top-0 z-50 bg-white/75 backdrop-blur-2xl border-b border-white/70 shadow-sm shadow-slate-200/40">
         <div className="max-w-7xl mx-auto px-5 lg:px-10 h-14 lg:h-16 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2">
-            <div className="w-7 h-7 lg:w-8 lg:h-8 bg-gradient-to-br from-emerald-500 via-green-500 to-yellow-400 rounded-xl flex items-center justify-center shadow-lg shadow-emerald-500/25">
-              <QrCode className="w-3.5 h-3.5 lg:w-4 lg:h-4 text-white" />
-            </div>
-            <span className="font-bold text-[15px] lg:text-base text-slate-950 tracking-tight">
-              Binq
-            </span>
+            <BinqLogo size="sm" />
           </Link>
 
           <nav className="hidden sm:flex items-center gap-1 lg:gap-2">
@@ -552,10 +547,7 @@ export default function ExplorerPublicPage() {
           <div className="lg:flex lg:items-start lg:justify-between lg:gap-10">
             <div className="mb-6 lg:mb-0">
               <Link href="/" className="flex items-center gap-2 mb-3">
-                <div className="w-7 h-7 bg-gradient-to-br from-emerald-500 via-green-500 to-yellow-400 rounded-xl flex items-center justify-center shadow-lg shadow-emerald-500/25">
-                  <QrCode className="w-3.5 h-3.5 text-white" />
-                </div>
-                <span className="font-bold text-[15px] text-slate-950">Binq</span>
+                <BinqLogo size="sm" />
               </Link>
               <p className="text-sm text-slate-500 max-w-xs leading-relaxed">
                 La plateforme de commerce local qui simplifie les commandes, le paiement et la livraison.

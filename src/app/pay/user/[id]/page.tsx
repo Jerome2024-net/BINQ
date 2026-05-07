@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useToast } from "@/contexts/ToastContext";
+import BinqLogo from "@/components/BinqLogo";
 import { hapticSuccess, hapticError } from "@/lib/haptics";
 import { type DeviseCode, DEVISES, DEVISE_LIST, DEFAULT_DEVISE, formatMontant } from "@/lib/currencies";
 import {
@@ -249,9 +250,10 @@ export default function PayUserPage() {
       <div className="max-w-md w-full">
         {/* Logo */}
         <div className="text-center mb-8">
-          <h2 className="text-2xl font-black text-gray-900 tracking-tight">
-            <span className="text-black">Binq</span> Pay
-          </h2>
+          <div className="inline-flex items-center justify-center gap-2">
+            <BinqLogo size="sm" />
+            <span className="text-lg font-black text-gray-900 tracking-tight">Pay</span>
+          </div>
           <p className="text-gray-700 text-sm mt-1 flex items-center justify-center gap-1.5">
             <QrCode className="w-3.5 h-3.5" />
             Paiement sécurisé

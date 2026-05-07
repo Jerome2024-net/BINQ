@@ -5,6 +5,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import AuthGuard from "@/components/AuthGuard";
+import BinqLogo from "@/components/BinqLogo";
 import {
   Settings,
   Bell,
@@ -14,7 +15,6 @@ import {
   Home,
   Wallet,
   TrendingUp,
-  QrCode,
   Store,
   ShoppingBag,
   Truck,
@@ -135,10 +135,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         <aside className="hidden lg:flex lg:flex-col lg:w-[220px] lg:fixed lg:inset-y-0 lg:left-0 lg:z-50 lg:border-r lg:border-neutral-200 bg-white">
           {/* Logo */}
           <div className="flex items-center gap-2 px-5 h-14 border-b border-neutral-200">
-            <div className="w-7 h-7 bg-gradient-to-br from-emerald-500 via-green-500 to-yellow-400 rounded-lg flex items-center justify-center shadow-sm shadow-emerald-500/30">
-              <QrCode className="w-3.5 h-3.5 text-white" />
-            </div>
-            <span className="font-semibold text-[15px] text-neutral-900">Binq</span>
+            <BinqLogo size="sm" />
           </div>
 
           {/* Nav */}
@@ -188,10 +185,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           <div className="flex items-center justify-between px-4 sm:px-6 lg:px-8 h-14 max-w-5xl mx-auto">
             {/* Left: Logo (mobile) */}
             <Link href="/dashboard" className="flex items-center gap-2 lg:hidden">
-              <div className="w-7 h-7 bg-gradient-to-br from-emerald-500 via-green-500 to-yellow-400 rounded-lg flex items-center justify-center shadow-sm shadow-emerald-500/30">
-                <QrCode className="w-3.5 h-3.5 text-white" />
-              </div>
-              <span className="font-semibold text-[15px]">Binq</span>
+              <BinqLogo size="sm" />
             </Link>
 
             {/* Left: breadcrumb (desktop) */}

@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { Mail, Headphones, QrCode } from "lucide-react";
+import BinqLogo from "@/components/BinqLogo";
+import { Mail, Headphones } from "lucide-react";
 
 export default function Footer() {
   return (
@@ -9,13 +10,10 @@ export default function Footer() {
           {/* Brand */}
           <div className="col-span-2 md:col-span-1">
             <div className="flex items-center gap-2 mb-4">
-              <div className="w-7 h-7 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center shadow-sm shadow-blue-500/30">
-                <QrCode className="w-3.5 h-3.5 text-white" />
-              </div>
-              <span className="font-semibold text-neutral-900 tracking-tight">Binq</span>
+              <BinqLogo size="sm" />
             </div>
             <p className="text-neutral-400 text-sm leading-relaxed">
-              La plateforme de billetterie moderne pour tout type d&apos;événement.
+              La plateforme de commerce local pour commander, vendre et livrer.
             </p>
           </div>
 

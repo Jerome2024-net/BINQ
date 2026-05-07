@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import BinqLogo from "@/components/BinqLogo";
 import {
   ArrowRight,
   CheckCircle2,
@@ -94,10 +95,7 @@ export default function HomePage() {
       <header className="sticky top-0 z-50 border-b border-black/10 bg-white/95 backdrop-blur-xl">
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:h-[72px] lg:px-8">
           <Link href="/" className="flex items-center gap-2.5">
-            <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#14852f] text-white">
-              <ShoppingBasket className="h-5 w-5" />
-            </span>
-            <span className="text-2xl font-black tracking-[-0.05em] text-[#14852f]">Binq</span>
+            <BinqLogo size="md" />
           </Link>
 
           <nav className="hidden items-center gap-7 text-sm font-bold text-neutral-700 lg:flex">
@@ -348,10 +346,7 @@ export default function HomePage() {
         <div className="mx-auto grid max-w-7xl gap-8 sm:grid-cols-2 lg:grid-cols-4">
           <div>
             <div className="flex items-center gap-2.5">
-              <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#14852f] text-white">
-                <ShoppingBasket className="h-5 w-5" />
-              </span>
-              <span className="text-2xl font-black tracking-[-0.05em] text-[#14852f]">Binq</span>
+              <BinqLogo size="md" />
             </div>
             <p className="mt-3 text-sm font-semibold leading-6 text-neutral-500">Marketplace locale pour commander, vendre et livrer.</p>
           </div>

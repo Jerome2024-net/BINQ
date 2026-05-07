@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/contexts/ToastContext";
+import BinqLogo from "@/components/BinqLogo";
 import { hapticSuccess, hapticError } from "@/lib/haptics";
 import Link from "next/link";
 import {
@@ -270,9 +271,10 @@ export default function PayPage() {
       <div className="min-h-screen bg-white flex items-center justify-center px-4 py-10">
         <div className="max-w-md w-full">
           <div className="text-center mb-8">
-            <h2 className="text-2xl font-black text-gray-900 tracking-tight">
-              <span className="text-black">Binq</span> Pay
-            </h2>
+            <div className="inline-flex items-center justify-center gap-2">
+              <BinqLogo size="sm" />
+              <span className="text-lg font-black text-gray-900 tracking-tight">Pay</span>
+            </div>
           </div>
 
           <div className="bg-gray-50/80 rounded-3xl p-8 border border-gray-200/50 backdrop-blur-xl text-center">
@@ -303,9 +305,10 @@ export default function PayPage() {
 
         {/* Header */}
         <div className="text-center mb-6">
-          <h2 className="text-2xl font-black text-gray-900 tracking-tight">
-            <span className="text-black">Binq</span> Billetterie
-          </h2>
+          <div className="inline-flex items-center justify-center gap-2">
+            <BinqLogo size="sm" />
+            <span className="text-lg font-black text-gray-900 tracking-tight">Billetterie</span>
+          </div>
           <div className="flex items-center justify-center gap-1.5 mt-1">
             <Shield className="w-3.5 h-3.5 text-gray-400" />
             <p className="text-gray-500 text-xs font-medium">Paiement sécurisé</p>

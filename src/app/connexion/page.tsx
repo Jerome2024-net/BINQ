@@ -5,8 +5,9 @@ import { useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/contexts/ToastContext";
+import BinqLogo from "@/components/BinqLogo";
 import { hapticSuccess } from "@/lib/haptics";
-import { ArrowRight, Eye, EyeOff, Loader2, QrCode, Store, Truck } from "lucide-react";
+import { ArrowRight, Eye, EyeOff, Loader2, Store, Truck } from "lucide-react";
 
 function ConnexionForm() {
   const router = useRouter();
@@ -50,10 +51,7 @@ function ConnexionForm() {
 
       {/* Logo */}
       <Link href="/" className="relative z-10 flex items-center gap-2.5 mb-10">
-        <div className="w-9 h-9 bg-gradient-to-br from-emerald-500 via-green-500 to-yellow-400 rounded-xl flex items-center justify-center shadow-sm shadow-emerald-500/25">
-          <QrCode className="w-4 h-4 text-white" />
-        </div>
-        <span className="font-bold text-xl tracking-tight text-slate-950">Binq</span>
+        <BinqLogo size="lg" />
       </Link>
 
       {/* Card */}
