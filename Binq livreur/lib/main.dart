@@ -140,11 +140,13 @@ class _LivreurOnboardingPageState extends State<LivreurOnboardingPage> {
       case 2:
         return _firstNameController.text.trim().isNotEmpty &&
             _lastNameController.text.trim().isNotEmpty &&
-            _cityController.text.trim().isNotEmpty;
+            _cityController.text.trim().isNotEmpty &&
+            profilePhotoAdded;
       case 3:
-        return _vehicleBrandController.text.trim().isNotEmpty;
+        return _vehicleBrandController.text.trim().isNotEmpty &&
+            _plateController.text.trim().isNotEmpty;
       case 4:
-        return idPhotoAdded;
+        return idPhotoAdded && vehiclePhotoAdded;
       case 5:
         return _withdrawPhoneController.text.trim().length >= 8;
       case 6:
@@ -408,7 +410,7 @@ class _LivreurOnboardingPageState extends State<LivreurOnboardingPage> {
                         title: 'Photo profil',
                         text: profilePhotoAdded
                             ? 'Photo ajoutée'
-                            : 'Optionnel mais recommandé',
+                            : 'Obligatoire',
                         icon: CupertinoIcons.person_crop_circle_fill,
                         done: profilePhotoAdded,
                         onTap: () => setState(() => profilePhotoAdded = true),
@@ -419,7 +421,7 @@ class _LivreurOnboardingPageState extends State<LivreurOnboardingPage> {
                     eyebrow: '5 min',
                     title: 'Votre véhicule',
                     text:
-                        'Choisissez votre moyen de livraison. La plaque peut être ajoutée plus tard.',
+                        'Choisissez votre moyen de livraison et renseignez votre plaque d\'immatriculation.',
                     children: [
                       const _SectionLabel('Véhicule'),
                       _ChoiceWrap(
@@ -432,16 +434,16 @@ class _LivreurOnboardingPageState extends State<LivreurOnboardingPage> {
                         controller: _vehicleBrandController,
                       ),
                       _InputField(
-                        label: 'Plaque — optionnel au début',
+                        label: 'Numéro de plaque',
                         controller: _plateController,
                       ),
                     ],
                   ),
                   _OnboardingStep(
-                    eyebrow: 'Documents MVP',
-                    title: 'Un minimum de documents',
+                    eyebrow: 'Documents',
+                    title: 'Vos documents',
                     text:
-                        'Pour éviter l’abandon, Binq demande seulement l’essentiel au départ.',
+                        'Ajoutez votre pièce d\'identité et une photo de votre véhicule pour continuer.',
                     children: [
                       _PhotoUploadCard(
                         title: 'Pièce d’identité',
@@ -454,7 +456,7 @@ class _LivreurOnboardingPageState extends State<LivreurOnboardingPage> {
                         title: 'Photo du véhicule',
                         text: vehiclePhotoAdded
                             ? 'Photo ajoutée'
-                            : 'Optionnel pour le MVP',
+                            : 'Obligatoire',
                         icon: CupertinoIcons.camera_fill,
                         done: vehiclePhotoAdded,
                         onTap: () => setState(() => vehiclePhotoAdded = true),
