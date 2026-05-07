@@ -4,7 +4,6 @@ import Link from "next/link";
 import { useState } from "react";
 import {
   ArrowRight,
-  BriefcaseBusiness,
   CheckCircle2,
   ChevronDown,
   Clock3,
@@ -14,30 +13,32 @@ import {
   Search,
   ShieldCheck,
   ShoppingBasket,
-  Star,
   Store,
   Truck,
   X,
 } from "lucide-react";
 
-const savingStores = [
-  { name: "Marché Central", time: "25 min", initials: "MC", color: "bg-[#f2fbef] text-[#14852f]" },
-  { name: "Superette Express", time: "30 min", initials: "SE", color: "bg-[#fff4d8] text-[#9a6500]" },
-  { name: "Pharma Plus", time: "20 min", initials: "PP", color: "bg-[#eaf3ff] text-[#1b5d9b]" },
-  { name: "Chez Awa", time: "35 min", initials: "CA", color: "bg-[#ffece4] text-[#9b3f19]" },
-  { name: "Boulangerie K", time: "18 min", initials: "BK", color: "bg-[#fff0bd] text-[#8a6500]" },
-  { name: "Bio Local", time: "40 min", initials: "BL", color: "bg-[#e8f7ef] text-[#177245]" },
-];
-
-const allStores = [
-  { name: "Marché Central", type: "Courses", delivery: "Livraison en 25 min", pickup: "Retrait disponible", rating: "4.9", initials: "MC", color: "bg-green-50 text-green-700" },
-  { name: "Superette Express", type: "Épicerie", delivery: "Livraison en 30 min", pickup: "Ouvert maintenant", rating: "4.8", initials: "SE", color: "bg-amber-50 text-amber-700" },
-  { name: "Pharma Plus", type: "Pharmacie", delivery: "Livraison en 20 min", pickup: "Conseil disponible", rating: "4.7", initials: "PP", color: "bg-sky-50 text-sky-700" },
-  { name: "Chez Awa", type: "Restaurant", delivery: "Livraison en 35 min", pickup: "Repas chauds", rating: "4.8", initials: "CA", color: "bg-orange-50 text-orange-700" },
-  { name: "Boulangerie K", type: "Boulangerie", delivery: "Livraison en 18 min", pickup: "Pain du jour", rating: "4.6", initials: "BK", color: "bg-yellow-50 text-yellow-700" },
-  { name: "Bio Local", type: "Produits frais", delivery: "Livraison en 40 min", pickup: "Fruits & légumes", rating: "4.9", initials: "BL", color: "bg-emerald-50 text-emerald-700" },
-  { name: "Beauty Shop", type: "Beauté", delivery: "Livraison en 45 min", pickup: "Articles disponibles", rating: "4.5", initials: "BS", color: "bg-pink-50 text-pink-700" },
-  { name: "Maison Service", type: "Essentiels", delivery: "Livraison en 50 min", pickup: "Produits maison", rating: "4.6", initials: "MS", color: "bg-violet-50 text-violet-700" },
+const commerceTypes = [
+  {
+    title: "Courses du quotidien",
+    text: "Produits frais, épicerie, boissons et essentiels.",
+    image: "https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=1000&q=85",
+  },
+  {
+    title: "Repas et restaurants",
+    text: "Plats préparés, snacks, boissons et menus locaux.",
+    image: "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=1000&q=85",
+  },
+  {
+    title: "Pharmacies et santé",
+    text: "Produits de santé, bien-être et articles essentiels.",
+    image: "https://images.unsplash.com/photo-1587854692152-cbe660dbde88?auto=format&fit=crop&w=1000&q=85",
+  },
+  {
+    title: "Boutiques locales",
+    text: "Mode, beauté, maison et produits de proximité.",
+    image: "https://images.unsplash.com/photo-1526367790999-0150786686a2?auto=format&fit=crop&w=1000&q=85",
+  },
 ];
 
 const departments = [
@@ -100,7 +101,7 @@ export default function HomePage() {
           </Link>
 
           <nav className="hidden items-center gap-7 text-sm font-bold text-neutral-700 lg:flex">
-            <a href="#stores-save" className="hover:text-[#14852f]">Commerces</a>
+            <a href="#commerces" className="hover:text-[#14852f]">Commerces</a>
             <a href="#departments" className="hover:text-[#14852f]">Rayons</a>
             <a href="#how" className="hover:text-[#14852f]">Livraison</a>
             <a href="#partners" className="hover:text-[#14852f]">Partenaires</a>
@@ -128,7 +129,7 @@ export default function HomePage() {
           <div className="border-t border-black/10 bg-white px-4 py-3 lg:hidden">
             <div className="grid gap-1">
               {[
-                ["Commerces", "#stores-save"],
+                ["Commerces", "#commerces"],
                 ["Rayons", "#departments"],
                 ["Livraison", "#how"],
                 ["Partenaires", "#partners"],
@@ -179,70 +180,92 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section id="stores-save" className="px-4 py-10 sm:px-6 sm:py-14 lg:px-8">
+      <section id="commerces" className="px-4 py-10 sm:px-6 sm:py-14 lg:px-8">
         <div className="mx-auto max-w-7xl">
-          <div className="mb-5 flex items-end justify-between gap-4 sm:mb-6">
+          <div className="mb-6 flex flex-col gap-3 sm:mb-8 sm:flex-row sm:items-end sm:justify-between">
             <div>
-              <h2 className="text-2xl font-black tracking-[-0.04em] sm:text-3xl">Commerces pour économiser</h2>
-              <p className="mt-1 text-sm font-semibold text-neutral-500">Délais estimés selon votre zone.</p>
+              <h2 className="text-2xl font-black tracking-[-0.04em] sm:text-3xl">Commandez dans les commerces de proximité</h2>
+              <p className="mt-1 max-w-2xl text-sm font-semibold text-neutral-500">La page doit présenter des types de commerces avec des images réelles, sans afficher de partenaires tant qu’ils ne sont pas signés.</p>
             </div>
-            <Link href="/explorer" className="hidden text-sm font-black text-[#14852f] sm:inline-flex">Voir tout</Link>
+            <Link href="/explorer" className="inline-flex text-sm font-black text-[#14852f]">Explorer</Link>
           </div>
 
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
-            {savingStores.map((store) => (
-              <Link key={store.name} href="/explorer" className="rounded-2xl border border-black/10 bg-white p-4 text-center shadow-sm transition hover:-translate-y-0.5 hover:shadow-lg">
-                <div className={`mx-auto flex h-16 w-16 items-center justify-center rounded-2xl text-xl font-black ${store.color}`}>
-                  {store.initials}
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {commerceTypes.map((commerce) => (
+              <Link key={commerce.title} href="/explorer" className="group overflow-hidden rounded-3xl border border-black/10 bg-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-xl">
+                <img src={commerce.image} alt={commerce.title} className="aspect-[4/3] w-full object-cover transition duration-500 group-hover:scale-105" />
+                <div className="p-5">
+                  <h3 className="text-lg font-black tracking-tight">{commerce.title}</h3>
+                  <p className="mt-2 text-sm font-semibold leading-6 text-neutral-500">{commerce.text}</p>
                 </div>
-                <h3 className="mt-3 line-clamp-2 min-h-[40px] text-sm font-black leading-5">{store.name}</h3>
-                <p className="mt-1 text-xs font-bold text-neutral-500">{store.time}</p>
               </Link>
             ))}
           </div>
         </div>
       </section>
 
-      <section id="all-stores" className="border-y border-black/10 bg-[#fbfaf5] px-4 py-10 sm:px-6 sm:py-14 lg:px-8">
-        <div className="mx-auto max-w-7xl">
-          <div className="mb-6 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
-            <div>
-              <h2 className="text-2xl font-black tracking-[-0.04em] sm:text-3xl">Tous les commerces près de vous</h2>
-              <p className="mt-1 text-sm font-semibold text-neutral-500">Courses, repas, pharmacie, beauté et essentiels.</p>
-            </div>
-            <div className="flex gap-2 overflow-x-auto pb-1">
-              {['Tous', 'Courses', 'Restaurants', 'Pharmacie', 'Boutiques'].map((filter) => (
-                <button key={filter} className="shrink-0 rounded-full border border-black/10 bg-white px-4 py-2 text-sm font-black text-neutral-700 shadow-sm first:bg-[#14852f] first:text-white">
-                  {filter}
-                </button>
+      <section className="border-y border-black/10 bg-[#fbfaf5] px-4 py-10 sm:px-6 sm:py-14 lg:px-8">
+        <div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[0.95fr_1.05fr] lg:items-center">
+          <div>
+            <h2 className="text-2xl font-black tracking-[-0.04em] sm:text-4xl">Une expérience visuelle centrée sur les usages</h2>
+            <p className="mt-3 text-base font-semibold leading-7 text-neutral-600">
+              Avant d’afficher de vrais commerçants, Binq met en avant les parcours : choisir des produits, confirmer l’adresse, payer et suivre la livraison.
+            </p>
+            <div className="mt-6 grid gap-3 sm:grid-cols-3 lg:grid-cols-1">
+              {[
+                { icon: ShoppingBasket, title: "Panier clair", text: "Articles, total et frais visibles avant paiement." },
+                { icon: MapPin, title: "Adresse précise", text: "Localisation GPS nécessaire pour le livreur." },
+                { icon: Truck, title: "Suivi livraison", text: "Statut de commande simple pour le client." },
+              ].map((item) => (
+                <div key={item.title} className="flex gap-3 rounded-2xl bg-white p-4 shadow-sm ring-1 ring-black/10">
+                  <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#f2fbef] text-[#14852f]">
+                    <item.icon className="h-5 w-5" />
+                  </div>
+                  <div>
+                    <h3 className="font-black">{item.title}</h3>
+                    <p className="mt-1 text-sm font-semibold leading-5 text-neutral-500">{item.text}</p>
+                  </div>
+                </div>
               ))}
             </div>
           </div>
 
-          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-            {allStores.map((store) => (
-              <Link key={store.name} href="/explorer" className="rounded-2xl border border-black/10 bg-white p-4 shadow-sm transition hover:-translate-y-0.5 hover:shadow-lg">
-                <div className="flex gap-3">
-                  <div className={`flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl text-lg font-black ${store.color}`}>
-                    {store.initials}
-                  </div>
-                  <div className="min-w-0 flex-1">
-                    <div className="flex items-start justify-between gap-2">
-                      <h3 className="truncate font-black">{store.name}</h3>
-                      <span className="inline-flex items-center gap-1 text-xs font-black text-neutral-600"><Star className="h-3.5 w-3.5 fill-yellow-400 text-yellow-400" /> {store.rating}</span>
-                    </div>
-                    <p className="mt-1 text-sm font-semibold text-neutral-500">{store.type}</p>
-                    <p className="mt-2 text-sm font-black text-[#14852f]">{store.delivery}</p>
-                    <p className="mt-1 text-xs font-semibold text-neutral-400">{store.pickup}</p>
-                  </div>
-                </div>
+          <div className="grid gap-4 sm:grid-cols-2">
+            <div className="overflow-hidden rounded-3xl bg-white shadow-sm ring-1 ring-black/10">
+              <img src="https://images.unsplash.com/photo-1606787366850-de6330128bfc?auto=format&fit=crop&w=900&q=85" alt="Panier de produits frais" className="aspect-[4/5] w-full object-cover" />
+            </div>
+            <div className="grid gap-4">
+              <div className="overflow-hidden rounded-3xl bg-white shadow-sm ring-1 ring-black/10">
+                <img src="https://images.unsplash.com/photo-1550989460-0adf9ea622e2?auto=format&fit=crop&w=900&q=85" alt="Livraison locale" className="aspect-[4/3] w-full object-cover" />
+              </div>
+              <div className="overflow-hidden rounded-3xl bg-white shadow-sm ring-1 ring-black/10">
+                <img src="https://images.unsplash.com/photo-1578916171728-46686eac8d58?auto=format&fit=crop&w=900&q=85" alt="Rayons de commerce local" className="aspect-[4/3] w-full object-cover" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="departments" className="px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
+        <div className="mx-auto max-w-7xl">
+          <div className="mb-5 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+              <h2 className="text-2xl font-black tracking-[-0.04em] sm:text-3xl">Rayons populaires</h2>
+              <p className="mt-1 text-sm font-semibold text-neutral-500">Des rayons génériques, sans faux noms de partenaires.</p>
+            </div>
+            <Link href="/explorer" className="text-sm font-black text-[#14852f]">Voir tout</Link>
+          </div>
+          <div className="mt-5 grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-6">
+            {departments.map((department) => (
+              <Link key={department} href="/explorer" className="rounded-xl border border-black/10 bg-white px-4 py-3 text-sm font-bold shadow-sm transition hover:border-[#14852f] hover:text-[#14852f]">
+                {department}
               </Link>
             ))}
           </div>
         </div>
       </section>
 
-      <section id="how" className="px-4 py-12 sm:px-6 sm:py-16 lg:px-8 lg:py-20">
+      <section id="how" className="border-y border-black/10 bg-[#fbfaf5] px-4 py-12 sm:px-6 sm:py-16 lg:px-8 lg:py-20">
         <div className="mx-auto max-w-6xl text-center">
           <h2 className="text-3xl font-black tracking-[-0.05em] sm:text-5xl">Livraison locale fiable</h2>
           <p className="mx-auto mt-3 max-w-2xl text-base font-semibold leading-7 text-neutral-600">
@@ -262,44 +285,12 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="bg-[#f7f5ed] px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
-        <div className="mx-auto max-w-6xl">
-          <h2 className="text-center text-3xl font-black tracking-[-0.05em] sm:text-5xl">Une marketplace locale pour grandir</h2>
-          <div className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-4">
-            {[
-              ['1 000+', 'produits'],
-              ['120+', 'commerces'],
-              ['3', 'applications'],
-              ['10%', 'commission Binq'],
-            ].map(([value, label]) => (
-              <div key={label} className="rounded-2xl bg-white p-5 text-center shadow-sm ring-1 ring-black/10">
-                <p className="text-2xl font-black text-[#14852f] sm:text-3xl">{value}</p>
-                <p className="mt-1 text-xs font-black uppercase tracking-wide text-neutral-500">{label}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section id="departments" className="px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
-        <div className="mx-auto max-w-7xl">
-          <h2 className="text-2xl font-black tracking-[-0.04em] sm:text-3xl">Rayons populaires</h2>
-          <div className="mt-5 grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-6">
-            {departments.map((department) => (
-              <Link key={department} href="/explorer" className="rounded-xl border border-black/10 bg-white px-4 py-3 text-sm font-bold shadow-sm transition hover:border-[#14852f] hover:text-[#14852f]">
-                {department}
-              </Link>
-            ))}
-          </div>
-        </div>
-      </section>
-
       <section id="partners" className="border-y border-black/10 bg-[#111811] px-4 py-12 text-white sm:px-6 sm:py-16 lg:px-8">
         <div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
           <div>
             <h2 className="text-3xl font-black tracking-[-0.05em] sm:text-5xl">Gagnez avec Binq</h2>
             <p className="mt-4 max-w-xl text-base font-semibold leading-7 text-white/65">
-              Les commerçants vendent en ligne. Les livreurs suivent les adresses clients. Binq automatise les commandes, wallets et commissions.
+              Les commerçants vendent en ligne. Les livreurs suivent les adresses clients. Binq organise les commandes, les paiements et la livraison.
             </p>
             <div className="mt-6 flex flex-col gap-3 sm:flex-row">
               <Link href="/inscription" className="inline-flex items-center justify-center gap-2 rounded-xl bg-white px-5 py-3 text-sm font-black text-[#111811]">
@@ -314,7 +305,7 @@ export default function HomePage() {
             {[
               { icon: Store, label: 'Boutiques' },
               { icon: Truck, label: 'Livreurs' },
-              { icon: BriefcaseBusiness, label: 'Wallets' },
+              { icon: ShieldCheck, label: 'Paiements' },
             ].map((item) => (
               <div key={item.label} className="rounded-2xl border border-white/10 bg-white/[0.06] p-5">
                 <item.icon className="h-6 w-6 text-green-300" />
