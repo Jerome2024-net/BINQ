@@ -1,6 +1,4 @@
-import Image from "next/image";
-
-const BINQ_LOGO_URL = "https://res.cloudinary.com/dn8ed1doa/image/upload/82D516A1-AEEB-4D11-B7F0-C0DB72341613_gz12tn";
+import { ShoppingBasket } from "lucide-react";
 
 type BinqLogoProps = {
   className?: string;
@@ -9,20 +7,39 @@ type BinqLogoProps = {
 };
 
 const sizeClasses = {
-  sm: "h-8",
-  md: "h-10",
-  lg: "h-12",
-  xl: "h-16",
+  sm: {
+    mark: "h-8 w-8 rounded-xl",
+    icon: "h-4 w-4",
+    text: "text-xl",
+  },
+  md: {
+    mark: "h-9 w-9 rounded-xl",
+    icon: "h-5 w-5",
+    text: "text-2xl",
+  },
+  lg: {
+    mark: "h-10 w-10 rounded-2xl",
+    icon: "h-5 w-5",
+    text: "text-2xl",
+  },
+  xl: {
+    mark: "h-12 w-12 rounded-2xl",
+    icon: "h-6 w-6",
+    text: "text-3xl",
+  },
 };
 
 export default function BinqLogo({ className = "", size = "md", inverted = false }: BinqLogoProps) {
+  const classes = sizeClasses[size];
+
   return (
-    <Image
-      src={BINQ_LOGO_URL}
-      alt="Binq"
-      width={160}
-      height={64}
-      className={`${sizeClasses[size]} w-auto object-contain ${inverted ? "brightness-0 invert" : ""} ${className}`.trim()}
-    />
+    <span className={`inline-flex items-center gap-2.5 ${className}`.trim()} aria-label="Binq">
+      <span className={`flex shrink-0 items-center justify-center bg-[#14852f] text-white shadow-sm shadow-emerald-600/25 ${classes.mark}`}>
+        <ShoppingBasket className={classes.icon} aria-hidden="true" />
+      </span>
+      <span className={`font-black leading-none tracking-[-0.05em] ${inverted ? "text-[#14852f]" : "text-[#14852f]"} ${classes.text}`}>
+        Binq
+      </span>
+    </span>
   );
 }

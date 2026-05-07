@@ -14,13 +14,21 @@ export function getResend(): Resend {
 
 export const FROM_EMAIL = "Binq <noreply@binq.io>";
 
-// Logo HTML inline compatible tous clients mail — étoile bleue premium + logo
+// Logo HTML inline compatible tous clients mail — panier vert Binq
 const LOGO_HTML = `
   <table cellpadding="0" cellspacing="0" border="0" style="margin: 0 auto;">
     <tr>
       <td style="vertical-align: middle; text-align: center;">
-        <span style="font-size: 38px; line-height: 1; display: block; margin-bottom: 10px; color: #4f8fff;">&#9733;</span>
-        <img src="https://res.cloudinary.com/dn8ed1doa/image/upload/82D516A1-AEEB-4D11-B7F0-C0DB72341613_gz12tn" alt="Binq" width="140" style="height: auto; display: block; margin: 0 auto;" />
+        <table cellpadding="0" cellspacing="0" border="0" style="margin: 0 auto;">
+          <tr>
+            <td width="42" height="42" align="center" valign="middle" style="background: #14852f; border-radius: 14px; color: #ffffff; font-size: 22px; line-height: 42px; font-family: Arial, sans-serif; font-weight: 700;">
+              &#128722;
+            </td>
+            <td style="padding-left: 10px; font-family: 'Segoe UI', Arial, sans-serif; font-size: 30px; line-height: 1; font-weight: 900; letter-spacing: -1px; color: #14852f;">
+              Binq
+            </td>
+          </tr>
+        </table>
       </td>
     </tr>
   </table>
