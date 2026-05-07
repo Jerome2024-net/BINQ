@@ -111,12 +111,31 @@ export default function MapboxAddressPicker({
     setError("");
     try {
       const coords = await getBrowserPosition();
-      const res = await fetch(`/api/mapbox/reverse?latitude=${coords.latitude}&longitude=${coords.longitude}`);
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Adresse introuvable");
-      selectPlace(data.place);
-    } catch {
-      setError("Position non détectée. Entrez simplement votre adresse pour continuer.");
+
+      let place: MapboxPlace = {
+        id: `gps-${coords.latitude}-${coords.longitude}`,
+        name: "Position actuelle",
+        address: value.trim() || "Position GPS actuelle confirmée",
+        latitude: coords.latitude,
+        longitude: coords.longitude,
+        place_type: ["gps"],
+      };
+
+      try {
+        const res = await fetch(`/api/mapbox/reverse?latitude=${coords.latitude}&longitude=${coords.longitude}`);
+        const data = await res.json();
+        if (res.ok && data.place) place = data.place;
+      } catch {
+        // Les coordonnées GPS sont déjà disponibles : la commande peut continuer même si l'adresse Mapbox n'est pas retrouvée.
+      }
+
+      selectPlace(place);
+    } catch (err) {
+      const code = typeof err === "object" && err !== null && "code" in err ? Number(err.code) : null;
+      const message = code === 1
+        ? "Autorisez la localisation dans votre navigateur puis réessayez. La position GPS est obligatoire pour la livraison."
+        : "Position GPS non détectée. Activez la localisation puis réessayez.";
+      setError(message);
     } finally {
       setLocating(false);
     }
