@@ -200,11 +200,6 @@ export default function BoutiquePage() {
       return;
     }
 
-    if (!lieuLivraison || !Number.isFinite(lieuLivraison.latitude) || !Number.isFinite(lieuLivraison.longitude)) {
-      setCheckoutError("Sélectionnez une adresse Mapbox ou utilisez votre position actuelle pour confirmer la position GPS du client.");
-      return;
-    }
-
     setCheckingOut(true);
     try {
       const res = await fetch("/api/commandes", {
@@ -705,7 +700,7 @@ export default function BoutiquePage() {
                             className="mt-1"
                           />
                           <p className="mt-2 text-[11px] font-semibold text-blue-700">
-                            Position GPS obligatoire pour permettre au livreur de suivre le client.
+                            Indiquez une adresse claire. La position actuelle peut aider le livreur, mais elle n&apos;est pas obligatoire.
                           </p>
                         </div>
                         <div>

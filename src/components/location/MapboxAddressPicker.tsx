@@ -115,8 +115,8 @@ export default function MapboxAddressPicker({
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Adresse introuvable");
       selectPlace(data.place);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Impossible de récupérer votre position.");
+    } catch {
+      setError("Position non détectée. Entrez simplement votre adresse pour continuer.");
     } finally {
       setLocating(false);
     }

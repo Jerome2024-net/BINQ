@@ -164,10 +164,6 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Adresse de livraison requise" }, { status: 400 });
     }
 
-    if (deliveryLatitude === null || deliveryLongitude === null) {
-      return NextResponse.json({ error: "Position GPS client requise. Sélectionnez une adresse Mapbox ou utilisez votre position actuelle." }, { status: 400 });
-    }
-
     const uniqueItems = new Map<string, number>();
     for (const item of items) {
       const produitId = normalizeText(item.produit_id);
