@@ -4,282 +4,392 @@ import Link from "next/link";
 import { useState } from "react";
 import {
   ArrowRight,
-  Search,
-  Zap,
-  ShieldCheck,
-  ShoppingBag,
-  Truck,
-  Store,
-  Package,
+  BadgeCheck,
+  ChevronRight,
   Clock,
-  Menu,
-  X,
-  QrCode,
-  Utensils,
   MapPin,
+  Menu,
+  PackageCheck,
+  Plus,
+  Search,
+  ShieldCheck,
+  ShoppingBasket,
   Sparkles,
-  Leaf,
+  Star,
+  Store,
+  Truck,
+  X,
 } from "lucide-react";
+
+const categories = [
+  { label: "Courses", emoji: "🥑", color: "bg-emerald-50" },
+  { label: "Restaurants", emoji: "🍔", color: "bg-orange-50" },
+  { label: "Pharmacie", emoji: "💊", color: "bg-sky-50" },
+  { label: "Boulangerie", emoji: "🥖", color: "bg-amber-50" },
+  { label: "Beauté", emoji: "✨", color: "bg-pink-50" },
+  { label: "Boutiques", emoji: "🛍️", color: "bg-violet-50" },
+];
+
+const stores = [
+  {
+    name: "Marché Frais",
+    type: "Supermarché",
+    time: "25-35 min",
+    rating: "4.9",
+    image: "https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=900&q=80",
+  },
+  {
+    name: "Chez Awa",
+    type: "Restaurant africain",
+    time: "20-30 min",
+    rating: "4.8",
+    image: "https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=900&q=80",
+  },
+  {
+    name: "Pharma Express",
+    type: "Pharmacie",
+    time: "15-25 min",
+    rating: "4.7",
+    image: "https://images.unsplash.com/photo-1587854692152-cbe660dbde88?auto=format&fit=crop&w=900&q=80",
+  },
+];
+
+const products = [
+  { name: "Avocats frais", price: "1 500 FCFA", image: "🥑" },
+  { name: "Pain du jour", price: "500 FCFA", image: "🥖" },
+  { name: "Pack eau", price: "2 000 FCFA", image: "💧" },
+  { name: "Poulet braisé", price: "4 500 FCFA", image: "🍗" },
+];
 
 export default function HomePage() {
   const [mobileOpen, setMobileOpen] = useState(false);
-  return (
-    <div className="min-h-screen bg-[#f7f9fe] font-sans antialiased text-slate-950 overflow-x-hidden">
 
-      {/* ═══════ HEADER ═══════ */}
-      <header className="fixed top-0 inset-x-0 z-[60] bg-white/75 backdrop-blur-2xl border-b border-white/70 shadow-sm shadow-slate-200/40">
-        <div className="max-w-6xl mx-auto px-5 sm:px-8 h-16 flex items-center justify-between">
+  return (
+    <main className="min-h-screen overflow-x-hidden bg-[#f7f7f2] text-[#172017]">
+      <header className="sticky top-0 z-50 border-b border-black/5 bg-white/90 backdrop-blur-xl">
+        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
           <Link href="/" className="flex items-center gap-2">
-            <div className="w-7 h-7 bg-gradient-to-br from-emerald-500 via-green-500 to-yellow-400 rounded-xl flex items-center justify-center shadow-lg shadow-emerald-500/25">
-              <QrCode className="w-3.5 h-3.5 text-white" />
+            <div className="flex h-9 w-9 items-center justify-center rounded-full bg-[#0aad0a] text-white shadow-lg shadow-green-700/20">
+              <ShoppingBasket className="h-5 w-5" />
             </div>
-            <span className="font-bold text-[15px] tracking-tight text-slate-950">Binq</span>
+            <span className="text-xl font-black tracking-tight">Binq</span>
           </Link>
 
-          <div className="flex items-center gap-5">
-            <Link href="/explorer" className="text-[13px] text-slate-500 hover:text-slate-950 transition-colors font-medium">
-              Commander
-            </Link>
-            <Link href="/connexion" className="text-[13px] text-slate-500 hover:text-slate-950 transition-colors font-medium hidden sm:inline">
+          <nav className="hidden items-center gap-7 text-sm font-bold text-neutral-700 md:flex">
+            <a href="#courses" className="hover:text-[#0aad0a]">Courses</a>
+            <a href="#commerces" className="hover:text-[#0aad0a]">Commerces</a>
+            <a href="#livraison" className="hover:text-[#0aad0a]">Livraison</a>
+            <a href="#partenaires" className="hover:text-[#0aad0a]">Partenaires</a>
+          </nav>
+
+          <div className="hidden items-center gap-3 md:flex">
+            <Link href="/connexion" className="rounded-full px-4 py-2 text-sm font-bold text-neutral-800 hover:bg-neutral-100">
               Connexion
             </Link>
-            <Link href="/inscription" className="hidden md:inline-flex text-[13px] px-4 py-2 bg-emerald-600 text-white rounded-full font-semibold hover:bg-emerald-700 transition-colors shadow-lg shadow-emerald-600/20">
-              Devenir partenaire
+            <Link href="/inscription" className="rounded-full bg-[#0aad0a] px-5 py-2.5 text-sm font-black text-white shadow-lg shadow-green-700/20 hover:bg-[#079707]">
+              Créer un compte
             </Link>
-            <button
-              onClick={() => setMobileOpen(!mobileOpen)}
-              className="md:hidden p-2 rounded-lg text-slate-700 hover:bg-slate-100 transition-colors"
-            >
-              {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-            </button>
           </div>
+
+          <button
+            aria-label="Menu mobile"
+            onClick={() => setMobileOpen(!mobileOpen)}
+            className="rounded-full p-2 text-neutral-800 hover:bg-neutral-100 md:hidden"
+          >
+            {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+          </button>
         </div>
 
         {mobileOpen && (
-          <div className="md:hidden bg-white/95 backdrop-blur-xl border border-white pb-4 pt-3 px-4 mx-3 mt-1 rounded-2xl shadow-xl shadow-slate-900/10">
-            <div className="flex flex-col gap-1">
-              <Link href="/explorer" onClick={() => setMobileOpen(false)} className="px-3 py-2.5 rounded-xl text-slate-600 hover:bg-slate-50 text-sm">Commander</Link>
-              <Link href="/connexion" onClick={() => setMobileOpen(false)} className="px-3 py-2.5 rounded-xl text-slate-600 hover:bg-slate-50 text-sm">Connexion</Link>
-              <Link href="/inscription" onClick={() => setMobileOpen(false)} className="px-3 py-2.5 rounded-xl bg-emerald-600 text-white text-sm text-center font-semibold">Devenir partenaire</Link>
+          <div className="mx-4 mb-4 rounded-3xl border border-black/5 bg-white p-3 shadow-2xl md:hidden">
+            {[
+              { href: "#courses", label: "Courses" },
+              { href: "#commerces", label: "Commerces" },
+              { href: "#livraison", label: "Livraison" },
+              { href: "#partenaires", label: "Partenaires" },
+            ].map((item) => (
+              <a key={item.href} href={item.href} onClick={() => setMobileOpen(false)} className="block rounded-2xl px-4 py-3 text-sm font-bold text-neutral-700 hover:bg-neutral-50">
+                {item.label}
+              </a>
+            ))}
+            <div className="mt-2 grid grid-cols-2 gap-2">
+              <Link href="/connexion" className="rounded-2xl bg-neutral-100 px-4 py-3 text-center text-sm font-bold">Connexion</Link>
+              <Link href="/inscription" className="rounded-2xl bg-[#0aad0a] px-4 py-3 text-center text-sm font-black text-white">Compte</Link>
             </div>
           </div>
         )}
       </header>
 
-      {/* ═══════ HERO ═══════ */}
-      <section className="relative min-h-screen overflow-hidden bg-[#ffe963]">
-        <div className="absolute inset-0 -z-0 bg-[radial-gradient(circle_at_14%_18%,rgba(255,255,255,0.55),transparent_24%),radial-gradient(circle_at_82%_12%,rgba(16,185,129,0.34),transparent_26%),linear-gradient(180deg,#ffef74_0%,#fff2ad_55%,#f7f9fe_100%)]" />
-        <div className="absolute -top-24 right-[-7rem] w-[34rem] h-[34rem] bg-white/35 rounded-full blur-3xl" />
-        <div className="absolute top-56 left-[-8rem] w-96 h-96 bg-emerald-300/35 rounded-full blur-3xl" />
-
-        <div className="relative z-10 max-w-6xl mx-auto px-5 sm:px-8 pt-28 sm:pt-36 pb-16 min-h-screen flex flex-col items-center justify-center text-center">
-          <div className="max-w-4xl mx-auto">
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-white/85 border border-white rounded-full mb-6 shadow-sm">
-              <Zap className="w-3.5 h-3.5 text-emerald-600" />
-              <span className="text-[11px] font-black text-emerald-700 uppercase tracking-wider">Livraison locale · restaurants · boutiques</span>
+      <section className="relative overflow-hidden bg-[#fff36d]">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_12%_15%,rgba(255,255,255,0.7),transparent_24%),radial-gradient(circle_at_84%_12%,rgba(10,173,10,0.28),transparent_28%)]" />
+        <div className="relative mx-auto grid min-h-[760px] max-w-7xl items-center gap-10 px-4 py-16 sm:px-6 lg:grid-cols-[1.02fr_0.98fr] lg:px-8 lg:py-20">
+          <div className="pt-6 text-center lg:text-left">
+            <div className="mb-6 inline-flex items-center gap-2 rounded-full bg-white/85 px-4 py-2 text-xs font-black uppercase tracking-[0.18em] text-[#087b08] shadow-sm">
+              <Sparkles className="h-4 w-4" /> Courses et livraison locale
             </div>
-
-            <h1 className="text-[3.2rem] sm:text-7xl lg:text-8xl font-black tracking-[-0.075em] leading-[0.88] mb-6 text-slate-950">
-              Commandez.<br />
-              <span className="text-emerald-700">Recevez vite.</span>
+            <h1 className="mx-auto max-w-4xl text-[3.4rem] font-black leading-[0.88] tracking-[-0.075em] text-[#172017] sm:text-7xl lg:mx-0 lg:text-[5.6rem]">
+              Vos courses livrées le jour même.
             </h1>
-            <p className="text-base sm:text-xl text-slate-700 max-w-2xl mx-auto mb-8 leading-relaxed font-medium">
-              Restaurants, courses, pharmacies et boutiques locales : trouvez ce qu&apos;il vous faut, payez en sécurité et recevez rapidement.
+            <p className="mx-auto mt-6 max-w-2xl text-lg font-semibold leading-8 text-[#3d493d] lg:mx-0">
+              Faites vos achats chez les supermarchés, restaurants, pharmacies et boutiques proches de vous. Binq connecte clients, commerçants et livreurs en temps réel.
             </p>
 
-            <div className="bg-white rounded-[1.75rem] p-2.5 shadow-2xl shadow-emerald-950/10 border border-white max-w-2xl mx-auto">
-              <div className="flex flex-col sm:flex-row gap-2">
-                <div className="flex-1 flex items-center gap-3 px-5 py-4 bg-slate-50 rounded-2xl border border-slate-100 text-left">
-                  <MapPin className="w-5 h-5 text-emerald-600 shrink-0" />
+            <div className="mx-auto mt-8 max-w-2xl rounded-[2rem] bg-white p-2.5 shadow-2xl shadow-green-950/10 lg:mx-0">
+              <div className="flex flex-col gap-2 sm:flex-row">
+                <div className="flex flex-1 items-center gap-3 rounded-[1.45rem] bg-[#f6f7f2] px-5 py-4 text-left ring-1 ring-black/5">
+                  <MapPin className="h-5 w-5 shrink-0 text-[#0aad0a]" />
                   <input
                     aria-label="Adresse de livraison"
-                    placeholder="Entrez votre adresse de livraison"
-                    className="w-full bg-transparent outline-none text-sm sm:text-base font-semibold text-slate-950 placeholder:text-slate-400"
+                    placeholder="Entrez votre adresse"
+                    className="w-full bg-transparent text-base font-bold text-neutral-900 outline-none placeholder:text-neutral-400"
                   />
                 </div>
-                <Link href="/explorer" className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-2xl bg-emerald-600 text-white text-sm font-black hover:bg-emerald-700 transition shadow-lg shadow-emerald-600/20 active:scale-[0.98]">
-                  Voir les commerces <ArrowRight className="w-4 h-4" />
+                <Link href="/explorer" className="inline-flex items-center justify-center gap-2 rounded-[1.45rem] bg-[#0aad0a] px-7 py-4 text-sm font-black text-white transition hover:bg-[#079707] active:scale-[0.98]">
+                  Voir les commerces <ArrowRight className="h-4 w-4" />
                 </Link>
               </div>
             </div>
 
-            <div className="mt-8 grid grid-cols-2 sm:grid-cols-4 gap-3 max-w-4xl mx-auto">
-              {[
-                { icon: Utensils, label: "Restaurants", image: "https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=360&q=80" },
-                { icon: Store, label: "Courses", image: "https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=360&q=80" },
-                { icon: Leaf, label: "Pharmacie", image: "https://images.unsplash.com/photo-1587854692152-cbe660dbde88?auto=format&fit=crop&w=360&q=80" },
-                { icon: ShoppingBag, label: "Boutiques", image: "https://images.unsplash.com/photo-1526367790999-0150786686a2?auto=format&fit=crop&w=360&q=80" },
-              ].map((item, i) => (
-                <Link key={i} href="/explorer" className="group overflow-hidden bg-white/90 border border-white rounded-[1.6rem] p-2 shadow-sm hover:-translate-y-1 hover:shadow-2xl hover:shadow-emerald-950/10 transition-all">
-                  <div className="relative h-24 sm:h-28 rounded-[1.25rem] overflow-hidden bg-slate-100">
-                    <img src={item.image} alt={item.label} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                    <div className="absolute inset-0 bg-gradient-to-t from-slate-950/35 to-transparent" />
-                    <div className="absolute right-2 top-2 w-8 h-8 rounded-full bg-white/90 flex items-center justify-center">
-                      <item.icon className="w-4 h-4 text-emerald-600" />
-                    </div>
+            <div className="mt-6 flex flex-wrap justify-center gap-3 text-sm font-bold text-[#445044] lg:justify-start">
+              <span className="inline-flex items-center gap-2 rounded-full bg-white/80 px-4 py-2"><Clock className="h-4 w-4 text-[#0aad0a]" /> Dès 15 minutes</span>
+              <span className="inline-flex items-center gap-2 rounded-full bg-white/80 px-4 py-2"><ShieldCheck className="h-4 w-4 text-[#0aad0a]" /> Paiement sécurisé</span>
+              <span className="inline-flex items-center gap-2 rounded-full bg-white/80 px-4 py-2"><Truck className="h-4 w-4 text-[#0aad0a]" /> Suivi livreur</span>
+            </div>
+          </div>
+
+          <div className="relative mx-auto w-full max-w-xl lg:max-w-none">
+            <div className="absolute -left-8 top-12 hidden rounded-[2rem] bg-white p-4 shadow-2xl shadow-green-950/10 sm:block">
+              <div className="flex items-center gap-3">
+                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-50 text-2xl">🛒</div>
+                <div>
+                  <p className="text-xs font-bold text-neutral-400">Panier</p>
+                  <p className="font-black">4 articles ajoutés</p>
+                </div>
+              </div>
+            </div>
+            <div className="absolute -right-3 bottom-16 hidden rounded-[2rem] bg-white p-4 shadow-2xl shadow-green-950/10 sm:block">
+              <div className="flex items-center gap-3">
+                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-yellow-50 text-2xl">🛵</div>
+                <div>
+                  <p className="text-xs font-bold text-neutral-400">Livreur</p>
+                  <p className="font-black">Arrive dans 8 min</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="rounded-[2.5rem] bg-white p-4 shadow-[0_30px_80px_rgba(32,80,32,0.18)] ring-1 ring-black/5">
+              <div className="overflow-hidden rounded-[2rem] bg-[#f6f7f2]">
+                <div className="relative h-56 bg-[url('https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=1100&q=80')] bg-cover bg-center">
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-black/10 to-transparent" />
+                  <div className="absolute bottom-5 left-5 right-5 text-white">
+                    <p className="text-sm font-bold opacity-90">Ouvert maintenant</p>
+                    <h2 className="text-3xl font-black tracking-tight">Marché Frais</h2>
                   </div>
-                  <span className="block py-3 text-sm font-black text-slate-900 text-center">{item.label}</span>
-                </Link>
+                </div>
+                <div className="grid grid-cols-2 gap-3 p-4">
+                  {products.map((product) => (
+                    <div key={product.name} className="rounded-3xl bg-white p-4 shadow-sm ring-1 ring-black/5">
+                      <div className="mb-3 flex h-20 items-center justify-center rounded-2xl bg-[#f7f7f2] text-4xl">{product.image}</div>
+                      <p className="truncate text-sm font-black">{product.name}</p>
+                      <div className="mt-2 flex items-center justify-between gap-2">
+                        <span className="text-xs font-bold text-neutral-500">{product.price}</span>
+                        <button aria-label={`Ajouter ${product.name}`} className="flex h-8 w-8 items-center justify-center rounded-full bg-[#0aad0a] text-white">
+                          <Plus className="h-4 w-4" />
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="courses" className="bg-white py-16 sm:py-20">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="mb-8 flex flex-col justify-between gap-4 md:flex-row md:items-end">
+            <div>
+              <p className="mb-2 text-sm font-black uppercase tracking-[0.18em] text-[#0aad0a]">Tout commander</p>
+              <h2 className="text-4xl font-black tracking-[-0.05em] sm:text-5xl">Courses, repas et essentiels</h2>
+            </div>
+            <Link href="/explorer" className="inline-flex items-center gap-2 text-sm font-black text-[#0aad0a]">
+              Explorer toutes les catégories <ChevronRight className="h-4 w-4" />
+            </Link>
+          </div>
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
+            {categories.map((category) => (
+              <Link key={category.label} href="/explorer" className={`${category.color} group rounded-[2rem] p-5 ring-1 ring-black/5 transition hover:-translate-y-1 hover:shadow-xl`}>
+                <div className="mb-6 text-4xl transition group-hover:scale-110">{category.emoji}</div>
+                <p className="text-lg font-black tracking-tight">{category.label}</p>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section id="commerces" className="bg-[#f7f7f2] py-16 sm:py-24">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="mb-10 text-center">
+            <p className="mb-2 text-sm font-black uppercase tracking-[0.18em] text-[#0aad0a]">Autour de vous</p>
+            <h2 className="text-4xl font-black tracking-[-0.05em] sm:text-6xl">Des commerces locaux en quelques clics</h2>
+            <p className="mx-auto mt-4 max-w-2xl text-base font-semibold leading-7 text-neutral-600">
+              Binq met en avant les vendeurs proches, leurs produits disponibles et les délais de livraison estimés.
+            </p>
+          </div>
+          <div className="grid gap-5 md:grid-cols-3">
+            {stores.map((store) => (
+              <Link key={store.name} href="/explorer" className="group overflow-hidden rounded-[2.2rem] bg-white shadow-sm ring-1 ring-black/5 transition hover:-translate-y-1 hover:shadow-2xl hover:shadow-green-950/10">
+                <div className="relative h-52 overflow-hidden">
+                  <img src={store.image} alt={store.name} className="h-full w-full object-cover transition duration-500 group-hover:scale-105" />
+                  <div className="absolute left-4 top-4 rounded-full bg-white px-3 py-1 text-xs font-black text-[#0aad0a] shadow-sm">Ouvert</div>
+                </div>
+                <div className="p-5">
+                  <div className="mb-2 flex items-start justify-between gap-3">
+                    <div>
+                      <h3 className="text-xl font-black tracking-tight">{store.name}</h3>
+                      <p className="text-sm font-semibold text-neutral-500">{store.type}</p>
+                    </div>
+                    <span className="inline-flex items-center gap-1 rounded-full bg-[#f7f7f2] px-2.5 py-1 text-xs font-black">
+                      <Star className="h-3.5 w-3.5 fill-yellow-400 text-yellow-400" /> {store.rating}
+                    </span>
+                  </div>
+                  <div className="mt-4 flex items-center justify-between text-sm font-bold text-neutral-500">
+                    <span className="inline-flex items-center gap-1.5"><Clock className="h-4 w-4" /> {store.time}</span>
+                    <span className="inline-flex items-center gap-1.5 text-[#0aad0a]">Commander <ArrowRight className="h-4 w-4" /></span>
+                  </div>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section id="livraison" className="bg-white py-16 sm:py-24">
+        <div className="mx-auto grid max-w-7xl items-center gap-12 px-4 sm:px-6 lg:grid-cols-2 lg:px-8">
+          <div>
+            <p className="mb-2 text-sm font-black uppercase tracking-[0.18em] text-[#0aad0a]">Suivi temps réel</p>
+            <h2 className="text-4xl font-black tracking-[-0.05em] sm:text-6xl">Du rayon jusqu&apos;à votre porte</h2>
+            <p className="mt-5 max-w-xl text-base font-semibold leading-8 text-neutral-600">
+              Le client voit sa commande avancer, le commerçant reçoit une liste claire à préparer et le livreur suit l&apos;adresse GPS du client avec Mapbox.
+            </p>
+            <div className="mt-8 space-y-4">
+              {[
+                { icon: Search, title: "Le client choisit ses articles", desc: "Adresse, boutique, panier et paiement sécurisé." },
+                { icon: PackageCheck, title: "Le commerçant prépare", desc: "Commande reçue, stock vérifié et statut mis à jour." },
+                { icon: Truck, title: "Le livreur dépose", desc: "Itinéraire, position client et confirmation de livraison." },
+              ].map((step) => (
+                <div key={step.title} className="flex gap-4 rounded-[1.7rem] bg-[#f7f7f2] p-4 ring-1 ring-black/5">
+                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-[#0aad0a] text-white">
+                    <step.icon className="h-5 w-5" />
+                  </div>
+                  <div>
+                    <h3 className="font-black">{step.title}</h3>
+                    <p className="text-sm font-semibold leading-6 text-neutral-500">{step.desc}</p>
+                  </div>
+                </div>
               ))}
             </div>
-
-            <div className="mt-7 flex flex-wrap items-center justify-center gap-3 text-[12px] sm:text-[13px] text-slate-600 font-semibold">
-              <span className="inline-flex items-center gap-2 px-3 py-2 rounded-full bg-white/80 border border-white shadow-sm"><Truck className="w-4 h-4 text-emerald-500" /> Livraison rapide</span>
-              <span className="inline-flex items-center gap-2 px-3 py-2 rounded-full bg-white/80 border border-white shadow-sm"><ShieldCheck className="w-4 h-4 text-emerald-500" /> Paiement sécurisé</span>
-              <span className="inline-flex items-center gap-2 px-3 py-2 rounded-full bg-white/80 border border-white shadow-sm"><Store className="w-4 h-4 text-amber-500" /> Commerces locaux</span>
+          </div>
+          <div className="rounded-[2.5rem] bg-[#172017] p-4 text-white shadow-2xl shadow-green-950/20">
+            <div className="rounded-[2rem] bg-[#213021] p-5">
+              <div className="mb-5 flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-bold text-white/50">Commande #BQ-2048</p>
+                  <h3 className="text-2xl font-black">En livraison</h3>
+                </div>
+                <span className="rounded-full bg-[#0aad0a] px-3 py-1 text-xs font-black">Live</span>
+              </div>
+              <div className="relative h-80 overflow-hidden rounded-[1.6rem] bg-[#d9ead3]">
+                <div className="absolute inset-0 opacity-60" style={{ backgroundImage: "linear-gradient(90deg, rgba(0,0,0,.08) 1px, transparent 1px), linear-gradient(rgba(0,0,0,.08) 1px, transparent 1px)", backgroundSize: "34px 34px" }} />
+                <div className="absolute left-12 top-12 flex h-12 w-12 items-center justify-center rounded-full bg-white text-[#0aad0a] shadow-xl"><Store className="h-6 w-6" /></div>
+                <div className="absolute bottom-14 right-12 flex h-12 w-12 items-center justify-center rounded-full bg-white text-[#0aad0a] shadow-xl"><MapPin className="h-6 w-6" /></div>
+                <div className="absolute left-[44%] top-[48%] flex h-14 w-14 items-center justify-center rounded-full bg-[#0aad0a] text-white shadow-2xl"><Truck className="h-7 w-7" /></div>
+                <div className="absolute left-24 top-28 h-28 w-48 rotate-[28deg] rounded-full border-4 border-dashed border-[#0aad0a]/60" />
+              </div>
+              <div className="mt-5 grid grid-cols-3 gap-3 text-center">
+                <div className="rounded-2xl bg-white/10 p-3"><p className="text-xs text-white/50">Distance</p><p className="font-black">2.4 km</p></div>
+                <div className="rounded-2xl bg-white/10 p-3"><p className="text-xs text-white/50">Arrivée</p><p className="font-black">8 min</p></div>
+                <div className="rounded-2xl bg-white/10 p-3"><p className="text-xs text-white/50">Frais</p><p className="font-black">1 000</p></div>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* ═══════ COMMENT ÇA MARCHE — 3 steps ═══════ */}
-      <section id="fonctionnalites" className="py-20 sm:py-28">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6">
-          <div className="text-center mb-14 sm:mb-18">
-            <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white border border-white shadow-sm text-[11px] font-bold text-emerald-700 uppercase tracking-wider mb-4">Simple et immédiat</span>
-            <h2 className="text-3xl sm:text-5xl font-black tracking-[-0.04em] text-slate-950 mb-3">Commandez en 3 gestes</h2>
-            <p className="text-sm sm:text-base text-slate-500 max-w-md mx-auto">Adresse, panier, livraison. Binq va droit au but.</p>
+      <section id="partenaires" className="bg-[#0aad0a] py-16 text-white sm:py-24">
+        <div className="mx-auto grid max-w-7xl items-center gap-10 px-4 sm:px-6 lg:grid-cols-[0.9fr_1.1fr] lg:px-8">
+          <div>
+            <p className="mb-2 text-sm font-black uppercase tracking-[0.18em] text-white/70">Pour commerçants et livreurs</p>
+            <h2 className="text-4xl font-black tracking-[-0.05em] sm:text-6xl">Vendez plus. Livrez mieux.</h2>
+            <p className="mt-5 max-w-xl text-base font-semibold leading-8 text-white/80">
+              Binq donne aux commerces une vitrine mobile, des paiements en ligne, l&apos;assignation livreur et un wallet pour suivre les revenus.
+            </p>
+            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+              <Link href="/inscription" className="inline-flex items-center justify-center gap-2 rounded-full bg-white px-6 py-3 text-sm font-black text-[#0aad0a] hover:bg-green-50">
+                Devenir commerçant <ArrowRight className="h-4 w-4" />
+              </Link>
+              <Link href="/livraisons" className="inline-flex items-center justify-center gap-2 rounded-full border border-white/30 bg-white/10 px-6 py-3 text-sm font-black text-white hover:bg-white/20">
+                Devenir livreur
+              </Link>
+            </div>
           </div>
-
-          <div className="grid md:grid-cols-3 gap-6 sm:gap-8">
+          <div className="grid gap-4 sm:grid-cols-2">
             {[
-              {
-                step: "01",
-                icon: Search,
-                title: "Entrez l'adresse",
-                desc: "Binq affiche les restaurants, boutiques et services ouverts autour de vous.",
-                gradient: "from-emerald-500 to-green-500",
-              },
-              {
-                step: "02",
-                icon: ShoppingBag,
-                title: "Remplissez le panier",
-                desc: "Ajoutez vos articles, vérifiez le total et confirmez la commande.",
-                gradient: "from-amber-500 to-yellow-500",
-              },
-              {
-                step: "03",
-                icon: Truck,
-                title: "Recevez vite",
-                desc: "Le commerce prépare, le livreur arrive et vous suivez la commande.",
-                gradient: "from-emerald-500 to-green-600",
-              },
-            ].map((item, i) => (
-              <div key={i} className="relative group">
-                <div className="relative overflow-hidden bg-white border border-white rounded-[1.75rem] p-6 sm:p-8 shadow-sm shadow-slate-200/80 hover:shadow-2xl hover:shadow-emerald-900/10 hover:-translate-y-1 transition-all duration-300">
-                  <div className="absolute -right-10 -top-10 w-28 h-28 rounded-full bg-emerald-50 group-hover:bg-yellow-50 transition-colors" />
-                  <div className={`relative w-12 h-12 rounded-2xl bg-gradient-to-br ${item.gradient} flex items-center justify-center mb-5 shadow-lg shadow-black/10`}>
-                    <item.icon className="w-5 h-5 text-white" />
-                  </div>
-                  <span className="relative text-[10px] font-bold text-slate-300 uppercase tracking-widest">{item.step}</span>
-                  <h3 className="relative text-lg font-extrabold text-slate-950 mt-1 mb-2">{item.title}</h3>
-                  <p className="relative text-sm text-slate-500 leading-relaxed">{item.desc}</p>
+              { icon: Store, title: "Boutique en ligne", desc: "Produits, photos, prix et disponibilités." },
+              { icon: BadgeCheck, title: "Commandes claires", desc: "Statuts, préparation et historique." },
+              { icon: Truck, title: "Livreurs assignés", desc: "Adresse client et suivi Mapbox." },
+              { icon: ShieldCheck, title: "Wallet intégré", desc: "Gains commerçant, gains livreur et frais Binq." },
+            ].map((item) => (
+              <div key={item.title} className="rounded-[2rem] bg-white/12 p-6 ring-1 ring-white/15 backdrop-blur">
+                <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-2xl bg-white text-[#0aad0a]">
+                  <item.icon className="h-5 w-5" />
                 </div>
+                <h3 className="text-lg font-black">{item.title}</h3>
+                <p className="mt-2 text-sm font-semibold leading-6 text-white/75">{item.desc}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ═══════ UN QR POUR TOUT — Use cases ═══════ */}
-      <section id="pourqui" className="pb-20 sm:pb-28">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6">
-          <div className="text-center mb-12 sm:mb-16">
-            <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white border border-white shadow-sm text-[11px] font-bold text-emerald-700 uppercase tracking-wider mb-4">Tout près de vous</span>
-            <h2 className="text-3xl sm:text-5xl font-black tracking-[-0.04em] text-slate-950 mb-3">De quoi avez-vous besoin ?</h2>
-            <p className="text-sm sm:text-base text-slate-500 max-w-md mx-auto">Repas, courses, santé, beauté : une seule plateforme pour commander local.</p>
+      <section className="bg-[#fff36d] py-14 sm:py-20">
+        <div className="mx-auto max-w-4xl px-4 text-center sm:px-6">
+          <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-white text-[#0aad0a] shadow-xl shadow-green-950/10">
+            <ShoppingBasket className="h-8 w-8" />
           </div>
-
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 sm:gap-5">
-            {[
-              { icon: Utensils, label: "Restaurants", desc: "Repas, snacks & boissons", gradient: "from-red-500 to-rose-500", bg: "bg-red-50" },
-              { icon: ShoppingBag, label: "Boutiques", desc: "Mode, accessoires, cadeaux", gradient: "from-pink-500 to-rose-500", bg: "bg-pink-50" },
-              { icon: Store, label: "Supermarchés", desc: "Courses du quotidien", gradient: "from-amber-500 to-orange-500", bg: "bg-amber-50" },
-              { icon: Leaf, label: "Pharmacies", desc: "Santé & bien-être", gradient: "from-teal-500 to-emerald-500", bg: "bg-teal-50" },
-              { icon: Sparkles, label: "Beauté", desc: "Soins, salons & services", gradient: "from-violet-500 to-purple-500", bg: "bg-violet-50" },
-              { icon: Package, label: "Services locaux", desc: "Commandes sur demande", gradient: "from-sky-500 to-blue-500", bg: "bg-sky-50" },
-            ].map((item, i) => (
-              <div key={i} className="group bg-white border border-white rounded-[1.5rem] p-5 sm:p-6 shadow-sm shadow-slate-200/70 hover:shadow-2xl hover:shadow-emerald-900/10 hover:-translate-y-1 transition-all duration-300">
-                <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${item.gradient} flex items-center justify-center mb-4 shadow-md shadow-black/10`}>
-                  <item.icon className="w-4.5 h-4.5 text-white" />
-                </div>
-                <h3 className="text-sm font-extrabold text-slate-950 mb-0.5">{item.label}</h3>
-                <p className="text-xs text-slate-400">{item.desc}</p>
-              </div>
-            ))}
+          <h2 className="text-4xl font-black tracking-[-0.05em] sm:text-6xl">Prêt à commander local ?</h2>
+          <p className="mx-auto mt-4 max-w-2xl text-base font-semibold leading-8 text-[#3d493d]">
+            Entrez votre adresse, trouvez les commerces proches et recevez vos produits avec un livreur Binq.
+          </p>
+          <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
+            <Link href="/explorer" className="inline-flex items-center justify-center gap-2 rounded-full bg-[#0aad0a] px-8 py-4 text-sm font-black text-white shadow-xl shadow-green-950/10 hover:bg-[#079707]">
+              Commencer maintenant <ArrowRight className="h-4 w-4" />
+            </Link>
+            <Link href="/inscription" className="inline-flex items-center justify-center gap-2 rounded-full bg-white px-8 py-4 text-sm font-black text-[#172017] hover:bg-green-50">
+              Inscrire mon commerce
+            </Link>
           </div>
         </div>
       </section>
 
-      {/* ═══════ 3 PILIERS ═══════ */}
-      <section className="py-20 sm:py-28 bg-white/70 border-y border-white">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6">
-          <h2 className="text-center text-3xl sm:text-5xl font-black tracking-[-0.04em] text-slate-950 mb-4">Pourquoi Binq</h2>
-          <p className="text-center text-sm sm:text-base text-slate-500 max-w-md mx-auto mb-12 sm:mb-16">Une expérience directe : commande claire, paiement sécurisé, livraison locale.</p>
-
-          <div className="grid md:grid-cols-3 gap-6 sm:gap-8 text-center">
-            {[
-              { icon: Clock, title: "Rapide", desc: "Moins d'étapes, moins d'attente, plus d'efficacité.", color: "text-amber-500", bg: "bg-amber-50" },
-              { icon: ShieldCheck, title: "Fiable", desc: "Commande enregistrée, commerce notifié, suivi lisible.", color: "text-emerald-500", bg: "bg-emerald-50" },
-              { icon: Truck, title: "Proche", desc: "Les commerces de votre quartier deviennent accessibles en quelques taps.", color: "text-emerald-500", bg: "bg-emerald-50" },
-            ].map((item, i) => (
-              <div key={i} className="bg-white rounded-[1.75rem] border border-slate-100 p-6 sm:p-8 shadow-sm hover:shadow-xl hover:shadow-emerald-900/5 transition-shadow">
-                <div className={`w-12 h-12 rounded-2xl ${item.bg} flex items-center justify-center mx-auto mb-4 ring-8 ring-slate-50/80`}>
-                  <item.icon className={`w-5 h-5 ${item.color}`} />
-                </div>
-                <h3 className="text-lg font-extrabold text-slate-950 mb-2">{item.title}</h3>
-                <p className="text-sm text-slate-500 leading-relaxed">{item.desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ═══════ CTA FINAL ═══════ */}
-      <section className="py-20 sm:py-28">
-        <div className="max-w-3xl mx-auto px-4 sm:px-6">
-          <div className="relative overflow-hidden rounded-[2.25rem] bg-gradient-to-br from-slate-950 via-emerald-950 to-green-900 px-6 sm:px-12 py-12 sm:py-16 text-center shadow-2xl shadow-emerald-950/20">
-            <div className="absolute inset-0 opacity-20" style={{ backgroundImage: "radial-gradient(circle at 20% 50%, white 1px, transparent 1px), radial-gradient(circle at 80% 50%, white 1px, transparent 1px)", backgroundSize: "40px 40px" }} />
-            <div className="absolute -top-20 -right-20 w-56 h-56 bg-emerald-500/30 rounded-full blur-3xl" />
-            <div className="absolute -bottom-24 -left-24 w-64 h-64 bg-yellow-400/25 rounded-full blur-3xl" />
-            <div className="relative z-10">
-              <h2 className="text-3xl sm:text-5xl font-black text-white mb-3 tracking-[-0.04em]">Prêt à vendre localement ?</h2>
-              <p className="text-sm sm:text-base text-white/70 max-w-md mx-auto mb-8">Mettez votre commerce sur Binq et recevez des commandes prêtes à préparer.</p>
-              <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
-                <Link href="/inscription" className="inline-flex items-center gap-2 px-7 py-3 bg-white text-emerald-700 font-bold rounded-full hover:bg-emerald-50 transition-all text-sm shadow-xl">
-                  Devenir partenaire <ArrowRight className="w-3.5 h-3.5" />
-                </Link>
-                <Link href="/explorer" className="inline-flex items-center gap-2 px-7 py-3 bg-white/10 text-white font-semibold rounded-full border border-white/20 hover:bg-white/20 transition-all text-sm backdrop-blur-sm">
-                  Explorer les commerces
-                </Link>
-              </div>
+      <footer className="border-t border-black/5 bg-white py-10">
+        <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-6 px-4 text-center sm:px-6 md:flex-row md:text-left lg:px-8">
+          <div>
+            <div className="flex items-center justify-center gap-2 md:justify-start">
+              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#0aad0a] text-white"><ShoppingBasket className="h-4 w-4" /></div>
+              <span className="text-lg font-black">Binq</span>
             </div>
+            <p className="mt-2 text-sm font-semibold text-neutral-500">Commerce local, paiement sécurisé et livraison suivie.</p>
           </div>
-        </div>
-      </section>
-
-      {/* ═══════ FOOTER ═══════ */}
-      <footer className="border-t border-white bg-white/70 backdrop-blur-xl py-10 sm:py-14">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6">
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-6">
-            <div className="flex flex-col items-center sm:items-start gap-1">
-              <div className="flex items-center gap-2">
-                <div className="w-6 h-6 bg-gradient-to-br from-emerald-500 via-green-500 to-yellow-400 rounded-lg flex items-center justify-center shadow-sm shadow-emerald-500/30">
-                  <QrCode className="w-3 h-3 text-white" />
-                </div>
-                <span className="font-bold text-slate-950 tracking-tight">Binq</span>
-              </div>
-              <p className="text-[11px] text-slate-400">Commerce local avec paiement et livraison</p>
-            </div>
-            <div className="flex items-center gap-6 text-sm text-slate-400">
-              <Link href="/explorer" className="hover:text-slate-950 transition">Commander</Link>
-              <a href="#fonctionnalites" className="hover:text-slate-950 transition">Comment ça marche</a>
-              <a href="#pourqui" className="hover:text-slate-950 transition">Pour qui ?</a>
-            </div>
-            <p className="text-xs text-slate-400">&copy; {new Date().getFullYear()} Binq. Tous droits réservés.</p>
+          <div className="flex flex-wrap items-center justify-center gap-5 text-sm font-bold text-neutral-500">
+            <Link href="/explorer" className="hover:text-[#0aad0a]">Commander</Link>
+            <Link href="/connexion" className="hover:text-[#0aad0a]">Connexion</Link>
+            <Link href="/inscription" className="hover:text-[#0aad0a]">Partenaires</Link>
           </div>
+          <p className="text-xs font-semibold text-neutral-400">© {new Date().getFullYear()} Binq. Tous droits réservés.</p>
         </div>
       </footer>
-    </div>
+    </main>
   );
 }
