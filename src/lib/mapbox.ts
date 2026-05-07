@@ -52,10 +52,15 @@ export function browserSupportsGeolocation() {
   return typeof navigator !== "undefined" && "geolocation" in navigator;
 }
 
-export function getBrowserPosition(options?: PositionOptions): Promise<MapboxCoordinates> {
+function readBrowserPosition(options: PositionOptions): Promise<MapboxCoordinates> {
   return new Promise((resolve, reject) => {
     if (!browserSupportsGeolocation()) {
       reject(new Error("La géolocalisation n'est pas disponible sur cet appareil."));
+      return;
+    }
+
+    if (typeof window !== "undefined" && !window.isSecureContext) {
+      reject(new Error("La géolocalisation nécessite une connexion sécurisée HTTPS."));
       return;
     }
 
@@ -65,14 +70,30 @@ export function getBrowserPosition(options?: PositionOptions): Promise<MapboxCoo
         longitude: position.coords.longitude,
       }),
       (error) => reject(error),
-      {
-        enableHighAccuracy: true,
-        timeout: 12000,
-        maximumAge: 60000,
-        ...options,
-      }
+      options
     );
   });
+}
+
+export async function getBrowserPosition(options?: PositionOptions): Promise<MapboxCoordinates> {
+  try {
+    return await readBrowserPosition({
+      enableHighAccuracy: true,
+      timeout: 20000,
+      maximumAge: 0,
+      ...options,
+    });
+  } catch (error) {
+    const code = typeof error === "object" && error !== null && "code" in error ? Number(error.code) : null;
+    if (code === 1) throw error;
+
+    return readBrowserPosition({
+      enableHighAccuracy: false,
+      timeout: 25000,
+      maximumAge: 120000,
+      ...options,
+    });
+  }
 }
 
 export function getMapboxDirectionsUrl({
