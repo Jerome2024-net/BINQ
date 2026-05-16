@@ -174,8 +174,8 @@ export default function ExplorerPublicPage() {
     viewMode === "produits" ? produits.length : boutiques.length;
 
   return (
-    <div className="min-h-screen bg-[linear-gradient(180deg,#fffdf4_0%,#f7fbf8_36%,#f8fafc_100%)] text-slate-950">
-      <header className="sticky top-0 z-50 border-b border-emerald-950/5 bg-white/88 shadow-sm shadow-emerald-950/5 backdrop-blur-2xl">
+    <div className="min-h-screen bg-[#fff8d8] text-slate-950">
+      <header className="sticky top-0 z-50 border-b border-yellow-900/5 bg-[#fff8d8]/92 backdrop-blur-2xl">
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-5 lg:px-10">
           <Link href="/" className="flex items-center gap-2">
             <BinqLogo size="sm" />
@@ -184,9 +184,9 @@ export default function ExplorerPublicPage() {
           <nav className="hidden items-center gap-2 sm:flex">
             <Link
               href="/explorer"
-              className="rounded-full bg-emerald-50 px-4 py-2 text-sm font-black text-emerald-700 ring-1 ring-emerald-100"
+              className="rounded-full bg-white px-5 py-2.5 text-sm font-black text-[#14852F] shadow-sm ring-1 ring-yellow-900/5"
             >
-              Commander
+              Livraison
             </Link>
           </nav>
 
@@ -200,66 +200,84 @@ export default function ExplorerPublicPage() {
         </div>
 
         {mobileOpen && (
-          <div className="space-y-1 border-t border-slate-100 bg-white px-5 py-3 sm:hidden">
+          <div className="space-y-1 border-t border-yellow-900/5 bg-[#fff8d8] px-5 py-3 sm:hidden">
             <Link
               href="/explorer"
               onClick={() => setMobileOpen(false)}
-              className="block rounded-xl bg-emerald-50 px-3 py-2.5 text-sm font-black text-emerald-700"
+              className="block rounded-xl bg-white px-3 py-2.5 text-sm font-black text-[#14852F]"
             >
-              Commander
+              Livraison
             </Link>
           </div>
         )}
       </header>
 
-      <section className="relative overflow-hidden border-b border-emerald-950/5">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_12%_20%,rgba(20,133,47,0.16),transparent_34%),radial-gradient(circle_at_88%_0%,rgba(250,204,21,0.35),transparent_28%)]" />
-        <div className="relative mx-auto grid max-w-7xl gap-8 px-5 pb-10 pt-8 sm:pt-12 lg:grid-cols-[1fr_460px] lg:items-center lg:px-10 lg:pb-16 lg:pt-16">
+      <section className="relative overflow-hidden bg-[#ffde33]">
+        <div className="absolute -left-24 top-16 h-72 w-72 rounded-full bg-white/25 blur-3xl" />
+        <div className="absolute -right-20 bottom-0 h-80 w-80 rounded-full bg-[#14852F]/12 blur-3xl" />
+        <div className="relative mx-auto grid max-w-7xl gap-8 px-5 pb-10 pt-8 sm:pt-12 lg:grid-cols-[1fr_500px] lg:items-center lg:px-10 lg:pb-16 lg:pt-16">
           <div className="max-w-3xl">
-            <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-emerald-100 bg-white/80 px-3 py-1.5 text-xs font-black uppercase tracking-[0.16em] text-emerald-700 shadow-sm shadow-emerald-950/5 backdrop-blur-xl">
-              <Sparkles className="h-3.5 w-3.5" /> Nouveau Binq Clients
+            <div className="mb-5 inline-flex items-center gap-2 rounded-full bg-white/90 px-4 py-2 text-xs font-black uppercase tracking-[0.16em] text-[#14852F] shadow-sm">
+              <Sparkles className="h-3.5 w-3.5" /> Binq Clients
             </div>
-            <h1 className="max-w-3xl text-[42px] font-black leading-[0.92] tracking-[-0.055em] text-slate-950 sm:text-6xl lg:text-7xl">
-              Le local, livré avec style.
+            <h1 className="max-w-3xl text-[44px] font-black leading-[0.9] tracking-[-0.06em] text-slate-950 sm:text-6xl lg:text-[84px]">
+              Courses, repas et boutiques livrés vite.
             </h1>
-            <p className="mt-5 max-w-xl text-base font-medium leading-relaxed text-slate-600 sm:text-lg">
-              Restaurants, courses, mode, beauté et services proches de vous. Recherchez, commandez, recevez.
+            <p className="mt-5 max-w-xl text-base font-extrabold leading-relaxed text-slate-800 sm:text-lg">
+              Entrez votre adresse, trouvez les commerces autour de vous et commandez en quelques secondes.
             </p>
-            <div className="mt-7 max-w-2xl rounded-[1.7rem] border border-white bg-white/90 p-2 shadow-2xl shadow-emerald-950/10 backdrop-blur-xl">
-              <div className="relative">
-                <Search className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-emerald-600" />
+            <div className="mt-7 max-w-2xl rounded-[2rem] bg-white p-2.5 shadow-2xl shadow-yellow-900/15">
+              <div className="grid gap-2 sm:grid-cols-[1fr_auto]">
+                <div className="relative">
+                  <MapPin className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-[#14852F]" />
+                  <input
+                    type="text"
+                    placeholder="Saisissez votre adresse de livraison"
+                    value={searchQuery}
+                    onChange={(event) => setSearchQuery(event.target.value)}
+                    className="w-full rounded-[1.35rem] border-0 bg-slate-50 py-4 pl-12 pr-11 text-[15px] font-extrabold text-slate-950 outline-none transition placeholder:text-slate-400 focus:bg-white focus:ring-4 focus:ring-[#14852F]/10"
+                  />
+                  {searchQuery && (
+                    <button
+                      onClick={() => setSearchQuery("")}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 rounded-full p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-700"
+                      aria-label="Effacer la recherche"
+                    >
+                      <X className="h-4 w-4" />
+                    </button>
+                  )}
+                </div>
+                <button className="rounded-[1.35rem] bg-[#14852F] px-6 py-4 text-sm font-black text-white shadow-lg shadow-emerald-900/20 transition hover:bg-[#0f6f27]">
+                  Voir autour de moi
+                </button>
+              </div>
+              <div className="mt-2 border-t border-slate-100 pt-2">
+                <div className="relative">
+                  <Search className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
                 <input
                   type="text"
-                  placeholder="Rechercher un produit, restaurant, boutique..."
+                  placeholder="Rechercher un produit, restaurant ou boutique"
                   value={searchQuery}
                   onChange={(event) => setSearchQuery(event.target.value)}
-                  className="w-full rounded-[1.25rem] border-0 bg-emerald-50/60 py-4 pl-12 pr-11 text-[15px] font-bold text-slate-950 outline-none transition placeholder:text-slate-400 focus:bg-white focus:ring-4 focus:ring-emerald-100"
+                    className="w-full rounded-[1.15rem] border-0 bg-white py-3 pl-11 pr-3 text-sm font-bold text-slate-700 outline-none placeholder:text-slate-400 focus:ring-4 focus:ring-yellow-200/60"
                 />
-                {searchQuery && (
-                  <button
-                    onClick={() => setSearchQuery("")}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 rounded-full p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-700"
-                    aria-label="Effacer la recherche"
-                  >
-                    <X className="h-4 w-4" />
-                  </button>
-                )}
+                </div>
               </div>
             </div>
-            <div className="mt-5 flex flex-wrap gap-2 text-xs font-black text-slate-600">
-              <span className="inline-flex items-center gap-2 rounded-full bg-white/85 px-3 py-2 shadow-sm ring-1 ring-white"><Truck className="h-4 w-4 text-emerald-600" /> Livraison locale</span>
-              <span className="inline-flex items-center gap-2 rounded-full bg-white/85 px-3 py-2 shadow-sm ring-1 ring-white"><Zap className="h-4 w-4 text-emerald-600" /> Commande rapide</span>
-              <span className="inline-flex items-center gap-2 rounded-full bg-white/85 px-3 py-2 shadow-sm ring-1 ring-white"><Store className="h-4 w-4 text-emerald-600" /> Commerces vérifiés</span>
+            <div className="mt-5 flex flex-wrap gap-2 text-xs font-black text-slate-800">
+              <span className="inline-flex items-center gap-2 rounded-full bg-white/80 px-3 py-2 shadow-sm"><Truck className="h-4 w-4 text-[#14852F]" /> Livraison rapide</span>
+              <span className="inline-flex items-center gap-2 rounded-full bg-white/80 px-3 py-2 shadow-sm"><Zap className="h-4 w-4 text-[#14852F]" /> Tout en une app</span>
+              <span className="inline-flex items-center gap-2 rounded-full bg-white/80 px-3 py-2 shadow-sm"><Store className="h-4 w-4 text-[#14852F]" /> Commerces locaux</span>
             </div>
           </div>
 
           <div className="relative hidden lg:block">
-            <div className="absolute -left-8 top-12 h-28 w-28 rounded-full bg-yellow-300/40 blur-2xl" />
-            <div className="relative rounded-[2.25rem] border border-white bg-white/90 p-5 shadow-2xl shadow-emerald-950/15 backdrop-blur-xl">
+            <div className="absolute -left-8 top-12 h-28 w-28 rounded-full bg-white/55 blur-2xl" />
+            <div className="relative rotate-1 rounded-[2.5rem] bg-white p-5 shadow-2xl shadow-yellow-900/20">
               <div className="mb-4 flex items-center justify-between">
                 <div>
-                  <p className="text-xs font-black uppercase tracking-[0.18em] text-emerald-700">Aujourd&apos;hui</p>
-                  <p className="mt-1 text-xl font-black text-slate-950">Populaire près de vous</p>
+                  <p className="text-xs font-black uppercase tracking-[0.18em] text-[#14852F]">Top demandes</p>
+                  <p className="mt-1 text-xl font-black text-slate-950">Livré à votre porte</p>
                 </div>
                 <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#14852F] text-white shadow-lg shadow-emerald-700/25">
                   <ShoppingBag className="h-5 w-5" />
@@ -271,7 +289,7 @@ export default function ExplorerPublicPage() {
                   ["Panier fruits", "Marché Frais", "5 000 FCFA", "🥭"],
                   ["Sneakers mode", "Binq Fashion", "12 000 FCFA", "👟"],
                 ].map(([name, shop, price, emoji]) => (
-                  <div key={name} className="flex items-center gap-3 rounded-3xl bg-slate-50 p-3 ring-1 ring-slate-100">
+                  <div key={name} className="flex items-center gap-3 rounded-3xl bg-[#fff8d8] p-3 ring-1 ring-yellow-900/5">
                     <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-white text-2xl shadow-sm">{emoji}</div>
                     <div className="min-w-0 flex-1">
                       <p className="truncate text-sm font-black text-slate-950">{name}</p>
@@ -286,19 +304,19 @@ export default function ExplorerPublicPage() {
         </div>
       </section>
 
-      <section className="sticky top-16 z-40 border-b border-emerald-950/5 bg-white/78 backdrop-blur-2xl">
+      <section className="sticky top-16 z-40 border-b border-yellow-900/5 bg-white/88 backdrop-blur-2xl">
         <div className="mx-auto max-w-7xl px-5 lg:px-10">
-          <div className="flex gap-2.5 overflow-x-auto py-3.5 scrollbar-none">
+          <div className="flex gap-3 overflow-x-auto py-4 scrollbar-none">
             {displayedCategories.map((category) => {
               const active = selectedCategory === category.slug;
               return (
                 <button
                   key={category.slug || "all"}
                   onClick={() => setSelectedCategory(category.slug)}
-                  className={`shrink-0 rounded-2xl border px-4 py-2.5 text-sm font-black transition ${
+                  className={`shrink-0 rounded-[1.4rem] border px-4 py-3 text-sm font-black transition ${
                     active
                       ? "border-transparent bg-[#14852F] text-white shadow-lg shadow-emerald-700/20"
-                      : "border-slate-100 bg-white text-slate-700 shadow-sm hover:border-emerald-100 hover:text-emerald-700 hover:shadow-md"
+                      : "border-slate-100 bg-white text-slate-800 shadow-sm hover:border-yellow-200 hover:bg-yellow-50 hover:text-[#14852F] hover:shadow-md"
                   }`}
                 >
                   <span className="mr-1.5">{category.icone}</span>
@@ -310,15 +328,16 @@ export default function ExplorerPublicPage() {
         </div>
       </section>
 
-      <main className="mx-auto max-w-7xl px-5 pb-20 pt-8 lg:px-10">
+      <main className="bg-[#f8fafc]">
+      <div className="mx-auto max-w-7xl px-5 pb-20 pt-8 lg:px-10">
         <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <p className="text-xs font-black uppercase tracking-[0.18em] text-emerald-700">Sélection Binq</p>
+            <p className="text-xs font-black uppercase tracking-[0.18em] text-[#14852F]">Autour de vous</p>
             <h2 className="mt-1 text-3xl font-black tracking-[-0.035em] text-slate-950">
-              À commander maintenant
+              Qu&apos;est-ce qu&apos;on livre aujourd&apos;hui ?
             </h2>
             <p className="mt-1 text-sm font-medium text-slate-500">
-              Une expérience simple, claire et rapide pour vos achats locaux.
+              Restaurants, supermarchés, pharmacies, boutiques et services.
             </p>
           </div>
           <div className="flex items-center gap-2">
@@ -402,6 +421,7 @@ export default function ExplorerPublicPage() {
             </button>
           </div>
         )}
+      </div>
       </main>
     </div>
   );
